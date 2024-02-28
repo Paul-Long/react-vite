@@ -1,0 +1,1 @@
+window.__lang_be77fe__={MarketOverview:'Market Overview',Contract:'Contract',MatureDate:'Mature Date',TTM:'TTM',Yield:'Yield',Price:'Price',MinimumMR:'Minimum MR',OpenInterest:'Open Interest',AvaLiquidity:'Ava. Liquidity',ReferenceRate:'Reference Rate',PriceChart:'Price Chart',TeamsStructure:'Teams Structure'}
