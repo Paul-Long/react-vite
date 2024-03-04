@@ -1,6 +1,5 @@
 {
-  "extends": "../tsconfig.base.json",
-  "include": ["./**/*", "../packages-shared/types/**/*"],
+  "include": ["./**/*", "../../packages-shared/types/**/*"],
   "compilerOptions": {
     "strict": true,
     "target": "ESNext",

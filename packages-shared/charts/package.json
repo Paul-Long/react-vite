@@ -1,0 +1,17 @@
+{
+  "name": "@rx/charts",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@rx/const": "^1.0.0",
+    "@rx/env": "^1.0.0",
+    "@rx/hooks": "^1.0.0",
+    "@rx/lang": "^1.0.0",
+    "@rx/widgets": "^1.0.0",
+    "@rx/web3": "^1.0.0",
+    "@rx/router": "^1.0.0",
+    "@rx/streams": "^1.0.0"
+  }
+}
