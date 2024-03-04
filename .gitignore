@@ -133,4 +133,4 @@ pnpm-lock.yaml
 /public/css/
 /public/font/
 dist
-env.json
+/packages-deploy/env.json
