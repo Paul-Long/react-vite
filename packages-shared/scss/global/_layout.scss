@@ -1,0 +1,304 @@
+@mixin layout($scope: '') {
+  .#{$scope}pa {
+    position: absolute;
+  }
+  .#{$scope}pr {
+    position: relative;
+  }
+  .#{$scope}fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  .#{$scope}dn {
+    display: none;
+  }
+  .#{$scope}dc {
+    display: contents;
+  }
+  .#{$scope}dg {
+    display: grid;
+  }
+  .#{$scope}db {
+    display: block;
+  }
+  .#{$scope}dif {
+    display: inline-flex;
+  }
+  .#{$scope}dib {
+    display: inline-block;
+  }
+  .#{$scope}df {
+    display: flex;
+  }
+
+  .#{$scope}aic {
+    align-items: center;
+  }
+  .#{$scope}ais {
+    align-items: stretch;
+  }
+  .#{$scope}jcc {
+    justify-content: center;
+  }
+  .#{$scope}jcfe {
+    justify-content: flex-end;
+  }
+  .#{$scope}jcsb {
+    justify-content: space-between;
+  }
+  .#{$scope}asc {
+    align-self: center;
+  }
+  .#{$scope}fdc {
+    flex-direction: column;
+  }
+  .#{$scope}fdr {
+    flex-direction: row;
+  }
+  .#{$scope}fdcr {
+    flex-direction: column-reverse;
+  }
+  .#{$scope}asfe {
+    align-self: flex-end;
+  }
+  .#{$scope}aife {
+    align-items: flex-end;
+  }
+  .#{$scope}fww {
+    flex-wrap: wrap;
+  }
+  .#{$scope}f1 {
+    flex: 1;
+  }
+  .#{$scope}f2 {
+    flex: 2;
+  }
+  .#{$scope}f3 {
+    flex: 3;
+  }
+
+  .#{$scope}mt8 {
+    margin-top: 8px;
+  }
+  .#{$scope}mt10 {
+    margin-top: 10px;
+  }
+  .#{$scope}mt12 {
+    margin-top: 12px;
+  }
+  .#{$scope}mt16 {
+    margin-top: 16px;
+  }
+  .#{$scope}mt20 {
+    margin-top: 20px;
+  }
+  .#{$scope}mt24 {
+    margin-top: 24px;
+  }
+  .#{$scope}mt32 {
+    margin-top: 32px;
+  }
+  .#{$scope}mt36 {
+    margin-top: 36px;
+  }
+  .#{$scope}mt40 {
+    margin-top: 40px;
+  }
+  .#{$scope}mb8 {
+    margin-bottom: 8px;
+  }
+  .#{$scope}mb10 {
+    margin-bottom: 10px;
+  }
+  .#{$scope}mb12 {
+    margin-bottom: 12px;
+  }
+  .#{$scope}mb16 {
+    margin-bottom: 16px;
+  }
+  .#{$scope}mb20 {
+    margin-bottom: 20px;
+  }
+  .#{$scope}mb24 {
+    margin-bottom: 24px;
+  }
+  .#{$scope}mb32 {
+    margin-bottom: 32px;
+  }
+  .#{$scope}ml4 {
+    margin-left: 4px;
+  }
+  .#{$scope}ml8 {
+    margin-left: 10px;
+  }
+  .#{$scope}ml10 {
+    margin-left: 10px;
+  }
+  .#{$scope}ml12 {
+    margin-left: 12px;
+  }
+  .#{$scope}ml16 {
+    margin-left: 16px;
+  }
+  .#{$scope}ml20 {
+    margin-left: 20px;
+  }
+  .#{$scope}ml24 {
+    margin-left: 24px;
+  }
+  .#{$scope}ml28 {
+    margin-left: 28px;
+  }
+  .#{$scope}ml32 {
+    margin-left: 32px;
+  }
+  .#{$scope}mr4 {
+    margin-right: 4px;
+  }
+  .#{$scope}mr8 {
+    margin-right: 8px;
+  }
+  .#{$scope}mr10 {
+    margin-right: 10px;
+  }
+  .#{$scope}mr12 {
+    margin-right: 12px;
+  }
+  .#{$scope}mr16 {
+    margin-right: 16px;
+  }
+  .#{$scope}mr24 {
+    margin-right: 24px;
+  }
+  .#{$scope}mh10 {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .#{$scope}mh16 {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .#{$scope}mh32 {
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+
+  .#{$scope}br4 {
+    border-radius: 4px;
+  }
+  .#{$scope}br8 {
+    border-radius: 8px;
+  }
+  .#{$scope}br12 {
+    border-radius: 12px;
+  }
+
+  .#{$scope}p24 {
+    padding: 24px;
+  }
+  .#{$scope}ph8 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .#{$scope}ph10 {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .#{$scope}ph12 {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .#{$scope}ph16 {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .#{$scope}ph20 {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .#{$scope}ph24 {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .#{$scope}ph32 {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+  .#{$scope}ph40 {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .#{$scope}pv16 {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .#{$scope}pv20 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .#{$scope}pv24 {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+  .#{$scope}pl16 {
+    padding-left: 16px;
+  }
+  .#{$scope}pr16 {
+    padding-right: 16px;
+  }
+
+  .#{$scope}wp50 {
+    width: 50%;
+  }
+  .#{$scope}wp100 {
+    width: 100%;
+  }
+  .#{$scope}hp100 {
+    height: 100%;
+  }
+
+  .#{$scope}ovh {
+    overflow: hidden;
+  }
+
+  .#{$scope}g4 {
+    gap: 4px;
+  }
+  .#{$scope}g6 {
+    gap: 6px;
+  }
+  .#{$scope}g8 {
+    gap: 8px;
+  }
+  .#{$scope}g10 {
+    gap: 10px;
+  }
+  .#{$scope}g12 {
+    gap: 12px;
+  }
+  .#{$scope}g16 {
+    gap: 16px;
+  }
+  .#{$scope}g18 {
+    gap: 18px;
+  }
+  .#{$scope}g20 {
+    gap: 20px;
+  }
+  .#{$scope}g24 {
+    gap: 24px;
+  }
+  .#{$scope}g28 {
+    gap: 28px;
+  }
+  .#{$scope}g32 {
+    gap: 32px;
+  }
+  .#{$scope}g44 {
+    gap: 44px;
+  }
+}

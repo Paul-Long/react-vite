@@ -1,0 +1,10 @@
+{
+  "name": "@rx/const",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "dependencies": {
+    "@rx/env": "^1.0.0",
+    "@rx/helper": "workspace:*"
+  }
+}

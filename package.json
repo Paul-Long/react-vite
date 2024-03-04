@@ -1,0 +1,48 @@
+{
+  "name": "react-vite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paul-Long/react-vite.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Paul-Long/react-vite/issues"
+  },
+  "homepage": "https://github.com/Paul-Long/react-vite#readme",
+  "dependencies": {
+    "big.js": "6.2.1",
+    "classnames": "2.5.1",
+    "qs": "6.11.2",
+    "query-string": "8.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "rxjs": "7.8.1",
+    "unocss": "0.58.0"
+  },
+  "devDependencies": {
+    "@types/big.js": "6.2.2",
+    "@types/qs": "6.9.10",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "18.2.17",
+    "@types/styled-components": "5.1.34",
+    "@trivago/prettier-plugin-sort-imports": "4.3.0",
+    "@unocss/preset-attributify": "0.58.0",
+    "@unocss/preset-icons": "0.58.0",
+    "@unocss/preset-uno": "0.58.0",
+    "@vitejs/plugin-react": "4.2.1",
+    "echarts": "5.5.0",
+    "esbuild": "0.19.9",
+    "esbuild-register": "3.5.0",
+    "styled-components": "6.1.1",
+    "prettier": "2.8",
+    "prettier-plugin-organize-imports": "3.2.4",
+    "prettier-plugin-packagejson": "2.4.9",
+    "typescript": "5.3.3",
+    "vite": "5.1.4",
+    "vite-plugin-externals": "0.6.2"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "en": {"locale": "en", "browser": "en", "html": "en-US", "appStore": "us", "name": "English"},
+  "zh": {"locale": "zh", "browser": "zh", "html": "zh-CN", "appStore": "zh", "name": "中文"},
+  "ru": {"locale": "ru", "browser": "ru", "html": "ru-RU", "appStore": "ru", "name": "Русский"},
+  "ko": {"locale": "ko", "browser": "ko", "html": "ko-KR", "appStore": "kr", "name": "한국어"},
+  "ja": {"locale": "ja", "browser": "ja", "html": "ja-JP", "appStore": "jp", "name": "日本語"},
+  "es": {"locale": "es", "browser": "es", "html": "es-ES", "appStore": "es", "name": "Español"},
+  "de": {"locale": "de", "browser": "de", "html": "de-DE", "appStore": "de", "name": "Deutsch"},
+  "fr": {"locale": "fr", "browser": "fr", "html": "fr-FR", "appStore": "fr", "name": "Français"},
+  "tr": {"locale": "tr", "browser": "tr", "html": "tr-TR", "appStore": "tr", "name": "Türkçe"},
+  "pt": {"locale": "pt", "browser": "pt", "html": "pt-PT", "appStore": "pt", "name": "Português"},
+  "vi": {"locale": "vi", "browser": "vi", "html": "vi-VN", "appStore": "vi", "name": "tiếng Việt"}
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@rx/scss",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build:dev": "node scripts/build-dev.mjs",
+    "build:prod": "rm -rf ./dist && node scripts/build-prod.mjs"
+  },
+  "dependencies": {
+    "sass": "1.62.1"
+  }
+}

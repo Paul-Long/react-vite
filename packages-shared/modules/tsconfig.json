@@ -1,0 +1,19 @@
+{
+  "include": ["./**/*", "../../packages-shared/types/**/*"],
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["*"],
+      "./*": ["./*"],
+      "../*": ["../*"],
+    }
+  }
+}

@@ -1,0 +1,9 @@
+@import 'global/actions', 'global/colors', 'global/font', 'global/layout';
+
+@media (max-width: 640px) {
+  $prefix: 'xs\\:';
+  @include layout($prefix);
+  @include font($prefix);
+  @include colors($prefix);
+  @include actions($prefix);
+}

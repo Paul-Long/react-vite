@@ -1,0 +1,15 @@
+{
+  "name": "@rx/hooks",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@rx/env": "^1.0.0",
+    "@rx/db": "^1.0.0",
+    "@rx/lang": "^1.0.0",
+    "@rx/widgets": "^1.0.0",
+    "@rx/streams": "^1.0.0",
+    "@rx/resource": "^1.0.0"
+  }
+}

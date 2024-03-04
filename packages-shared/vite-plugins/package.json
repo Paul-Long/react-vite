@@ -1,0 +1,11 @@
+{
+  "name": "@rx/vite-plugins",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@rx/config": "^1.0.0"
+  },
+  "devDependencies": {
+    "json5": "2.2.3"
+  }
+}

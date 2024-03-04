@@ -1,0 +1,9 @@
+{
+  "name": "@rx/resource",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+  }
+}

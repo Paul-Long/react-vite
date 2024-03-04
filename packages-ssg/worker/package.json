@@ -1,0 +1,10 @@
+{
+  "name": "@rx-ssg/worker",
+  "version": "0.0.0",
+  "buildId": 100,
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@rx/helper": "workspace:*"
+  }
+}

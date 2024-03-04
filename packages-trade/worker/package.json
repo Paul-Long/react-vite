@@ -1,0 +1,10 @@
+{
+  "name": "@rx-trade/worker",
+  "version": "0.0.0",
+  "buildId": 200,
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@rx/helper": "workspace:*"
+  }
+}

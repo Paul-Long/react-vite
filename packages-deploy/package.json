@@ -1,0 +1,23 @@
+{
+  "name": "@rx/deploy",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "deploy-ssg-dev10": "node ssg/deploy-dev10.mjs",
+    "deploy-trade-dev10": "node trade/deploy-dev10.mjs",
+    "deploy-global-css": "node css/deploy-global-css.mjs",
+    "deploy-local-ssg": "cp -Ra ../packages-ssg/app/dist/client/ /usr/local/var/www",
+    "deploy-local-trade": "cp -Ra ../packages-trade/app/dist/client/* /usr/local/var/www",
+    "deploy-local-css": "cp -Ra ../packages-shared/scss/dist/* /usr/local/var/www/css",
+    "deploy-local-clear": "find /usr/local/var/www -mindepth 1 -maxdepth 1 ! -name '3rd' ! -name 'css' ! -name 'font' -exec rm -rf {} +"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.525.0",
+    "glob": "10.3.10",
+    "json5": "2.2.3",
+    "mime": "4.0.1",
+    "query-string": "9.0.0",
+    "tinify": "1.7.1"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@rx/widgets",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "buildId": 201,
+  "main": "index.ts",
+  "dependencies": {
+  }
+}

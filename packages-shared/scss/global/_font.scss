@@ -1,0 +1,122 @@
+@mixin font($scope: '') {
+  .#{$scope}lh16 {
+    line-height: 16px;
+  }
+  .#{$scope}lh18 {
+    line-height: 18px;
+  }
+  .#{$scope}lh20 {
+    line-height: 20px;
+  }
+  .#{$scope}lh22 {
+    line-height: 22px;
+  }
+  .#{$scope}lh24 {
+    line-height: 24px;
+  }
+  .#{$scope}lh30 {
+    line-height: 30px;
+  }
+  .#{$scope}lh32 {
+    line-height: 32px;
+  }
+  .#{$scope}lh36 {
+    line-height: 36px;
+  }
+  .#{$scope}lh38 {
+    line-height: 38px;
+  }
+  .#{$scope}lh40 {
+    line-height: 40px;
+  }
+  .#{$scope}lh42 {
+    line-height: 42px;
+  }
+  .#{$scope}lh48 {
+    line-height: 48px;
+  }
+  .#{$scope}lh52 {
+    line-height: 52px;
+  }
+
+  .#{$scope}tl {
+    text-align: left;
+  }
+  .#{$scope}tc {
+    text-align: center;
+  }
+  .#{$scope}tr {
+    text-align: right;
+  }
+
+  .#{$scope}f10 {
+    font-size: 12px;
+    transform: scale(0.8333);
+  }
+  .#{$scope}f12 {
+    font-size: 12px;
+  }
+  .#{$scope}f14 {
+    font-size: 14px;
+  }
+  .#{$scope}f16 {
+    font-size: 16px;
+  }
+  .#{$scope}f18 {
+    font-size: 18px;
+  }
+  .#{$scope}f20 {
+    font-size: 20px;
+  }
+  .#{$scope}f22 {
+    font-size: 22px;
+  }
+  .#{$scope}f24 {
+    font-size: 24px;
+  }
+  .#{$scope}f28 {
+    font-size: 28px;
+  }
+  .#{$scope}f30 {
+    font-size: 30px;
+  }
+  .#{$scope}f32 {
+    font-size: 32px;
+  }
+  .#{$scope}f36 {
+    font-size: 36px;
+  }
+  .#{$scope}f40 {
+    font-size: 40px;
+  }
+
+  :root {
+    --fw1: 400;
+    --fw2: 500;
+    --fw3: 700;
+  }
+  .#{$scope}fw2 {
+    font-weight: var(--fw2);
+  }
+  .#{$scope}fw3 {
+    font-weight: var(--fw3);
+  }
+
+  .#{$scope}ooo {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .#{$scope}ttu {
+    text-transform: uppercase;
+  }
+  .#{$scope}wsn {
+    white-space: nowrap;
+  }
+  .#{$scope}tdn {
+    text-decoration: none;
+  }
+  .#{$scope}tdu {
+    text-decoration: underline;
+  }
+}

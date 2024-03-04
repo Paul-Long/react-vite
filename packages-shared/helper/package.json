@@ -1,0 +1,11 @@
+{
+  "name": "@rx/helper",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@rx/env": "^1.0.0",
+    "@rx/config": "^1.0.0"
+  }
+}

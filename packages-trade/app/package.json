@@ -1,0 +1,27 @@
+{
+  "name": "@rx-trade/app",
+  "version": "1.0.0",
+  "buildId": 201,
+  "domain": "rubydex.com",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development vite --port 4000",
+    "build": "rm -rf ./dist && npm run build:ssg && npm run gen:html",
+    "build:ssg": "node build.mjs",
+    "gen:html": "node --trace-uncaught  gen-html.mjs"
+  },
+  "dependencies": {
+    "@rx-trade/trade": "^0.0.0",
+    "@rx-trade/worker": "^0.0.0",
+    "@rx/build": "^1.0.0",
+    "@rx/config": "^1.0.0",
+    "@rx/env": "^1.0.0",
+    "@rx/helper": "^1.0.0",
+    "@rx/modules": "^1.0.0",
+    "@rx/streams": "^1.0.0",
+    "@rx/styled": "^1.0.0",
+    "@rx/vite-plugins": "^1.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

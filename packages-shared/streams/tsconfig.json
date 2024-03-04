@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["./**/*", "../types/**/*"],
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ES2020",
+    "types": ["node"],
+    "lib": ["DOM", "ES2020", "esnext"],
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["*"],
+      "./*": ["./*"],
+      "../*": ["../*"]
+    }
+  }
+}

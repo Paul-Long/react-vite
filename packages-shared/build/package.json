@@ -1,0 +1,16 @@
+{
+  "name": "@rx/build",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "devDependencies": {
+    "@rx-ssg/account": "^0.0.0",
+    "@rx-ssg/liquidity": "^0.0.0",
+    "@rx-ssg/main": "^0.0.0",
+    "@rx-ssg/strategy": "^0.0.0",
+    "@rx/helper": "^1.0.0",
+    "@rx/router": "^1.0.0",
+    "@rx/streams": "^1.0.0",
+    "@rx/vite-plugins": "^1.0.0"
+  }
+}

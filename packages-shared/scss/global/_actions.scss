@@ -1,0 +1,8 @@
+@mixin actions($scope: '') {
+  .#{$scope}cp {
+    cursor: pointer;
+  }
+  .#{$scope}usn {
+    user-select: none;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@rx/echarts",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "buildId": 203,
+  "main": "index.ts",
+  "scripts": {
+    "build": "node ./scripts/build.mjs"
+  },
+  "dependencies": {
+    "echarts": "5.4.3"
+  }
+}

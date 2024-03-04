@@ -1,0 +1,63 @@
+:root {
+  --white: #FFFFFF;
+  --off-white: #FFFFF1;
+  --lemongold: #FFAB08;
+  --golden: #E8BC31;
+  --orange-gold: #E7BB41;
+  --mint-green: #27F2A9;
+  --light-gray: #B7BDC6;
+  --smoke-gray: #9EA2A2;
+  --steel-gray: #798290;
+  --lead-gray: #737373;
+  --graphite-gray: #4E5056;
+  --slate-gray-blue: #324556;
+  --dark-gray: #333333;
+  --black: #000000;
+  --deep-sea-blue: #26394B;
+  --midnight-blue: #0A253D;
+  --night-sky-blue: #00162A;
+  --dark-blue: #00162B;
+  --deep-blue: #021730;
+  --dense-blue: #001E3D;
+  --buy: #27F2A9;
+  --sell: #f24e53;
+}
+
+@mixin colors($scope: '') {
+  .#{$scope}T1 {
+    color: var(--black);
+  }
+  .#{$scope}T2 {
+    color: var(--white);
+  }
+  .#{$scope}T3 {
+    color: var(--golden);
+  }
+  .#{$scope}T4 {
+    color: var(--dark-gray);
+  }
+  .#{$scope}T5 {
+    color: var(--light-gray);
+  }
+  .#{$scope}T6 {
+    color: var(--mint-green);
+  }
+  .#{$scope}T7 {
+    color: var(--steel-gray);
+  }
+  .#{$scope}B1 {
+    background-color: var(--dark-blue);
+  }
+  .#{$scope}B2 {
+    background-color: var(--golden);
+  }
+  .#{$scope}B3 {
+    background-color: var(--dense-blue);
+  }
+  .#{$scope}buy {
+    color: var(--buy);
+  }
+  .#{$scope}sell {
+    color: var(--sell);
+  }
+}
