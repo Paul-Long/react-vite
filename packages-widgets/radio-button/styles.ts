@@ -34,7 +34,7 @@ export const StyledRadioButton = styled.div<{
     }
     if ($size === 'middle') {
       return css`
-        padding: 8px 12px;
+        padding: 8px 14px;
       `;
     }
     return css`
