@@ -52,8 +52,8 @@ export function Charts() {
         color: '#E8BC31',
         lineWidth: 2,
         priceScaleId: 'left',
-        lastValueVisible: false,
-        priceLineVisible: false,
+        // lastValueVisible: false,
+        // priceLineVisible: false,
         priceFormat: {
           type: 'custom',
           formatter: (p: any) => {
@@ -67,8 +67,8 @@ export function Charts() {
       line2.current = chart?.current?.addLineSeries({
         color: '#27F2A9',
         lineWidth: 2,
-        lastValueVisible: false,
-        priceLineVisible: false,
+        // lastValueVisible: false,
+        // priceLineVisible: false,
         priceFormat: {
           type: 'price',
           precision: 5,
