@@ -1,9 +1,13 @@
-import '@rx-trade/trade';
 import {bootstrap} from '@rx/build/main';
 import '@rx/helper/polyfill/EventTarget';
 import '@rx/helper/polyfill/array';
 import '@rx/helper/polyfill/map';
 import '@rx/helper/polyfill/rxjs';
+import '@trade/account';
+import '@trade/lp';
+import '@trade/market';
+import '@trade/strategies';
+import '@trade/trade';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import 'virtual:uno.css';

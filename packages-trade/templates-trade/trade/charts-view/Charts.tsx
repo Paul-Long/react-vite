@@ -11,7 +11,19 @@ export function Charts() {
 
   const {data} = useChartData();
   const {chart, container, loaded, resize} = useChart({
-    rightPriceScale: {visible: true},
+    leftPriceScale: {
+      scaleMargins: {
+        top: 0.3,
+        bottom: 0.25,
+      },
+    },
+    rightPriceScale: {
+      visible: true,
+      scaleMargins: {
+        top: 0.3,
+        bottom: 0.25,
+      },
+    },
   });
 
   useEffect(() => {
@@ -42,6 +54,12 @@ export function Charts() {
         priceScaleId: 'left',
         lastValueVisible: false,
         priceLineVisible: false,
+        priceFormat: {
+          type: 'custom',
+          formatter: (p: any) => {
+            return `${(p * 100).toFixed(3)}%`;
+          },
+        },
       });
     }
     line1?.current?.setData(ytd);
@@ -53,8 +71,8 @@ export function Charts() {
         priceLineVisible: false,
         priceFormat: {
           type: 'price',
-          precision: 4,
-          minMove: 0.001,
+          precision: 5,
+          minMove: 0.0001,
         },
       });
     }

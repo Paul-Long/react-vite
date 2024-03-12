@@ -1,0 +1,16 @@
+{
+  "name": "@trade/market",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "buildId": 103,
+  "main": "index.ts",
+  "dependencies": {
+    "@rx/const": "^1.0.0",
+    "@rx/helper": "^1.0.0",
+    "@rx/hooks": "^1.0.0",
+    "@rx/lang": "^1.0.0",
+    "@rx/widgets": "^1.0.0",
+    "@trade/components": "^1.0.0"
+  }
+}

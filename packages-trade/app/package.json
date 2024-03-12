@@ -11,13 +11,16 @@
     "gen:html": "node --trace-uncaught  gen-html.mjs"
   },
   "dependencies": {
-    "@rx-trade/trade": "^0.0.0",
-    "@rx-trade/worker": "^0.0.0",
+    "@trade/account": "^0.0.0",
+    "@trade/lp": "^0.0.0",
+    "@trade/market": "^0.0.0",
+    "@trade/strategies": "^0.0.0",
+    "@trade/trade": "^0.0.0",
+    "@trade/worker": "^0.0.0",
     "@rx/build": "^1.0.0",
     "@rx/config": "^1.0.0",
     "@rx/env": "^1.0.0",
     "@rx/helper": "^1.0.0",
-    "@rx/modules": "^1.0.0",
     "@rx/streams": "^1.0.0",
     "@rx/styled": "^1.0.0",
     "@rx/vite-plugins": "^1.0.0"

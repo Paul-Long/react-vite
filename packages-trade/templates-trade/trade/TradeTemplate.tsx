@@ -1,4 +1,4 @@
-import {Page} from '@rx/modules/page';
+import {Page} from '@trade/components/page';
 import React from 'react';
 import {TradePageView} from './layout/TradePageView';
 

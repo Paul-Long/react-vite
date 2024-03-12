@@ -1,7 +1,3 @@
-import '@rx-ssg/account';
-import '@rx-ssg/liquidity';
-import '@rx-ssg/main';
-import '@rx-ssg/strategy';
 import {bootstrap} from '@rx/build/main';
 import '@rx/helper/polyfill/EventTarget';
 import '@rx/helper/polyfill/array';

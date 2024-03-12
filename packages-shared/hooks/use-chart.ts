@@ -1,5 +1,5 @@
 import type {IChartApi} from 'lightweight-charts';
-import {ColorType, CrosshairMode, createChart} from 'lightweight-charts';
+import {ColorType, createChart, CrosshairMode} from 'lightweight-charts';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 interface Options {
@@ -34,18 +34,12 @@ export function useChart(options?: Options) {
       chart.current = createChart(container?.current, {
         rightPriceScale: {
           visible: false,
-          autoScale: true,
-          entireTextOnly: true,
-          ticksVisible: true,
           borderColor: 'rgba(197, 203, 206, 0.2)',
           ...rightPriceScale,
         },
         leftPriceScale: {
           visible: true,
-          autoScale: true,
-          entireTextOnly: true,
           borderColor: 'rgba(197, 203, 206, 0.2)',
-          ticksVisible: true,
           ...leftPriceScale,
         },
         layout: {

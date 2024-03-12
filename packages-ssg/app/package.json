@@ -1,5 +1,5 @@
 {
-  "name": "@rx-ssg/app",
+  "name": "@ssg/app",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -10,10 +10,6 @@
     "gen:html": "node --trace-uncaught gen-html.mjs"
   },
   "dependencies": {
-    "@rx-ssg/account": "^0.0.0",
-    "@rx-ssg/liquidity": "^0.0.0",
-    "@rx-ssg/main": "^0.0.0",
-    "@rx-ssg/strategy": "^0.0.0",
     "@rx/build": "^1.0.0",
     "@rx/config": "^1.0.0",
     "@rx/env": "^1.0.0",

@@ -1,7 +1,7 @@
 {
-  "name": "@rx-trade/worker",
+  "name": "@trade/worker",
   "version": "0.0.0",
-  "buildId": 200,
+  "buildId": 100,
   "type": "module",
   "license": "ISC",
   "dependencies": {
