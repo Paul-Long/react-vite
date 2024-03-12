@@ -1,23 +1,20 @@
-import {styled} from 'styled-components';
+import {StyledCardList} from '@/strategy/components/styles';
+import {MintDialog} from '@/strategy/earn/MintDialog';
+import {useDialog} from '@rx/hooks/use-dialog';
+import React from 'react';
 import {CardItem} from './CardItem';
 import {data} from './data';
 
-const StyledWrap = styled.div`
-  padding: 24px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 24px;
-  @media (max-width: 1366px) {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
-`;
-
 export function CardList() {
+  const modalHook = useDialog();
   return (
-    <StyledWrap>
-      {data.map((d, index) => (
-        <CardItem key={index} item={d} />
-      ))}
-    </StyledWrap>
+    <>
+      <StyledCardList>
+        {data.map((d, index) => (
+          <CardItem key={index} item={d} onMint={modalHook.onOpen(d)} />
+        ))}
+      </StyledCardList>
+      <MintDialog modalHook={modalHook} />
+    </>
   );
 }

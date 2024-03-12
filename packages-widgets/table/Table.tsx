@@ -3,13 +3,13 @@ import {StyledRow, StyledTableWrap, StyledTd, StyledTh} from './styles';
 import type {Column, TableProps} from './types';
 
 export function Table(props: TableProps) {
-  const {columns = [], dataSource = [], onRowSelect = () => {}} = props;
-  const [rows, setRows] = useState(0);
+  const {columns = [], dataSource = [], onRowSelect = () => {}, selectedIndex, rowKey} = props;
+  const len: number = columns.filter((c) => c.fixed !== 'right').length;
+  const [rows, setRows] = useState(len === columns.length ? len - 1 : len);
 
   useEffect(() => {
-    const len = columns.filter((c) => c.fixed !== 'right').length;
     setRows(len === columns.length ? len - 1 : len);
-  }, [columns]);
+  }, [columns, len]);
 
   const renderTitle = useCallback((column: Column, index: number) => {
     if (column.renderTitle) {
@@ -25,8 +25,15 @@ export function Table(props: TableProps) {
     return record[column.dataIndex as string] ?? '';
   }, []);
 
+  const genRowKey = useCallback((record: any) => {
+    if (typeof rowKey === 'function') {
+      return rowKey(record);
+    }
+    return !rowKey ? '' : record[rowKey];
+  }, []);
+
   return (
-    <div className="pos-relative max-100% overflow-x-auto">
+    <div className="pos-relative max-w100% overflow-x-auto">
       <StyledTableWrap $rows={rows}>
         <StyledRow>
           {columns.map((column, index) => (
@@ -43,8 +50,10 @@ export function Table(props: TableProps) {
         </StyledRow>
         {dataSource?.map((data, index) => (
           <StyledRow key={index} onClick={() => onRowSelect(data)}>
-            {columns.map((column, index) => (
+            {columns.map((column) => (
               <StyledTd
+                className="td"
+                $selected={selectedIndex === genRowKey(data)}
                 $fixed={column.fixed}
                 $align={column.align ?? 'left'}
                 style={column?.bodyCellStyle ?? {}}

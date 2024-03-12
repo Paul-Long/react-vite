@@ -32,7 +32,7 @@ export const data: any = [
   {
     Contract: 'mSOL-2506',
     'Maturity Date': '2025/6/28',
-    TTM: '487 days',
+    TTM: '1.33 years',
     Yield: 0.06515,
     Price: 0.08076,
     'Minimum MR': 0.006,
@@ -42,7 +42,7 @@ export const data: any = [
   {
     Contract: 'mSOL-2512',
     'Maturity Date': '2025/12/28',
-    TTM: '670 days',
+    TTM: '1.84 years',
     Yield: 0.06344,
     Price: 0.10677,
     'Minimum MR': 0.008,
@@ -82,7 +82,7 @@ export const data: any = [
   {
     Contract: 'JitoSOL-2506',
     'Maturity Date': '2025/6/28',
-    TTM: '487 days',
+    TTM: '1.33 years',
     Yield: 0.06768,
     Price: 0.08367,
     'Minimum MR': 0.006,
@@ -92,7 +92,7 @@ export const data: any = [
   {
     Contract: 'JitoSOL-2512',
     'Maturity Date': '2025/12/28',
-    TTM: '670 days',
+    TTM: '1.84 years',
     Yield: 0.06673,
     Price: 0.11181,
     'Minimum MR': 0.008,

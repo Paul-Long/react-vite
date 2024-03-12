@@ -68,6 +68,9 @@ export const lang = {
   Notional: {
     en: 'Notional',
   },
+  NotionalAmount: {
+    en: 'Notional Amount',
+  },
   Max: {
     en: 'Max',
   },
@@ -75,7 +78,10 @@ export const lang = {
     en: 'Leverage',
   },
   LeverageSlider: {
-    en: 'leverage Slider',
+    en: 'Leverage Slider',
+  },
+  MarginRatioSlider: {
+    en: 'Margin Ratio Slider',
   },
   InitialMarginRate: {
     en: 'Initial Margin Rate',
@@ -96,16 +102,22 @@ export const lang = {
     en: 'Receive Floating',
   },
   EstimatedEntryYield: {
-    en: 'estimated entry yield',
+    en: 'Estimated Entry Yield',
   },
   EstimatedTokenPrice: {
-    en: 'estimated Token price',
+    en: 'Estimated Token Price',
+  },
+  PriceImpact: {
+    en: 'Price impact',
   },
   YieldImpact: {
-    en: 'yield impact',
+    en: 'Yield impact',
+  },
+  LiquidationPrice: {
+    en: 'Liquidation Price',
   },
   LiquidationYield: {
-    en: 'liquidation yield',
+    en: 'Liquidation Yield',
   },
   TradingFees: {
     en: 'trading fees',
@@ -167,8 +179,8 @@ export const lang = {
   YieldTrading: {
     en: 'Yield Trading',
   },
-  IntrestRateSwap: {
-    en: 'Intrest Rate Swap',
+  InterestRateSwap: {
+    en: 'Interest Rate Swap',
   },
   Mode: {
     en: 'Mode',
@@ -176,7 +188,40 @@ export const lang = {
   YieldTokenAmount: {
     en: 'Yield Token Amount',
   },
+  MinimumMR: {
+    en: 'Minimum MR',
+  },
   MaximumLeverage: {
     en: 'Maximum Leverage',
+  },
+  DepositMargin: {
+    en: 'Deposit Margin',
+  },
+  SlippageTolerance: {
+    en: 'Slippage Tolerance',
+  },
+  EstimatedTradingFee: {
+    en: 'Estimated Trading Fee',
+  },
+  EstimatedGasExecution: {
+    en: 'Estimated Gas & Execution',
+  },
+  LimitYield: {
+    en: 'Limit Yield',
+  },
+  LimitPrice: {
+    en: 'Limit Price',
+  },
+  TriggerPrice: {
+    en: 'Trigger Price',
+  },
+  TriggerYTPrice: {
+    en: 'Trigger yT Price',
+  },
+  TriggerYield: {
+    en: 'Trigger Yield',
+  },
+  RecFloating: {
+    en: 'Rec.Floating',
   },
 };

@@ -1,0 +1,10 @@
+{
+  "name": "@rx-trade/trade",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "buildId": 201,
+  "main": "index.ts",
+  "dependencies": {
+  }
+}

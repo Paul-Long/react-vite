@@ -1,8 +1,8 @@
 import {useEffect} from 'react';
 
-export function useLoadJs(callback: () => void, [loadJs, other]) {
+export function useLoadJs(callback: () => void, [loadJs, other]: [loadJs: Function, other: any[]]) {
   useEffect(() => {
-    let unCall;
+    let unCall: any;
     loadJs().then(() => {
       unCall = callback?.();
     });

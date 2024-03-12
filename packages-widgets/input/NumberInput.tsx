@@ -1,6 +1,6 @@
-import React, {forwardRef, useState, useEffect, useCallback} from 'react';
-import {styled, css} from 'styled-components';
 import classNames from 'classnames';
+import React, {forwardRef, useCallback, useEffect, useState} from 'react';
+import {css, styled} from 'styled-components';
 
 // Styled component for the input container
 const StyledInputContainer = styled.div<{size: string; bordered: string; align: string}>`
@@ -40,7 +40,7 @@ const StyledInputContainer = styled.div<{size: string; bordered: string; align: 
 // Utility function to format the input value
 const formatValue = (value: string, precision?: number, max?: number, min?: number): string => {
   if (!value) return '';
-  let numValue = parseFloat(value);
+  let numValue = parseFloat(value as any);
   if (isNaN(numValue)) return '';
 
   numValue = parseFloat(numValue.toFixed(precision ?? 2));
@@ -62,7 +62,7 @@ interface NumberInputProps {
   bordered?: boolean;
   className?: string;
   inputClassName?: string;
-  onChange?: (v) => void;
+  onChange?: (v: any) => void;
   value?: string | number;
   placeholder?: string | JSX.Element;
 }
@@ -89,7 +89,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
   ) => {
     const [value, setValue] = useState(props.value);
 
-    useEffect(() => setValue(props?.value as string), [props.value]);
+    useEffect(() => {
+      setValue(props?.value as string);
+    }, [props.value]);
 
     // Event handler for input changes
     const handleChange = useCallback(
@@ -102,7 +104,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     // Effect to format the value initially and on dependency changes
     useEffect(() => {
-      setValue(formatValue(value, precision, max, min));
+      setValue(formatValue(value as any, precision, max, min));
     }, [value, precision, max, min]);
 
     useEffect(() => onChange?.(value), [value]);
@@ -116,7 +118,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       >
         {prefix && <span className="prefix">{prefix}</span>}
         <input
-          {...props}
+          placeholder={props.placeholder as any}
           ref={ref}
           type="text"
           className={'input ' + (inputClassName ?? '')}
@@ -125,7 +127,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           disabled={disabled}
           onWheel={(e) => e.currentTarget.blur()} // Prevents scrolling from changing the value
           pattern="\d*"
-        />
+        ></input>
         {suffix && <span className="suffix">{suffix}</span>}
       </StyledInputContainer>
     );

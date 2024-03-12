@@ -8,8 +8,9 @@ export const StyledTableWrap = styled.div<{$rows: number}>`
 
 export const StyledRow = styled.div`
   display: contents;
-  &:hover {
-    background: var(--light-gray);
+  cursor: default;
+  &:hover .td {
+    background: var(--slate-gray-blue) !important;
   }
 `;
 
@@ -18,6 +19,7 @@ const StyledCell = styled.div<{
   $rowSpan?: number;
   $colSpan?: number;
   $fixed?: 'left' | 'right';
+  $selected?: boolean;
   children?: any;
   key?: Key;
 }>`
@@ -26,6 +28,14 @@ const StyledCell = styled.div<{
   justify-content: center;
   white-space: nowrap;
   padding: 12px 20px;
+
+  ${({$selected}) => {
+    if ($selected) {
+      return css`
+        background: var(--slate-gray-blue);
+      `;
+    }
+  }}
 
   ${({$align}) => {
     if ($align === 'right') {

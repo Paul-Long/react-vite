@@ -36,18 +36,7 @@ function PriceInfo({contract, maturity}: {contract?: string; maturity?: string})
 
   return (
     <StyledInfoGrid>
-      {[
-        'TTM',
-        'Yield',
-        'YT',
-        'Cumulative YT',
-        '24h %',
-        '24h H',
-        '24h L',
-        '24h Vol.',
-        'Open Interest',
-        'Available Liquidity',
-      ].map((o) => (
+      {['TTM', 'Yield', 'YT', 'Cumulative YT', 'OpenInterest', 'Ava. Liquidity'].map((o) => (
         <div key={o} className="df fdc jcc aic font-size-14px">
           <span className="T7 fw700" style={{whiteSpace: 'nowrap'}}>
             {o}

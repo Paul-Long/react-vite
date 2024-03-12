@@ -1,29 +1,27 @@
 import mime from 'mime';
-import fs from 'node:fs';
-import {basename, join, resolve} from 'node:path';
-import {createS3Client, env, loadFiles, upload} from '../util.mjs';
+import {createReadStream} from 'node:fs';
+import {join, resolve} from 'node:path';
+import {calcFileHash, createS3Client, env, loadFiles, upload} from '../util.mjs';
 
-const distDir = env.scssDistDir;
+const distDir = env.fontUploadDir;
 
 const s3Client = createS3Client();
-const keyPrefix = 'static.rate-x.io';
+const keyPrefix = 'static.rate-x.io/font/v1';
 const files = await loadFiles(distDir);
 for (const file of files) {
   const fullPath = resolve(distDir, file);
-
-  const uploadParams = createUploadParams(fullPath, file, keyPrefix);
-  const bn = basename(file);
-  console.log([file.padEnd(24, ' '), join(keyPrefix, bn)].join('  ->  '));
+  const hash = await calcFileHash(fullPath);
+  const key = join(keyPrefix, hash, file);
+  const uploadParams = createUploadParams(fullPath, key);
+  console.log([file.padEnd(40, ' '), key].join('  ->  '));
   await upload(s3Client, uploadParams, false);
 }
 
-function createUploadParams(fullPath, file, keyPrefix) {
-  const bn = basename(file);
-  const key = join(keyPrefix, bn);
+function createUploadParams(fullPath, key) {
   return {
-    Bucket: 'ratex-io',
+    Bucket: 'ratex.io',
     Key: key,
-    Body: fs.createReadStream(fullPath),
-    ContentType: mime.getType(file),
+    Body: createReadStream(fullPath),
+    ContentType: mime.getType(fullPath),
   };
 }

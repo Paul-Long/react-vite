@@ -1,19 +1,20 @@
+import {LivePosition} from '@/liquidity/positions/LivePosition';
+import {ResidualPosition} from '@/liquidity/positions/ResidualPosition';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/lp.lang';
 import {RadioButtonGroup} from '@rx/widgets';
-import {useCallback, useState} from 'react';
-import {DataList} from './DataList';
+import React, {useCallback, useState} from 'react';
 
 export function Positions() {
   const {LG} = useLang();
-  const [selected, setSelected] = useState('positions');
+  const [selected, setSelected] = useState('Live');
 
   const genOptions = useCallback(() => {
     return [
-      {text: LG(lang.YourLPPosition), value: 'positions'},
+      {text: LG(lang.LiveLPPosition), value: 'Live'},
       {
-        text: LG(lang.Unwithdrawable),
-        value: 'unwithdrawable',
+        text: LG(lang.ResidualLPPosition),
+        value: 'Residual',
       },
     ];
   }, []);
@@ -28,7 +29,8 @@ export function Positions() {
           onChange={(v: string) => setSelected(v)}
         />
       </div>
-      <DataList />
+      {selected === 'Live' && <LivePosition />}
+      {selected === 'Residual' && <ResidualPosition />}
     </div>
   );
 }

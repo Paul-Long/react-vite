@@ -2,7 +2,7 @@ import {css, styled} from 'styled-components';
 
 const SizeMap = {
   card_large: css`
-    font-size: 20px;
+    font-size: 16px;
     padding: 10px 40px;
   `,
   card_small: css`
@@ -10,12 +10,12 @@ const SizeMap = {
     padding: 2px 12px;
   `,
   line_large: css`
-    font-size: 20px;
-    padding: 10px 0;
+    font-size: 16px;
+    padding: 16px 0 10px;
   `,
   line_small: css`
     font-size: 14px;
-    padding: 8px 0;
+    padding: 14px 0 8px;
   `,
 };
 export const StyledTabsWrap = styled.div<{$type: 'card' | 'line'; $filled: boolean}>`
@@ -88,7 +88,7 @@ export const StyledTab = styled.div<{
     if ($type === 'line') {
       if ($active) {
         return css`
-          border-bottom: 2px solid var(--black);
+          border-bottom: 3px solid var(--black);
           padding-bottom: ${$size === 'large' ? 8 : 6}px;
         `;
       }

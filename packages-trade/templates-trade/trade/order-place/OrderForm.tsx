@@ -1,205 +1,86 @@
-import {ProgressBar} from '@/trade/components/ProgressBar';
 import {useContract} from '@/trade/hooks/contract';
-import {
-  genDirections,
-  genMarginOptions,
-  genOrderTypes,
-  genTradingInfos,
-  useContractInfo,
-  useFormState,
-} from '@/trade/order-place/state';
-import {StyledInputWrap} from '@/trade/order-place/styles';
+import {DepositMargin} from '@/trade/order-place/components/DepositMargin';
+import {Direction} from '@/trade/order-place/components/Direction';
+import {Info} from '@/trade/order-place/components/Info';
+import {Leverage} from '@/trade/order-place/components/Leverage';
+import {LimitPrice} from '@/trade/order-place/components/LimitPrice';
+import {MarginType} from '@/trade/order-place/components/MarginType';
+import {NotionalAmount} from '@/trade/order-place/components/NotionalAmount';
+import {OrderType} from '@/trade/order-place/components/OrderType';
+import {PayFixed} from '@/trade/order-place/components/PayFixed';
+import {RecFloating} from '@/trade/order-place/components/RecFloating';
+import {SlippageTolerance} from '@/trade/order-place/components/SlippageTolerance';
+import {TradeMode} from '@/trade/order-place/components/TradeMode';
+import {TriggerPrice} from '@/trade/order-place/components/TriggerPrice';
+import {useFormState} from '@/trade/order-place/state';
 import {IMAGES} from '@rx/const/images';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as tradeLang} from '@rx/lang/trade.lang';
-import {RadioButtonGroup, Tabs} from '@rx/widgets';
 import {Button} from '@rx/widgets/button/Button';
-import {NumberInput} from '@rx/widgets/input/NumberInput';
-import cn from 'classnames';
 import React from 'react';
 
 export function OrderForm() {
   const {LG} = useLang();
-  const {contract} = useContract();
-  const {options} = useContractInfo();
+  const {contract, maturity} = useContract();
   const {formData, updateForm, handleSubmit} = useFormState();
 
   return (
     <>
       <div className="df fdc g10 fwbold" style={{padding: 16}}>
-        <RadioButtonGroup
-          options={genMarginOptions(LG)}
-          value={formData.margin}
-          size="middle"
-          onChange={(v) => updateForm('margin', v)}
+        <MarginType value={formData.marginType} onChange={updateForm} />
+        <Direction value={formData.direction} onChange={updateForm} />
+        <TradeMode value={formData.mode} onChange={updateForm} />
+        <OrderType value={formData.orderType} onChange={updateForm} />
+        <NotionalAmount
+          mode={formData.mode}
+          direction={formData.direction}
+          contract={contract as string}
+          maturity={maturity as string}
+          value={formData.amount}
+          onChange={updateForm}
         />
-        <RadioButtonGroup
-          options={genDirections(LG)}
-          value={formData.direction}
-          onChange={(v) => updateForm('direction', v)}
-        />
-        <RadioButtonGroup
-          size="small"
-          options={[
-            {
-              text: (
-                <div className="df fdc aic">
-                  <span>{LG(tradeLang.YieldTrading)}</span>
-                  <span>{LG(tradeLang.Mode)}</span>
-                </div>
-              ),
-              value: 'Yield',
-            },
-            {
-              text: (
-                <div className="df fdc aic">
-                  <span style={{whiteSpace: 'nowrap'}}>{LG(tradeLang.IntrestRateSwap)}</span>
-                  <span>{LG(tradeLang.Mode)}</span>
-                </div>
-              ),
-              value: 'Notional',
-            },
-          ]}
-          value={formData.qtyType}
-          onChange={(v) => updateForm('qtyType', v)}
-        />
-        <Tabs
-          type="card"
-          size="small"
-          filled={true}
-          options={genOrderTypes(LG)}
-          active={formData.orderType}
-          onChange={(v: string) => updateForm('orderType', v)}
-        />
-      </div>
-      <div className="df fdc g12" style={{padding: 16}}>
-        <StyledInputWrap>
-          <div className="T2 f16">
-            {formData.qtyType === 'Notional'
-              ? LG(tradeLang.Notional)
-              : LG(tradeLang.YieldTokenAmount)}
-          </div>
-          <NumberInput
-            className={cn('fwbold', {
-              buy: formData.direction === 'Long',
-              sell: formData.direction === 'Short',
-            })}
-            bordered={false}
-            suffix={<span className="T2">{formData.qtyType === 'Notional' ? contract : 'yT'}</span>}
-            align="left"
-            placeholder="max 200"
-            value={formData.size}
-            onChange={(v) => updateForm('size', v)}
+        {formData.orderType !== 'StopLimit' && (
+          <Leverage
+            mode={formData.mode}
+            direction={formData.direction}
+            maxLeverage={formData.maxLeverage ?? 10}
+            value={formData.leverage ?? 5}
+            onChange={updateForm}
           />
-        </StyledInputWrap>
+        )}
+        {formData.orderType !== 'StopLimit' && (
+          <DepositMargin mode={formData.mode} value={formData.depositMargin}></DepositMargin>
+        )}
 
-        <StyledInputWrap className="df fdc gap-26px">
-          <div className="df fdr aic jcsb">
-            <div className="T2 f16">{LG(tradeLang.LeverageSlider)}</div>
-            <div className="font-size-12px T7">
-              {LG(tradeLang.MaximumLeverage)}: {Math.round(formData.maxLeverage ?? 200)}
-            </div>
-          </div>
-          <div className="pb20px">
-            <ProgressBar
-              value={formData.leverage}
-              max={formData.maxLeverage ?? 200}
-              onChange={(v: any) => updateForm('leverage', v)}
-              color={formData.direction === 'Long' ? '#27F2A9' : '#f24e53'}
-            />
-          </div>
-        </StyledInputWrap>
+        {['Limit'].includes(formData.orderType) && (
+          <LimitPrice
+            value={formData.liquidation}
+            current={formData.current}
+            mode={formData.mode}
+          />
+        )}
 
-        <StyledInputWrap>
-          <div className="T2 f16">{LG(tradeLang.Margin)}</div>
-          <div className="df fdr aic jcsb T7 f14">
-            <span>{LG(tradeLang.InitialMarginRate)}</span>
-            <span>{formData.initialMarginRate ?? '-'}</span>
-          </div>
-          <div className="df fdr aic jcsb T7 f14">
-            <span>{LG(tradeLang.MaintenanceMarginRate)}</span>
-            <span>{formData.maintenanceMarginRate ?? '0%'}</span>
-          </div>
+        {['StopMarket', 'StopLimit'].includes(formData.orderType) && (
+          <TriggerPrice
+            orderType={formData.orderType}
+            value={formData.mode === 'IRS' ? formData.pay : formData.entry}
+            mode={formData.mode}
+            current={formData.current}
+          />
+        )}
 
-          <div className="df fdr aic w100%">
-            <div className="df fdc f1">
-              <NumberInput
-                className={cn('fwbold', {
-                  buy: formData.direction === 'Long',
-                  sell: formData.direction === 'Short',
-                })}
-                bordered={false}
-                align="left"
-                placeholder=""
-                precision={4}
-                value={formData.marginCost}
-              />
-              <div className="T7">
-                {LG(tradeLang.MinRequired)} {formData.initialMarginRate ?? '-'}
-              </div>
-            </div>
-            <div>{contract}</div>
+        {formData.orderType !== 'StopLimit' && (
+          <SlippageTolerance value={formData.slippageTolerance} mode={formData.mode} />
+        )}
+        {formData.orderType !== 'StopLimit' && (
+          <div className="w100% df fdr aic gap16px">
+            <PayFixed value={formData.pay} />
+            <img src={IMAGES.transfer} alt="" width={44} />
+            <RecFloating value={formData.rec} />
           </div>
-        </StyledInputWrap>
-        <div className="df fdr aic g6">
-          <StyledInputWrap className="f1 df fdc aic jcsb">
-            <div className="T7 f16 tc" style={{maxWidth: 50}}>
-              {LG(tradeLang.PayFixed)}
-            </div>
-            <div
-              className={cn('f16 tc f22 mt8px fwbold', {
-                buy: formData.direction === 'Long',
-                sell: formData.direction === 'Short',
-              })}
-              style={{maxWidth: '100%'}}
-            >
-              {formData.yield}
-            </div>
-          </StyledInputWrap>
-          <img src={IMAGES.transcation} alt="" width={30} />
-          <StyledInputWrap className="f1 df fdc aic jcsb">
-            <div className="T7 f16 tc" style={{maxWidth: 60}}>
-              {LG(tradeLang.ReceiveFloating)}
-            </div>
-            <div className={cn('f16 tc f22 mt8px sell fwbold')} style={{maxWidth: 60}}>
-              {formData.referenceApr ?? ''}
-            </div>
-          </StyledInputWrap>
-        </div>
-        <div
-          className="df fdc gap-30px pb20px"
-          style={{borderBottom: '1px dashed var(--dark-gray)'}}
-        >
-          {options.map((o) => (
-            <div key={o.text} className="df fdr aic jcsb">
-              <span className="T7">{o.text}</span>
-              <span
-                className={cn('fwbold', {
-                  buy: formData.direction === 'Long',
-                  sell: formData.direction === 'Short',
-                })}
-              >
-                {o.value}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="df fdc gap-30px pb20px">
-          {genTradingInfos(LG).map((o) => (
-            <div key={o.text} className="df fdr aic jcsb">
-              <span className="T7">{o.text}</span>
-              <span
-                className={cn('fwbold', {
-                  buy: formData.direction === 'Long',
-                  sell: formData.direction === 'Short',
-                })}
-              >
-                {o.value} <span className="T2">ETH</span>
-              </span>
-            </div>
-          ))}
-        </div>
-        <div style={{height: 42}}>
+        )}
+        <Info info={formData} />
+        <div className="mt8px" style={{height: 42}}>
           <Button type="default" size={42} width="100%" onClick={handleSubmit}>
             {LG(tradeLang.Trade)}
           </Button>

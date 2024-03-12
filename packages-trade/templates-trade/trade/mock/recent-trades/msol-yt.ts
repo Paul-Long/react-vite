@@ -1,6 +1,6 @@
 export const data: any = {
   mSOL: {
-    yT: [
+    YT: [
       {
         Price: 0.00562,
         Amount: 0.87,
@@ -126,7 +126,7 @@ export const data: any = {
     ],
   },
   JitoSOL: {
-    yT: [
+    YT: [
       {
         Price: 0.00584,
         Amount: 0.23,

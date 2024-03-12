@@ -1,4 +1,4 @@
-import React, {Key, useCallback, useState} from 'react';
+import React, {Key, useCallback, useEffect, useState} from 'react';
 import {StyledRadioButton, StyledRadioButtonWrap} from './styles';
 
 interface Option {
@@ -11,13 +11,20 @@ interface Props {
   className?: string;
   size?: 'large' | 'middle' | 'small';
   options: Option[];
-  onChange?: (value: Key) => void;
+  onChange?: Function;
   nowrap?: boolean;
 }
 
 export function RadioButtonGroup(props: Props) {
-  const {size = 'large', nowrap = false} = props;
-  const [selected, setSelected] = useState<Key>(props.value);
+  const {size = 'large', nowrap = false, value} = props;
+  const [selected, setSelected] = useState<Key>(value);
+
+  useEffect(() => {
+    if (value && value !== selected) {
+      setSelected(value);
+    }
+  }, [value]);
+
   const handleClick = useCallback(
     (option: Option) => () => {
       setSelected(option.value);

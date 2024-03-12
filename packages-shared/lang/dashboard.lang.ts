@@ -1,38 +1,38 @@
 export const lang: any = {
   MarketOverview: {
-    en: 'Market Overview'
+    en: 'Market Overview',
   },
   Contract: {
-    en: 'Contract'
+    en: 'Contract',
   },
   MatureDate: {
-    en: 'Mature Date'
+    en: 'Mature Date',
   },
   TTM: {
-    en: 'TTM'
+    en: 'TTM',
   },
   Yield: {
-    en: 'Yield'
+    en: 'Yield',
   },
   Price: {
-    en: 'Price'
+    en: 'Price',
   },
   MinimumMR: {
-    en: 'Minimum MR'
+    en: 'Minimum MR',
   },
   OpenInterest: {
-    en: 'Open Interest'
+    en: 'Open Interest',
   },
   AvaLiquidity: {
-    en: 'Ava. Liquidity'
+    en: 'Ava. Liquidity',
   },
   ReferenceRate: {
-    en: 'Reference Rate'
+    en: 'Reference Rate',
   },
   PriceChart: {
-    en: 'Price Chart'
+    en: 'Price Chart',
   },
-  TeamsStructure: {
-    en: 'Teams Structure'
-  }
-}
+  TermStructure: {
+    en: 'Term Structure',
+  },
+};

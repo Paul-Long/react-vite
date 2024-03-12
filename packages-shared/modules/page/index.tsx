@@ -59,6 +59,7 @@ const StyledContent = styled.main<{$show?: boolean}>`
   overflow: auto;
   padding-top: ${headerHeight};
   box-sizing: border-box;
+  background: var(--dark-blue);
 
   ${responsiveStyles}
 `;

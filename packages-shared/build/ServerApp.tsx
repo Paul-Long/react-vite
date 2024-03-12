@@ -20,15 +20,17 @@ export function ServerApp(props: Props) {
           content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
         />
         <meta name="theme-color" content="#000000" />
-        {/*<link rel="shortcut icon" href="https://static.phemex.com/s/common/favicon-v2.ico" />*/}
+        <link rel="shortcut icon" href="https://static.rate-x.io/img/v1/536be9/logo.svg" />
         <title>RateX</title>
         <meta name="description" content="Put your description here." />
-        <link rel="stylesheet" href="/css/global-6050f2.css"></link>
+        <link rel="stylesheet" href="https://static.rate-x.io/css/global-27446a.css"></link>
         <link
           rel="stylesheet"
-          href="/css/global-xs-2a91a5.css"
+          href="https://static.rate-x.io/css/global-xs-2a91a5.css"
           media="screen and (max-width:640px)"
         ></link>
+        <script src="https://static.rate-x.io/3rd/react/18.2.0/react.production.min.js"></script>
+        <script src="https://static.rate-x.io/3rd/react/18.2.0/react-dom.production.min.js"></script>
         {(props?.lang || []).map((lang) => (
           <script key={lang} type="module" src={lang}></script>
         ))}

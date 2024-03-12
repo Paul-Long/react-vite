@@ -1,15 +1,16 @@
-import React, {FC, memo, useCallback, useEffect, useRef} from 'react';
+import React, {CSSProperties, FC, memo, useCallback, useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom';
 import {keyframes, styled} from 'styled-components';
 
 interface ModalProps {
   title?: string;
   visible?: boolean;
-  onClose: () => void;
+  onClose?: Function;
   closeBtn?: boolean;
   size?: 'small' | 'medium' | 'large';
   children?: React.ReactNode;
   container?: string;
+  contentStyle?: CSSProperties;
 }
 
 const fadeIn = keyframes`
@@ -54,25 +55,30 @@ const ModalHeader = styled.div<{$show: string}>`
   margin-bottom: 16px;
 `;
 
-const CloseButton = styled.button.attrs(() => ({
-  type: 'button',
-}))`
+const CloseButton = styled.button`
   background: none;
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 1.5rem;
 `;
 
 export const Modal: FC<ModalProps> = memo(
-  ({title, visible = false, onClose, closeBtn = true, size = 'medium', children}) => {
+  ({
+    title,
+    visible = false,
+    onClose = () => {},
+    closeBtn = true,
+    size = 'medium',
+    children,
+    contentStyle = {},
+  }) => {
     const modalRef = useRef<HTMLDivElement | null>(null);
     const triggerElementRef = useRef<Element | null>(null);
 
     const handleKeyDown = useCallback(
       (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
-          onClose();
+          onClose?.();
         }
       },
       [onClose]
@@ -99,10 +105,20 @@ export const Modal: FC<ModalProps> = memo(
 
     return ReactDOM.createPortal(
       <ModalOverlay>
-        <ModalContainer $size={size} $show={visible} ref={modalRef} tabIndex={-1}>
+        <ModalContainer
+          $size={size}
+          $show={visible}
+          ref={modalRef}
+          tabIndex={-1}
+          style={contentStyle}
+        >
           <ModalHeader $show={(!!title).toString()}>
             {title && <h2>{title}</h2>}
-            {closeBtn && <CloseButton onClick={onClose}>×</CloseButton>}
+            {closeBtn && (
+              <CloseButton onClick={onClose as any}>
+                <i className="iconfont font-size-18px">&#xe637;</i>
+              </CloseButton>
+            )}
           </ModalHeader>
           {children}
         </ModalContainer>

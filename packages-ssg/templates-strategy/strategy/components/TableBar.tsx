@@ -1,7 +1,8 @@
-import {styled} from 'styled-components';
-import {ShowDataType} from './ShowDataType';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/strategy.lang';
+import React from 'react';
+import {styled} from 'styled-components';
+import {ShowDataType} from './ShowDataType';
 import {SortButton} from './SortButton';
 
 const StyledWrap = styled.div`

@@ -8,7 +8,7 @@ import React from 'react';
 export function PriceChart() {
   const {LG} = useLang();
   return (
-    <StyledPriceChartWrap className="df fdc flex-1 gap24px box-border">
+    <StyledPriceChartWrap className="df fdc flex-1 gap24px box-border overflow-hidden">
       <Title>{LG(lang.PriceChart)}</Title>
       <Charts />
     </StyledPriceChartWrap>

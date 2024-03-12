@@ -6,6 +6,7 @@
   "license": "ISC",
   "dependencies": {
     "@rx/const": "^1.0.0",
+    "@rx/db": "^1.0.0",
     "@rx/env": "^1.0.0",
     "@rx/hooks": "^1.0.0",
     "@rx/lang": "^1.0.0",

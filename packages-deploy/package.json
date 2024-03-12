@@ -6,7 +6,10 @@
   "scripts": {
     "deploy-ssg-dev10": "node ssg/deploy-dev10.mjs",
     "deploy-trade-dev10": "node trade/deploy-dev10.mjs",
+    "deploy-global-3rd": "node 3rd/deploy-global-3rd.mjs",
     "deploy-global-css": "node css/deploy-global-css.mjs",
+    "deploy-global-font": "node font/deploy-global-font.mjs",
+    "deploy-global-img": "node image/deploy-global-imgage.mjs",
     "deploy-local-ssg": "cp -Ra ../packages-ssg/app/dist/client/ /usr/local/var/www",
     "deploy-local-trade": "cp -Ra ../packages-trade/app/dist/client/* /usr/local/var/www",
     "deploy-local-css": "cp -Ra ../packages-shared/scss/dist/* /usr/local/var/www/css",

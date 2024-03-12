@@ -15,6 +15,8 @@ export const StyledRadioButton = styled.div<{
   height: 100%;
   background: linear-gradient(0deg, var(--smoke-gray) 0%, var(--off-white) 100%);
   text-align: center;
+  overflow: hidden;
+
   ${({$selected}) =>
     $selected
       ? css`

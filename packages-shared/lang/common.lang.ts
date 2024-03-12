@@ -154,4 +154,19 @@ export const lang: any = {
   Price: {
     en: 'Price',
   },
+  RWAToken: {
+    en: 'RWA Token',
+  },
+  Long: {
+    en: 'Long',
+  },
+  Short: {
+    en: 'Short',
+  },
+  Follow: {
+    en: 'Follow',
+  },
+  MaturityDate: {
+    en: 'Maturity Date',
+  },
 };

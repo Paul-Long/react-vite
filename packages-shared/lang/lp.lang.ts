@@ -35,6 +35,9 @@ export const lang = {
   Range: {
     en: 'Range',
   },
+  Obligation: {
+    en: 'Obligation',
+  },
   LPValue: {
     en: 'LP Value',
   },
@@ -64,5 +67,26 @@ export const lang = {
   },
   EstimatedGas: {
     en: 'Estimated Gas',
+  },
+  TTM: {
+    en: 'TTM',
+  },
+  LiveLPPosition: {
+    en: 'Live LP Position ',
+  },
+  ResidualLPPosition: {
+    en: 'Residual LP Position',
+  },
+  LockedValue: {
+    en: 'Locked value',
+  },
+  Collateral: {
+    en: 'Collateral',
+  },
+  WithdrawableValue: {
+    en: 'Withdrawable Value',
+  },
+  StandardRange: {
+    en: 'Standard Range',
   },
 };

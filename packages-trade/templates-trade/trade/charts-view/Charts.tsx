@@ -1,115 +1,81 @@
-import {genChartTypes, useChartData} from '@/trade/charts-view/state';
+import {useChartData} from '@/trade/charts-view/state';
 import {StyledCharts, StyledChartsContainer} from '@/trade/charts-view/styles';
-import {RadioButtonGroup} from '@/trade/components/radio-button/RadioButtonGroup';
-import {contractInfo$, resize$} from '@/trade/streams/streams';
-import {numUtil} from '@rx/helper/num';
-import {timeUtil} from '@rx/helper/time';
-import {useLang} from '@rx/hooks/use-lang';
-import {useLoadJs} from '@rx/hooks/use-load-js';
-import {lang as tradeLang} from '@rx/lang/trade.lang';
-import {loadEcharts} from '@rx/resource/js';
-import React, {Key, useCallback, useEffect, useRef, useState} from 'react';
+import {resize$} from '@/trade/streams/streams';
+import {useChart} from '@rx/hooks/use-chart';
+import React, {useEffect, useRef} from 'react';
+import {debounceTime} from 'rxjs';
 
 export function Charts() {
-  const ref = useRef();
-  const chart = useRef<any>();
-  const {LG} = useLang();
+  const line1 = useRef<any>();
+  const line2 = useRef<any>();
+
   const {data} = useChartData();
-  const [loaded, setLoaded] = useState(false);
-  const [type, setType] = useState<Key>('Line');
-  const [dataIndex, setDataIndex] = useState<number>(-1);
-  const [option, setOption] = useState<any>({});
+  const {chart, container, loaded, resize} = useChart({
+    rightPriceScale: {visible: true},
+  });
 
   useEffect(() => {
     window?.addEventListener('resize', resize);
-    const subscription = resize$.subscribe(() => resize());
+    const subscription = resize$.pipe(debounceTime(500)).subscribe(() => resize());
     return function () {
       window?.removeEventListener('resize', resize);
       subscription?.unsubscribe();
     };
   }, []);
 
-  const resize = useCallback(() => {
-    if (chart?.current) {
-      chart?.current?.resize();
-    }
-  }, [option]);
-
-  useLoadJs(() => {
-    if (!chart.current) {
-      chart.current = window?.echarts?.init(ref?.current);
-      chart.current.on('showTip', (p: any) => setDataIndex(p.dataIndex));
-      chart.current.on('hideTip', (p: any) => setDataIndex(-1));
-    }
-    setLoaded(true);
-  }, [loadEcharts, [data]]);
-
   useEffect(() => {
-    const len = data?.length;
-    contractInfo$.next(data[dataIndex > -1 ? dataIndex : len - 1]);
-  }, [data, dataIndex]);
-
-  useEffect(() => {
-    if (!loaded) {
+    if (!loaded || !chart?.current) {
       return;
     }
-    chart.current.setOption(option);
-  }, [loaded, option]);
-
-  useEffect(() => {
     const ytd = [];
     const yd = [];
     for (let i = 0; i < data?.length; i++) {
       const row: any = data[i];
-      ytd.push([timeUtil.formatDate(row.time), numUtil.floor(row.cumulativeYt, 4)]);
-      yd.push([timeUtil.formatDate(row.time), numUtil.floor(row.yield, 4)]);
+      const {date: time, yield: value, price} = row;
+      ytd.push({time, value: value});
+      yd.push({time, value: price});
     }
-    const option: any = {
-      title: {show: false},
-      xAxis: {type: 'category', show: false},
-      yAxis: [
-        {type: 'value', show: false, min: (value: any) => value.min * 0.9},
-        {type: 'value', show: false, min: (value: any) => value.min * 0.9},
-      ],
-      color: ['#E8BC31', '#27F2A9'],
-      grid: {left: 0, top: 0, right: 0, bottom: 0},
-      dataZoom: [
-        {
-          type: 'inside',
-          start: 90,
-          end: 100,
+    if (!line1.current) {
+      line1.current = chart?.current?.addLineSeries({
+        color: '#E8BC31',
+        lineWidth: 2,
+        priceScaleId: 'left',
+        lastValueVisible: false,
+        priceLineVisible: false,
+      });
+    }
+    line1?.current?.setData(ytd);
+    if (!line2?.current) {
+      line2.current = chart?.current?.addLineSeries({
+        color: '#27F2A9',
+        lineWidth: 2,
+        lastValueVisible: false,
+        priceLineVisible: false,
+        priceFormat: {
+          type: 'price',
+          precision: 4,
+          minMove: 0.001,
         },
-        {
-          start: 90,
-          end: 100,
-        },
-      ],
-      tooltip: {
-        trigger: 'axis',
-      },
-      series: [
-        {
-          type: 'line',
-          name: LG(tradeLang.YT),
-          data: ytd,
-        },
-        {
-          type: 'line',
-          name: LG(tradeLang.Yield),
-          yAxisIndex: 1,
-          data: yd,
-        },
-      ],
-    };
-    setOption(option);
-  }, [data]);
+      });
+    }
+    line2?.current?.setData(yd);
+
+    if (data.length > 0) {
+      chart?.current.timeScale().setVisibleRange({
+        from: data[0].date,
+        to: data[data.length - 1].date,
+      });
+    }
+
+    chart?.current.timeScale().fitContent();
+  }, [loaded, data, chart?.current]);
 
   return (
-    <StyledCharts className="position-relative df fdc f1 pt-68px h100% max-w100%" onResize={resize}>
-      <div className="pa left-24px top-20px">
-        <RadioButtonGroup options={genChartTypes(LG)} value={type} onChange={(v) => setType(v)} />
-      </div>
-      <StyledChartsContainer ref={ref as any} className="f1" />
+    <StyledCharts
+      className="position-relative df fdc flex-1 h100% overflow-hidden"
+      onResize={resize}
+    >
+      <StyledChartsContainer ref={container as any} className="flex-1" />
     </StyledCharts>
   );
 }

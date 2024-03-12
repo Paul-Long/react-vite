@@ -11,7 +11,7 @@ interface ButtonProps {
   disabled?: boolean;
   children?: React.ReactNode;
   style?: CSSProperties;
-  onClick?: () => void;
+  onClick?: Function;
 }
 
 const StyledButton = styled.button<ButtonProps>`

@@ -15,9 +15,7 @@ export function useRecent() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      resize$.next(open);
-    }, 200);
+    resize$.next(open);
   }, [open]);
 
   const handleClick = useCallback(() => setOpen(!open), [open]);
@@ -32,7 +30,7 @@ export function useTrades(props: {type: string}) {
 
   useEffect(() => {
     const firstColumnMap: any = {
-      yT: [
+      YT: [
         {title: LG(clang.Price), dataIndex: 'Price'},
         {title: LG(clang.Amount), dataIndex: 'Amount'},
       ],
@@ -48,6 +46,7 @@ export function useTrades(props: {type: string}) {
     ];
     columns.forEach((c) => {
       c.bodyCellStyle = {
+        color: '#B7BDC6',
         fontSize: '12px',
         padding: '10px 12px',
       };

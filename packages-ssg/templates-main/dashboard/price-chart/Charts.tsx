@@ -1,55 +1,43 @@
 import {useData} from '@/dashboard/price-chart/state';
 import {useChart} from '@rx/hooks/use-chart';
-import {useLang} from '@rx/hooks/use-lang';
-import React, {useEffect} from 'react';
+import {PriceScaleMode} from 'lightweight-charts';
+import React, {useEffect, useRef} from 'react';
 
 export function Charts() {
-  const {LG} = useLang();
-  const {chart, container, loaded} = useChart({});
-  const {data, select} = useData();
+  const line = useRef<any>();
+  const {chart, container} = useChart({
+    leftPriceScale: {mode: PriceScaleMode.Normal},
+    layout_background: {color: '#00162B'},
+  });
+  const {data} = useData();
 
   useEffect(() => {
-    window.addEventListener('resize', () => {
-      chart?.current?.resize();
-    });
-  }, []);
-
-  useEffect(() => {
+    if (line.current) {
+      line.current.setData(data);
+      return;
+    }
     if (chart.current) {
-      chart.current.setOption({
-        title: {show: false},
-        xAxis: {
-          type: 'category',
-          show: false,
-          data: data?.map((d: any) => d['DATE']),
-        },
-        yAxis: [
-          {type: 'value', show: false, min: (value: any) => value.min * 0.9, max: 0.08},
-          {type: 'value', show: false, min: (value: any) => value.min * 0.9, max: 0.08},
-        ],
-        color: ['#E8BC31', '#27F2A9'],
-        grid: {left: 0, top: 0, right: 0, bottom: 0},
-        tooltip: {
-          trigger: 'axis',
-          valueFormatter: (value: number) => `${(value * 100).toFixed(3)}%`,
-        },
-        series: [
-          {
-            type: 'line',
-            name: select,
-            data: data?.map((d: any) => d.value),
+      line.current = chart?.current?.addLineSeries({
+        color: '#E8BC31',
+        lineWidth: 2,
+        priceFormat: {
+          type: 'custom',
+          formatter: (p: any) => {
+            return `${(p * 100).toFixed(2)}%`;
           },
-        ],
+        },
       });
+
+      line.current.setData(data);
     }
   }, [chart.current, data]);
 
   return (
     <div
-      className="flex-1 m-w100% min-h400px box-border"
+      className="flex-1 m-w100% df box-border"
       style={{border: '1px solid rgba(255,255,255,0.2)'}}
     >
-      <div className="w100% h100%" ref={container} />
+      <div className="flex-1 w100% h100%" ref={container} />
     </div>
   );
 }

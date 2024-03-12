@@ -1,8 +1,11 @@
+import {useStream} from '@rx/hooks/use-stream';
 import {RadioButtonGroup} from '@rx/widgets';
 import React, {useCallback} from 'react';
 import {showType$} from '../streams';
 
-export function ShowDataType({value = 'card'}) {
+export function ShowDataType() {
+  const [value] = useStream(showType$);
+
   const genOptions = useCallback(() => {
     return [
       {text: <i className="iconfont font-size-24px">&#xe6cb;</i>, value: 'card'},

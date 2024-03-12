@@ -7,6 +7,7 @@
   "dependencies": {
     "@rx/env": "^1.0.0",
     "@rx/db": "^1.0.0",
+    "@rx/helper": "^1.0.0",
     "@rx/lang": "^1.0.0",
     "@rx/widgets": "^1.0.0",
     "@rx/streams": "^1.0.0",

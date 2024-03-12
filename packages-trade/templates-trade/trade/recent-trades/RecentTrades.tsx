@@ -14,7 +14,7 @@ import React, {useState} from 'react';
 export function RecentTrades() {
   const {LG} = useLang();
   const {open, handleClick} = useRecent();
-  const [type, setType] = useState<string>('yT');
+  const [type, setType] = useState<string>('YT');
 
   return (
     <StyledRecentWrap $opened={open} className="df fdr pl16px">

@@ -6,21 +6,25 @@ import type {Column} from '@rx/widgets/table/types';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useLang} from '../use-lang';
 
-export function useOrders() {
+export function useOrders(mode: string) {
   const {LG} = useLang();
   const [columns, setColumns] = useState<Column[]>([]);
 
   useEffect(() => {
     const columns: Column[] = [
-      {title: LG(clang.No), dataIndex: 'id'},
-      {title: LG(lang.MarginType), dataIndex: 'margin'},
-      {title: LG(clang.Contract), dataIndex: 'marginCross'},
-      {title: LG(clang.Notional), dataIndex: 'size'},
+      {title: LG(clang.No) + '.', dataIndex: 'id', render: (_, i) => (i ?? 0) + 1},
+      {title: LG(lang.MarginType), dataIndex: 'marginType'},
+      {title: LG(clang.Contract), dataIndex: 'Contract'},
+      {
+        title: mode === 'YT' ? LG(clang.Amount) : LG(clang.Notional),
+        dataIndex: 'amount',
+        render: (record) => (mode === 'YT' ? record.amount : record.amount + ' SOL'),
+      },
       {title: LG(clang.Direction), dataIndex: 'direction'},
-      {title: LG(lang.Limit), dataIndex: 'marketPrice'},
-      {title: LG(clang.Stop), dataIndex: 'stop'},
-      {title: LG(clang.Liq) + '.', dataIndex: 'liqPrice'},
-      {title: LG(clang.MR), dataIndex: 'mr'},
+      {title: LG(lang.Limit), dataIndex: 'liquidation'},
+      {title: LG(clang.Stop), dataIndex: 'liquidation'},
+      {title: LG(clang.Liq) + '.', dataIndex: 'liq'},
+      {title: mode === 'YT' ? LG(lang.Leverage) : LG(clang.MR), dataIndex: 'leverage'},
       {
         title: LG(clang.Margin),
         dataIndex: 'action',
@@ -33,14 +37,15 @@ export function useOrders() {
       c.headerCellStyle = {
         color: '#fff',
         background: '#0A253D',
+        fontWeight: 700,
       };
       c.align = 'center';
       if (c.dataIndex !== 'action') {
-        c.bodyCellStyle = {color: '#B7BDC6'};
+        c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
       }
     });
     setColumns(columns);
-  }, [LG]);
+  }, [LG, mode]);
 
   const dataSource = useQuery<any[]>(() =>
     db.positions.where('orderType').equals('Limit').toArray()

@@ -1,7 +1,21 @@
-import {styled} from 'styled-components';
+import {css, styled} from 'styled-components';
 
-export const Wrap = styled.div`
+export const Wrap = styled.div<{$show: boolean}>`
   height: 100%;
+  border-right: 1px solid var(--slate-gray-blue);
+  transition: all 0.1s ease;
+  ${({$show}) => {
+    if ($show) {
+      return css`
+        min-width: 150px;
+        max-width: 150px;
+      `;
+    }
+    return css`
+      min-width: 42px;
+      max-width: 42px;
+    `;
+  }}
 `;
 
 export const Content = styled.div`
@@ -11,6 +25,7 @@ export const Content = styled.div`
 export const StyledItem = styled.div<{$selected: boolean}>`
   line-height: 42px;
   padding: 0 12px;
+  min-height: 42px;
   background-color: ${({$selected}) => ($selected ? 'var(--golden)' : 'initial')};
   color: ${({$selected}) => ($selected ? 'var(--black)' : 'var(--white)')};
   .right {
@@ -24,10 +39,13 @@ export const StyledBottom = styled.div`
   border-top: 1px solid var(--dark-gray);
 `;
 
-export const SearchWrap = styled.div`
+export const SearchWrap = styled.div<{$show: boolean}>`
   width: 100%;
   box-sizing: border-box;
   margin-top: 20px;
+  min-height: 30px;
+  background: linear-gradient(0deg, var(--smoke-gray) 0%, var(--off-white) 100%);
+
   img {
     position: absolute;
     display: inline-block;
@@ -36,6 +54,13 @@ export const SearchWrap = styled.div`
     width: 16px;
     height: 16px;
     z-index: 1;
+    ${({$show}) => {
+      if (!$show) {
+        return css`
+          left: 10px;
+        `;
+      }
+    }}
   }
 `;
 

@@ -5,5 +5,5 @@ export function loadTV() {
 }
 
 export function loadEcharts() {
-  return loadJS('https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js', 'echarts-js');
+  return loadJS('https://static.rate-x.io/3rd/echarts/5.5.0/echarts.min.js', 'echarts-js');
 }

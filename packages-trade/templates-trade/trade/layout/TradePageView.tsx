@@ -14,14 +14,8 @@ const Content = styled.div`
   background: var(--dark-blue);
 `;
 
-const LeftContainer = styled.div`
-  min-width: 150px;
-  max-width: 150px;
-  height: 100%;
-  border-right: 1px solid var(--slate-gray-blue);
-`;
-
 const ChartView = styled.div`
+  overflow: hidden;
   height: 600px;
 `;
 
@@ -36,10 +30,8 @@ export function TradePageView() {
   return (
     <Wrap className="df fdr">
       <Content className="df fdc f1 overflow-hidden">
-        <div className="df fdr">
-          <LeftContainer>
-            <ChainsView />
-          </LeftContainer>
+        <div className="df fdr overflow-hidden max-w100%">
+          <ChainsView />
           <ChartView className="f1">
             <ChartsView />
           </ChartView>

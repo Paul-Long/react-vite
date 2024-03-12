@@ -83,6 +83,8 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
       csrLangFilePlugin(langRecordDic, join(__dirname, 'dist'), buildId),
       viteExternalsPlugin({
         echarts: 'echarts',
+        react: 'React',
+        'react-dom': 'ReactDOM',
       }),
       react(),
     ],

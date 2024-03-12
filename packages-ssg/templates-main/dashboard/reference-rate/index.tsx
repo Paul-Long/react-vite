@@ -28,7 +28,7 @@ export function ReferenceRate() {
                   &#xe624;
                 </i>
               )}
-              {!row.isParent && <span className="dib w12px"></span>}
+              {!row.isParent && <span className="dib w16px"></span>}
               {row.token}
             </div>
           );
@@ -41,13 +41,14 @@ export function ReferenceRate() {
     ];
     columns.forEach((c) => {
       c.headerCellStyle = {
-        color: '#fff',
+        color: '#B7BDC6',
         background: 'transparent',
         borderBottom: '1px solid #26394B',
       };
       c.bodyCellStyle = {
         fontSize: '14px',
         padding: '6px 12px',
+        fontWeight: 700,
       };
       if (c.dataIndex !== 'token') {
         c.bodyCellStyle.color = '#27F2A9';
@@ -56,7 +57,7 @@ export function ReferenceRate() {
     return columns;
   }, [showChildren]);
   return (
-    <StyledRefRateWrap className="pt24px">
+    <StyledRefRateWrap className="pt24px box-border">
       <Title className="pl24px">{LG(lang.ReferenceRate)}</Title>
       <div className="mt24px">
         <Table

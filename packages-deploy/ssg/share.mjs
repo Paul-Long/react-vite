@@ -19,6 +19,7 @@ export async function deploy(distDir, domain) {
 function createUploadParams(fullPath, file, domain) {
   const dirname = path.dirname(file);
   const filename = path.basename(file);
+  console.log(fullPath, mime.getType(fullPath))
   return {
     Bucket: 'ratex.io',
     Key: calcKey(domain, dirname, filename),

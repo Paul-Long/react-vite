@@ -1,16 +1,38 @@
 import {IMAGES} from '@rx/const/images';
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
 import {useChains} from './state';
 import {Content, SearchInput, SearchWrap, StyledItem} from './styles';
 
-export function ChainsSelect() {
+interface Props {
+  show: boolean;
+  setShow: Function;
+}
+export function ChainsSelect(props: Props) {
+  const input = useRef<HTMLInputElement>(null);
+  const {show, setShow} = props;
   const {chains, chain, setChain, setSearch} = useChains();
+
+  const handleClick = useCallback(() => {
+    if (!show) {
+      setShow(true);
+      setTimeout(() => {
+        input.current?.focus();
+      }, 10);
+    }
+  }, [show]);
 
   return (
     <div className="df fdc g18">
-      <SearchWrap className="pos-relative">
+      <SearchWrap $show={show} className="pos-relative" onClick={handleClick}>
         <img src={IMAGES.search} alt="search" />
-        <SearchInput className="w100%" onChange={(ev) => setSearch(ev.target.value)} />
+        {show && (
+          <SearchInput
+            ref={input}
+            className="w100%"
+            placeholder="Search"
+            onChange={(ev) => setSearch(ev.target.value)}
+          />
+        )}
       </SearchWrap>
       <Content className="df fdc">
         {chains.map((c: any) => (
@@ -22,9 +44,9 @@ export function ChainsSelect() {
           >
             <div className="df fdr aic g8">
               <img className="db logo" src={c.icon} alt={c.name} width={20} height={20} />
-              <span className="fw700">{c.name}</span>
+              {show && <span className="fw700">{c.name}</span>}
             </div>
-            <img className="db right" src={IMAGES.down} alt={c.name} height={10} />
+            {show && <img className="db right" src={IMAGES.down} alt={c.name} height={10} />}
           </StyledItem>
         ))}
       </Content>

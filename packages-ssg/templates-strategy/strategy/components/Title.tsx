@@ -1,6 +1,7 @@
-import {styled} from 'styled-components';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/strategy.lang';
+import React from 'react';
+import {styled} from 'styled-components';
 
 const StyledWrap = styled.div`
   border-left: 1px solid var(--golden);

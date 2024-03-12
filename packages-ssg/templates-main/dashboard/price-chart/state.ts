@@ -1,4 +1,5 @@
 import {select$} from '@/dashboard/stream/streams';
+import {timeUtil} from '@rx/helper/time';
 import {useEffect, useState} from 'react';
 
 export function useData() {
@@ -9,7 +10,10 @@ export function useData() {
     const subscription = select$.subscribe(async (s) => {
       setSelect(s);
       const d = await mock[s]?.();
-      const newData = d?.default ?? [];
+      const newData = (d?.default ?? []).map((d: any) => ({
+        time: timeUtil.formatDate(new Date(d.time).getTime()),
+        value: d.value,
+      }));
       setData(newData);
     });
     return () => subscription.unsubscribe();

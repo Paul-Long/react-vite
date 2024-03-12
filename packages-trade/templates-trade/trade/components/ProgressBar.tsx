@@ -1,6 +1,6 @@
-import {useState, useEffect, useRef, useCallback} from 'react';
-import {styled} from 'styled-components';
 import {Big} from 'big.js';
+import React, {useEffect, useState} from 'react';
+import {css, styled} from 'styled-components';
 
 const options = [0, 25, 50, 75, 100];
 
@@ -12,8 +12,9 @@ const Wrap = styled.div<{$color: string}>`
 
   input[type='range'] {
     position: absolute;
-    top: 0;
-    width: 100%;
+    top: -2px;
+    left: -2px;
+    right: -2px;
     height: 2px;
     border: none;
     cursor: pointer;
@@ -115,50 +116,52 @@ const Wrap = styled.div<{$color: string}>`
   }
 `;
 
-export function ProgressBar({value, max, onChange, color}) {
-  const dotBoxRef = useRef<HTMLDivElement>();
+const StyledDot = styled.div<{$leverage: number}>`
+  position: relative;
+  &::after {
+    ${({$leverage}) => {
+      return css`
+        content: '${$leverage}';
+      `;
+    }}
+    color: var(--light-gray);
+    font-size: 12px;
+    position: absolute;
+    display: block;
+    left: 10px;
+    bottom: -14px;
+    transform: rotate(-45deg);
+  }
+`;
+
+export function ProgressBar({value, max, onChange, color, util = 'x'}: any) {
   const [progress, setProgress] = useState(calculateProgress(value, max));
 
   useEffect(() => {
     setProgress(calculateProgress(value, max));
   }, [value, max]);
 
-  function calculateProgress(value, max) {
+  function calculateProgress(value: number, max: number) {
     return Number(Big(value).div(max).times(100).toFixed(0, 3));
   }
 
-  function updateProgress(value) {
+  function updateProgress(value: number) {
     setProgress(value);
     const real = Number(Big(value).times(max).div(100).toFixed(0, 3));
     onChange?.(Math.max(1, Math.min(real, max)));
   }
 
-  function handlePositionClick(position) {
+  function handlePositionClick(position: number) {
     updateProgress(position);
   }
 
-  function handleChange(event) {
+  function handleChange(event: any) {
     updateProgress(event.target.value);
   }
 
-  function genNum(max, v) {
+  function genNum(max: number, v: number) {
     return Number(Big(max).div(100).times(v).toFixed(0, 3));
   }
-
-  const genLeft = useCallback(() => {
-    if (dotBoxRef.current) {
-      const width = dotBoxRef.current?.getBoundingClientRect()?.width ?? 0;
-      const maxPer = Big(width - 30)
-        .div(width)
-        .times(100)
-        .toNumber();
-      if (progress > maxPer) {
-        return `${maxPer}%`;
-      }
-      const per = Big(progress).div(100).times(width).minus(16).div(width).times(100).toNumber();
-      return `${Math.max(per, 0)}%`;
-    }
-  }, [max, progress]);
 
   return (
     <Wrap className="progress-bar dark" $color={color ?? '--mint-green'}>
@@ -169,23 +172,16 @@ export function ProgressBar({value, max, onChange, color}) {
       <div className="dot-box position-absolute">
         <div className="dots df aic jcsb">
           {options.map((op) => (
-            <div
+            <StyledDot
               key={op}
               className={`dot cp ${progress >= op ? 'active' : ''}`}
               onClick={() => handlePositionClick(genNum(max, op))}
+              $leverage={genNum(max, op) + util}
             />
           ))}
         </div>
       </div>
       <input max="100" min="0" value={progress} onChange={handleChange} step="1" type="range" />
-      <div className="dot-box mt26px">
-        <div className="dots df aic jcsb" ref={dotBoxRef}>
-          <div className="dot-item-active cp f12 f2 T6" style={{left: genLeft()}}>{`${genNum(
-            max,
-            progress
-          )}X`}</div>
-        </div>
-      </div>
     </Wrap>
   );
 }

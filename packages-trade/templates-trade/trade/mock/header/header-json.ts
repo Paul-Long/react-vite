@@ -40,7 +40,7 @@ export const data: any = [
   },
   {
     Contract: 'mSOL-2506',
-    TTM: '487 days',
+    TTM: '1.33 years',
     Yield: '6.515%',
     YT: 0.08076,
     'Cumulative YT': 0.11418,
@@ -53,7 +53,7 @@ export const data: any = [
   },
   {
     Contract: 'mSOL-2512',
-    TTM: '670 days',
+    TTM: '1.84 years',
     Yield: '6.344%',
     YT: 0.10677,
     'Cumulative YT': 0.14019,
@@ -105,7 +105,7 @@ export const data: any = [
   },
   {
     Contract: 'JitoSOL-2506',
-    TTM: '487 days',
+    TTM: '1.33 years',
     Yield: '6.768%',
     YT: '0.08367',
     'Cumulative YT': '0.11780',
@@ -118,7 +118,7 @@ export const data: any = [
   },
   {
     Contract: 'JitoSOL-2512',
-    TTM: '670 days',
+    TTM: '1.84 years',
     Yield: '6.673%',
     YT: '0.11181',
     'Cumulative YT': '0.14594',

@@ -32,4 +32,13 @@ export const lang: Record<string, any> = {
   Underlying: {
     en: 'Underlying',
   },
+  UnderlyingAsset: {
+    en: 'Underlying Asset',
+  },
+  RWAToken: {
+    en: 'RWA Token',
+  },
+  Follow: {
+    en: 'Follow',
+  },
 };

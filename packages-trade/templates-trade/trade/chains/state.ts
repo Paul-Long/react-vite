@@ -29,5 +29,11 @@ export function useChains() {
 }
 
 const genChains = (LG: Function): Chain[] => {
-  return [{name: 'Sol', code: 'SOL', icon: IMAGES.sol}];
+  return [
+    {name: 'SOL', code: 'SOL', icon: IMAGES.sol},
+    {name: 'ETH', code: 'ETH', icon: IMAGES.eth},
+    {name: 'LRT', code: 'LRT', icon: IMAGES.lrt},
+    {name: 'Stables', code: 'Stables', icon: IMAGES.stables},
+    {name: 'RWA', code: 'RWA', icon: IMAGES.rwa},
+  ];
 };

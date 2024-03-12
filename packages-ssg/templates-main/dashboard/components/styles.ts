@@ -7,6 +7,8 @@ export const StyledMarketOverviewWrap = styled.div`
 
 export const StyledRefRateWrap = styled.div`
   width: 500px;
+  background: var(--dense-blue);
+  border: 1px solid var(--dark-gray);
 `;
 
 export const StyledPriceChartWrap = styled.div`

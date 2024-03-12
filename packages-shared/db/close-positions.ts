@@ -1,4 +1,4 @@
 export const ClosePositionsFields =
-  '++id, margin, direction, orderType, qtyType, size, leverage, ' +
-  'marginCost, entryPrice, liqPrice, marketPrice, netValue, maxLeverage, ' +
-  'initialMarginRate, maintenanceMarginRate, referenceApr, yield';
+  '++id, Contract, marginType, direction, orderType, mode, amount, leverage, maxLeverage,' +
+  'depositMargin, balance, slippageTolerance, pay, rec, estimatedTrade, impact, liquidation, ' +
+  'estimatedTradingFee, executionFee, pnl, entry, current, liq, tpsl, cr, transaction';
