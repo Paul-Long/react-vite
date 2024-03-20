@@ -1,5 +1,6 @@
 import {useContract} from '@/trade/hooks/contract';
 import {db} from '@rx/db';
+import {data} from '@/trade/mock/header/header-json';
 import {useCallback, useEffect, useState} from 'react';
 
 export const useFormState = () => {
@@ -40,7 +41,9 @@ export const useFormState = () => {
 
   const handleSubmit = useCallback(async () => {
     const {...tmp} = formData;
+    const item = data[`${contract}-${maturity}`];
     tmp.transaction = new Date().getTime();
+    tmp.entryYield = item.Yield;
     await db.positions.add(tmp);
   }, [formData]);
 

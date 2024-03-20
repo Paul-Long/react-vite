@@ -1,7 +1,7 @@
 import {useChart} from '@/lp/charts/hooks';
 import {select$} from '@/lp/stream/streams';
 import {useStream} from '@rx/hooks/use-stream';
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 
 export function PieChart() {
   const {chart, container, loaded} = useChart();
@@ -81,14 +81,14 @@ export function PieChart() {
 }
 
 const data: any = {
-  'RLP-mSOL': [
+  'mSOL-ULP': [
     {name: 'mSOL-2403', value: 16},
     {name: 'mSOL-2406', value: 16},
     {name: 'mSOL-2412', value: 24},
     {name: 'mSOL-2506', value: 22},
     {name: 'mSOL-2512', value: 22},
   ],
-  'RLP-JitoSOL': [
+  'JitoSOL-Universllal': [
     {name: 'JitoSOL-2403', value: 16},
     {name: 'JitoSOL-2406', value: 16},
     {name: 'JitoSOL-2412', value: 24},

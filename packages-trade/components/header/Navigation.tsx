@@ -15,7 +15,7 @@ const NavContainer = styled.div`
   height: 60px;
   padding: 0 12px;
   @media (max-width: 640px) {
-    height: 40px;
+    display: none;
   }
 `;
 

@@ -1,12 +1,9 @@
+import type {FiltersProps} from '@/assets-filter/state';
+import {Assets, useFilters} from '@/assets-filter/state';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {Checkbox} from '@rx/widgets';
-import React, {useCallback, useEffect, useState} from 'react';
 import {styled} from 'styled-components';
-
-interface FiltersProps {
-  onChange?: Function;
-}
 
 const StyledFiltersLayout = styled.div`
   padding: 16px 24px 24px;
@@ -19,67 +16,62 @@ const StyledWrap = styled.div<{$grid: number}>`
   grid-template-columns: repeat(${({$grid}) => $grid}, auto);
 `;
 
+const StyledLine = styled.div`
+  width: 1px;
+  height: 14px;
+  margin-left: 24px;
+  border-right: 1px solid var(--deep-sea-blue);
+`;
+
 export function Filters(props: FiltersProps) {
   const {LG} = useLang();
-  const [chain, setChain] = useState<string>('ALL');
-  const [token, setToken] = useState<string[]>(['ALL']);
-
-  useEffect(() => {
-    props?.onChange?.({chain, token});
-  }, [chain, token]);
-
-  const handleChainClick = useCallback((c: string) => {
-    return (checked: boolean) => setChain(checked ? c : 'ALL');
-  }, []);
-
-  const handleTokenClick = useCallback((t: string, chain: string) => {
-    return (checked: boolean) => {
-      setToken((prevState) => {
-        let ts: string[] = [...prevState].filter((o) => o !== 'ALL' && o !== t);
-        if (checked) {
-          ts = t === 'ALL' ? ['ALL', ...Tokens[chain]] : [...ts, t];
-          if (!Tokens[chain].some((t) => !ts.includes(t))) {
-            return ['ALL', ...Tokens[chain]];
-          }
-        }
-        return ts.length === 0 ? ['ALL', ...Tokens[chain]] : ts;
-      });
-    };
-  }, []);
+  const {assets, contracts, baseContracts, handleContractsChecked, handleAssetsChecked} =
+    useFilters(props);
 
   return (
     <StyledFiltersLayout className="w100% mt16px pb24px">
-      <StyledWrap $grid={chain === 'ETH' ? 7 : 6}>
-        <Checkbox checked={chain === 'ALL'} onChange={handleChainClick('ALL')}>
-          {LG(clang.ALL)}
+      <StyledWrap $grid={8}>
+        <Checkbox checked={assets.includes('ALL')} onChange={handleAssetsChecked('ALL')}>
+          <div className="df fdr aic">
+            {LG(clang.ALL)}
+            <StyledLine />
+          </div>
         </Checkbox>
-        {Chains.map((c) => (
-          <Checkbox key={c} checked={chain === c} onChange={handleChainClick(c)}>
+        {Assets.map((c) => (
+          <Checkbox
+            key={c}
+            checked={assets.includes(c) || assets.includes('ALL')}
+            onChange={handleAssetsChecked(c)}
+          >
             {c}
           </Checkbox>
         ))}
-        {chain === 'ETH' && <div />}
         <div />
-        <Checkbox checked={token.includes('ALL')} onChange={handleTokenClick('ALL', chain)}>
-          {LG(clang.ALL)}
+        <div />
+        <div />
+        <Checkbox checked={contracts.includes('ALL')} onChange={handleContractsChecked('ALL')}>
+          <div className="df fdr aic">
+            {LG(clang.ALL)}
+            <StyledLine />
+          </div>
         </Checkbox>
-        {Tokens[chain].map((t: any) => (
-          <Checkbox key={t} checked={token.includes(t)} onChange={handleTokenClick(t, chain)}>
-            {t}
-          </Checkbox>
-        ))}
+        {baseContracts.map((t: string, index: number) => {
+          const nodes = [
+            <Checkbox
+              key={t}
+              checked={contracts.includes(t) || contracts.includes('ALL')}
+              onChange={handleContractsChecked(t)}
+            >
+              {t}
+            </Checkbox>,
+          ];
+          if (index === 5) {
+            nodes.push(<div key={index + 1} />);
+            nodes.push(<div key={index + 2} />);
+          }
+          return nodes;
+        })}
       </StyledWrap>
     </StyledFiltersLayout>
   );
 }
-
-const Chains: string[] = ['SOL', 'ETH', 'LRT', 'Stables', 'RWA'];
-
-const Tokens: Record<string, string[]> = {
-  ALL: [],
-  SOL: ['SOLStaking', 'mSOL', 'JitoSOL'],
-  ETH: ['ETHStaking', 'stETH', 'rETH'],
-  LRT: ['eETH', 'pufETH'],
-  Stables: ['USDY', 'aUSDC'],
-  RWA: ['Uscpi'],
-};

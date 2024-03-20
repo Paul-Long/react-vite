@@ -1,8 +1,7 @@
 packages:
-  # all packages in subdirs of packages/ and components/
   - 'packages-ssg/**'
-  - 'packages-web3/**'
+  - 'packages-widgets/**'
+  - 'packages-shared/**'
   - 'packages-trade/**'
   - 'packages-deploy/**'
-  - 'packages-shared/**'
-  - 'packages-widgets/**'
+  - 'packages-web3/**'

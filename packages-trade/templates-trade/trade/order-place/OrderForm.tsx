@@ -17,7 +17,6 @@ import {IMAGES} from '@rx/const/images';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as tradeLang} from '@rx/lang/trade.lang';
 import {Button} from '@rx/widgets/button/Button';
-import React from 'react';
 
 export function OrderForm() {
   const {LG} = useLang();
@@ -46,10 +45,17 @@ export function OrderForm() {
             maxLeverage={formData.maxLeverage ?? 10}
             value={formData.leverage ?? 5}
             onChange={updateForm}
+            contract={contract as string}
+            maturity={maturity as string}
           />
         )}
         {formData.orderType !== 'StopLimit' && (
-          <DepositMargin mode={formData.mode} value={formData.depositMargin}></DepositMargin>
+          <DepositMargin
+            mode={formData.mode}
+            contract={contract as string}
+            value={formData.depositMargin}
+            direction={formData.direction}
+          ></DepositMargin>
         )}
 
         {['Limit'].includes(formData.orderType) && (
@@ -57,6 +63,7 @@ export function OrderForm() {
             value={formData.liquidation}
             current={formData.current}
             mode={formData.mode}
+            direction={formData.direction}
           />
         )}
 
@@ -66,22 +73,33 @@ export function OrderForm() {
             value={formData.mode === 'IRS' ? formData.pay : formData.entry}
             mode={formData.mode}
             current={formData.current}
+            direction={formData.direction}
           />
         )}
 
         {formData.orderType !== 'StopLimit' && (
-          <SlippageTolerance value={formData.slippageTolerance} mode={formData.mode} />
+          <SlippageTolerance
+            value={formData.slippageTolerance}
+            mode={formData.mode}
+            direction={formData.direction}
+          />
         )}
         {formData.orderType !== 'StopLimit' && (
           <div className="w100% df fdr aic gap16px">
-            <PayFixed value={formData.pay} />
+            <PayFixed value={formData.pay} direction={formData.direction} />
             <img src={IMAGES.transfer} alt="" width={44} />
-            <RecFloating value={formData.rec} />
+            <RecFloating value={formData.rec} direction={formData.direction} />
           </div>
         )}
         <Info info={formData} />
         <div className="mt8px" style={{height: 42}}>
-          <Button type="default" size={42} width="100%" onClick={handleSubmit}>
+          <Button
+            className="font-size-20px"
+            type="default"
+            size={42}
+            width="100%"
+            onClick={handleSubmit}
+          >
             {LG(tradeLang.Trade)}
           </Button>
         </div>

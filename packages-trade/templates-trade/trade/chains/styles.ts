@@ -42,7 +42,7 @@ export const StyledBottom = styled.div`
 export const SearchWrap = styled.div<{$show: boolean}>`
   width: 100%;
   box-sizing: border-box;
-  margin-top: 20px;
+  margin-top: 24px;
   min-height: 30px;
   background: linear-gradient(0deg, var(--smoke-gray) 0%, var(--off-white) 100%);
 

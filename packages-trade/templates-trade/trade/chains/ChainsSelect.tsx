@@ -1,5 +1,5 @@
 import {IMAGES} from '@rx/const/images';
-import React, {useCallback, useRef} from 'react';
+import {useCallback, useRef} from 'react';
 import {useChains} from './state';
 import {Content, SearchInput, SearchWrap, StyledItem} from './styles';
 
@@ -22,7 +22,7 @@ export function ChainsSelect(props: Props) {
   }, [show]);
 
   return (
-    <div className="df fdc g18">
+    <div className="df fdc g24">
       <SearchWrap $show={show} className="pos-relative" onClick={handleClick}>
         <img src={IMAGES.search} alt="search" />
         {show && (

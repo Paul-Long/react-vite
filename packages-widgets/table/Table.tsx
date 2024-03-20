@@ -1,8 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import {useScroll} from '@rx/hooks/use-scroll';
+import {useCallback, useEffect, useState} from 'react';
 import {StyledRow, StyledTableWrap, StyledTd, StyledTh} from './styles';
 import type {Column, TableProps} from './types';
 
 export function Table(props: TableProps) {
+  const {ref, hasX, isLeft, isRight} = useScroll<HTMLDivElement>();
   const {columns = [], dataSource = [], onRowSelect = () => {}, selectedIndex, rowKey} = props;
   const len: number = columns.filter((c) => c.fixed !== 'right').length;
   const [rows, setRows] = useState(len === columns.length ? len - 1 : len);
@@ -33,14 +35,19 @@ export function Table(props: TableProps) {
   }, []);
 
   return (
-    <div className="pos-relative max-w100% overflow-x-auto">
-      <StyledTableWrap $rows={rows}>
+    <div ref={ref} className="pos-relative max-w100% overflow-x-auto">
+      <StyledTableWrap
+        $rows={rows}
+        $grid={columns.reduce((s: string[], c) => [...s, c.width ?? '1fr'], []).join(' ')}
+      >
         <StyledRow>
           {columns.map((column, index) => (
             <StyledTh
               className="B2 T1 fw700"
               $fixed={column.fixed}
               $align={column.align ?? 'left'}
+              $shadowLeft={!!column.shadowLeft && hasX && !isRight}
+              $shadowRight={!!column.shadowRight && hasX && !isLeft}
               style={column?.headerCellStyle ?? {}}
               key={column.dataIndex}
             >
@@ -50,12 +57,14 @@ export function Table(props: TableProps) {
         </StyledRow>
         {dataSource?.map((data, index) => (
           <StyledRow key={index} onClick={() => onRowSelect(data)}>
-            {columns.map((column) => (
+            {columns.map((column, columnIndex) => (
               <StyledTd
-                className="td"
+                className="td pos-relative"
                 $selected={selectedIndex === genRowKey(data)}
                 $fixed={column.fixed}
                 $align={column.align ?? 'left'}
+                $shadowLeft={!!column.shadowLeft && hasX && !isRight}
+                $shadowRight={!!column.shadowRight && hasX && !isLeft}
                 style={column?.bodyCellStyle ?? {}}
                 key={column.dataIndex}
               >

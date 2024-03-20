@@ -1,13 +1,15 @@
 import {StyledCardList} from '@/strategies/components/styles';
-import React from 'react';
 import {CardItem} from './CardItem';
 import {data} from './data';
 
-export function CardList() {
+interface Props {
+  modalHook: ModalHook<any>;
+}
+export function CardList(props: Props) {
   return (
     <StyledCardList>
       {data.map((d, index) => (
-        <CardItem key={index} item={d} />
+        <CardItem key={index} item={d} onMint={props.modalHook.onOpen({...d})} />
       ))}
     </StyledCardList>
   );

@@ -41,4 +41,25 @@ export const lang: Record<string, any> = {
   Follow: {
     en: 'Follow',
   },
+  EstGas: {
+    en: 'est.gas',
+  },
+  MarginRate: {
+    en: 'Margin Rate',
+  },
+  MarginRequired: {
+    en: 'Margin Required',
+  },
+  EstimatedGasFee: {
+    en: 'estimated gas&execution fee',
+  },
+  Followable: {
+    en: 'Followable',
+  },
+  HideYourStrategy: {
+    en: 'Hide your strategy',
+  },
+  FollowFeeOfTheNotional: {
+    en: 'Follow Fee % of the notional',
+  },
 };

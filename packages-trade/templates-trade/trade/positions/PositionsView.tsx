@@ -15,11 +15,9 @@ export function PositionsView() {
   return (
     <PositionsWrap className="f1 overflow-hidden fw700">
       <Tabs options={tabs} onChange={onChange} size="small">
-        {tab !== TabsValue.History && (
-          <div className="mr24px">
-            <SelectTypes value={mode} onChange={(v: string) => setMode(v)} />
-          </div>
-        )}
+        <div className="mr24px">
+          <SelectTypes value={mode} onChange={(v: string) => setMode(v)} />
+        </div>
       </Tabs>
       {tab === TabsValue.Position && <Positions mode={mode} />}
       {tab === TabsValue.Orders && <Orders mode={mode} />}

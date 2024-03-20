@@ -1,8 +1,8 @@
 import {css, styled} from 'styled-components';
 
-export const StyledTableWrap = styled.div<{$rows: number}>`
+export const StyledTableWrap = styled.div<{$rows: number; $grid?: string}>`
   display: grid;
-  grid-template-columns: ${({$rows}) => `repeat(${$rows}, auto) max-content`};
+  grid-template-columns: ${({$rows, $grid}) => $grid ?? `repeat(${$rows}, auto) max-content`};
   gap: 0;
 `;
 
@@ -22,6 +22,8 @@ const StyledCell = styled.div<{
   $selected?: boolean;
   children?: any;
   key?: Key;
+  $shadowLeft?: boolean;
+  $shadowRight?: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -74,6 +76,35 @@ const StyledCell = styled.div<{
   ${({$colSpan}) => $colSpan && `grid-col: span ${$colSpan}`};
   ${({$rowSpan}) => $rowSpan && `grid-template-rows: auto;`};
   ${({$rowSpan}) => $rowSpan && `grid-row: span ${$rowSpan};`};
+
+  ${({$shadowLeft, $shadowRight}) => {
+    if ($shadowLeft) {
+      return css`
+        &::before {
+          content: '';
+          position: absolute;
+          left: -10px;
+          right: 100%;
+          top: 0;
+          bottom: 0;
+          background: linear-gradient(to left, #00162b, transparent);
+        }
+      `;
+    }
+    if ($shadowRight) {
+      return css`
+        &::after {
+          content: '';
+          position: absolute;
+          right: -10px;
+          left: 100%;
+          top: 0;
+          bottom: 0;
+          background: linear-gradient(to right, #00162b, transparent);
+        }
+      `;
+    }
+  }}
 `;
 
 export const StyledTh = styled(StyledCell)``;

@@ -169,4 +169,13 @@ export const lang: any = {
   MaturityDate: {
     en: 'Maturity Date',
   },
+  Confirm: {
+    en: 'Confirm',
+  },
+  Cancel: {
+    en: 'Cancel',
+  },
+  NotionalAmount: {
+    en: 'Notional Amount',
+  },
 };

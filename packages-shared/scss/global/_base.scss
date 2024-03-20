@@ -10,9 +10,12 @@
 }
 @font-face {
   font-family: 'rx-icon';
-  src: url('//static.rate-x.io/font/v1/2caa81/iconfont.woff2') format('woff2'),
-  url('//static.rate-x.io/font/v1/bd6759/iconfont.woff') format('woff'),
-  url('//static.rate-x.io/font/v1/ee44d8/iconfont.ttf') format('truetype');
+  //src: url('//static.rate-x.io/font/v1/2caa81/iconfont.woff2') format('woff2'),
+  //url('//static.rate-x.io/font/v1/bd6759/iconfont.woff') format('woff'),
+  //url('//static.rate-x.io/font/v1/ee44d8/iconfont.ttf') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4437088_tg1dk1lfk3j.woff2?t=1710769950623') format('woff2'),
+  url('//at.alicdn.com/t/c/font_4437088_tg1dk1lfk3j.woff?t=1710769950623') format('woff'),
+  url('//at.alicdn.com/t/c/font_4437088_tg1dk1lfk3j.ttf?t=1710769950623') format('truetype');
 }
 
 .iconfont {
@@ -164,6 +167,9 @@ input:disabled {
     outline: none;
     background: unset;
     text-decoration: none;
+  }
+  body {
+    font-size: 14px
   }
   .pc {
     display: none !important;

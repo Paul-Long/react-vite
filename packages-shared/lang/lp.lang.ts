@@ -21,10 +21,13 @@ export const lang = {
     en: 'TVL',
   },
   ActiveRadio: {
-    en: 'Active Radio',
+    en: 'Active Ratio',
   },
-  RLPMSolValue: {
-    en: 'RLP-msol value',
+  RLPToken: {
+    en: 'RLP Token',
+  },
+  RLPTokenValue: {
+    en: 'RLP Value',
   },
   YourLPPosition: {
     en: 'Your LP Position',
@@ -88,5 +91,8 @@ export const lang = {
   },
   StandardRange: {
     en: 'Standard Range',
+  },
+  Asset: {
+    en: 'Asset',
   },
 };

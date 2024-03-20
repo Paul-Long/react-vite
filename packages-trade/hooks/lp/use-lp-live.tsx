@@ -1,10 +1,10 @@
 import {db, useQuery} from '@rx/db';
+import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/lp.lang';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useLang} from '../use-lang';
+import {useCallback, useEffect, useState} from 'react';
 
 export function useLpLive() {
   const {LG} = useLang();
@@ -16,6 +16,8 @@ export function useLpLive() {
         title: LG(clang.No) + '.',
         dataIndex: 'id',
         fixed: 'left',
+        width: '80px',
+        shadowRight: true,
         bodyCellStyle: {background: '#00162B'},
         render: (_, i) => (i ?? 0) + 1,
       },
@@ -38,7 +40,7 @@ export function useLpLive() {
         dataIndex: 'EarnedFees',
         render: (record) => {
           return (
-            <div className="df fdr aic w100% gap8px">
+            <div className="df fdr jcc aic w100% gap8px">
               <div className="flex-1 text-right" style={{textAlign: 'right'}}>
                 {record['EarnedFees']} {record['FeeCurrency']}
               </div>
@@ -56,7 +58,7 @@ export function useLpLive() {
         dataIndex: 'AwardedRTX',
         render: (record) => {
           return (
-            <div className="df fdr aic gap8px">
+            <div className="df fdr jcc aic gap8px">
               <span className="flex-1 text-right">{record['AwardedRTX']}</span>
               <div className="flex-1">
                 <Button type="default" size="small">
@@ -72,6 +74,7 @@ export function useLpLive() {
         title: LG(clang.Liquidity),
         dataIndex: 'action',
         fixed: 'right',
+        shadowLeft: true,
         bodyCellStyle: {background: '#00162B'},
         render: (record: any) => {
           return (
@@ -90,13 +93,14 @@ export function useLpLive() {
         },
       },
     ];
-    columns.forEach((c) => {
+    columns.forEach((c, i) => {
+      c.align = i === 0 ? 'left' : 'center';
       c.headerCellStyle = {
         color: '#fff',
         background: '#0A253D',
         fontWeight: 700,
       };
-      if (c.dataIndex !== 'action') {
+      if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {
         c.bodyCellStyle = c.bodyCellStyle || {};
         c.bodyCellStyle.color = '#B7BDC6';
         c.bodyCellStyle.fontWeight = 700;

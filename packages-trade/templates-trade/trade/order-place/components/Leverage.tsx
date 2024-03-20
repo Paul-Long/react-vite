@@ -1,9 +1,10 @@
-import {ProgressBar} from '@/trade/components/ProgressBar';
+import {data} from '@/trade/mock/header/header-json';
 import {StyledInputWrap} from '@/trade/order-place/styles';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as tradeLang} from '@rx/lang/trade.lang';
+import {ProgressBar} from '@rx/widgets';
+import {Big} from 'big.js';
 import cn from 'classnames';
-import React from 'react';
 
 interface Props {
   mode: string;
@@ -11,10 +12,12 @@ interface Props {
   maxLeverage: number;
   value: any;
   onChange: (key: string, v: any) => void;
+  contract: string;
+  maturity: string;
 }
 
 export function Leverage(props: Props) {
-  const {maxLeverage, direction, value, onChange, mode} = props;
+  const {maxLeverage, direction, value, onChange, mode, contract, maturity} = props;
   const {LG} = useLang();
   return (
     <StyledInputWrap className="df fdc gap-26px">
@@ -22,25 +25,44 @@ export function Leverage(props: Props) {
         <div className="T5 f16">
           {mode === 'IRS' ? LG(tradeLang.MarginRatioSlider) : LG(tradeLang.LeverageSlider)}
         </div>
-        <div className="font-size-12px T7">
+        <div
+          className={cn('font-size-12px', {
+            buy: direction === 'Long',
+            sell: direction === 'Short',
+          })}
+        >
           {mode === 'IRS' ? LG(tradeLang.MinimumMR) : LG(tradeLang.MaximumLeverage)}:{' '}
-          {Math.round(maxLeverage)}
+          {mode === 'IRS' ? '0.5' : maxLeverage}
           {mode === 'IRS' ? '%' : 'x'}
         </div>
       </div>
-      <div className="df fdr aife w100%">
-        <div className={cn('font-size-22px T6')}>{value}</div>
-        <span className="font-size-12px T7 mb4px">{mode === 'IRS' ? '%' : 'x'}</span>
+      <div
+        className={cn('df fdr aife w100%', {
+          buy: direction === 'Long',
+          sell: direction === 'Short',
+        })}
+      >
+        <div className={cn('font-size-22px')}>{value}</div>
+        <span className="font-size-12px mb4px">{mode === 'IRS' ? '%' : 'x'}</span>
       </div>
       <div className="pb20px">
         <ProgressBar
           value={value}
-          max={maxLeverage}
+          max={mode === 'IRS' ? getMarginRatioMax(contract, maturity) : maxLeverage}
+          min={mode === 'IRS' ? 0.2 : 0}
+          dp={mode === 'IRS' ? 3 : 1}
           onChange={(v: any) => onChange('leverage', v)}
-          color={'#27F2A9'}
+          color={direction === 'Long' ? '#27F2A9' : '#f24e53'}
           util={mode === 'IRS' ? '%' : 'x'}
         />
       </div>
     </StyledInputWrap>
   );
+}
+
+function getMarginRatioMax(contract: string, maturity: string) {
+  const item = data[`${contract}-${maturity}`];
+  return Big(item?.YT ?? 0.005)
+    .times(100)
+    .toNumber();
 }

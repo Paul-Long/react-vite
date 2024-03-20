@@ -27,7 +27,7 @@ export const StyledTabsWrap = styled.div<{$type: 'card' | 'line'; $filled: boole
         color: var(--black);
         background: var(--golden);
         padding: 0 24px 4px;
-        gap: 24px;
+        gap: 36px;
       `;
     }
     if ($type === 'card') {

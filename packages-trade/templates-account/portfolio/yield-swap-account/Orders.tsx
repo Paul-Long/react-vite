@@ -1,6 +1,5 @@
-import {useOrders} from '@rx/hooks/trade/use-orders';
 import {Table} from '@rx/widgets';
-import React from 'react';
+import {useOrders} from '@trade/hooks/trade/use-orders';
 
 interface Props {
   mode: string;

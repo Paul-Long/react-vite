@@ -1,17 +1,19 @@
-import {db} from '@rx/db';
 import {timeUtil} from '@rx/helper/time';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/strategy.lang';
-import {Button, Table, Toast} from '@rx/widgets';
+import {Button, Table} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {styled} from 'styled-components';
 import {data} from './data';
 
 const StyledWrap = styled.div``;
 
-export function DataList() {
+interface Props {
+  modalHook: ModalHook<any>;
+}
+export function DataList(props: Props) {
   const {LG} = useLang();
 
   const genColumns = useCallback(() => {
@@ -30,7 +32,7 @@ export function DataList() {
         title: <span />,
         dataIndex: 'action',
         render: (record: any) => (
-          <Button size="small" onClick={() => handleMint(record)}>
+          <Button size="small" onClick={props.modalHook.onOpen({...record})}>
             {LG(lang.Mint)}
           </Button>
         ),
@@ -47,12 +49,6 @@ export function DataList() {
       }
     });
     return columns;
-  }, []);
-
-  const handleMint = useCallback(async (item: any) => {
-    const {...data} = item;
-    await db.strategySyntheticAsset.add(data);
-    Toast.success('Mint Success');
   }, []);
 
   return (

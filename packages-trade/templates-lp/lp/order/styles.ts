@@ -16,10 +16,11 @@ export const StyledItemWrap = styled.div`
 
 export const StyledBpsWrap = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr) max-content;
+  grid-template-columns: repeat(2, 1fr);
 `;
 
 export const StyledBpsItem = styled.div<{$active: boolean}>`
+  text-align: center;
   padding: 4px 8px;
   border-radius: 4px;
   background: #1f3244;

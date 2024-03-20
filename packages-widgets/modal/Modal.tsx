@@ -11,6 +11,7 @@ interface ModalProps {
   children?: React.ReactNode;
   container?: string;
   contentStyle?: CSSProperties;
+  maskCloseAble?: boolean;
 }
 
 const fadeIn = keyframes`
@@ -39,8 +40,9 @@ const ModalOverlay = styled.div`
 const ModalContainer = styled.div<{$show: boolean; $size: 'small' | 'medium' | 'large'}>`
   background: black;
   color: white;
-  width: ${({$size}) => ($size === 'small' ? '300px' : $size === 'large' ? '600px' : '450px')};
+  min-width: ${({$size}) => ($size === 'small' ? '300px' : $size === 'large' ? '600px' : '450px')};
   border-radius: 8px;
+  border: 1px solid var(--light-gray);
   padding: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   z-index: 1001;
@@ -71,6 +73,7 @@ export const Modal: FC<ModalProps> = memo(
     size = 'medium',
     children,
     contentStyle = {},
+    maskCloseAble = false,
   }) => {
     const modalRef = useRef<HTMLDivElement | null>(null);
     const triggerElementRef = useRef<Element | null>(null);
@@ -99,12 +102,18 @@ export const Modal: FC<ModalProps> = memo(
       };
     }, [visible, handleKeyDown]);
 
+    const handleClickMask = useCallback(() => {
+      if (!maskCloseAble) {
+        return;
+      }
+      onClose();
+    }, []);
     if (!visible || typeof window === 'undefined') {
       return null;
     }
 
     return ReactDOM.createPortal(
-      <ModalOverlay>
+      <ModalOverlay onClick={handleClickMask}>
         <ModalContainer
           $size={size}
           $show={visible}

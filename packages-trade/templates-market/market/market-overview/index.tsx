@@ -8,25 +8,27 @@ import {lang} from '@rx/lang/dashboard.lang';
 import {Table} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import {Filters} from '@trade/components/assets-filter/Filters';
-import React, {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {data} from './data';
 
 export function MarketOverview() {
   const {LG} = useLang();
   const [selected] = useStream(select$);
-  const [filters, setFilters] = useState({chain: 'ALL', token: ['ALL']});
+  const [filters, setFilters] = useState({assets: ['ALL'], contracts: ['ALL']});
   const [dataSource, setDataSource] = useState<any[]>(data);
 
   useEffect(() => {
-    if (!['ALL', 'SOL'].includes(filters.chain)) {
+    if (!filters.assets.some((a) => a === 'ALL' || a === 'SOL')) {
       setDataSource([]);
       return;
     }
-    if (filters.token.includes('ALL')) {
+    if (filters.contracts.includes('ALL')) {
       setDataSource(data);
       return;
     }
-    const list = data?.filter((d: any) => filters.token.some((t) => d.Contract.includes(t)));
+    const list = data?.filter((d: any) =>
+      filters.contracts.some((t: string) => d.Contract.includes(t))
+    );
     setDataSource(list);
   }, [filters]);
 
@@ -61,7 +63,7 @@ export function MarketOverview() {
     return columns;
   }, []);
 
-  const handleFilters = useCallback((f: {chain: string; token: string[]}) => {
+  const handleFilters = useCallback((f: any) => {
     setFilters(f);
   }, []);
 

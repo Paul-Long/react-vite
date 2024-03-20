@@ -2,16 +2,18 @@ import {StyledInputWrap} from '@/trade/order-place/styles';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
+import cn from 'classnames';
 import React from 'react';
 
 interface Props {
   mode: string;
   current: string | number;
   value: string | number;
+  direction: string;
 }
 
 export function LimitPrice(props: Props) {
-  const {value, current, mode} = props;
+  const {value, current, mode, direction} = props;
   const {LG} = useLang();
   return (
     <StyledInputWrap className="df fdc gap-26px">
@@ -23,7 +25,10 @@ export function LimitPrice(props: Props) {
           {LG(clang.Current)} : {current}
         </div>
       </div>
-      <span className="T6 font-size-22px">{value}</span>
+      <span className={cn("font-size-22px", {
+        buy: direction === 'Long',
+        sell: direction === 'Short',
+      })}>{value}</span>
     </StyledInputWrap>
   );
 }

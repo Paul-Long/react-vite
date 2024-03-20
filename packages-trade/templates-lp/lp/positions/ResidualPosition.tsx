@@ -1,6 +1,5 @@
-import {useLpResidual} from '@rx/hooks/lp/use-lp-residual';
 import {Table} from '@rx/widgets';
-import React from 'react';
+import {useLpResidual} from '@trade/hooks/lp/use-lp-residual';
 
 export function ResidualPosition() {
   const {columns, dataSource} = useLpResidual();

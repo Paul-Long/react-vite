@@ -3,7 +3,6 @@ import {useLang} from '@rx/hooks/use-lang';
 import {lang as tradeLang} from '@rx/lang/trade.lang';
 import {NumberInput} from '@rx/widgets';
 import cn from 'classnames';
-import React from 'react';
 
 interface Props {
   mode: string;
@@ -27,6 +26,7 @@ export function NotionalAmount(props: Props) {
           buy: direction === 'Long',
           sell: direction === 'Short',
         })}
+        style={{padding: 0, marginTop: 12, fontWeight: 700, fontSize: 22}}
         bordered={false}
         suffix={
           <span className="T2">{mode === 'IRS' ? 'SOL' : 'y' + contract + '-' + maturity}</span>

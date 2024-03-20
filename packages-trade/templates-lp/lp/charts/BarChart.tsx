@@ -1,7 +1,7 @@
 import {useChart} from '@/lp/charts/hooks';
 import {select$} from '@/lp/stream/streams';
 import {useStream} from '@rx/hooks/use-stream';
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 
 export function BarChart() {
   const {chart, container, loaded} = useChart();
@@ -56,7 +56,7 @@ export function BarChart() {
               '10.0%',
             ],
             axisLine: {show: true},
-            axisTick: {show: true, alignWithLabel: true},
+            axisTick: {show: true, alignWithLabel: false},
           },
         ],
         yAxis: [

@@ -19,11 +19,9 @@ export function YieldSwapAccount() {
       <Title>{LG(lang.YieldSwapAccount)}</Title>
       <div className="df fdc">
         <Tabs type="line" options={genTabs(LG)} active={tab} onChange={(tab) => setTab(tab)}>
-          {tab !== 'History' && (
-            <div className="mr24px">
-              <SelectTypes value={mode} onChange={(v: string) => setMode(v)} />
-            </div>
-          )}
+          <div className="mr24px">
+            <SelectTypes value={mode} onChange={(v: string) => setMode(v)} />
+          </div>
         </Tabs>
         {tab === 'Position' && <Positions mode={mode} />}
         {tab === 'Orders' && <Orders mode={mode} />}

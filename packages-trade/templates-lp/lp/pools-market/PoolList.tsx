@@ -6,7 +6,7 @@ import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
 import {Table} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 
 export function PoolList() {
   const {LG} = useLang();
@@ -15,6 +15,9 @@ export function PoolList() {
   const genColumns = useCallback((): Column[] => {
     const columns: Column[] = [
       {title: LG(lang.Pool), dataIndex: 'Contract', fixed: 'left'},
+      {title: LG(lang.RLPToken), dataIndex: 'RLPToken'},
+      {title: LG(lang.RLPTokenValue), dataIndex: 'RLPValue'},
+      {title: LG(lang.APR), dataIndex: 'APR'},
       {
         title: LG(lang.Maturity),
         dataIndex: 'MaturityDate',
@@ -24,10 +27,8 @@ export function PoolList() {
             : '-',
       },
       {title: LG(lang.TTM), dataIndex: 'TTM', render: (record) => `${record.TTM}`},
-      {title: LG(lang.APR), dataIndex: 'APR'},
-      {title: LG(lang.TVL), dataIndex: 'TVL'},
       {title: LG(lang.ActiveRadio), dataIndex: 'ActiveRatio'},
-      {title: LG(lang.RLPMSolValue), dataIndex: 'RLPValue'},
+      {title: LG(lang.TVL), dataIndex: 'TVL'},
     ];
     columns.forEach((c: Column) => {
       c.align = 'center';

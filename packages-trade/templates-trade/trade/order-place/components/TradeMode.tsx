@@ -1,7 +1,8 @@
+import {mode$} from '@/trade/streams/streams';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as tradeLang} from '@rx/lang/trade.lang';
 import {RadioButtonGroup} from '@rx/widgets';
-import React from 'react';
+import {useCallback} from 'react';
 
 export function TradeMode({
   value,
@@ -11,12 +12,18 @@ export function TradeMode({
   onChange: (key: string, v: any) => void;
 }) {
   const {LG} = useLang();
+
+  const handleChange = useCallback((v: string) => {
+    mode$.next(v);
+    onChange('mode', v);
+  }, []);
+
   return (
     <RadioButtonGroup
       options={genDirectionOptions(LG)}
       size="middle"
       value={value}
-      onChange={(v: any) => onChange('mode', v)}
+      onChange={handleChange}
     />
   );
 }

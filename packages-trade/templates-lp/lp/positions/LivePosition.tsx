@@ -1,6 +1,5 @@
-import {useLpLive} from '@rx/hooks/lp/use-lp-live';
 import {Table} from '@rx/widgets';
-import React from 'react';
+import {useLpLive} from '@trade/hooks/lp/use-lp-live';
 
 export function LivePosition() {
   const {columns, dataSource} = useLpLive();

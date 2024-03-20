@@ -1,10 +1,10 @@
 import {db, useQuery} from '@rx/db';
+import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useLang} from '../use-lang';
+import {useCallback, useEffect, useState} from 'react';
 
 export function useOrders(mode: string) {
   const {LG} = useLang();
@@ -12,7 +12,15 @@ export function useOrders(mode: string) {
 
   useEffect(() => {
     const columns: Column[] = [
-      {title: LG(clang.No) + '.', dataIndex: 'id', render: (_, i) => (i ?? 0) + 1},
+      {
+        title: LG(clang.No) + '.',
+        dataIndex: 'id',
+        fixed: 'left',
+        width: '80px',
+        shadowRight: true,
+        bodyCellStyle: {background: '#00162B'},
+        render: (_, i) => (i ?? 0) + 1,
+      },
       {title: LG(lang.MarginType), dataIndex: 'marginType'},
       {title: LG(clang.Contract), dataIndex: 'Contract'},
       {
@@ -30,17 +38,20 @@ export function useOrders(mode: string) {
         dataIndex: 'action',
         bodyCellStyle: {background: '#00162B'},
         fixed: 'right',
+        shadowLeft: true,
         render: renderAction,
       },
     ];
-    columns.forEach((c) => {
+    columns.forEach((c, i) => {
       c.headerCellStyle = {
         color: '#fff',
         background: '#0A253D',
         fontWeight: 700,
       };
-      c.align = 'center';
-      if (c.dataIndex !== 'action') {
+      if (i !== 0) {
+        c.align = 'center';
+      }
+      if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {
         c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
       }
     });

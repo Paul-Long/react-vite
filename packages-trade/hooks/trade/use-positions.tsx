@@ -1,15 +1,10 @@
 import {db, useQuery} from '@rx/db';
+import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useLang} from '../use-lang';
-
-const dataMap: any = {
-  CrossMargin: 'Cross',
-  IsolatedMargin: 'Isolated',
-};
+import {useCallback, useEffect, useState} from 'react';
 
 export function usePositions(mode: string) {
   const {LG} = useLang();
@@ -17,7 +12,15 @@ export function usePositions(mode: string) {
 
   useEffect(() => {
     const columns: Column[] = [
-      {title: LG(clang.No) + '.', dataIndex: 'id', render: (_, i) => (i ?? 0) + 1},
+      {
+        title: LG(clang.No) + '.',
+        dataIndex: 'id',
+        fixed: 'left',
+        width: '80px',
+        shadowRight: true,
+        bodyCellStyle: {background: '#00162B'},
+        render: (_, i) => (i ?? 0) + 1,
+      },
       {title: LG(lang.MarginType), dataIndex: 'marginType'},
       {title: LG(clang.Contract), dataIndex: 'Contract'},
       {
@@ -27,8 +30,16 @@ export function usePositions(mode: string) {
       },
       {title: LG(clang.Direction), dataIndex: 'direction'},
       {title: LG(clang.PnL), dataIndex: 'pnl', render: renderPnl},
-      {title: LG(clang.Entry), dataIndex: 'entry'},
-      {title: LG(clang.Current), dataIndex: 'current'},
+      {
+        title: LG(clang.Entry),
+        dataIndex: 'entry',
+        render: (record) => (mode === 'YT' ? record.entry : record.entryYield),
+      },
+      {
+        title: LG(clang.Current),
+        dataIndex: 'current',
+        render: (record) => (mode === 'YT' ? record.current : record.entryYield),
+      },
       {title: LG(clang.Liq) + '.', dataIndex: 'liq'},
       {title: LG(clang.TP) + '/' + LG(clang.SL), dataIndex: 'tpsl'},
       {title: mode === 'YT' ? LG(clang.CR) : LG(clang.MR), dataIndex: 'cr'},
@@ -37,16 +48,21 @@ export function usePositions(mode: string) {
         dataIndex: 'action',
         fixed: 'right',
         render: renderAction,
+        shadowLeft: true,
+        shadowRight: true,
         bodyCellStyle: {background: '#00162B'},
       },
     ];
-    columns.forEach((c) => {
+    columns.forEach((c, i) => {
       c.headerCellStyle = {
         color: '#fff',
         background: '#0A253D',
         fontWeight: 700,
       };
-      if (c.dataIndex !== 'action') {
+      if (i !== 0) {
+        c.align = 'center';
+      }
+      if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {
         c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
       }
     });

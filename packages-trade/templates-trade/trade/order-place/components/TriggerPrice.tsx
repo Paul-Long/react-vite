@@ -3,16 +3,18 @@ import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
 import React, {useCallback} from 'react';
+import cn from 'classnames';
 
 interface Props {
   value: string | number;
   mode: string;
   orderType: string;
   current: string;
+  direction: string;
 }
 
 export function TriggerPrice(props: Props) {
-  const {value, mode, orderType, current} = props;
+  const {value, mode, orderType, current, direction} = props;
   const {LG} = useLang();
   const genLabel = useCallback(() => {
     if (orderType === 'StopMarket') {
@@ -32,7 +34,10 @@ export function TriggerPrice(props: Props) {
       </div>
 
       <div className="df fdr jcsb">
-        <span className="T6 font-size-22px">{value}</span>
+        <span className={cn("font-size-22px", {
+          buy: direction === 'Long',
+          sell: direction === 'Short',
+        })}>{value}</span>
         <span className="T3 font-size-14px">SOL</span>
       </div>
     </StyledInputWrap>

@@ -1,5 +1,5 @@
 import {Big} from 'big.js';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {css, styled} from 'styled-components';
 
 const options = [0, 25, 50, 75, 100];
@@ -134,21 +134,40 @@ const StyledDot = styled.div<{$leverage: number}>`
   }
 `;
 
-export function ProgressBar({value, max, onChange, color, util = 'x'}: any) {
+export function ProgressBar({
+  value = 0,
+  max,
+  min = 0,
+  onChange,
+  color = '#27F2A9',
+  util = 'x',
+  dp = 1,
+}: any) {
   const [progress, setProgress] = useState(calculateProgress(value, max));
 
   useEffect(() => {
     setProgress(calculateProgress(value, max));
-  }, [value, max]);
+  }, [max, value]);
 
   function calculateProgress(value: number, max: number) {
-    return Number(Big(value).div(max).times(100).toFixed(0, 3));
+    return Number(
+      Big(value - min)
+        .div(max - min)
+        .times(100)
+        .toFixed(dp)
+    );
   }
 
   function updateProgress(value: number) {
     setProgress(value);
-    const real = Number(Big(value).times(max).div(100).toFixed(0, 3));
-    onChange?.(Math.max(1, Math.min(real, max)));
+    const real = Number(
+      Big(value)
+        .times(max - min)
+        .div(100)
+        .add(min)
+        .toFixed(dp)
+    );
+    onChange?.(Math.max(min, Math.min(real, max)));
   }
 
   function handlePositionClick(position: number) {
@@ -159,15 +178,24 @@ export function ProgressBar({value, max, onChange, color, util = 'x'}: any) {
     updateProgress(event.target.value);
   }
 
-  function genNum(max: number, v: number) {
-    return Number(Big(max).div(100).times(v).toFixed(0, 3));
+  function genNum(max: number, min: number, v: number) {
+    return Number(
+      Big(max - min)
+        .div(100)
+        .times(v)
+        .add(min)
+        .toFixed(dp)
+    );
   }
 
   return (
     <Wrap className="progress-bar dark" $color={color ?? '--mint-green'}>
       <div className="position-relative">
         <div className="line" />
-        <div className="high-light-line position-absolute" style={{width: `${progress}%`}} />
+        <div
+          className="high-light-line position-absolute"
+          style={{width: `${Math.min(progress, 100)}%`}}
+        />
       </div>
       <div className="dot-box position-absolute">
         <div className="dots df aic jcsb">
@@ -175,8 +203,8 @@ export function ProgressBar({value, max, onChange, color, util = 'x'}: any) {
             <StyledDot
               key={op}
               className={`dot cp ${progress >= op ? 'active' : ''}`}
-              onClick={() => handlePositionClick(genNum(max, op))}
-              $leverage={genNum(max, op) + util}
+              onClick={() => handlePositionClick(genNum(max, min, op))}
+              $leverage={genNum(max, min, op) + util}
             />
           ))}
         </div>

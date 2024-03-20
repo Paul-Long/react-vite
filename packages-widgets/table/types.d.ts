@@ -9,6 +9,9 @@ export interface Column {
   renderTitle?: (column: Column, index: number) => React.ReactNode;
   headerCellStyle?: CSSProperties;
   bodyCellStyle?: CSSProperties;
+  width?: string;
+  shadowLeft?: boolean;
+  shadowRight?: boolean;
 }
 
 export interface TableProps {

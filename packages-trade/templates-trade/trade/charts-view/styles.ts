@@ -2,7 +2,7 @@ import {css, styled} from 'styled-components';
 
 export const StyledChartsViewWrap = styled.section`
   box-sizing: border-box;
-  padding: 8px 0 16px 16px;
+  padding: 24px 0 16px 16px;
   overflow: hidden;
 `;
 
@@ -14,7 +14,7 @@ export const StyledInfoGrid = styled.div<{$row?: number}>`
   ${({$row}) => {
     if (!$row) {
       return css`
-        grid-template-columns: repeat(6, 1fr) max-content;
+        grid-template-columns: repeat(6, auto);
       `;
     }
     return css`

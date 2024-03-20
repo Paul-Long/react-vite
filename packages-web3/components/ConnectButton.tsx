@@ -23,7 +23,7 @@ const ConnectWalletButton: React.FC = () => {
         }
       >
         <StyledWalletConnected className="dif fdr aic gap10px border-rd-4px fw700 cp">
-          <img className="dib" src={IMAGES.sol} alt="sol" width={24} height={24} />
+          <img className="dib" src={IMAGES.sol} alt="sol" />
           <span className="T3">{abbreviateString(address as string)}</span>
           <i className="iconfont T3">&#xe624;</i>
         </StyledWalletConnected>

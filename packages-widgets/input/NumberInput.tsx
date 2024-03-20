@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, {forwardRef, useCallback, useEffect, useState} from 'react';
+import React, {CSSProperties, forwardRef, useCallback, useEffect, useState} from 'react';
 import {css, styled} from 'styled-components';
 
 // Styled component for the input container
@@ -27,6 +27,7 @@ const StyledInputContainer = styled.div<{size: string; bordered: string; align: 
     background: transparent;
     color: inherit;
     text-align: ${({align}) => align};
+    font-family: BASE;
     &:hover,
     &:focus {
       outline: none;
@@ -65,6 +66,7 @@ interface NumberInputProps {
   onChange?: (v: any) => void;
   value?: string | number;
   placeholder?: string | JSX.Element;
+  style?: CSSProperties;
 }
 
 // Forward ref to the input element
@@ -127,6 +129,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           disabled={disabled}
           onWheel={(e) => e.currentTarget.blur()} // Prevents scrolling from changing the value
           pattern="\d*"
+          style={props?.style || {}}
         ></input>
         {suffix && <span className="suffix">{suffix}</span>}
       </StyledInputContainer>

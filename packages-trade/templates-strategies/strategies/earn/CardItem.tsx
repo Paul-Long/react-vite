@@ -1,13 +1,13 @@
-import {db} from '@rx/db';
 import {useLang} from '@rx/hooks/use-lang';
+import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/strategy.lang';
-import {Button, Select, Toast} from '@rx/widgets';
-import React, {useCallback, useEffect, useState} from 'react';
+import {Button} from '@rx/widgets';
+import {useEffect, useState} from 'react';
 import {styled} from 'styled-components';
 import {Card} from '../components/Card';
 
 const StyledSelectedWrap = styled.div`
-  padding: 0 12px;
+  padding: 12px;
   background: var(--night-sky-blue);
   border: 1px solid var(--dark-gray);
 `;
@@ -18,13 +18,6 @@ export function CardItem({item, onMint}: any) {
 
   useEffect(() => {
     setSelected(item?.matureDate);
-  }, [item]);
-
-  const handleMint = useCallback(async () => {
-    // onMint?.();
-    const {...data} = item;
-    await db.strategyEarnPosition.add(data);
-    Toast.success('Mint Success');
   }, [item]);
 
   return (
@@ -40,19 +33,11 @@ export function CardItem({item, onMint}: any) {
           </div>
         </div>
         <StyledSelectedWrap className="df fdr aic jcsb mt46px">
-          <div className="T5 font-size-14px">{LG(lang.MatureDate)}</div>
-          <div className="flex-1">
-            <Select
-              align="right"
-              options={[{label: item.matureDate, value: item.matureDate}]}
-              showBackground={false}
-              value={selected}
-              onChange={(v) => setSelected(v)}
-            />
-          </div>
+          <div className="T5 font-size-14px">{LG(clang.MaturityDate)}</div>
+          <div className="lh24">{item.matureDate}</div>
         </StyledSelectedWrap>
 
-        <Button className="mt16px" onClick={handleMint}>
+        <Button className="mt16px font-size-20px" onClick={onMint}>
           {LG(lang.Mint)}
         </Button>
       </div>

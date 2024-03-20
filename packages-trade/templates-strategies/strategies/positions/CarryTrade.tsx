@@ -1,6 +1,5 @@
-import {useCarryTrade} from '@rx/hooks/strategy/use-carry-trade';
 import {Table} from '@rx/widgets';
-import React from 'react';
+import {useCarryTrade} from '@trade/hooks/strategy/use-carry-trade';
 
 export function CarryTrade() {
   const {columns, dataSource} = useCarryTrade();

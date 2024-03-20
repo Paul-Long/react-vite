@@ -1,6 +1,5 @@
-import {useEarn} from '@rx/hooks/strategy/use-earn';
 import {Table} from '@rx/widgets';
-import React from 'react';
+import {useEarn} from '@trade/hooks/strategy/use-earn';
 
 export function Earn() {
   const {columns, dataSource} = useEarn();

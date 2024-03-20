@@ -1,6 +1,5 @@
-import {useHistory} from '@rx/hooks/trade/use-history';
 import {Table} from '@rx/widgets';
-import React from 'react';
+import {useHistory} from '@trade/hooks/trade/use-history';
 
 export function History() {
   const {dataSource, columns} = useHistory();

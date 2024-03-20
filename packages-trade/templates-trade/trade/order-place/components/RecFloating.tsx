@@ -5,10 +5,11 @@ import React from 'react';
 
 interface Props {
   value: number | string;
+  direction: string;
 }
 
 export function RecFloating(props: Props) {
-  const {value} = props;
+  const {value, direction} = props;
   const {LG} = useLang();
   return (
     <StyledInputWrap className="df fdc aic flex-1 gap8px">

@@ -1,5 +1,12 @@
 import {db} from '@rx/db';
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
+import {styled} from 'styled-components';
+
+const StyledWrap = styled.div`
+  @media (max-width: 640px) {
+    display: none;
+  }
+`;
 
 export function Setting() {
   const [count, setCount] = useState<number>(0);
@@ -20,8 +27,8 @@ export function Setting() {
     setCount(0);
   }, [count]);
   return (
-    <div className="cp T1" onClick={handleClick}>
+    <StyledWrap className="cp T1" onClick={handleClick}>
       <i className="iconfont font-size-28px">&#xe649;</i>
-    </div>
+    </StyledWrap>
   );
 }

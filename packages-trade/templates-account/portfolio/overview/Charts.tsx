@@ -1,6 +1,5 @@
-import {timeUtil} from '@rx/helper/time';
 import {useChart} from '@rx/hooks/use-chart';
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {data} from './data';
 
 let rendered = false;
@@ -25,8 +24,24 @@ export function Charts() {
         })
         .setData(
           data?.map((d) => ({
-            time: timeUtil.formatDate(new Date(d.time).getTime()),
-            value: d.balance,
+            time: d.Date,
+            value: Number(d.Total),
+          }))
+        );
+      chart?.current
+        ?.addLineSeries({
+          lineWidth: 2,
+          priceScaleId: 'right',
+          priceFormat: {
+            type: 'price',
+            precision: 4,
+            minMove: 0.001,
+          },
+        })
+        .setData(
+          data?.map((d) => ({
+            time: d.Date,
+            value: Number(d.Strategy),
           }))
         );
       chart?.current
@@ -35,14 +50,13 @@ export function Charts() {
           lineWidth: 2,
           priceScaleId: 'left',
           priceFormat: {
-            type: 'percent',
-            precision: 4,
+            type: 'price',
+            precision: 2,
             minMove: 0.001,
           },
         })
-        .setData(
-          data?.map((d) => ({time: timeUtil.formatDate(new Date(d.time).getTime()), value: d.pnl}))
-        );
+        .setData(data?.map((d) => ({time: d.Date, value: Number(d.Trading)})));
+      chart.current.applyOptions({height: 382});
       chart?.current.timeScale().fitContent();
       rendered = true;
     }

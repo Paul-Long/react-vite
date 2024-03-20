@@ -1,13 +1,14 @@
 import {useChartData} from '@/trade/charts-view/state';
 import {StyledCharts, StyledChartsContainer} from '@/trade/charts-view/styles';
+import {SelectTypes} from '@/trade/components/select-types/SelectTypes';
 import {resize$} from '@/trade/streams/streams';
 import {useChart} from '@rx/hooks/use-chart';
-import React, {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {debounceTime} from 'rxjs';
 
 export function Charts() {
-  const line1 = useRef<any>();
-  const line2 = useRef<any>();
+  const [mode, setMode] = useState('YT');
+  const line = useRef<any>();
 
   const {data} = useChartData();
   const {chart, container, loaded, resize} = useChart({
@@ -25,6 +26,8 @@ export function Charts() {
       },
     },
   });
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     window?.addEventListener('resize', resize);
@@ -47,8 +50,8 @@ export function Charts() {
       ytd.push({time, value: value});
       yd.push({time, value: price});
     }
-    if (!line1.current) {
-      line1.current = chart?.current?.addLineSeries({
+    if (!line.current) {
+      line.current = chart?.current?.addLineSeries({
         color: '#E8BC31',
         lineWidth: 2,
         priceScaleId: 'left',
@@ -57,36 +60,30 @@ export function Charts() {
         priceFormat: {
           type: 'custom',
           formatter: (p: any) => {
-            return `${(p * 100).toFixed(3)}%`;
+            return `${(p * 100).toFixed(2)}%`;
           },
         },
       });
     }
-    line1?.current?.setData(ytd);
-    if (!line2?.current) {
-      line2.current = chart?.current?.addLineSeries({
-        color: '#27F2A9',
-        lineWidth: 2,
-        // lastValueVisible: false,
-        // priceLineVisible: false,
-        priceFormat: {
-          type: 'price',
-          precision: 5,
-          minMove: 0.0001,
-        },
-      });
-    }
-    line2?.current?.setData(yd);
-
-    if (data.length > 0) {
-      chart?.current.timeScale().setVisibleRange({
-        from: data[0].date,
-        to: data[data.length - 1].date,
-      });
-    }
-
+    line.current.applyOptions({
+      color: mode === 'YT' ? '#E8BC31' : '#27F2A9',
+      priceFormat:
+        mode === 'YT'
+          ? {
+              type: 'price',
+              precision: 6,
+              minMove: 0.000001,
+            }
+          : {
+              type: 'custom',
+              formatter: (p: any) => {
+                return `${(p * 100).toFixed(2)}%`;
+              },
+            },
+    });
+    line?.current?.setData(mode === 'YT' ? yd : ytd);
     chart?.current.timeScale().fitContent();
-  }, [loaded, data, chart?.current]);
+  }, [loaded, data, chart?.current, mode]);
 
   return (
     <StyledCharts
@@ -94,6 +91,9 @@ export function Charts() {
       onResize={resize}
     >
       <StyledChartsContainer ref={container as any} className="flex-1" />
+      <div className="pos-absolute top-12px right-12px z-10">
+        <SelectTypes theme="dark" value={mode} onChange={(v: string) => setMode(v)} />
+      </div>
     </StyledCharts>
   );
 }

@@ -1,9 +1,8 @@
-import {db} from '@rx/db';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/strategy.lang';
-import {Button, Toast} from '@rx/widgets';
-import React, {useCallback, useEffect, useState} from 'react';
+import {Button} from '@rx/widgets';
+import {useEffect, useState} from 'react';
 import {styled} from 'styled-components';
 import {Card} from '../components/Card';
 
@@ -14,18 +13,12 @@ const StyledSelectedWrap = styled.div`
   border-radius: 6px;
 `;
 
-export function CardItem({item}: any) {
+export function CardItem({item, onMint}: any) {
   const {LG} = useLang();
   const [selected, setSelected] = useState(item?.matureDate?.[0]);
 
   useEffect(() => {
     setSelected(item?.matureDate?.[0]);
-  }, [item]);
-
-  const handleMint = useCallback(async () => {
-    const {...data} = item;
-    await db.strategyCarryTrade.add(data);
-    Toast.success('Mint Success');
   }, [item]);
 
   return (
@@ -65,7 +58,7 @@ export function CardItem({item}: any) {
           </StyledSelectedWrap>
         </div>
 
-        <Button className="mt24px" onClick={handleMint}>
+        <Button className="mt24px font-size-20px" onClick={onMint}>
           {LG(lang.Follow)}
         </Button>
       </div>

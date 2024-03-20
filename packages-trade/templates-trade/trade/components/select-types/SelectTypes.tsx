@@ -1,45 +1,81 @@
-import React, {useCallback, useState} from 'react';
+import {mode$} from '@/trade/streams/streams';
+import {CSSProperties, useCallback, useEffect, useState} from 'react';
 import {css, styled} from 'styled-components';
 
-export const StyledTypesWrap = styled.div`
+export const StyledTypesWrap = styled.div<{$theme: 'dark' | 'light'}>`
   padding: 4px;
-  background: rgba(255, 255, 255, 0.7);
+  background: ${({$theme}) =>
+    $theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.7)'};
   border-radius: 2px;
 `;
 
-export const StyledTypeItem = styled.div<{$active: boolean}>`
+export const StyledTypeItem = styled.div<{$active: boolean; $theme: 'dark' | 'light'}>`
   padding: 2px 6px;
   min-width: 36px;
-  color: var(--black);
   font-weight: 700;
-  ${({$active}) => {
+  ${({$active, $theme}) => {
     if ($active) {
       return css`
+        color: var(--black);
         background: var(--golden);
       `;
     }
+    if ($theme === 'light') {
+      if (!$active) {
+        return css`
+          color: var(--black);
+        `;
+      }
+    }
+    if ($theme === 'dark') {
+      if (!$active) {
+        return css`
+          color: var(--white);
+        `;
+      }
+    }
   }}
 `;
-export function SelectTypes({value, onChange}: {onChange?: Function; value?: string}) {
+export function SelectTypes({
+  value,
+  onChange,
+  theme = 'light',
+  style,
+}: {
+  onChange?: Function;
+  value?: string;
+  theme?: 'dark' | 'light';
+  style?: CSSProperties;
+}) {
   const [type, setType] = useState<string>(value ?? 'YT');
 
+  useEffect(() => {
+    const subscription = mode$.subscribe((m) => {
+      handleClick(m);
+    });
+    return function () {
+      subscription.unsubscribe();
+    };
+  }, []);
   const handleClick = useCallback((t: string) => {
     setType(t);
     onChange?.(t);
   }, []);
 
   return (
-    <StyledTypesWrap className="df fdr aic cp font-size-14px">
+    <StyledTypesWrap $theme={theme} className="df fdr aic cp font-size-14px" style={style ?? {}}>
       <StyledTypeItem
-        className="w40px df jcc aic"
         $active={type === 'YT'}
+        $theme={theme}
+        className="w40px df jcc aic"
         onClick={() => handleClick('YT')}
       >
         yT
       </StyledTypeItem>
       <StyledTypeItem
-        className="w40px df jcc aic"
         $active={type === 'IRS'}
+        $theme={theme}
+        className="w40px df jcc aic"
         onClick={() => handleClick('IRS')}
       >
         IRS

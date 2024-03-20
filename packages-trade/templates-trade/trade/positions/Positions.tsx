@@ -1,6 +1,5 @@
-import {usePositions} from '@rx/hooks/trade/use-positions';
 import {Table} from '@rx/widgets';
-import React from 'react';
+import {usePositions} from '@trade/hooks/trade/use-positions';
 
 interface Props {
   mode: string;

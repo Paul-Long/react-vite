@@ -16,7 +16,7 @@ function createEnv() {
 }
 
 function checkProduction() {
-  return location.hostname === 'rubydex.com';
+  return location.hostname === 'rate-x.io';
 }
 
 function checkTestNet() {

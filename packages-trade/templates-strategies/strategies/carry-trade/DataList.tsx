@@ -4,13 +4,17 @@ import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/strategy.lang';
 import {Button, Table, Toast} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {styled} from 'styled-components';
 import {data} from './data';
 
 const StyledWrap = styled.div``;
 
-export function DataList() {
+interface Props {
+  modalHook: ModalHook<any>;
+}
+
+export function DataList(props: Props) {
   const {LG} = useLang();
 
   const genColumns = useCallback((): Column[] => {
@@ -26,7 +30,7 @@ export function DataList() {
         title: <span />,
         dataIndex: 'action',
         render: (record: any) => (
-          <Button size="small" onClick={() => handleMint(record)}>
+          <Button size="small" onClick={props.modalHook.onOpen(record)}>
             {LG(clang.Follow)}
           </Button>
         ),

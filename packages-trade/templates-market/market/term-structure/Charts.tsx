@@ -1,5 +1,7 @@
+import {select$} from '@/market/stream/streams';
 import {useChart} from '@rx/hooks/use-chart';
-import React, {useEffect, useRef} from 'react';
+import {useStream} from '@rx/hooks/use-stream';
+import {useEffect, useRef} from 'react';
 
 const myCategoriesMap: any = {
   '2024-03-01': '1M',
@@ -9,7 +11,7 @@ const myCategoriesMap: any = {
 };
 
 export function Charts() {
-  const mLine = useRef<any>();
+  const [select] = useStream(select$);
   const jLine = useRef<any>();
   const {chart, container} = useChart({
     rightPriceScale: {
@@ -20,10 +22,7 @@ export function Charts() {
       },
     },
     leftPriceScale: {
-      scaleMargins: {
-        top: 0.5,
-        bottom: 0.35,
-      },
+      visible: false,
     },
     layout_background: {color: '#00162B'},
     crosshair: {
@@ -35,20 +34,6 @@ export function Charts() {
 
   useEffect(() => {
     if (chart.current) {
-      if (!mLine.current) {
-        mLine.current = chart?.current?.addLineSeries({
-          color: '#E8BC31',
-          lineWidth: 2,
-          priceScaleId: 'left',
-          priceFormat: {
-            type: 'custom',
-            formatter: (p: any) => {
-              return `${(p * 100).toFixed(2)}%`;
-            },
-          },
-        });
-      }
-      mLine.current.setData(MSOL_DATA);
       if (!jLine.current) {
         jLine.current = chart?.current?.addLineSeries({
           color: '#27F2A9',
@@ -61,7 +46,7 @@ export function Charts() {
           },
         });
       }
-      jLine.current.setData(JITOSOL_DATA);
+      jLine.current.setData(select?.startsWith('mSOL') ? MSOL_DATA : JITOSOL_DATA);
       chart.current.applyOptions({
         timeScale: {
           tickMarkFormatter: (time: string) => {
@@ -71,7 +56,7 @@ export function Charts() {
       });
       chart?.current.timeScale().fitContent();
     }
-  }, [chart.current]);
+  }, [chart.current, select]);
 
   return (
     <div

@@ -19,7 +19,7 @@ export function useChart(options?: Options) {
     crosshair = {},
   } = options || {};
   const chart = useRef<IChartApi>();
-  const container = useRef<HTMLDivElement>();
+  const container = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {

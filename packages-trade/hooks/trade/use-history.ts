@@ -1,15 +1,10 @@
 import {db, useQuery} from '@rx/db';
 import {timeUtil} from '@rx/helper/time';
+import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
 import type {Column} from '@rx/widgets/table/types';
 import {useEffect, useState} from 'react';
-import {useLang} from '../use-lang';
-
-const dataMap: any = {
-  CrossMargin: 'Cross',
-  IsolatedMargin: 'Isolated',
-};
 
 export function useHistory() {
   const {LG} = useLang();
@@ -17,7 +12,15 @@ export function useHistory() {
 
   useEffect(() => {
     const columns: Column[] = [
-      {title: LG(clang.No) + '.', dataIndex: 'id', render: (_, i) => (i ?? 0) + 1, fixed: 'left'},
+      {
+        title: LG(clang.No) + '.',
+        dataIndex: 'id',
+        fixed: 'left',
+        width: '80px',
+        shadowRight: true,
+        bodyCellStyle: {background: '#00162B'},
+        render: (_, i) => (i ?? 0) + 1,
+      },
       {title: LG(lang.MarginType), dataIndex: 'marginType'},
       {title: LG(clang.Contract), dataIndex: 'Contract'},
       {title: LG(clang.Direction), dataIndex: 'direction'},
@@ -35,7 +38,7 @@ export function useHistory() {
       {
         title: LG(lang.EntryYield),
         dataIndex: 'entryYield',
-        render: (record) => (record.mode === 'YT' ? '-' : record.entry),
+        render: (record) => (record.mode === 'YT' ? '-' : record.entryYield),
       },
       {
         title: LG(lang.EntryPrice),
@@ -47,16 +50,23 @@ export function useHistory() {
         title: LG(lang.Transaction),
         dataIndex: 'transaction',
         fixed: 'right',
+        shadowLeft: true,
+        bodyCellStyle: {background: '#00162B'},
         render: (record) => timeUtil.formatDateTime(record.transaction),
       },
     ];
-    columns.forEach((c) => {
+    columns.forEach((c, i) => {
       c.headerCellStyle = {
         color: '#fff',
         background: '#0A253D',
         fontWeight: 700,
       };
-      c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
+      if (i !== 0) {
+        c.align = 'center';
+      }
+      if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {
+        c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
+      }
     });
     setColumns(columns);
   }, [LG]);
