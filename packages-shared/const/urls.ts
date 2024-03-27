@@ -1,8 +1,9 @@
 import {env} from '@rx/env';
 
-export const API_PREFIX = genApiUrl();
-export const API_URL = `${API_PREFIX}/httpapi`;
-export const WS_URL = genWsUrl();
+// export const API_PREFIX = genApiUrl();
+// export const API_URL = `${API_PREFIX}/httpapi`;
+export const API_URL = `http://3.1.146.145:3002`;
+// export const WS_URL = genWsUrl();
 
 function genApiUrl() {
   const hostname = calcHostname();
@@ -25,7 +26,7 @@ function calcHostname() {
   if (/^[a-z]*[0-9]{2}\./i.test(hostname)) {
     return hostname
       .split('.')
-      .map((o, i) => (i === 0 ? o.slice(0, -1) : o))
+      .map((o: any, i: any) => (i === 0 ? o.slice(0, -1) : o))
       .join('.');
   }
   return hostname;

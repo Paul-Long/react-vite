@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import React, {useCallback} from 'react';
-import {css, styled} from 'styled-components';
+import {css, CSSProperties, styled} from 'styled-components';
 
 const CheckboxContainer = styled.div`
   display: inline-flex;
@@ -8,6 +8,7 @@ const CheckboxContainer = styled.div`
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  color: rgba(255, 255, 255, 0.9);
 `;
 
 const StyledCheckbox = styled.div<{$checked: boolean}>`
@@ -33,9 +34,16 @@ interface CheckboxProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   children?: string | JSX.Element;
+  style?: CSSProperties;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({className, checked, onChange, children}) => {
+export const Checkbox: React.FC<CheckboxProps> = ({
+  className,
+  checked,
+  onChange,
+  children,
+  style,
+}) => {
   const handleClick = useCallback(() => {
     onChange?.(!checked);
   }, [checked]);
@@ -43,7 +51,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({className, checked, onChange,
   const checkboxClass = cn(className);
 
   return (
-    <CheckboxContainer className={checkboxClass} onClick={handleClick}>
+    <CheckboxContainer className={checkboxClass} onClick={handleClick} style={style ?? {}}>
       <StyledCheckbox $checked={!!checked}>
         {checked && <i className={cn('iconfont font-size-14px mt-1px', {T1: checked})}>&#xe600;</i>}
       </StyledCheckbox>

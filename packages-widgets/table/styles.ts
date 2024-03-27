@@ -1,3 +1,4 @@
+import {Key} from 'react';
 import {css, styled} from 'styled-components';
 
 export const StyledTableWrap = styled.div<{$rows: number; $grid?: string}>`
@@ -10,7 +11,7 @@ export const StyledRow = styled.div`
   display: contents;
   cursor: default;
   &:hover .td {
-    background: var(--slate-gray-blue) !important;
+    background: var(--deep-sea-blue) !important;
   }
 `;
 
@@ -34,7 +35,7 @@ const StyledCell = styled.div<{
   ${({$selected}) => {
     if ($selected) {
       return css`
-        background: var(--slate-gray-blue);
+        background: var(--deep-sea-blue);
       `;
     }
   }}
@@ -105,6 +106,11 @@ const StyledCell = styled.div<{
       `;
     }
   }}
+
+  padding: 12px 20px;
+  @media (max-width: 640px) {
+    padding: 10px 12px;
+  }
 `;
 
 export const StyledTh = styled(StyledCell)``;

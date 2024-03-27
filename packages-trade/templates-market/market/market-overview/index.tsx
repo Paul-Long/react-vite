@@ -56,7 +56,7 @@ export function MarketOverview() {
       {title: LG(lang.AvaLiquidity), dataIndex: 'Available Liquidity'},
     ];
     columns.forEach((c) => {
-      c.headerCellStyle = {fontWeight: 700, background: '#0A253D', color: '#fff'};
+      c.headerCellStyle = {fontWeight: 700, background: '#0A253D', color: '#E0E0E0'};
       c.align = 'center';
       c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
     });

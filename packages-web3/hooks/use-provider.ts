@@ -1,4 +1,5 @@
 import {AnchorProvider} from '@coral-xyz/anchor';
+import {env} from '@rx/env';
 import {useAnchorWallet, useConnection} from '@solana/wallet-adapter-react';
 import {useMemo} from 'react';
 
@@ -7,7 +8,7 @@ export function useProvider() {
   const {connection} = useConnection();
 
   const provider = useMemo(() => {
-    if (!wallet) {
+    if (!wallet || env.isServer) {
       return null;
     }
     return new AnchorProvider(connection, wallet, {preflightCommitment: 'processed'});

@@ -1,7 +1,7 @@
-import {BehaviorSubject} from 'rxjs';
-import qs from 'query-string';
 import {env} from '@rx/env';
 import {parsePathname} from '@rx/helper/locale';
+import qs from 'query-string';
+import {BehaviorSubject} from 'rxjs';
 
 declare let SSR_LANGUAGE: Locale;
 

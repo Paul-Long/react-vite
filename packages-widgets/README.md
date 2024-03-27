@@ -20,7 +20,7 @@ disabled： true ｜ false
 css 设置如下：
 hover 时 透明度设置为 0.8
 
-使用export 导出 ，禁止 export default 
+使用export 导出 ，禁止 export default
 ```
 
 ## Input
@@ -96,7 +96,7 @@ padding： 24px
 使用export 导出 ，禁止 export default
 ```
 
-## Toast 
+## Toast
 
 ```text
 react styled-components typescript classNames
@@ -153,7 +153,7 @@ styled-components 定义的元素组件额外属性命名方式为 $**
 命名：Dropdown
 
 属性：
-onChange?: Function 
+onChange?: Function
 trigger?: click | hover， default click
 contentStyle?: CSSProperties 可自定义 content 样式
 content: JSX.Element
@@ -181,8 +181,8 @@ styled-components 定义的元素组件额外属性命名方式为 $**
 ul li 实现，不显示 li 的点 自动优化显示方式
 
 属性：
-onClick?: (option: Option) => void 
-options: {text: string ｜ JSX.Element | (option: Option) => JSX.Element, key: string | number}[] 
+onClick?: (option: Option) => void
+options: {text: string ｜ JSX.Element | (option: Option) => JSX.Element, key: string | number}[]
 size: 三种大小  高度分别为 24px 32px 48px 默认值 medium
 selectEnable: boolean 默认 true， 如果为 true ，点击的 menu 拥有选中状态
 

@@ -1,0 +1,10 @@
+{
+  "name": "@rx/ws",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.ts",
+  "dependencies": {
+    "@rx/hooks": "^1.0.0"
+  }
+}

@@ -1,10 +1,10 @@
-import React, {CSSProperties} from 'react';
+import React, {CSSProperties, Key} from 'react';
 
 export interface Column {
   dataIndex: Key;
   title: string | number | React.ReactNode | ((column: Column, index?: number) => React.ReactNode);
   align?: 'center' | 'left' | 'right';
-  fixed?: 'left' | 'right';
+  fixed?: 'left' | 'right' | false;
   render?: (record: any, index?: number, column?: Column) => React.ReactNode;
   renderTitle?: (column: Column, index: number) => React.ReactNode;
   headerCellStyle?: CSSProperties;

@@ -5,25 +5,37 @@ export const AssetsMap: Record<string, string[]> = {
   SOL: ['SOLStaking', 'mSOL', 'JitoSOL'],
   ETH: ['ETHStaking', 'stETH', 'rETH'],
   LRT: ['eETH', 'pufETH'],
+  Points: ['EigenLayer', 'Blast', 'Merlin', 'BounceBit'],
+  'LP Token': ['BONK-SOL(Orca)', 'WIF-SOL(Orca)'],
+  NFT: ['BAYC', 'Mad Lads'],
   Stables: ['USDY', 'aUSDC'],
   RWA: ['Uscpi'],
 };
 
-export const Assets: string[] = ['SOL', 'ETH', 'LRT', 'Stables', 'RWA'];
+export const Assets: string[] = [
+  'SOL',
+  'ETH',
+  'LRT',
+  'Points',
+  'LP Token',
+  'NFT',
+  'Stables',
+  'RWA',
+];
 
 export interface FiltersProps {
   onChange?: Function;
 }
 
 export function useFilters(props: FiltersProps) {
-  const [assets, setAssets] = useState<string[]>(['ALL', ...Assets]);
+  const [assets, setAssets] = useState<string[]>(['SOL']);
 
   const baseContracts = useMemo(() => {
     const selectedAssets = assets.includes('ALL') ? Object.keys(AssetsMap) : assets;
     return selectedAssets.reduce((arr: string[], key: string) => [...arr, ...AssetsMap[key]], []);
   }, [assets]);
 
-  const [contracts, setContracts] = useState<string[]>(['ALL', ...baseContracts]);
+  const [contracts, setContracts] = useState<string[]>(['ALL']);
 
   useEffect(() => {
     props?.onChange?.({assets, contracts});
@@ -33,16 +45,13 @@ export function useFilters(props: FiltersProps) {
     (c: string) => {
       return function (checked: boolean) {
         setAssets((prevState) => {
-          let filters: string[] = prevState.filter((a) => a !== c && a !== 'ALL');
           if (checked) {
-            filters = c === 'ALL' ? ['ALL', ...Assets] : [...filters, c];
+            setContracts(() => {
+              return ['ALL'];
+            });
+            return [c];
           }
-          // const isAll = !Assets.some((a) => !filters.includes(a));
-          if (filters.length === 0) {
-            filters = ['ALL', ...Assets];
-            setContracts(['ALL', ...baseContracts]);
-          }
-          return filters;
+          return prevState;
         });
       };
     },
@@ -55,11 +64,11 @@ export function useFilters(props: FiltersProps) {
         setContracts((prevState) => {
           let filters: string[] = prevState.filter((a) => a !== c && a !== 'ALL');
           if (checked) {
-            filters = c === 'ALL' ? ['ALL', ...baseContracts] : [...filters, c];
+            filters = c === 'ALL' ? ['ALL'] : [...filters, c];
           }
           // const isAll = !baseContracts.some((a) => !filters.includes(a));
           if (filters.length === 0) {
-            filters = ['ALL', ...baseContracts];
+            filters = ['ALL'];
           }
           return filters;
         });
@@ -70,3 +79,9 @@ export function useFilters(props: FiltersProps) {
 
   return {assets, contracts, baseContracts, handleAssetsChecked, handleContractsChecked};
 }
+
+export const MinMap: any = {
+  SOLStaking: 116,
+  ETHStaking: 116,
+  EigenLayer: 116,
+};

@@ -45,6 +45,19 @@ export const StyledTabsWrap = styled.div<{$type: 'card' | 'line'; $filled: boole
     bottom: 0;
     width: auto;
   }
+
+  @media (max-width: 640px) {
+    ${({$type, $filled}) => {
+      if ($type === 'line') {
+        return css`
+          color: var(--white);
+          background: transparent;
+          padding: 0 12px 4px;
+          gap: 12px;
+        `;
+      }
+    }}}
+  }
 `;
 
 export const StyledTab = styled.div<{
@@ -105,4 +118,31 @@ export const StyledTab = styled.div<{
       background: var(--graphite-gray);
     `;
   }}
+
+  .active {
+  }
+  @media (max-width: 640px) {
+    ${({$active, $type, $size}) => {
+      if ($type === 'line') {
+        if ($active) {
+          return css`
+            color: var(--golden);
+            border-bottom: 3px solid var(--golden);
+            padding-bottom: ${$size === 'large' ? 8 : 6}px;
+          `;
+        }
+        return css``;
+      }
+      if ($active) {
+        return css`
+          color: var(--black);
+          background: linear-gradient(var(--smoke-gray) 0%, var(--white) 100%);
+        `;
+      }
+      return css`
+        color: var(--light-gray);
+        background: var(--graphite-gray);
+      `;
+    }}
+  }
 `;

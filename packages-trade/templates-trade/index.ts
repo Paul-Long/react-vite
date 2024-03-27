@@ -5,7 +5,12 @@ export const templates: Template[] = [
   {
     name: 'Trade',
     slug: SLUGS.Trade,
-    loader: () => import('./trade'),
+    loader: () => import('./views'),
+  },
+  {
+    name: 'Trade',
+    slug: SLUGS.TradeContracts,
+    loader: () => import('./views/contracts'),
   },
 ];
 

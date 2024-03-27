@@ -1,4 +1,5 @@
 import {db, useQuery} from '@rx/db';
+import {env} from '@rx/env';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
@@ -15,8 +16,8 @@ export function usePositions(mode: string) {
       {
         title: LG(clang.No) + '.',
         dataIndex: 'id',
-        fixed: 'left',
-        width: '80px',
+        fixed: env.isMobile ? false : 'left',
+        width: env.isMobile ? 'auto' : '80px',
         shadowRight: true,
         bodyCellStyle: {background: '#00162B'},
         render: (_, i) => (i ?? 0) + 1,
@@ -55,7 +56,7 @@ export function usePositions(mode: string) {
     ];
     columns.forEach((c, i) => {
       c.headerCellStyle = {
-        color: '#fff',
+        color: '#E0E0E0',
         background: '#0A253D',
         fontWeight: 700,
       };

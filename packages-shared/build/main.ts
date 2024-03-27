@@ -1,13 +1,13 @@
-import {filter, switchMap} from 'rxjs/operators';
 import {findStaticTemplate} from '@rx/helper/template';
 import {syncRouter} from '@rx/router/sync';
-import {url$, updateUrl} from '@rx/streams/url';
+import {updateUrl, url$} from '@rx/streams/url';
+import {filter, switchMap} from 'rxjs/operators';
 
 let currentPathname: string;
 let currentLocale: Locale;
 let CurrentComponent: any = null;
 
-export function bootstrap(render) {
+export function bootstrap(render: Function) {
   syncRouter(updateUrl);
   url$.pipe(filter(routeFilter), switchMap(startRoute)).subscribe(() => {
     if (CurrentComponent) {
@@ -17,7 +17,6 @@ export function bootstrap(render) {
 }
 
 function routeFilter({action, pathname}: Url): boolean {
-  // replace 同一个页面时，不重新创建页面
   if (['PUSH', 'REPLACE'].includes(action!) && pathname === currentPathname) {
     return false;
   }

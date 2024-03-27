@@ -37,7 +37,7 @@ export function useCarryTrade() {
     ];
     columns.forEach((c, i) => {
       c.headerCellStyle = {
-        color: '#fff',
+        color: '#E0E0E0',
         background: '#0A253D',
         fontWeight: 700,
       };

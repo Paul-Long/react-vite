@@ -51,7 +51,7 @@ export function useLpResidual() {
     columns.forEach((c, i) => {
       c.align = i === 0 ? 'left' : 'center';
       c.headerCellStyle = {
-        color: '#fff',
+        color: '#E0E0E0',
         background: '#0A253D',
       };
       if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {

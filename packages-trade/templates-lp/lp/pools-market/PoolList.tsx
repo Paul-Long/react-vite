@@ -32,7 +32,7 @@ export function PoolList() {
     ];
     columns.forEach((c: Column) => {
       c.align = 'center';
-      c.headerCellStyle = {fontWeight: 700, background: '#0A253D', color: '#fff'};
+      c.headerCellStyle = {fontWeight: 700, background: '#0A253D', color: '#E0E0E0'};
       c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
     });
     return columns;

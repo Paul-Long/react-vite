@@ -1,12 +1,16 @@
 import {Toast} from '@rx/widgets';
 import type {WalletName} from '@solana/wallet-adapter-base';
 import {useWallet} from '@solana/wallet-adapter-react';
-import type {SolanaSignInInput, SolanaSignInOutput} from '@solana/wallet-standard-features';
-import {useCallback, useEffect, useState} from 'react';
+import type {SolanaSignInInput} from '@solana/wallet-standard-features';
+import bs58 from 'bs58';
+import {useCallback, useEffect} from 'react';
 
-export function useSignIn() {
+interface Params {
+  onFinish: Function;
+}
+
+export function useSignIn(params: Params) {
   const {signIn, publicKey, select} = useWallet();
-  const [signature, setSignature] = useState<SolanaSignInOutput>();
 
   useEffect(() => {
     select(<WalletName>'Phantom');
@@ -20,16 +24,21 @@ export function useSignIn() {
       }
 
       const input: SolanaSignInInput = {
-        domain: window.location.host,
-        address: publicKey ? publicKey.toBase58() : undefined,
-        statement: 'Sign In RateX',
+        statement: 'Welcome to RateX',
       };
       const output = await signIn(input);
-      setSignature(output);
+
+      const result: SignResult = {
+        signature: bs58.encode(output.signature),
+        signedMessage: bs58.encode(output.signedMessage),
+        publicKey: bs58.encode(output.account.publicKey),
+      };
+      console.log('sign result: ', result);
+      params.onFinish?.(result);
     } catch (e) {
       console.error('SignIn Error: ', e);
     }
   }, [signIn]);
 
-  return {signature, onSignIn};
+  return {onSignIn};
 }

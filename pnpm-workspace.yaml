@@ -5,3 +5,4 @@ packages:
   - 'packages-trade/**'
   - 'packages-deploy/**'
   - 'packages-web3/**'
+  - 'packages-ws/**'

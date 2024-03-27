@@ -9,15 +9,16 @@ interface PageProps {
   showHeader?: boolean;
   title?: string;
   desc?: string;
+  scrollVisible?: boolean;
 }
 
 const headerHeight = '60px';
-const headerHeightResponsive = '40px';
+const headerHeightResponsive = '60px';
 
 // 共享的样式，用于响应式设计
 const responsiveStyles = css<{$show?: boolean}>`
   @media (max-width: 640px) {
-    padding: 0 20px;
+    padding: 0 16px;
 
     ${({$show}) =>
       $show &&
@@ -49,22 +50,37 @@ const StyledHeader = styled.header<{$show?: boolean}>`
   }
 `;
 
-const StyledContent = styled.main<{$show?: boolean}>`
+const StyledContent = styled.main<{$show?: boolean; $scrollVisible: boolean}>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
-  overflow: auto;
   padding-top: ${headerHeight};
   box-sizing: border-box;
   background: var(--dark-blue);
 
   ${responsiveStyles}
+  ${({$scrollVisible}) => {
+    if ($scrollVisible) {
+      return css`
+        overflow: auto;
+      `;
+    }
+    return css`
+      overflow: hidden;
+    `;
+  }}
 `;
 
-export const Page: React.FC<PageProps> = ({children, showHeader = true, title, desc}) => {
+export const Page: React.FC<PageProps> = ({
+  children,
+  showHeader = true,
+  title,
+  desc,
+  scrollVisible = true,
+}) => {
   useEffect(() => {
     if (title) {
       document.title = title;
@@ -87,7 +103,9 @@ export const Page: React.FC<PageProps> = ({children, showHeader = true, title, d
       <StyledHeader $show={showHeader}>
         <Header />
       </StyledHeader>
-      <StyledContent $show={showHeader}>{children}</StyledContent>
+      <StyledContent $show={showHeader} $scrollVisible={scrollVisible}>
+        {children}
+      </StyledContent>
       <ToastManager />
     </ContextProvider>
   );

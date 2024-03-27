@@ -6,6 +6,7 @@
   "scripts": {
     "deploy-ssg-dev10": "node ssg/deploy-dev10.mjs",
     "deploy-trade-dev10": "node trade/deploy-dev10.mjs",
+    "deploy-trade-dev11": "node trade/deploy-dev11.mjs",
     "deploy-global-3rd": "node 3rd/deploy-global-3rd.mjs",
     "deploy-global-css": "node css/deploy-global-css.mjs",
     "deploy-global-font": "node font/deploy-global-font.mjs",

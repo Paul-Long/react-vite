@@ -1,0 +1,11 @@
+{
+  "name": "@trade/api",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.ts",
+  "dependencies": {
+    "@rx/const": "^1.0.0",
+    "@rx/helper": "^1.0.0"
+  }
+}

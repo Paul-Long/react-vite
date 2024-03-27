@@ -178,4 +178,7 @@ export const lang: any = {
   NotionalAmount: {
     en: 'Notional Amount',
   },
+  Back: {
+    en: 'Back',
+  },
 };

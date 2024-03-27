@@ -10,7 +10,7 @@ const StyledWrap = styled.div`
 
 export function Setting() {
   const [count, setCount] = useState<number>(0);
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback(async () => {
     console.log(count);
     if (count < 3) {
       setCount(count + 1);

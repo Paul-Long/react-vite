@@ -8,10 +8,11 @@ import '@trade/lp';
 import '@trade/market';
 import '@trade/strategies';
 import '@trade/trade';
-import React from 'react';
+import DataWorker from '@trade/worker/index?worker';
 import {createRoot} from 'react-dom/client';
 import 'virtual:uno.css';
 
+new DataWorker();
 bootstrap((Component: any) => {
   createRoot(document.getElementById('root') as HTMLElement).render(<Component />);
 });

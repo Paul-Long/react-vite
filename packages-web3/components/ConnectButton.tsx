@@ -1,16 +1,25 @@
 import {StyledWalletConnected} from '@/components/styles';
 import {useConnect} from '@/hooks/use-connect';
+import {useSignIn} from '@/hooks/use-sign-in';
 import {abbreviateString} from '@/utils/string';
 import {IMAGES} from '@rx/const/images';
 import {env} from '@rx/env';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {Button, Dropdown} from '@rx/widgets';
-import React from 'react';
+import React, {useCallback} from 'react';
 
-const ConnectWalletButton: React.FC = () => {
+interface Props {
+  onLogin: Function;
+}
+
+const ConnectWalletButton: React.FC<Props> = ({onLogin}) => {
   const {LG} = useLang();
   const {connected, address, onConnect, onDisconnect} = useConnect();
+  const handleFinish = useCallback((result: SignResult) => {
+    onLogin(result);
+  }, []);
+  const {onSignIn} = useSignIn({onFinish: handleFinish});
 
   if (connected) {
     return (
@@ -32,16 +41,16 @@ const ConnectWalletButton: React.FC = () => {
   }
 
   return (
-    <Button className="min-w160px font-size-18px" onClick={onConnect}>
+    <Button className="min-w160px font-size-18px" onClick={onSignIn}>
       {LG(clang.Connect)}
     </Button>
   );
 };
 
-export function ConnectButton() {
+export function ConnectButton(props: Props) {
   if (env.isServer) {
     return null;
   }
 
-  return <ConnectWalletButton />;
+  return <ConnectWalletButton {...props} />;
 }

@@ -140,7 +140,7 @@ export const Select: React.FC<SelectProps> = (props) => {
   return (
     <SelectContainer size={size} ref={selectRef} className={classNames(className)}>
       <SelectBox $size={size} $showBackground={showBackground} onClick={() => setIsOpen(!isOpen)}>
-        <div className="f1" style={{textAlign: align}}>
+        <div className="f1 text-nowrap pl8px" style={{textAlign: align}}>
           {selectedOption ? selectedOption.label : placeholder ?? ''}
         </div>
         <DownIcon
