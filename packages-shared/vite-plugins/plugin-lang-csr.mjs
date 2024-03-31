@@ -25,7 +25,7 @@ export function csrLangFilePlugin(langRecordDic, outDir, buildId) {
         mkdirSync(outDir, { recursive: true });
       }
       const guid = genHash(code);
-      const output = join(outDir, `lang/s-${buildId}`);
+      const output = join(outDir, `lang/${btoa('s-' + buildId).replace(/=+$/, '')}`);
       const outputFile = join(output, basename(id, extname(id)) + '.js');
 
       langRecordDic.set(id, guid);

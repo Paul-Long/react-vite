@@ -4,11 +4,11 @@
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {defineConfig} from 'vite';
-import react from '@vitejs/plugin-react';
-import UnoCSS from 'unocss/vite';
 import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
 import {csrLangFilePlugin} from '@rx/vite-plugins/plugin-lang-csr.mjs';
+import react from '@vitejs/plugin-react';
+import UnoCSS from 'unocss/vite';
+import {defineConfig} from 'vite';
 import buildPackage from './package.json';
 
 const isProd = process.env['NODE_ENV'] === 'production';
@@ -39,7 +39,7 @@ export default defineConfig({
         entryFileNames: `s-${buildPackage.buildId}/js/main-[hash].js`,
         chunkFileNames: `s-${buildPackage.buildId}/js/chunk-[hash].js`,
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name.endsWith('.css')) {
+          if (assetInfo?.name?.endsWith('.css')) {
             return `s-${buildPackage.buildId}/css/chunk-[hash][extname]`; // CSS 文件将被放到 'css' 文件夹中
           }
           return `s-${buildPackage.buildId}/assets/assets-[hash][extname]`;

@@ -1,5 +1,5 @@
 import type {IChartApi} from 'lightweight-charts';
-import {ColorType, createChart, CrosshairMode} from 'lightweight-charts';
+import {ColorType, createChart} from 'lightweight-charts';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 interface Options {
@@ -55,7 +55,7 @@ export function useChart(options?: Options) {
           },
         },
         crosshair: {
-          mode: CrosshairMode.Normal,
+          color: '#758696',
           ...crosshair,
         },
         timeScale: {

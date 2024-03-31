@@ -2,8 +2,11 @@
 import {Logo} from '@/components/Logo';
 import {H5Menu} from '@/header/H5Menu';
 import {Setting} from '@/header/Setting';
-import {ConnectButton} from '@rx/web3';
-import {loginApi} from '@trade/api/login';
+import {loginApi} from '@rx/api/login';
+import {ConnectButton} from '@rx/components/wallet';
+import {writeToken} from '@rx/helper/token';
+import {checkAuth} from '@rx/streams/auth';
+import {Toast} from '@rx/widgets';
 import React, {useCallback} from 'react';
 import {styled} from 'styled-components';
 import {Navigation} from './Navigation';
@@ -23,15 +26,20 @@ const HeaderContainer = styled.header`
 
 // Header组件
 export const Header: React.FC = () => {
-  const handleLogin = useCallback((params: {password: string; address: string}) => {
-    loginApi.login(params);
+  const handleLogin = useCallback(async (params: SignResult) => {
+    const {data} = await loginApi.login(params);
+    if (data) {
+      writeToken(data.token);
+      Toast.success('Login Success');
+      await Promise.all([checkAuth()]);
+    }
   }, []);
   return (
     <HeaderContainer className="B2">
       <Logo />
       <Navigation />
       <div className="df fdr aic g20 xs:g16">
-        <ConnectButton onLogin={handleLogin} />
+        <ConnectButton />
         <Setting />
         <H5Menu />
       </div>

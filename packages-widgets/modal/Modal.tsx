@@ -46,6 +46,7 @@ const ModalContainer = styled.div<{$show: boolean; $size: 'small' | 'medium' | '
   padding: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   z-index: 1001;
+  outline: none;
   animation: ${({$show}) => ($show ? fadeIn : fadeOut)} 0.3s ease;
   visibility: ${({$show}) => ($show ? 'visible' : 'hidden')};
 `;
@@ -122,7 +123,7 @@ export const Modal: FC<ModalProps> = memo(
           style={contentStyle}
         >
           <ModalHeader $show={(!!title).toString()}>
-            {title && <h2>{title}</h2>}
+            {title && <h2 className="fw700">{title}</h2>}
             {closeBtn && (
               <CloseButton onClick={onClose as any}>
                 <i className="iconfont font-size-18px">&#xe637;</i>

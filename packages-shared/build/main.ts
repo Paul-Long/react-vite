@@ -1,13 +1,25 @@
 import {findStaticTemplate} from '@rx/helper/template';
 import {syncRouter} from '@rx/router/sync';
+import {checkAuth} from '@rx/streams/auth';
+import {loadConfig} from '@rx/streams/config';
+import {loadEpochStartTime} from '@rx/streams/epoch';
 import {updateUrl, url$} from '@rx/streams/url';
+import {Buffer} from 'buffer';
 import {filter, switchMap} from 'rxjs/operators';
 
 let currentPathname: string;
 let currentLocale: Locale;
 let CurrentComponent: any = null;
 
-export function bootstrap(render: Function) {
+declare global {
+  interface Window {
+    Buffer: any;
+  }
+}
+
+export async function bootstrap(render: Function) {
+  window.Buffer = Buffer;
+  await Promise.all([checkAuth().then(), loadEpochStartTime().then(), loadConfig().then()]);
   syncRouter(updateUrl);
   url$.pipe(filter(routeFilter), switchMap(startRoute)).subscribe(() => {
     if (CurrentComponent) {

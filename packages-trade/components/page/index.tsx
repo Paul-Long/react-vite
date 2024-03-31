@@ -1,4 +1,6 @@
 import {Header} from '@/header';
+import {WalletModal} from '@rx/components/wallet';
+import {AutoConnect} from '@rx/components/wallet/AutoConnect';
 import {ContextProvider} from '@rx/web3';
 import {ToastManager} from '@rx/widgets';
 import React, {useEffect} from 'react';
@@ -107,6 +109,8 @@ export const Page: React.FC<PageProps> = ({
         {children}
       </StyledContent>
       <ToastManager />
+      <AutoConnect />
+      <WalletModal />
     </ContextProvider>
   );
 };

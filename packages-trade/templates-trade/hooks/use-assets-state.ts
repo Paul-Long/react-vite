@@ -1,11 +1,14 @@
 import {IMAGES} from '@rx/const/images';
 import {useLang} from '@rx/hooks/use-lang';
+import {useObservable} from '@rx/hooks/use-observable';
+import {assets$} from '@rx/streams/config';
 import {useEffect, useState} from 'react';
 
 type Chain = {name: string; code: string; icon: string};
 
 export function useAssetsState() {
   const {LG} = useLang();
+  const [assetsAll] = useObservable(assets$, []);
   const [assets, setAssets] = useState<Chain[]>([]);
   const [search, setSearch] = useState<string>('');
 
@@ -16,7 +19,7 @@ export function useAssetsState() {
     setAssets(cs);
   }, [LG, search]);
 
-  return {assets, setSearch};
+  return {assets, setSearch, assetsAll};
 }
 
 const genAssets = (LG: Function): Chain[] => {

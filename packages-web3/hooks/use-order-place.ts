@@ -1,27 +1,25 @@
-import {initializeUser} from '@/sdk/account/initialize-user';
-import {placeOrder} from '@/sdk/trade/order';
-import {useConnection, useWallet} from '@solana/wallet-adapter-react';
+import {useConnect} from '@/hooks/use-connect';
+import {driftClient$} from '@/streams/drift-client';
+import {useStream} from '@rx/hooks/use-stream';
 import {useCallback} from 'react';
-import {useProgram} from './use-program';
 
-export function useOrderPlace() {
-  const {publicKey} = useWallet();
-  const {connection} = useConnection();
-  const {program, programID} = useProgram();
+interface Params {
+  onFinish: Function;
+}
+
+export function useOrderPlace(params: Params) {
+  const [client] = useStream(driftClient$);
+  const {connected, connect} = useConnect();
 
   const submit = useCallback(async () => {
-    console.log(connection, program, publicKey);
-    const user = await initializeUser(connection, program, publicKey);
-    if (!user) {
+    if (!connected) {
       return;
     }
-    return await placeOrder(program, publicKey);
-  }, [publicKey, program, connection]);
+    const tx = await client.placePerpOrder();
+    params?.onFinish(tx);
+  }, [connected, params]);
 
   return {
-    connection,
-    publicKey,
-    program,
     submit,
   };
 }

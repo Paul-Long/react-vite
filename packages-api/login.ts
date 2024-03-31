@@ -3,7 +3,7 @@ import {guid} from '@rx/helper/guid';
 import {post} from '@rx/helper/http';
 
 export const loginApi = {
-  login: ({signature, signedMessage, publicKey}: SignResult) => {
+  login: ({signature, signedMessage, publicKey}: any) => {
     const params = {
       serverName: 'LoginSvr',
       method: 'SYS.ATS.LOGIN',
@@ -16,6 +16,6 @@ export const loginApi = {
         cid: guid.build(),
       },
     };
-    post(API_URL, {params});
+    return post(API_URL, {params});
   },
 };

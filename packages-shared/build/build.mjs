@@ -2,6 +2,7 @@ import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
 import {csrLangFilePlugin} from '@rx/vite-plugins/plugin-lang-csr.mjs';
 import {vitePluginNodeGlobals} from '@rx/vite-plugins/vite-plugin-node-globals.mjs';
 import react from '@vitejs/plugin-react';
+import {btoa} from 'node:buffer';
 import {join} from 'node:path';
 import UnoCSS from 'unocss/vite';
 import {build} from 'vite';
@@ -23,12 +24,13 @@ export const buildAll = async ({dirname, worker, csr, ssr, buildPackages}) => {
 async function buildWorker({buildId, entry}) {
   const now = Date.now();
   console.log(`[WORKER] start build`);
+  const id = btoa('s-' + buildId).replace(/=+$/, '');
   const {output} = await build({
     configFile: false,
     envFile: false,
     root: __dirname,
     build: {
-      outDir: `dist/client/s-${buildId}`,
+      outDir: `dist/client/${id}`,
       target: 'esnext',
       minify: true,
       rollupOptions: {
@@ -42,13 +44,14 @@ async function buildWorker({buildId, entry}) {
   });
   const {fileName} = output.find((o) => o.isEntry);
   console.log(`[WORKER] build complete (${Date.now() - now}ms)`);
-  return `/s-${buildId}/${fileName}`;
+  return `/${id}/${fileName}`;
 }
 
 async function buildCSR(csr, buildPackage, workerEntryFileName) {
   const {buildId, name, main} = buildPackage;
   const now = Date.now();
   console.log(`[CSR] start build ${name}`);
+  const id = btoa('s-' + buildId).replace(/=+$/, '');
   const moduleId = join(name, main);
   const {output} = await build({
     configFile: false,
@@ -57,9 +60,9 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
     define: {
       __WORKER_URL__: `"${workerEntryFileName}"`,
     },
-    base: `/s-${buildId}`,
+    base: `/${id}`,
     build: {
-      outDir: `dist/client/s-${buildId}`,
+      outDir: `dist/client/${id}`,
       target: 'esnext',
       minify: true,
       rollupOptions: {
@@ -90,11 +93,9 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
     ],
   });
   const entry = output.find((o) => o.isEntry);
-  const css = output
-    .filter((o) => o.fileName.endsWith('.css'))
-    .map((o) => `/s-${buildId}/${o.fileName}`);
+  const css = output.filter((o) => o.fileName.endsWith('.css')).map((o) => `/${id}/${o.fileName}`);
   console.log(`[CSR] complete build ${name}  (${Date.now() - now}ms)`);
-  return {entryFileName: `/s-${buildId}/${entry.fileName}`, css};
+  return {entryFileName: `/${id}/${entry.fileName}`, css};
 }
 
 async function buildSSG(ssr, buildPackage, output) {

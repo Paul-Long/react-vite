@@ -5,8 +5,10 @@
   "type": "module",
   "license": "ISC",
   "dependencies": {
+    "@rx/api": "^1.0.0",
     "@rx/const": "^1.0.0",
     "@rx/env": "^1.0.0",
-    "@rx/helper": "^1.0.0"
+    "@rx/helper": "^1.0.0",
+    "@rx/observables": "^1.0.0"
   }
 }

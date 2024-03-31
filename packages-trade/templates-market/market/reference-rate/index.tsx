@@ -5,7 +5,7 @@ import {lang} from '@rx/lang/dashboard.lang';
 import {Table} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import cn from 'classnames';
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {data} from './data';
 
 export function ReferenceRate() {

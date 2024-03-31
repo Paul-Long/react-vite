@@ -1,9 +1,6 @@
 import {env} from '@rx/env';
 import {history} from './history';
 
-/**
- * 同步路由信息
- */
 export function syncRouter(updateUrl) {
   const keysInfo = {
     lastKeyIndex: 0,
@@ -23,13 +20,6 @@ export function syncRouter(updateUrl) {
   });
 }
 
-/**
- * 同步 keys
- * @param keysInfo
- * @param action
- * @param key
- * @returns {boolean} 同步成功返回true，否则返回false
- */
 function syncKeys(keysInfo, action, key) {
   const {keys} = keysInfo;
 

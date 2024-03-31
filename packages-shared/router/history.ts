@@ -1,5 +1,6 @@
-import {createBrowserHistory} from 'history';
 import {env} from '@rx/env';
+// @ts-ignore
+import {createBrowserHistory} from 'history';
 
 declare module 'history' {
   interface BrowserHistory {

@@ -3,19 +3,19 @@ import {useWallet} from '@solana/wallet-adapter-react';
 import {useCallback, useEffect} from 'react';
 
 export function useConnect() {
-  const {select, connected, connect, disconnect, publicKey} = useWallet();
+  const wallet = useWallet();
 
   useEffect(() => {
-    select(<WalletName>'Phantom');
-  }, [select]);
+    wallet.select(<WalletName>'Phantom');
+  }, []);
 
-  const onConnect = useCallback(async () => {
-    await connect();
-  }, [connect]);
+  const connect = useCallback(async () => {
+    await wallet.connect();
+  }, [wallet]);
 
-  const onDisconnect = useCallback(async () => {
-    await disconnect();
-  }, [disconnect]);
+  const disconnect = useCallback(async () => {
+    await wallet.disconnect();
+  }, [wallet]);
 
-  return {connected, publicKey, address: publicKey?.toBase58(), onConnect, onDisconnect};
+  return {address: wallet?.publicKey?.toBase58(), connect, disconnect, connected: wallet.connected};
 }

@@ -1,25 +1,26 @@
 import {env} from '@rx/env';
 
-// export const API_PREFIX = genApiUrl();
-// export const API_URL = `${API_PREFIX}/httpapi`;
-export const API_URL = `http://3.1.146.145:3002`;
-// export const WS_URL = genWsUrl();
+export const API_PREFIX = genApiUrl();
+export const API_URL = `${API_PREFIX}`;
+export const WS_URL = `ws://3.1.146.145:3001/gateway`;
+// export const WS_URL = `${genWsUrl()}/gateway`;
+console.log(WS_URL);
 
 function genApiUrl() {
   const hostname = calcHostname();
   const separator = calcSeparator(hostname);
-  return ['https://api100', hostname].join(separator);
+  return ['https://api10', hostname].join(separator);
 }
 
 function genWsUrl() {
   const hostname = calcHostname();
   const separator = calcSeparator(hostname);
-  return ['wss://ws100', hostname].join(separator);
+  return ['wss://ws10', hostname].join(separator);
 }
 
 function calcHostname() {
   if (env.isServer) {
-    return 'rubydex.com';
+    return 'rate-x.io';
   }
   const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
   // sample: dev11 -> dev1, dev12 -> dev1

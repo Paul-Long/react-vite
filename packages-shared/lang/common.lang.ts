@@ -130,6 +130,12 @@ export const lang: any = {
   Disconnect: {
     en: 'Disconnect',
   },
+  ConnectWallet: {
+    en: 'Connect Wallet',
+  },
+  PleaseConnectWallet: {
+    en: 'Please Connect Wallet',
+  },
   CR: {
     en: 'CR',
   },

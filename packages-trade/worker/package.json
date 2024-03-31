@@ -5,7 +5,9 @@
   "type": "module",
   "license": "ISC",
   "dependencies": {
+    "@rx/const": "workspace:*",
     "@rx/helper": "workspace:*",
+    "@rx/observables": "workspace:*",
     "@rx/ws": "workspace:*"
   }
 }

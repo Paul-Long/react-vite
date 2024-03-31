@@ -3,12 +3,10 @@ import {history} from './history';
 
 export const router = {
   push(pathname: string, query: Record<string, any> = {}) {
-    // TODO: 拦截路由
     history._action = 'PUSH';
     history.push(convertLocation(pathname, query));
   },
   replace(pathname: string, query: Record<string, any> = {}) {
-    // TODO: 拦截路由
     history._action = 'REPLACE';
     history.replace(convertLocation(pathname, query));
   },

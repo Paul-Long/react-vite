@@ -12,7 +12,7 @@ export async function initializeUser(
   return new Promise(function (resolve, reject) {
     import('@coral-xyz/anchor').then(async (anchor) => {
       if (!publicKey || !program) {
-        reject(false);
+        resolve(false);
         return;
       }
       const subaccount_id = 0;
@@ -22,12 +22,12 @@ export async function initializeUser(
         0
       );
       if (!(await checkAccountBalance(connection, publicKey))) {
-        reject(false);
+        resolve(false);
         return;
       }
       const checked = await checkIfAccountExists(connection, userAccountPublicKey);
       if (checked) {
-        reject(true);
+        resolve(true);
         return;
       }
 

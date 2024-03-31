@@ -31,3 +31,7 @@ export const IMAGES = {
   bonk,
   points,
 };
+
+export const ASSETS_IMAGES = {
+  SOL: '/99ca82/solana-sol-logo.svg',
+};
