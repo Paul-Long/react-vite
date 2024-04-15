@@ -8,7 +8,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 (async () => {
   await buildAll({
     dirname: __dirname,
-    worker: {entry: '../worker/index.ts', buildId: 100},
+    worker: {entry: '../worker/index.ts', name: '@ssg/worker'},
     csr: {entry: 'entry-client-prod.tsx'},
     ssr: {entry: 'entry-ssg.tsx'},
     buildPackages,

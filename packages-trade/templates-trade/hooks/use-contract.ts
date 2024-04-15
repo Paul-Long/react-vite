@@ -1,5 +1,7 @@
 import {asset$, contract$, maturity$} from '@/streams/streams';
+import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
+import {contractMap$, maturityMap$} from '@rx/streams/config';
 import {useEffect, useState} from 'react';
 
 type Option = {label: string; value: string};
@@ -8,6 +10,8 @@ export function useContract() {
   const [asset, setAsset] = useStream(asset$);
   const [contract, setContract] = useStream(contract$);
   const [maturity, setMaturity] = useStream(maturity$);
+  const contractMap = useObservable(contractMap$, {});
+  const maturityMap = useObservable(maturityMap$, {});
   const [contracts, setContracts] = useState<Option[]>([]);
   const [maturities, setMaturities] = useState<Option[]>([]);
 
@@ -15,16 +19,22 @@ export function useContract() {
     if (!asset) {
       return;
     }
-    const data = AssetsToContracts[asset];
-    const contractList = Object.keys(data).map((d) => ({label: d, value: d}));
-    const first = contractList[0].value;
-    const mFirst = data[first][0];
-    const cs: any[] = Object.keys(data).map((d: string) => ({label: d, value: d}));
-    setContracts(cs);
-    setMaturities(data[first]?.map((o: string) => ({label: o, value: o})));
-    setContract(first);
-    setMaturity(mFirst);
-  }, [asset]);
+    const data = contractMap[asset];
+    const contractList = data.map((d) => ({label: d.symbolCategory, value: d.symbolCategory}));
+    const contract = data[0].symbolCategory;
+    setContract(contract);
+    setContracts(contractList);
+  }, [asset, contractMap]);
+
+  useEffect(() => {
+    if (!asset || !contract) {
+      return;
+    }
+    const maturityList = maturityMap[asset + '-' + contract];
+    const maturityOptions: any[] = maturityList.map((d) => ({label: d.term, value: d.term}));
+    setMaturity(maturityList[0].term);
+    setMaturities(maturityOptions);
+  }, [asset, contract, contractMap, maturityMap]);
 
   return {
     asset,

@@ -1,0 +1,12 @@
+{
+  "name": "@ssg/worker",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@rx/const": "workspace:*",
+    "@rx/helper": "workspace:*",
+    "@rx/observables": "workspace:*",
+    "@rx/ws": "workspace:*"
+  }
+}

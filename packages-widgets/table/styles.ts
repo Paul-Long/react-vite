@@ -19,7 +19,7 @@ const StyledCell = styled.div<{
   $align: 'right' | 'left' | 'center';
   $rowSpan?: number;
   $colSpan?: number;
-  $fixed?: 'left' | 'right';
+  $fixed?: 'left' | 'right' | false;
   $selected?: boolean;
   children?: any;
   key?: Key;

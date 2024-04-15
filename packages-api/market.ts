@@ -16,7 +16,7 @@ export const marketApi = {
   referencePrice() {
     const params = {
       serverName: 'APSSvr',
-      method: 'referencePrice',
+      method: 'dc.aps.referenceprice',
       content: {
         cid: guid.build(),
       },

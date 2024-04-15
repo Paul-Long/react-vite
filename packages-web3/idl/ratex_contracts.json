@@ -52,7 +52,7 @@
           "isSigner": true
         },
         {
-          "name": "marginVault",
+          "name": "marginMarketVault",
           "isMut": true,
           "isSigner": false
         },
@@ -90,6 +90,11 @@
       "name": "withdraw",
       "accounts": [
         {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "user",
           "isMut": true,
           "isSigner": false
@@ -100,8 +105,13 @@
           "isSigner": true
         },
         {
-          "name": "marginVault",
+          "name": "marginMarketVault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -205,9 +215,505 @@
           "type": "i64"
         }
       ]
+    },
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "quoteAssetMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initializeMarginMarket",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "marginMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "marginMarketMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "marginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "insuranceFundVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "activeStatus",
+          "type": "bool"
+        },
+        {
+          "name": "name",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "initializePerpMarket",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "marketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "marginRatioInitial",
+          "type": "u32"
+        },
+        {
+          "name": "marginRatioMaintenance",
+          "type": "u32"
+        },
+        {
+          "name": "activeStatus",
+          "type": "bool"
+        },
+        {
+          "name": "name",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "initializeOracle",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "oracleMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "decimals",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "updateOracle",
+      "accounts": [
+        {
+          "name": "oracle",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "marketRate",
+          "type": "u64"
+        },
+        {
+          "name": "rate",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
+    {
+      "name": "MarginMarket",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubkey",
+            "docs": [
+              "The address of the margin vault. It is a pda of the market index"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "oracle",
+            "docs": [
+              "The oracle used to price the markets deposits/borrows"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "The token mint of the margin"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "vault",
+            "docs": [
+              "The vault used to store the market's deposits"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "The encoded display name for the market e.g. SOL"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "depositBalance",
+            "docs": [
+              "The sum of the scaled balances for deposits across users and pool balances",
+              "To convert to the deposit token amount, multiply by the cumulative deposit interest",
+              "precision: SPOT_BALANCE_PRECISION"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "exchangeRate",
+            "docs": [
+              "The cumulative interest earned by depositors",
+              "Used to calculate the deposit token amount from the deposit balance",
+              "precision: SPOT_CUMULATIVE_INTEREST_PRECISION"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "nextDepositRecordId",
+            "docs": [
+              "Every deposit has a deposit record id. This is the next id to use"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "decimals",
+            "docs": [
+              "The market's token mint's decimals. To from decimals to a precision, 10^decimals"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "marketIndex",
+            "type": "u16"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "MarketStatus"
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                48
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Oracle",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "rate",
+            "type": "u64"
+          },
+          {
+            "name": "marketRate",
+            "type": "u64"
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PerpMarket",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubkey",
+            "docs": [
+              "The perp market's address. It is a pda of the market index"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "amm",
+            "docs": [
+              "The automated market maker"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "Encoded display name for the perp market e.g. SOL-PERP"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "marginRatioInitial",
+            "docs": [
+              "The margin ratio which determines how much collateral is required to open a position",
+              "e.g. margin ratio of .1 means a user must have $100 of total collateral to open a $1000 position",
+              "precision: MARGIN_PRECISION"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "marginRatioMaintenance",
+            "docs": [
+              "The margin ratio which determines when a user will be liquidated",
+              "e.g. margin ratio of .05 means a user must have $50 of total collateral to maintain a $1000 position",
+              "else they will be liquidated",
+              "precision: MARGIN_PRECISION"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "maxOpenInterest",
+            "docs": [
+              "the max open interest"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "openInterest",
+            "docs": [
+              "current open interes"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "numberOfUsers",
+            "docs": [
+              "number of users in a position (pnl) or pnl (quote)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "marketIndex",
+            "type": "u16"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Whether a market is active, reduce only, expired, etc",
+              "Affects whether users can open/close positions"
+            ],
+            "type": {
+              "defined": "MarketStatus"
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                46
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "State",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "signer",
+            "type": "publicKey"
+          },
+          {
+            "name": "numberOfAuthorities",
+            "type": "u64"
+          },
+          {
+            "name": "numberOfSubAccounts",
+            "type": "u64"
+          },
+          {
+            "name": "numberOfMarkets",
+            "type": "u16"
+          },
+          {
+            "name": "numberOfMarginMarkets",
+            "type": "u16"
+          },
+          {
+            "name": "signerNonce",
+            "type": "u8"
+          },
+          {
+            "name": "exchangeStatus",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                10
+              ]
+            }
+          }
+        ]
+      }
+    },
     {
       "name": "User",
       "type": {
@@ -310,6 +816,22 @@
     }
   ],
   "types": [
+    {
+      "name": "InsuranceFund",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "depositBalance",
+            "type": "u128"
+          }
+        ]
+      }
+    },
     {
       "name": "OrderParams",
       "type": {
@@ -441,6 +963,38 @@
       }
     },
     {
+      "name": "PerpPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "baseAssetAmount",
+            "docs": [
+              "the size of the users perp position",
+              "precision: BASE_PRECISION"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "quoteAssetAmount",
+            "docs": [
+              "Used to calculate the users pnl. Upon entry, is equal to base_asset_amount * avg entry price - fees",
+              "Updated when the user open/closes position or settles pnl. Includes fees/funding",
+              "precision: QUOTE_PRECISION"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "marketIndex",
+            "docs": [
+              "The market index for the perp market"
+            ],
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
       "name": "DepositDirection",
       "docs": [
         "deposit/withdraw event"
@@ -482,6 +1036,20 @@
           },
           {
             "name": "Delisted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarginRequirementType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Initial"
+          },
+          {
+            "name": "Maintenance"
           }
         ]
       }
@@ -592,17 +1160,22 @@
           "index": false
         },
         {
-          "name": "marginIndex",
+          "name": "marketIndex",
           "type": "u16",
           "index": false
         },
         {
           "name": "depositRecordId",
-          "type": "u32",
+          "type": "u64",
           "index": false
         },
         {
           "name": "amount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "totalBalance",
           "type": "u64",
           "index": false
         }
@@ -698,6 +1271,31 @@
       ]
     },
     {
+      "name": "UpdateOracleRecord",
+      "fields": [
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "rate",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "marketRate",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
       "name": "LiquidationRecord",
       "fields": [
         {
@@ -763,7 +1361,7 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidSpotMarketAuthority",
+      "name": "InvalidMarginMarketAuthority",
       "msg": "Invalid Spot Market Authority"
     },
     {
@@ -1188,43 +1786,43 @@
     },
     {
       "code": 6085,
-      "name": "InvalidSpotMarketInitialization",
-      "msg": "InvalidSpotMarketInitialization"
+      "name": "InvalidMarginMarketInitialization",
+      "msg": "InvalidMarginMarketInitialization"
     },
     {
       "code": 6086,
-      "name": "CouldNotLoadSpotMarketData",
-      "msg": "CouldNotLoadSpotMarketData"
+      "name": "CouldNotLoadMarginMarketData",
+      "msg": "CouldNotLoadMarginMarketData"
     },
     {
       "code": 6087,
-      "name": "SpotMarketNotFound",
-      "msg": "SpotMarketNotFound"
+      "name": "MarginMarketNotFound",
+      "msg": "MarginMarketNotFound"
     },
     {
       "code": 6088,
-      "name": "InvalidSpotMarketAccount",
-      "msg": "InvalidSpotMarketAccount"
+      "name": "InvalidMarginMarketAccount",
+      "msg": "InvalidMarginMarketAccount"
     },
     {
       "code": 6089,
-      "name": "UnableToLoadSpotMarketAccount",
-      "msg": "UnableToLoadSpotMarketAccount"
+      "name": "UnableToLoadMarginMarketAccount",
+      "msg": "UnableToLoadMarginMarketAccount"
     },
     {
       "code": 6090,
-      "name": "SpotMarketWrongMutability",
-      "msg": "SpotMarketWrongMutability"
+      "name": "MarginMarketWrongMutability",
+      "msg": "MarginMarketWrongMutability"
     },
     {
       "code": 6091,
-      "name": "SpotMarketInterestNotUpToDate",
+      "name": "MarginMarketInterestNotUpToDate",
       "msg": "SpotInterestNotUpToDate"
     },
     {
       "code": 6092,
-      "name": "SpotMarketInsufficientDeposits",
-      "msg": "SpotMarketInsufficientDeposits"
+      "name": "MarginMarketInsufficientDeposits",
+      "msg": "MarginMarketInsufficientDeposits"
     },
     {
       "code": 6093,
@@ -1433,12 +2031,12 @@
     },
     {
       "code": 6134,
-      "name": "InvalidSpotMarketVault",
+      "name": "InvalidMarginMarketVault",
       "msg": "Invalid Spot Market Vault"
     },
     {
       "code": 6135,
-      "name": "InvalidSpotMarketState",
+      "name": "InvalidMarginMarketState",
       "msg": "Invalid Spot Market State"
     },
     {
@@ -1623,13 +2221,13 @@
     },
     {
       "code": 6172,
-      "name": "SpotMarketBalanceInvariantViolated",
-      "msg": "SpotMarketBalanceInvariantViolated"
+      "name": "MarginMarketBalanceInvariantViolated",
+      "msg": "MarginMarketBalanceInvariantViolated"
     },
     {
       "code": 6173,
-      "name": "SpotMarketVaultInvariantViolated",
-      "msg": "SpotMarketVaultInvariantViolated"
+      "name": "MarginMarketVaultInvariantViolated",
+      "msg": "MarginMarketVaultInvariantViolated"
     },
     {
       "code": 6174,
@@ -1768,8 +2366,8 @@
     },
     {
       "code": 6201,
-      "name": "IncorrectSpotMarketAccountPassed",
-      "msg": "IncorrectSpotMarketAccountPassed"
+      "name": "IncorrectMarginMarketAccountPassed",
+      "msg": "IncorrectMarginMarketAccountPassed"
     },
     {
       "code": 6202,
@@ -1818,8 +2416,8 @@
     },
     {
       "code": 6211,
-      "name": "UnsupportedSpotMarket",
-      "msg": "UnsupportedSpotMarket"
+      "name": "UnsupportedMarginMarket",
+      "msg": "UnsupportedMarginMarket"
     },
     {
       "code": 6212,
@@ -1940,116 +2538,9 @@
       "code": 6235,
       "name": "UnableToLoadUserAccount",
       "msg": "UnableToLoadUserAccount"
-    },
-    {
-      "code": 6236,
-      "name": "UserStatsNotFound",
-      "msg": "UserStatsNotFound"
-    },
-    {
-      "code": 6237,
-      "name": "UnableToLoadUserStatsAccount",
-      "msg": "UnableToLoadUserStatsAccount"
-    },
-    {
-      "code": 6238,
-      "name": "UserNotInactive",
-      "msg": "User Not Inactive"
-    },
-    {
-      "code": 6239,
-      "name": "RevertFill",
-      "msg": "RevertFill"
-    },
-    {
-      "code": 6240,
-      "name": "InvalidMarketAccountforDeletion",
-      "msg": "Invalid MarketAccount for Deletion"
-    },
-    {
-      "code": 6241,
-      "name": "InvalidSpotFulfillmentParams",
-      "msg": "Invalid Spot Fulfillment Params"
-    },
-    {
-      "code": 6242,
-      "name": "FailedToGetMint",
-      "msg": "Failed to Get Mint"
-    },
-    {
-      "code": 6243,
-      "name": "FailedPhoenixCPI",
-      "msg": "FailedPhoenixCPI"
-    },
-    {
-      "code": 6244,
-      "name": "FailedToDeserializePhoenixMarket",
-      "msg": "FailedToDeserializePhoenixMarket"
-    },
-    {
-      "code": 6245,
-      "name": "InvalidPricePrecision",
-      "msg": "InvalidPricePrecision"
-    },
-    {
-      "code": 6246,
-      "name": "InvalidPhoenixProgram",
-      "msg": "InvalidPhoenixProgram"
-    },
-    {
-      "code": 6247,
-      "name": "InvalidPhoenixMarket",
-      "msg": "InvalidPhoenixMarket"
-    },
-    {
-      "code": 6248,
-      "name": "InvalidSwap",
-      "msg": "InvalidSwap"
-    },
-    {
-      "code": 6249,
-      "name": "SwapLimitPriceBreached",
-      "msg": "SwapLimitPriceBreached"
-    },
-    {
-      "code": 6250,
-      "name": "SpotMarketReduceOnly",
-      "msg": "SpotMarketReduceOnly"
-    },
-    {
-      "code": 6251,
-      "name": "FundingWasNotUpdated",
-      "msg": "FundingWasNotUpdated"
-    },
-    {
-      "code": 6252,
-      "name": "ImpossibleFill",
-      "msg": "ImpossibleFill"
-    },
-    {
-      "code": 6253,
-      "name": "CantUpdatePerpBidAskTwap",
-      "msg": "CantUpdatePerpBidAskTwap"
-    },
-    {
-      "code": 6254,
-      "name": "UserReduceOnly",
-      "msg": "UserReduceOnly"
-    },
-    {
-      "code": 6255,
-      "name": "InvalidMarginCalculation",
-      "msg": "InvalidMarginCalculation"
-    },
-    {
-      "code": 6256,
-      "name": "CantPayUserInitFee",
-      "msg": "CantPayUserInitFee"
-    },
-    {
-      "code": 6257,
-      "name": "CantReclaimRent",
-      "msg": "CantReclaimRent"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "8k3ZaRdNcy65YJPHymfE2ux77odEEso9AWQAy3WPiDN3"
+  }
 }

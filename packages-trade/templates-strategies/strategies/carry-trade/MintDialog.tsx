@@ -3,7 +3,7 @@ import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/strategy.lang';
 import {Button, Checkbox, Modal, NumberInput, Toast} from '@rx/widgets';
-import Big from 'big.js';
+import {Big} from 'big.js';
 import {useCallback, useState} from 'react';
 import {styled} from 'styled-components';
 

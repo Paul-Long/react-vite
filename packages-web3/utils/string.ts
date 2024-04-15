@@ -1,13 +1,13 @@
 export function abbreviateString(str: string) {
-  // 如果字符串长度小于等于8，就没有必要缩写
+  // If the string length is less than or equal to 8, there is no need to abbreviate
   if (str.length <= 8) {
     return str;
   }
 
-  // 截取前4位和后4位
+  // Cut the first 4 characters and the last 4 characters
   const start = str.substring(0, 4);
   const end = str.substring(str.length - 4);
 
-  // 返回缩写后的字符串
+  // Return the abbreviated string
   return `${start}...${end}`;
 }

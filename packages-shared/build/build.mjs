@@ -4,6 +4,7 @@ import {vitePluginNodeGlobals} from '@rx/vite-plugins/vite-plugin-node-globals.m
 import react from '@vitejs/plugin-react';
 import {btoa} from 'node:buffer';
 import {join} from 'node:path';
+import crypto from 'node:crypto'
 import UnoCSS from 'unocss/vite';
 import {build} from 'vite';
 import {viteExternalsPlugin} from 'vite-plugin-externals';
@@ -21,10 +22,10 @@ export const buildAll = async ({dirname, worker, csr, ssr, buildPackages}) => {
   }
 };
 
-async function buildWorker({buildId, entry}) {
+async function buildWorker({name, entry}) {
   const now = Date.now();
   console.log(`[WORKER] start build`);
-  const id = btoa('s-' + buildId).replace(/=+$/, '');
+  const id = genHash(name);
   const {output} = await build({
     configFile: false,
     envFile: false,
@@ -48,10 +49,10 @@ async function buildWorker({buildId, entry}) {
 }
 
 async function buildCSR(csr, buildPackage, workerEntryFileName) {
-  const {buildId, name, main} = buildPackage;
+  const {name, main} = buildPackage;
   const now = Date.now();
   console.log(`[CSR] start build ${name}`);
-  const id = btoa('s-' + buildId).replace(/=+$/, '');
+  const id = genHash(name);
   const moduleId = join(name, main);
   const {output} = await build({
     configFile: false,
@@ -79,11 +80,16 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
         },
       },
     },
+    resolve: {
+      alias: {
+        'crypto': 'crypto-browserify',
+      },
+    },
     plugins: [
       UnoCSS(),
       createAliasPlugin(),
       createOneRouteGroupPlugin(moduleId),
-      csrLangFilePlugin(langRecordDic, join(__dirname, 'dist'), buildId),
+      csrLangFilePlugin(langRecordDic, join(__dirname, 'dist'), id),
       viteExternalsPlugin({
         echarts: 'echarts',
         react: 'React',
@@ -125,6 +131,11 @@ async function buildSSG(ssr, buildPackage, output) {
         },
       },
     },
+    resolve: {
+      alias: {
+        'crypto': 'crypto-browserify',
+      },
+    },
     plugins: [
       UnoCSS(),
       createAliasPlugin(),
@@ -153,4 +164,13 @@ function createOneRouteGroupPlugin(moduleId) {
       return null;
     },
   };
+}
+
+function genHash(data) {
+  const hash = crypto.createHash('sha256');
+  hash.update(data);
+
+  const fullHash = hash.digest('hex');
+
+  return fullHash.substring(0, 8);
 }

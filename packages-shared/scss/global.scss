@@ -1,6 +1,5 @@
-@import 'global/actions', 'global/base','global/colors', 'global/font', 'global/layout';
+@import 'global/actions', 'global/base','global/colors', 'global/layout';
 
 @include layout();
-@include font();
 @include colors();
 @include actions();

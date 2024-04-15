@@ -1,10 +1,10 @@
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
-import {defineConfig} from 'vite';
+import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
 import react from '@vitejs/plugin-react';
 import UnoCSS from 'unocss/vite';
-import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
+import {defineConfig} from 'vite';
 
 export default defineConfig({
   publicDir: '../../public',
@@ -15,15 +15,6 @@ export default defineConfig({
   },
   resolve: {
     conditions: ['development', 'browser'],
-  },
-  test: {
-    environment: 'jsdom',
-    globals: true,
-    transformMode: {
-      web: [/\.[jt]sx?$/],
-    },
-    threads: false,
-    isolate: false,
   },
   define: {
     'process.env': process.env,

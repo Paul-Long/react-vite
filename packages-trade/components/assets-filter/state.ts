@@ -1,3 +1,5 @@
+import {useObservable} from '@rx/hooks/use-observable';
+import {contractMap$} from '@rx/streams/config';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 
 export const AssetsMap: Record<string, string[]> = {
@@ -28,34 +30,34 @@ export interface FiltersProps {
 }
 
 export function useFilters(props: FiltersProps) {
-  const [assets, setAssets] = useState<string[]>(['SOL']);
+  const contractMap = useObservable(contractMap$, {});
+  const [asset, setAsset] = useState<string>('SOL');
 
   const baseContracts = useMemo(() => {
-    const selectedAssets = assets.includes('ALL') ? Object.keys(AssetsMap) : assets;
-    return selectedAssets.reduce((arr: string[], key: string) => [...arr, ...AssetsMap[key]], []);
-  }, [assets]);
+    return AssetsMap[asset];
+  }, [asset, contractMap]);
 
   const [contracts, setContracts] = useState<string[]>(['ALL']);
 
   useEffect(() => {
-    props?.onChange?.({assets, contracts});
-  }, [assets, contracts]);
+    props?.onChange?.({assets: [asset], contracts});
+  }, [asset, contracts]);
 
   const handleAssetsChecked = useCallback(
     (c: string) => {
       return function (checked: boolean) {
-        setAssets((prevState) => {
+        setAsset((prevState) => {
           if (checked) {
             setContracts(() => {
               return ['ALL'];
             });
-            return [c];
+            return c;
           }
           return prevState;
         });
       };
     },
-    [assets]
+    [asset]
   );
 
   const handleContractsChecked = useCallback(
@@ -77,7 +79,7 @@ export function useFilters(props: FiltersProps) {
     [contracts, baseContracts]
   );
 
-  return {assets, contracts, baseContracts, handleAssetsChecked, handleContractsChecked};
+  return {asset, contracts, baseContracts, handleAssetsChecked, handleContractsChecked};
 }
 
 export const MinMap: any = {

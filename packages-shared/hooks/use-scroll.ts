@@ -1,33 +1,41 @@
 import {MutableRefObject, useCallback, useEffect, useRef, useState} from 'react';
+import {auditTime, fromEvent, throttleTime} from 'rxjs';
 
 export function useScroll<T extends HTMLDivElement>() {
   const ref: MutableRefObject<any> = useRef<T>();
-  const [isLeft, setIsLeft] = useState(true);
-  const [isRight, setIsRight] = useState(false);
-  const [isTop, setIsTop] = useState(true);
-  const [isBottom, setIsBottom] = useState(false);
-  const [hasX, setHasX] = useState(false);
-  const [hasY, setHasY] = useState(false);
+  const [state, setState] = useState({
+    isLeft: true,
+    isRight: false,
+    isTop: true,
+    isBottom: false,
+    hasX: false,
+    hasY: false,
+  });
 
   useEffect(() => {
-    ref.current?.addEventListener('scroll', checkScroll);
+    const scrollObservable = fromEvent(ref.current, 'scroll');
+    const throttledScrollObservable = scrollObservable.pipe(throttleTime(100), auditTime(100));
+    const subscription = throttledScrollObservable.subscribe(checkScroll);
     return () => {
-      ref.current?.removeEventListener('scroll', checkScroll);
+      subscription.unsubscribe();
     };
-  }, []);
+  }, [ref.current]);
 
   const checkScroll = useCallback(() => {
     if (ref.current) {
       const {scrollLeft, scrollTop, scrollWidth, scrollHeight, clientWidth, clientHeight} =
         ref.current;
-      setHasX(scrollWidth > clientWidth);
-      setHasY(scrollHeight > clientHeight);
-      setIsRight(scrollLeft + clientWidth >= scrollWidth);
-      setIsLeft(scrollLeft === 0);
-      setIsTop(scrollTop === 0);
-      setIsBottom(scrollTop + clientHeight >= scrollHeight);
+      console.log(ref.current.scrollTop);
+      setState({
+        hasX: scrollWidth > clientWidth,
+        hasY: scrollHeight > clientHeight,
+        isTop: scrollTop === 0,
+        isLeft: scrollLeft === 0,
+        isRight: scrollLeft + clientWidth >= scrollWidth,
+        isBottom: scrollTop + clientHeight >= scrollHeight,
+      });
     }
   }, []);
 
-  return {ref, isLeft, isRight, isTop, isBottom, hasX, hasY};
+  return {ref, ...state, checkScroll};
 }

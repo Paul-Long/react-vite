@@ -2,9 +2,7 @@ import {env} from '@rx/env';
 
 export const API_PREFIX = genApiUrl();
 export const API_URL = `${API_PREFIX}`;
-export const WS_URL = `ws://3.1.146.145:3001/gateway`;
-// export const WS_URL = `${genWsUrl()}/gateway`;
-console.log(WS_URL);
+export const WS_URL = `${genWsUrl()}/gateway`;
 
 function genApiUrl() {
   const hostname = calcHostname();
@@ -24,10 +22,17 @@ function calcHostname() {
   }
   const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
   // sample: dev11 -> dev1, dev12 -> dev1
-  if (/^[a-z]*[0-9]{2}\./i.test(hostname)) {
+  console.log(hostname, /^[a-z]*-[a-z]*[0-9]{2}\./i.test(hostname));
+  if (/^(?:[a-z]*-)?[a-z]*[0-9]{2}\./i.test(hostname)) {
     return hostname
       .split('.')
-      .map((o: any, i: any) => (i === 0 ? o.slice(0, -1) : o))
+      .map((o: any, i: any) => {
+        if (i === 0) {
+          const ps = o.split('-');
+          return ps[ps.length - 1].slice(0, -1);
+        }
+        return o;
+      })
       .join('.');
   }
   return hostname;

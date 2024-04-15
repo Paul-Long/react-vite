@@ -3,10 +3,10 @@ import '@rx/helper/polyfill/EventTarget';
 import '@rx/helper/polyfill/array';
 import '@rx/helper/polyfill/map';
 import '@rx/helper/polyfill/rxjs';
-import React from 'react';
+import '@ssg/main';
 import {createRoot} from 'react-dom/client';
 import 'virtual:uno.css';
 
 bootstrap((Component: any) => {
   createRoot(document.getElementById('root') as HTMLElement).render(<Component />);
-});
+}).then();

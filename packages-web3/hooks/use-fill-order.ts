@@ -1,5 +1,5 @@
 import {useConnect} from '@/hooks/use-connect';
-import {driftClient$} from '@/streams/drift-client';
+import {rateXClient$} from '@/streams/rate-x-client';
 import {useStream} from '@rx/hooks/use-stream';
 import {useCallback} from 'react';
 
@@ -7,8 +7,8 @@ interface Params {
   onFinish: Function;
 }
 
-export function useFillOrder(params: Params) {
-  const [client] = useStream(driftClient$);
+export function useFillOrder(props: Params) {
+  const [client] = useStream(rateXClient$);
   const {connected, connect} = useConnect();
 
   const submit = useCallback(
@@ -17,9 +17,9 @@ export function useFillOrder(params: Params) {
         return;
       }
       const tx = await client?.fillPerpOrder(params);
-      params?.onFinish(tx);
+      props?.onFinish(tx);
     },
-    [connected, params]
+    [connected, props]
   );
 
   return {

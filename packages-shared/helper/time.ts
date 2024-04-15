@@ -47,6 +47,10 @@ const formatUTCTime = (t) => {
   return [h, m, s].map(numUtil.pad).join(':');
 };
 
+const formatUTCDateTime = (t) => {
+  return [formatUTCDate(t), formatUTCTime(t)].join(' ');
+};
+
 export const timeUtil = {
   formatDate,
   formatMonthDayTime,
@@ -54,4 +58,5 @@ export const timeUtil = {
   formatDateTime,
   formatUTCDate,
   formatUTCTime,
+  formatUTCDateTime,
 };

@@ -1,5 +1,5 @@
 import {useConnect} from '@/hooks/use-connect';
-import {driftClient$} from '@/streams/drift-client';
+import {rateXClient$} from '@/streams/rate-x-client';
 import {useStream} from '@rx/hooks/use-stream';
 import {useCallback} from 'react';
 
@@ -8,7 +8,7 @@ interface Params {
 }
 
 export function useOrderPlace(params: Params) {
-  const [client] = useStream(driftClient$);
+  const [client] = useStream(rateXClient$);
   const {connected, connect} = useConnect();
 
   const submit = useCallback(async () => {

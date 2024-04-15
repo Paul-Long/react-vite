@@ -1,7 +1,7 @@
 import {useAssetsState} from '@/hooks/use-assets-state';
 import {useContract} from '@/hooks/use-contract';
 import {SearchInput, SearchWrap} from '@/styles/assets-views';
-import {IMAGES} from '@rx/const/images';
+import {ASSETS_IMAGES, IMAGES} from '@rx/const/images';
 import {useCallback, useRef} from 'react';
 import {Content, StyledItem} from './styles';
 
@@ -38,18 +38,26 @@ export function AssetsSelect(props: Props) {
         )}
       </SearchWrap>
       <Content className="df fdc">
-        {assets.map((c: any) => (
+        {assets.map((c) => (
           <StyledItem
-            key={c.code}
+            key={c.symbolCategory}
             className="item df fdr jcsb aic f16 fw3 cp"
-            $selected={c.code === asset}
-            onClick={() => setAsset(c.code)}
+            $selected={c.symbolCategory === asset}
+            onClick={() => setAsset(c.symbolCategory)}
           >
             <div className="df fdr aic g8">
-              <img className="db logo" src={c.icon} alt={c.name} width={20} height={20} />
-              {show && <span className="fw700">{c.name}</span>}
+              <img
+                className="db logo"
+                src={ASSETS_IMAGES[c.symbolCategory]}
+                alt={c.symbolCategory}
+                width={20}
+                height={20}
+              />
+              {show && <span className="fw700">{c.symbolCategory}</span>}
             </div>
-            {show && <img className="db right" src={IMAGES.down} alt={c.name} height={10} />}
+            {show && (
+              <img className="db right" src={IMAGES.down} alt={c.symbolCategory} height={10} />
+            )}
           </StyledItem>
         ))}
       </Content>

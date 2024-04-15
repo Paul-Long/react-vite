@@ -3,5 +3,6 @@ interface ReferencePriceRecord {
   '1M': string;
   '7D': string;
   ON: string;
+  token: string;
   parent?: string;
 }

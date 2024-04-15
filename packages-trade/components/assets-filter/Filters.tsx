@@ -24,7 +24,7 @@ const StyledLine = styled.div`
 
 export function Filters(props: FiltersProps) {
   const {LG} = useLang();
-  const {assets, contracts, baseContracts, handleContractsChecked, handleAssetsChecked} =
+  const {asset, contracts, baseContracts, handleContractsChecked, handleAssetsChecked} =
     useFilters(props);
 
   return (
@@ -33,7 +33,7 @@ export function Filters(props: FiltersProps) {
         <StyledWrap $grid={Assets.length + 1}>
           <div className="min-w73px" />
           {Assets.map((c) => (
-            <Checkbox key={c} checked={assets.includes(c)} onChange={handleAssetsChecked(c)}>
+            <Checkbox key={c} checked={asset === c} onChange={handleAssetsChecked(c)}>
               {c}
             </Checkbox>
           ))}

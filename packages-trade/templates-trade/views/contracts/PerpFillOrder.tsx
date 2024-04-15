@@ -37,12 +37,13 @@ export function PerpFillOrder() {
         <NumberInput
           className="flex-1"
           value={value}
+          precision={4}
           onChange={(v: number) => setValue(v)}
           style={{paddingLeft: 10, paddingRight: 10, fontSize: 16, fontWeight: 500}}
         />
       </div>
       <div className="df jcfe">
-        <Button className="font-size-16px" width={120} onClick={handleSubmit}>
+        <Button className="font-size-16px" width="auto" onClick={handleSubmit}>
           Fill Order
         </Button>
       </div>

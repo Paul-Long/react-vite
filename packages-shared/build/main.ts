@@ -37,17 +37,13 @@ function routeFilter({action, pathname}: Url): boolean {
 }
 
 async function startRoute({pathname, locale, slug}: Url) {
-  if (pathname === '/') {
-    window.location.href = '/en';
-    return;
-  }
   const template = findStaticTemplate(locale, slug);
   if (!template) {
     console.warn('template not found');
     return;
   }
   try {
-    await loadPage(locale, slug, template);
+    await loadPage(locale ?? 'en', slug, template);
     currentPathname = pathname;
     currentLocale = locale;
   } catch (e) {

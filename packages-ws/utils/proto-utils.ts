@@ -2,7 +2,7 @@ import {addDataViewByte, getStr, objToByte, strToByte} from './byte-utils';
 import * as GZip from './gzip';
 import WSEnum from './ws-const';
 
-const {protoKey, protoCmd, protoFormat, dataType} = WSEnum;
+const {protoCmd, protoFormat, dataType} = WSEnum;
 
 const HEADER_LENGTH = 20;
 let seqCount = 0;
@@ -13,6 +13,7 @@ interface IProto {
   seq: number;
   sessionId?: string;
   body?: Uint8Array;
+  id?: number;
 }
 
 export const getSeq = (): number => {
@@ -20,7 +21,7 @@ export const getSeq = (): number => {
   return seqCount;
 };
 
-const requestByte = (proto: IProto): ArrayBuffer => {
+export const requestByte = (proto: IProto): ArrayBuffer => {
   const sidByte = proto.sessionId ? strToByte(proto.sessionId) : new Uint8Array();
   let len = HEADER_LENGTH + sidByte.byteLength + (proto.body?.length || 0);
   let buffer = new ArrayBuffer(len);
@@ -43,50 +44,47 @@ const requestByte = (proto: IProto): ArrayBuffer => {
   return buffer;
 };
 
-export const generateConnect = (sid: string, data: object, formatType: string): ArrayBuffer => {
+export const genConnect = (sid: string, data: object, formatType: string = dataType.t_gzip) => {
   let bodyB = objToByte(data as any);
   if (formatType === dataType.t_gzip) {
     bodyB = GZip.zip(bodyB);
   }
-  let proto: IProto = {
+  return {
     cmd: protoCmd.CONNECT,
     format: protoFormat.REQUEST,
     seq: getSeq(),
     sessionId: sid,
     body: bodyB,
   };
-  return requestByte(proto);
 };
 
-export const generateHeartbeat = (sid: string): ArrayBuffer => {
+export const genHeartbeat = (sid: string) => {
   let proto: IProto = {
     cmd: protoCmd.HEARTBEAT,
     format: protoFormat.SEND,
     seq: getSeq(),
     sessionId: sid,
   };
-  return requestByte(proto);
+  return proto;
 };
 
-export const generateRequest = (
-  sid: string,
+export const genRequest = (
   serverName: string,
   method: string,
-  content: object,
-  formatType: string
-): ArrayBuffer => {
+  content: any,
+  formatType: string = dataType.t_gzip
+) => {
   const seq = getSeq();
-  return generateSeqRequest(sid, serverName, method, content, seq, formatType);
+  return genSeqRequest(serverName, method, content, seq, formatType);
 };
 
-export const generateSeqRequest = (
-  sid: string,
+export const genSeqRequest = (
   serverName: string,
   method: string,
-  content: object,
+  content: any,
   seq: number,
   formatType: string
-): ArrayBuffer => {
+) => {
   let hm = {
     serverName,
     method,
@@ -97,17 +95,15 @@ export const generateSeqRequest = (
   if (formatType === dataType.t_gzip) {
     body = GZip.zip(body);
   }
-  let proto: IProto = {
+  return {
     cmd: protoCmd.SEND,
     format: protoFormat.REQUEST,
     seq,
-    sessionId: sid,
     body,
   };
-  return requestByte(proto);
 };
 
-export const byteToProto = (eventData: ArrayBuffer, formatType: string): any => {
+export const byteToProto = (eventData: ArrayBuffer, formatType: string = dataType.t_gzip): any => {
   let data: any = {};
   if (eventData) {
     let dv1 = new DataView(eventData);
@@ -139,5 +135,6 @@ export const byteToProto = (eventData: ArrayBuffer, formatType: string): any => 
       }
     }
   }
+
   return data;
 };

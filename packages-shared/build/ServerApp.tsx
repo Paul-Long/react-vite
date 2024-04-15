@@ -1,5 +1,4 @@
 // @ts-ignore
-import React from 'react';
 
 interface Props {
   innerHtml: string;
@@ -23,12 +22,7 @@ export function ServerApp(props: Props) {
         <link rel="shortcut icon" href="https://static.rate-x.io/img/v1/536be9/logo.svg" />
         <title>RateX</title>
         <meta name="description" content="Put your description here." />
-        <link rel="stylesheet" href="https://static.rate-x.io/css/global-27446a.css"></link>
-        <link
-          rel="stylesheet"
-          href="https://static.rate-x.io/css/global-xs-2a91a5.css"
-          media="screen and (max-width:640px)"
-        ></link>
+        <link rel="stylesheet" href="https://static.rate-x.io/css/global-cc28fb.css"></link>
         <script src="https://static.rate-x.io/3rd/react/18.2.0/react.production.min.js"></script>
         <script src="https://static.rate-x.io/3rd/react/18.2.0/react-dom.production.min.js"></script>
         {(props?.lang || []).map((lang) => (

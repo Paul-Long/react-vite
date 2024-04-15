@@ -1,4 +1,4 @@
-import Big from 'big.js';
+import {Big} from 'big.js';
 
 export const numUtil = {
   floor(num, precision, scale = 0) {
@@ -6,14 +6,24 @@ export const numUtil = {
       return '';
     }
     const side = num < 0 ? -1 : 1;
-    return Big(num).abs().times(Big(10).pow(-scale)).round(precision, 0).times(side).toFixed(precision);
+    return Big(num)
+      .abs()
+      .times(Big(10).pow(-scale))
+      .round(precision, 0)
+      .times(side)
+      .toFixed(precision);
   },
   ceil(num, precision, scale = 0) {
     if (isNaN(num)) {
       return '';
     }
     const side = num < 0 ? -1 : 1;
-    return Big(num).abs().times(Big(10).pow(-scale)).round(precision, 3).times(side).toFixed(precision);
+    return Big(num)
+      .abs()
+      .times(Big(10).pow(-scale))
+      .round(precision, 3)
+      .times(side)
+      .toFixed(precision);
   },
   roundPriceEp(priceEp, tickSizeEp) {
     return Number(Big(priceEp).div(tickSizeEp).round().times(tickSizeEp));
@@ -62,7 +72,10 @@ export const numUtil = {
       return str;
     }
     const {number, unit} = item;
-    return this.floor((num / number).toString().replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1'), precision) + unit;
+    return (
+      this.floor((num / number).toString().replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1'), precision) +
+      unit
+    );
   },
   startWithNumber(str) {
     return /^\d/.test(str);

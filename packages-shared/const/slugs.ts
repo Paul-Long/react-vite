@@ -10,3 +10,7 @@ export const enum SLUGS {
   Portfolio = '/portfolio',
   Test = '/test',
 }
+
+export const enum HOME_SLUGS {
+  Home = '/',
+}

@@ -98,15 +98,14 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     // Event handler for input changes
     const handleChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
-        const formattedValue = formatValue(event.target.value, precision, max, min);
-        setValue(formattedValue);
+        setValue(event.target.value);
       },
       [precision, max, min]
     );
 
     // Effect to format the value initially and on dependency changes
     useEffect(() => {
-      setValue(formatValue(value as any, precision, max, min));
+      // setValue(formatValue(value as any, precision, max, min));
     }, [value, precision, max, min]);
 
     useEffect(() => onChange?.(value), [value]);
@@ -122,13 +121,12 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         <input
           placeholder={props.placeholder as any}
           ref={ref}
-          type="text"
+          type="number"
           className={'input ' + (inputClassName ?? '')}
           value={value}
           onChange={handleChange}
           disabled={disabled}
           onWheel={(e) => e.currentTarget.blur()} // Prevents scrolling from changing the value
-          pattern="\d*"
           style={props?.style || {}}
         ></input>
         {suffix && <span className="suffix">{suffix}</span>}

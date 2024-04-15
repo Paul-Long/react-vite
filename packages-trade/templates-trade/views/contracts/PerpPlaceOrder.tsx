@@ -28,7 +28,7 @@ export function PerpPlaceOrder() {
         TX: {tx}
       </p>
       <div className="df jcfe">
-        <Button className="font-size-16px" width={120} onClick={handleSubmit}>
+        <Button className="font-size-16px text-nowrap" width="auto" onClick={handleSubmit}>
           Place Order
         </Button>
       </div>

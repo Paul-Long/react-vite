@@ -187,4 +187,25 @@ export const lang: any = {
   Back: {
     en: 'Back',
   },
+  Products: {
+    en: 'Products',
+  },
+  CreateYieldAsset: {
+    en: 'Create yield asset',
+  },
+  BuildStrategyVault: {
+    en: 'Build strategy vault',
+  },
+  Governance: {
+    en: 'Governance',
+  },
+  Protocol: {
+    en: 'Protocol',
+  },
+  Docs: {
+    en: 'Docs',
+  },
+  FollowUs: {
+    en: 'Follow us',
+  },
 };

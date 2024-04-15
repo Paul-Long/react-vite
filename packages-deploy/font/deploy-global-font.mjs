@@ -6,11 +6,12 @@ import {calcFileHash, createS3Client, env, loadFiles, upload} from '../util.mjs'
 const distDir = env.fontUploadDir;
 
 const s3Client = createS3Client();
-const keyPrefix = 'static.rate-x.io/font/v1';
+const keyPrefix = 'static.rate-x.io/font/v1/poppins';
 const files = await loadFiles(distDir);
 for (const file of files) {
   const fullPath = resolve(distDir, file);
-  const hash = await calcFileHash(fullPath);
+  // const hash = await calcFileHash(fullPath);
+  const hash = ''
   const key = join(keyPrefix, hash, file);
   const uploadParams = createUploadParams(fullPath, key);
   console.log([file.padEnd(40, ' '), key].join('  ->  '));

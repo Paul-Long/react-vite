@@ -13,10 +13,6 @@ export async function buildGlobalCss(cwd, outputDir, withHash) {
       media: '',
       path: resolve(cwd, 'global.scss'),
     },
-    {
-      media: 'screen and (max-width:640px)',
-      path: resolve(cwd, 'global-xs.scss'),
-    },
   ];
   mkdirSync(outputDir, {recursive: true});
   const globalCssFiles = await Promise.all(
