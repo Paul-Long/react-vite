@@ -1,4 +1,4 @@
-export const lang: Record<string, any> = {
+export const lang = {
   Earn: {
     en: 'Earn',
   },
@@ -25,6 +25,9 @@ export const lang: Record<string, any> = {
   },
   Maturity: {
     en: 'Maturity',
+  },
+  MaturityDate: {
+    en: 'Maturity Date',
   },
   TTM: {
     en: 'TTM',

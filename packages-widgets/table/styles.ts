@@ -11,7 +11,8 @@ export const StyledRow = styled.div`
   display: contents;
   cursor: default;
   &:hover .td {
-    background: var(--deep-sea-blue) !important;
+    background: #ffffff14 !important;
+    backdrop-filter: blur(200px);
   }
 `;
 
@@ -35,7 +36,7 @@ const StyledCell = styled.div<{
   ${({$selected}) => {
     if ($selected) {
       return css`
-        background: var(--deep-sea-blue);
+        background: #ffffff14 !important;
       `;
     }
   }}
@@ -88,7 +89,7 @@ const StyledCell = styled.div<{
           right: 100%;
           top: 0;
           bottom: 0;
-          background: linear-gradient(to left, #00162b, transparent);
+          background: linear-gradient(to left, #000, transparent);
         }
       `;
     }
@@ -101,7 +102,7 @@ const StyledCell = styled.div<{
           left: 100%;
           top: 0;
           bottom: 0;
-          background: linear-gradient(to right, #00162b, transparent);
+          background: linear-gradient(to right, #000, transparent);
         }
       `;
     }

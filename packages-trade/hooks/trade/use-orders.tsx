@@ -18,7 +18,8 @@ export function useOrders(mode: string) {
         fixed: 'left',
         width: '80px',
         shadowRight: true,
-        bodyCellStyle: {background: '#00162B'},
+        headerCellStyle: {background: '#000'},
+        bodyCellStyle: {background: '#000'},
         render: (_, i) => (i ?? 0) + 1,
       },
       {title: LG(lang.MarginType), dataIndex: 'marginType'},
@@ -36,23 +37,16 @@ export function useOrders(mode: string) {
       {
         title: LG(clang.Margin),
         dataIndex: 'action',
-        bodyCellStyle: {background: '#00162B'},
         fixed: 'right',
         shadowLeft: true,
+        headerCellStyle: {background: '#000'},
+        bodyCellStyle: {background: '#000'},
         render: renderAction,
       },
     ];
     columns.forEach((c, i) => {
-      c.headerCellStyle = {
-        color: '#E0E0E0',
-        background: '#0A253D',
-        fontWeight: 700,
-      };
       if (i !== 0) {
         c.align = 'center';
-      }
-      if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {
-        c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
       }
     });
     setColumns(columns);
@@ -65,8 +59,8 @@ export function useOrders(mode: string) {
   const renderAction = useCallback(() => {
     return (
       <div className="df fdr aic gap8px">
-        <Button size="small">{LG(clang.Deposit)}</Button>
-        <Button size="small">{LG(clang.Withdraw)}</Button>
+        <Button type="default">{LG(clang.Deposit)}</Button>
+        <Button type="default">{LG(clang.Withdraw)}</Button>
       </div>
     );
   }, []);

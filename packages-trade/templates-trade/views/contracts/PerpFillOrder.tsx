@@ -1,7 +1,7 @@
 import {walletModalVisible$} from '@rx/streams/wallet';
 import {useConnect} from '@rx/web3/hooks/use-connect';
 import {useFillOrder} from '@rx/web3/hooks/use-fill-order';
-import {Button, NumberInput, Toast} from '@rx/widgets';
+import {Button} from '@rx/widgets';
 import {useCallback, useState} from 'react';
 import {StyledWrap} from './styles';
 
@@ -20,11 +20,7 @@ export function PerpFillOrder() {
       walletModalVisible$.next(true);
       return;
     }
-    if (value <= 0) {
-      Toast.warn('Please input Trade Price');
-      return;
-    }
-    submit({tradePrice: value}).then();
+    submit(value).then();
   }, [connected, value]);
 
   return (
@@ -32,19 +28,23 @@ export function PerpFillOrder() {
       <p className="w100% text-wrap" style={{wordWrap: 'break-word'}}>
         TX: {tx}
       </p>
-      <div className="df fdr aic gap12px">
-        <div>Trade Price : </div>
-        <NumberInput
-          className="flex-1"
-          value={value}
-          precision={4}
-          onChange={(v: number) => setValue(v)}
-          style={{paddingLeft: 10, paddingRight: 10, fontSize: 16, fontWeight: 500}}
+
+      <div className="flex flex-row items-center gap-12px w-full">
+        <label htmlFor="orderID" className="font-medium text-white">
+          Order ID :
+        </label>
+        <input
+          type="text"
+          name="orderID"
+          className="flex-1 block w-full text-right rounded-md border-0 py-1.5 text-white bg-transparent shadow-sm ring-1 ring-inset ring-gray-80 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none px-10px"
+          spellCheck={false}
+          placeholder="Order ID"
+          onChange={(ev) => setValue(Number(ev.target.value))}
         />
       </div>
       <div className="df jcfe">
-        <Button className="font-size-16px" width="auto" onClick={handleSubmit}>
-          Fill Order
+        <Button className="font-size-16px" onClick={handleSubmit}>
+          Fill Order By ID
         </Button>
       </div>
     </StyledWrap>

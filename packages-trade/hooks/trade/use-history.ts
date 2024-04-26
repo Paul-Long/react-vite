@@ -18,7 +18,8 @@ export function useHistory() {
         fixed: 'left',
         width: '80px',
         shadowRight: true,
-        bodyCellStyle: {background: '#00162B'},
+        headerCellStyle: {background: '#000'},
+        bodyCellStyle: {background: '#000'},
         render: (_, i) => (i ?? 0) + 1,
       },
       {title: LG(lang.MarginType), dataIndex: 'marginType'},
@@ -51,21 +52,14 @@ export function useHistory() {
         dataIndex: 'transaction',
         fixed: 'right',
         shadowLeft: true,
-        bodyCellStyle: {background: '#00162B'},
+        headerCellStyle: {background: '#000'},
+        bodyCellStyle: {background: '#000'},
         render: (record) => timeUtil.formatDateTime(record.transaction),
       },
     ];
     columns.forEach((c, i) => {
-      c.headerCellStyle = {
-        color: '#E0E0E0',
-        background: '#0A253D',
-        fontWeight: 700,
-      };
       if (i !== 0) {
         c.align = 'center';
-      }
-      if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {
-        c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
       }
     });
     setColumns(columns);

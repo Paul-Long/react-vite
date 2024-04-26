@@ -9,6 +9,8 @@ interface Props {
   pageData?: any;
 }
 
+const loadingStyle = `@keyframes breath-animation{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:0.7;}}.breath-effect{animation:breath-animation 1.5s ease-in-out infinite;}`;
+
 export function ServerApp(props: Props) {
   return (
     <html lang="en">
@@ -19,7 +21,7 @@ export function ServerApp(props: Props) {
           content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
         />
         <meta name="theme-color" content="#000000" />
-        <link rel="shortcut icon" href="https://static.rate-x.io/img/v1/536be9/logo.svg" />
+        <link rel="shortcut icon" href="https://static.rate-x.io/img/v1/f7052b/favicon.ico" />
         <title>RateX</title>
         <meta name="description" content="Put your description here." />
         <link rel="stylesheet" href="https://static.rate-x.io/css/global-cc28fb.css"></link>
@@ -32,7 +34,7 @@ export function ServerApp(props: Props) {
           <link key={file} rel="stylesheet" href={file}></link>
         ))}
         {props.styles}
-        <></>
+        <style>{loadingStyle}</style>
       </head>
       <body>
         <div id="root" dangerouslySetInnerHTML={{__html: props.innerHtml}}></div>

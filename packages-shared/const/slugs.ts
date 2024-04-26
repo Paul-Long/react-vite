@@ -7,7 +7,7 @@ export const enum SLUGS {
   Liquidity = '/lp',
   Trade = '/trade',
   TradeContracts = '/trade/contracts',
-  Portfolio = '/portfolio',
+  Account = '/account',
   Test = '/test',
 }
 

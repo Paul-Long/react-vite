@@ -19,7 +19,9 @@ declare global {
 
 export async function bootstrap(render: Function) {
   window.Buffer = Buffer;
-  await Promise.all([checkAuth().then(), loadEpochStartTime().then(), loadConfig().then()]);
+  try {
+    await Promise.all([checkAuth().then(), loadEpochStartTime().then(), loadConfig().then()]);
+  } catch (e) {}
   syncRouter(updateUrl);
   url$.pipe(filter(routeFilter), switchMap(startRoute)).subscribe(() => {
     if (CurrentComponent) {

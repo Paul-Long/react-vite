@@ -22,17 +22,12 @@ interface Menu {
 
 const genMenus = (LG: any): Menu[] => [
   {
-    title: LG(lang.Products),
-    key: 'Products',
-    children: [
-      {title: LG(lang.TradeYield), key: 'Trade_Yield'},
-      {title: LG(lang.CreateYieldAsset), key: 'Create_Yield_Asset'},
-      {title: LG(lang.BuildStrategyVault), key: 'Build_Strategy_Vault'},
-    ],
+    title: LG(lang.Trade),
+    key: 'Trade',
   },
   {
-    title: LG(lang.Governance),
-    key: 'Governance',
+    title: LG(lang.Earn),
+    key: 'Earn',
   },
   {
     title: LG(lang.Protocol),

@@ -25,7 +25,6 @@ export function useScroll<T extends HTMLDivElement>() {
     if (ref.current) {
       const {scrollLeft, scrollTop, scrollWidth, scrollHeight, clientWidth, clientHeight} =
         ref.current;
-      console.log(ref.current.scrollTop);
       setState({
         hasX: scrollWidth > clientWidth,
         hasY: scrollHeight > clientHeight,

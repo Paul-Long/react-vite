@@ -18,13 +18,13 @@ export const lang = {
     en: 'Create Yield Asset',
   },
   CreateYieldAssetDesc: {
-    en: 'Customize your own fixed-rate or yield-bearing assets',
+    en: 'Customize your yield-bearing asset',
   },
   BuildStrategyVault: {
     en: 'Build Strategy Vault',
   },
   BuildStrategyVaultDesc: {
-    en: 'Trade yield like a Market Wizard',
+    en: 'Enhance your yield like a Wizard',
   },
   FooterPowered: {
     en: '©2024. Powered by Rate Labs Ltd. All Rights Reserved.',
@@ -42,19 +42,19 @@ export const lang = {
     en: 'Time-Decay AMM',
   },
   TimeDecayAMMDesc: {
-    en: 'Synthesize and tokenize yield with time-decay characteristic',
+    en: 'Synthesized yield token with diminishing potential IL as it approaches expiration',
   },
-  MultiLayerPools: {
-    en: 'Multi-Layer Pools',
+  ReserveVault: {
+    en: 'Reserve Vault',
   },
-  MultiLayerPoolsDesc: {
-    en: "Ensure the fulfillment of synthetic token's yield payment obligation",
+  ReserveVaultDesc: {
+    en: 'Secure the payment of yield token and standard yield-bearing token',
   },
   MultiLayeredLiquidityPools: {
     en: 'Multi-Layered Liquidity Pools',
   },
   MultiLayeredLiquidityPoolsDesc: {
-    en: 'Guarantee liquidity for contracts with varying expiries',
+    en: 'Simultaneously provide liquidity for all the contracts with same underlying asset',
   },
   Audits: {
     en: 'Audits',
@@ -65,6 +65,9 @@ export const lang = {
   Term: {
     en: 'Term',
   },
+  ExpireIn: {
+    en: 'Expire in',
+  },
   OurInvestors: {
     en: 'Our Investors',
   },
@@ -73,5 +76,8 @@ export const lang = {
   },
   YieldMarket: {
     en: 'Yield Market',
+  },
+  UnderlyingAsset: {
+    en: 'Underlying Asset',
   },
 };

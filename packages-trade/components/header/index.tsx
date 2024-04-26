@@ -1,48 +1,46 @@
-// Header.tsx
-import {Logo} from '@/components/Logo';
 import {H5Menu} from '@/header/H5Menu';
-import {Setting} from '@/header/Setting';
-import {loginApi} from '@rx/api/login';
+import {Menu} from '@/header/Menu';
 import {ConnectButton} from '@rx/components/wallet';
-import {writeToken} from '@rx/helper/token';
-import {checkAuth} from '@rx/streams/auth';
-import {Toast} from '@rx/widgets';
-import React, {useCallback} from 'react';
-import {styled} from 'styled-components';
-import {Navigation} from './Navigation';
+import {HOME_IMAGES} from '@rx/const/images';
+import {clsx} from 'clsx';
+import {useEffect, useState} from 'react';
 
-// 创建一个styled组件，用于Header的容器
-const HeaderContainer = styled.header`
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px 0 0;
-  @media (max-width: 640px) {
-    height: 40px;
-    padding: 10px 24px;
-  }
-`;
+interface Props {
+  onMenuShow?: (show: boolean) => void;
+  notScrollTop?: boolean;
+}
 
-// Header组件
-export const Header: React.FC = () => {
-  const handleLogin = useCallback(async (params: SignResult) => {
-    const {data} = await loginApi.login(params);
-    if (data) {
-      writeToken(data.token);
-      Toast.success('Login Success');
-      await Promise.all([checkAuth()]);
-    }
-  }, []);
+export function Header(props: Props) {
+  const [show, setShow] = useState<boolean>(false);
+
+  useEffect(() => {
+    props?.onMenuShow?.(show);
+  }, [show]);
+
   return (
-    <HeaderContainer className="B2">
-      <Logo />
-      <Navigation />
-      <div className="df fdr aic g20 xs:g16">
-        <ConnectButton />
-        <Setting />
-        <H5Menu />
-      </div>
-    </HeaderContainer>
+    <>
+      <header
+        className={clsx(
+          'fixed top-0 left-0 right-0 z-999 box-border b-b-1px b-s-solid b-b-gray-80',
+          [props.notScrollTop && 'backdrop-blur-24px bg-[#00000033]']
+        )}
+      >
+        <nav className="mx-auto flex max-w-100% items-center justify-between px-24px gap-64px sm:h-60px">
+          <div className="flex">
+            <img className="h-24px w-auto" src={HOME_IMAGES.LOGO} alt="" />
+          </div>
+          <button
+            type="button"
+            className="w-32px h-32px inline-flex sm:hidden items-center justify-center rounded-md"
+            onClick={() => setShow(true)}
+          >
+            <i className="iconfont font-size-22px text-white">&#xe607;</i>
+          </button>
+          <Menu />
+          <ConnectButton />
+        </nav>
+      </header>
+      <H5Menu show={show} onChange={(s) => setShow(s)} />
+    </>
   );
-};
+}

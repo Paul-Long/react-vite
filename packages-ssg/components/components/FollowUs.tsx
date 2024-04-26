@@ -29,7 +29,15 @@ export function FollowUs(props: Props) {
         )}
       >
         {genMedia().map((m) => (
-          <img className="cp" key={m.title} src={m.img} alt={m.title} width={48} height={48} />
+          <img
+            className="cursor-pointer"
+            key={m.title}
+            src={m.img}
+            alt={m.title}
+            width={48}
+            height={48}
+            onClick={() => !!m.link && window.open(m.link, '_blank', 'noopener')}
+          />
         ))}
       </div>
     </div>
@@ -41,18 +49,22 @@ const genMedia = () => {
     {
       title: 'Twitter',
       img: HOME_IMAGES.TWITTER,
+      link: 'https://twitter.com/RateX_Dex',
     },
     {
       title: 'Discord',
       img: HOME_IMAGES.DISCORD,
+      link: 'https://discord.com/invite/DuhAc4UP5x',
     },
     {
       title: 'Medium',
       img: HOME_IMAGES.MEDIUM,
+      link: '',
     },
     {
       title: 'Telegram',
       img: HOME_IMAGES.TELEGRAM,
+      link: 'https://t.me/RateXofficial',
     },
   ];
 };

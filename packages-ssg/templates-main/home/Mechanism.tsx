@@ -9,7 +9,7 @@ export function Mechanism() {
       <div className="font-size-24px text-center sm:font-size-48px text-wrap sm:w-584px">
         {LG(lang.OurMechanism)}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 w-100% gap-24px sm:w-1200px mt-64px sm:mt-80px">
+      <div className="grid grid-cols-1 sm:grid-cols-3 w-100% gap-24px sm:w-1200px max-w-100% mt-64px sm:mt-80px">
         {items(LG).map((item) => (
           <div
             key={item.title}
@@ -22,7 +22,7 @@ export function Mechanism() {
             />
             <div className="flex- flex-col items-center gap-16px font-light">
               <div className="text-center font-size-24px">{item.title}</div>
-              <div className="text-center font-size-12px text-gray-500 sm:font-size-16px">
+              <div className="text-center font-size-12px text-gray-600 sm:font-size-16px">
                 {item.desc}
               </div>
             </div>
@@ -36,8 +36,8 @@ export function Mechanism() {
 const items = (LG: any) => [
   {title: LG(lang.TimeDecayAMM), desc: LG(lang.TimeDecayAMMDesc), img: HOME_IMAGES.TIME_DECAY_AMM},
   {
-    title: LG(lang.MultiLayerPools),
-    desc: LG(lang.MultiLayerPoolsDesc),
+    title: LG(lang.ReserveVault),
+    desc: LG(lang.ReserveVaultDesc),
     img: HOME_IMAGES.MULTI_LAYER_POOLS,
   },
   {

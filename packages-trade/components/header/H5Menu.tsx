@@ -1,61 +1,36 @@
 import {useMenus} from '@/header/state';
-import {useFixLink} from '@rx/hooks/use-fix-link';
-import {router} from '@rx/router';
-import {Drawer} from '@rx/widgets';
-import {useCallback, useState} from 'react';
-import {css, styled} from 'styled-components';
+import {StyledH5Content} from '@/header/styles';
+import {HOME_IMAGES} from '@rx/const/images';
+import {clsx} from 'clsx';
 
-const StyledWrap = styled.div`
-  @media (min-width: 640px) {
-    display: none;
-  }
-`;
+interface Props {
+  show: boolean;
+  onChange: (show: boolean) => void;
+}
 
-const StyledMenuWrap = styled.div``;
-
-const StyledMenuItem = styled.div<{$selected: boolean}>`
-  padding: 18px 48px;
-  ${({$selected}) => {
-    if ($selected) {
-      return css`
-        color: var(--black);
-        background: var(--golden);
-      `;
-    }
-    return css`
-      color: var(--light-gray);
-    `;
-  }}
-`;
-
-export function H5Menu() {
-  const [open, setOpen] = useState(false);
-  const {fixLink} = useFixLink();
-  const {menus, selected} = useMenus();
-
-  const handleMenuClick = useCallback((menu: any) => {
-    localStorage.setItem('current_page', menu.value);
-    router.goto(fixLink(menu.pathname));
-  }, []);
+export function H5Menu(props: Props) {
+  const {show} = props;
+  const {select, setSelect, menus} = useMenus({defaultMenu: 'Products'});
   return (
-    <>
-      <StyledWrap onClick={() => setOpen(true)}>
-        <i className="iconfont font-size-24px T1">&#xe607;</i>
-      </StyledWrap>
-      <Drawer open={open} onClose={() => setOpen(false)}>
-        <StyledMenuWrap className="w100% df fdc gap12px pt100px">
-          {menus.map((m) => (
-            <StyledMenuItem
-              key={m.value}
-              $selected={selected === m.value}
-              className="w100% font-size-18px fw700"
-              onClick={() => handleMenuClick(m)}
-            >
-              {m.text}
-            </StyledMenuItem>
-          ))}
-        </StyledMenuWrap>
-      </Drawer>
-    </>
+    <StyledH5Content
+      className={clsx(
+        'sm:hidden  fixed inset-y-0 right-0 z-9999 hidden flex-col w-full overflow-hidden',
+        [show && 'flex']
+      )}
+    >
+      <div className="flex justify-between items-center px-24px py-20px">
+        <img className="h-24px w-auto" src={HOME_IMAGES.LOGO} alt="" />
+        <button
+          type="button"
+          className="w-32px h-32px inline-flex justify-center items-center"
+          onClick={() => props?.onChange(false)}
+        >
+          <i className="iconfont font-size-22px text-white">&#xe637;</i>
+        </button>
+      </div>
+      <div className="flex-1 flex flex-col justify-between my-60px">
+        <div className="flex flex-col items-center gap-48px"></div>
+      </div>
+    </StyledH5Content>
   );
 }

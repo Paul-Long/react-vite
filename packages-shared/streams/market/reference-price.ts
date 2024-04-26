@@ -1,14 +1,20 @@
 import {assets$, contractMap$} from '@/config';
 import {referencePrice$ as reference$} from '@/subscription/reference-price';
 import {marketApi} from '@rx/api/market';
-import {Subject, combineLatest} from 'rxjs';
+import {Subject, combineLatest, shareReplay, switchMap} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 const price$ = new Subject();
 
+export const queryReferencePrice$ = new Subject();
+queryReferencePrice$.pipe(switchMap(() => load())).subscribe();
+
 export const referencePrice$ = combineLatest([price$, assets$, contractMap$]).pipe(
-  map(([price, assets, contractMap]) => mergeData(price, assets, contractMap))
+  map(([price, assets, contractMap]) => mergeData(price, assets, contractMap)),
+  shareReplay()
 );
+
+referencePrice$.subscribe((a) => console.log('data : ', a));
 
 reference$.subscribe(price$);
 

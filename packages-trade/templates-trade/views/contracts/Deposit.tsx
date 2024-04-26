@@ -1,7 +1,7 @@
 import {walletModalVisible$} from '@rx/streams/wallet';
 import {useConnect} from '@rx/web3/hooks/use-connect';
 import {useDeposit} from '@rx/web3/hooks/use-deposit';
-import {Button, NumberInput, Toast} from '@rx/widgets';
+import {Button, Toast} from '@rx/widgets';
 import {useCallback, useState} from 'react';
 import {StyledWrap} from './styles';
 
@@ -32,18 +32,21 @@ export function Deposit() {
       <p className="w100% text-wrap" style={{wordWrap: 'break-word'}}>
         TX: {tx}
       </p>
-      <div className="df fdr aic gap12px">
-        <div>Amount : </div>
-        <NumberInput
-          className="flex-1"
-          value={value}
-          precision={4}
-          onChange={(v: number) => setValue(v)}
-          style={{paddingLeft: 10, paddingRight: 10, fontSize: 16, fontWeight: 500}}
+      <div className="flex flex-row items-center gap-12px w-full">
+        <label htmlFor="amount" className="font-medium text-white">
+          Amount
+        </label>
+        <input
+          type="number"
+          name="amount"
+          className="flex-1 block w-full text-right rounded-md border-0 py-1.5 text-white bg-transparent shadow-sm ring-1 ring-inset ring-gray-80 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none px-10px"
+          spellCheck={false}
+          placeholder="Amount"
+          onChange={(ev) => setValue(Number(ev.target.value))}
         />
       </div>
       <div className="df jcfe">
-        <Button className="font-size-16px" width="auto" onClick={handleSubmit}>
+        <Button className="font-size-16px" onClick={handleSubmit}>
           Deposit
         </Button>
       </div>

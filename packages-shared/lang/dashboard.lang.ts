@@ -17,6 +17,9 @@ export const lang: any = {
   Price: {
     en: 'Price',
   },
+  YTPrice: {
+    en: 'YT Price',
+  },
   MinimumMR: {
     en: 'Minimum MR',
   },
@@ -34,5 +37,32 @@ export const lang: any = {
   },
   TermStructure: {
     en: 'Term Structure',
+  },
+  Trade: {
+    en: 'Trade',
+  },
+  Earn: {
+    en: 'Earn',
+  },
+  UnderlyingYield: {
+    en: 'Underlying Yield',
+  },
+  Maturity: {
+    en: 'Maturity',
+  },
+  ExpireIn: {
+    en: 'Expire In',
+  },
+  ImpliedYield: {
+    en: 'Implied Yield',
+  },
+  MarginRate: {
+    en: 'Margin Rate',
+  },
+  TermToMaturity: {
+    en: 'Term To Maturity',
+  },
+  H24PriceChg: {
+    en: '24h Price Chg%',
   },
 };

@@ -45,7 +45,7 @@ export function useLpLive() {
                 {record['EarnedFees']} {record['FeeCurrency']}
               </div>
               <div className="flex-1">
-                <Button type="default" size="small">
+                <Button type="default" size="sm">
                   {LG(lang.Claim)}
                 </Button>
               </div>
@@ -61,7 +61,7 @@ export function useLpLive() {
             <div className="df fdr jcc aic gap8px">
               <span className="flex-1 text-right">{record['AwardedRTX']}</span>
               <div className="flex-1">
-                <Button type="default" size="small">
+                <Button type="default" size="sm">
                   {LG(lang.Claim)}
                 </Button>
               </div>
@@ -79,13 +79,13 @@ export function useLpLive() {
         render: (record: any) => {
           return (
             <div className="df gap10px">
-              <Button type="default" size="small" style={{padding: '4px 6px'}}>
+              <Button type="default" size="sm" style={{padding: '4px 6px'}}>
                 <i className="iconfont font-size-18px">&#xe62c;</i>
               </Button>
-              <Button type="default" size="small">
+              <Button type="default" size="sm">
                 {LG(clang.Deposit)}
               </Button>
-              <Button type="default" size="small" onClick={() => handleWithdraw(record)}>
+              <Button type="default" size="sm" onClick={() => handleWithdraw(record)}>
                 {LG(clang.Withdraw)}
               </Button>
             </div>

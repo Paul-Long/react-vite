@@ -5,7 +5,7 @@ export const templates: Template[] = [
   {
     name: 'Dashboard',
     slug: SLUGS.Home,
-    loader: () => import('./market'),
+    loader: () => import('./views'),
   },
 ];
 

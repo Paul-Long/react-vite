@@ -224,4 +224,7 @@ export const lang = {
   RecFloating: {
     en: 'Rec.Floating',
   },
+  Orders: {
+    en: 'Orders'
+  }
 };

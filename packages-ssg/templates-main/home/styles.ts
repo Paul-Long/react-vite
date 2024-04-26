@@ -1,6 +1,19 @@
 import {styled} from 'styled-components';
 
-export const StyledPage = styled.div``;
+export const StyledPage = styled.div`
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .rotate-animation {
+    transform-origin: 60% 60%;
+    animation: rotate 120s linear infinite;
+  }
+`;
 
 export const StyledContent = styled.div`
   padding-top: 80px;
@@ -19,8 +32,6 @@ export const StyledBanner = styled.div`
   .content {
     width: 1200px;
     max-width: 100%;
-  }
-  .line {
   }
 `;
 
@@ -44,27 +55,5 @@ export const StyledYieldSwap = styled.div`
   .card:hover {
     margin-top: -12px;
     margin-bottom: 12px;
-  }
-`;
-
-export const StyledYieldMarket = styled.div`
-  .card:hover {
-    .go-page {
-      opacity: 1;
-    }
-  }
-`;
-
-export const StyledAssetsCategoryItem = styled.div<{$baseBg: any; $hoverBg: any}>`
-  .icon {
-    transition: all 0.2s ease;
-    background-image: ${(props) => `url("${props.$baseBg}")`};
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-  }
-  &:hover {
-    .icon {
-      background-image: ${(props) => `url("${props.$hoverBg}")`};
-    }
   }
 `;

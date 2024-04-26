@@ -1,32 +1,50 @@
 import {
+  BASE_ASSET_VAULT,
   FAUCET_CONFIG_PDA,
   MARGIN_MARKET_PDA,
   MARGIN_MARKET_VAULT_PDA,
   MINT_ACCOUNT,
-  MINT_AUTHORITY,
+  OBSERVATION_STATE_PUBLIC_KEY,
   ORACLE_PDA,
   OrderType,
+  PERP_MARKET,
   PositionDirection,
   ProgramAccountType,
+  QUOTE_ASSET_VAULT,
   RATE_X_PROGRAM_ID,
   SIGNER_PDA,
   STATE_PDA,
+  TICK_ARRAY_SIZE,
   TOKE_FAUCET_PROGRAM_ID,
+  TOKEN_MINT_A,
+  TOKEN_MINT_B,
+  TOKEN_VAULT_A_PUBLIC_KEY,
+  TOKEN_VAULT_B_PUBLIC_KEY,
+  WHIRLPOOL,
 } from '@/sdk/const';
+import {UserLayout} from '@/sdk/layout/user-layout';
 import {getUserAccountPublicKey} from '@/sdk/utils';
 import type {RateXClientConfig} from '@/types/rate-x-client';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import type {TokenFaucet} from '@/types/token_faucet';
+import {PriceMath} from '@/utils/price-math';
 import * as anchor from '@coral-xyz/anchor';
-import {AnchorProvider, BN, Program, Wallet, web3} from '@coral-xyz/anchor';
+import {AnchorProvider, BN, EventParser, Program, Wallet} from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync,
+  TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
-import {ConfirmOptions, Connection, PublicKey, SystemProgram} from '@solana/web3.js';
+import {
+  ConfirmOptions,
+  Connection,
+  PublicKey,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
+} from '@solana/web3.js';
 import Big from 'big.js';
 import {Buffer} from 'buffer';
+import Decimal from 'decimal.js';
 import * as idl from '../idl/ratex_contracts.json';
 import * as tokenFaucetIDL from '../idl/token_faucet.json';
 
@@ -36,6 +54,7 @@ export class RateClient {
   wallet: Wallet;
   authority?: PublicKey;
   opts?: ConfirmOptions;
+  public parser?: EventParser;
   public program: Program<RatexContracts>;
   public tokenFaucetProgram: Program<TokenFaucet>;
 
@@ -55,6 +74,7 @@ export class RateClient {
       TOKE_FAUCET_PROGRAM_ID,
       this.provider
     );
+    this.parser = new anchor.EventParser(this.program.programId, this.program.coder);
     console.log('Create RateXClient : ', this);
   }
 
@@ -72,115 +92,336 @@ export class RateClient {
     this.tokenFaucetProgram = newTokenFaucetProgram;
     this.program = newProgram;
     this.authority = this.wallet?.publicKey;
+    this.parser = new anchor.EventParser(this.program.programId, this.program.coder);
     console.log('Update DriftClient Wallet : ', this);
   }
 
-  async createProgramUser(type: ProgramAccountType, subAccountId: number = 0) {
-    if (!this.authority) {
-      return false;
+  async initializeUserStats() {
+    const userStatPda = this.genUserAccountPublicKey(ProgramAccountType.UserStats);
+    if (!userStatPda) {
+      return;
     }
-    const balance = await this.getUserBalance();
-    if (balance <= 0) {
-      return false;
-    }
-    const userAccountPublicKey = await this.genUserAccountPublicKey(type, subAccountId);
-    if (!userAccountPublicKey) {
-      return false;
-    }
-    const accountInfo = await this.getAccountInfo(userAccountPublicKey);
-    if (accountInfo) {
-      return accountInfo;
+    const tx = await this.program.methods
+      .initializeUserStats()
+      .accounts({
+        userStats: userStatPda,
+        state: STATE_PDA,
+        authority: this.authority,
+        payer: this.authority,
+        rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .catch((e) => console.error(e));
+    console.log('Initialize User Stats Tx : ', tx);
+    return tx;
+  }
+
+  async initializeUser(
+    isIsolated: boolean = true,
+    isTrader: boolean = true,
+    subAccountId: number = 0
+  ) {
+    const userPda = this.genUserAccountPublicKey(ProgramAccountType.User, subAccountId);
+    const userStatPda = this.genUserAccountPublicKey(ProgramAccountType.UserStats);
+    if (!userPda || !userStatPda) {
+      return;
     }
 
-    console.log('initialize user params: ', {
-      user: userAccountPublicKey.toBase58(),
-      authority: this.authority.toBase58(),
-      payer: this.authority.toBase58(),
-      systemProgram: web3.SystemProgram.programId.toBase58(),
-      rent: web3.SYSVAR_RENT_PUBKEY.toBase58(),
-    });
+    const accountInfo = await this.getAccountInfo(userPda);
+    if (!!accountInfo) {
+      console.log('Account initialized', userPda.toBase58());
+      return;
+    }
 
-    const subAccountID = 0;
-    const accounts = {
-      user: userAccountPublicKey,
-      authority: this.authority,
-      payer: this.authority,
-      systemProgram: web3.SystemProgram.programId,
-      rent: web3.SYSVAR_RENT_PUBKEY,
-    };
+    console.log('Account not initialized', userPda.toBase58());
 
-    const tx = await this.program?.rpc?.initializeUser(subAccountID, {accounts});
+    const tx = await this.program.methods
+      .initializeUser(0, isIsolated, isTrader)
+      .accounts({
+        user: userPda,
+        userStats: userStatPda,
+        authority: this.authority,
+        payer: this.authority,
+        rent: SYSVAR_RENT_PUBKEY,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      .catch((e) => console.log(e));
     console.log('Initialize User Tx : ', tx);
     return tx;
   }
 
-  async placePerpOrder() {
-    if (!this.authority) {
-      return false;
+  async getUserAccountInfo() {
+    const userPda = this.genUserAccountPublicKey(ProgramAccountType.User);
+    if (!userPda) {
+      return;
     }
-    const accountInfo = await this.createProgramUser(ProgramAccountType.User);
-    if (!accountInfo) {
-      return false;
+    const user = await this.connection.getAccountInfo(userPda);
+    if (!user?.data) {
+      return;
+    }
+    const data = UserLayout.decode(user.data);
+    console.log('query user-pda : ', userPda.toBase58());
+    console.log('user authority : ', data.authority.toBase58());
+    return data;
+  }
+
+  async getUserOrders() {
+    return (await this.getUserAccountInfo())?.orders;
+  }
+
+  async getUserOrderIndex() {
+    return (await this.getUserOrders())?.findIndex((o) => o.order_id === 0);
+  }
+
+  async placeOrder(amount: number) {
+    const userPda = this.genUserAccountPublicKey(ProgramAccountType.User);
+    const userStatPda = this.genUserAccountPublicKey(ProgramAccountType.UserStats);
+    const keeperPda = this.genUserAccountPublicKey(ProgramAccountType.DriftKeeper);
+    if (!userPda || !userStatPda || !keeperPda || !this.authority) {
+      return;
     }
 
-    const userAccountPublicKey = await this.getProgramUserAccountPublicKey();
-    if (!userAccountPublicKey) {
-      return false;
-    }
+    const priceLimit = PriceMath.priceToSqrtPriceX64(new Decimal(0.9), 9, 9);
+    console.log('priceLimit', priceLimit.toString());
+
+    const orderId = await this.getUserOrderIndex();
+
+    console.log('Order ID : ', orderId);
+
     const orderParams = {
       orderType: OrderType.MARKET,
+      userOrderId: orderId,
+      marketIndex: 2,
       direction: PositionDirection.LONG,
-      baseAssetAmount: new BN(1000),
-      priceLimit: new BN(1000),
-      marketIndex: 1,
+      baseAssetAmount: new BN(Big(amount).times(1_000_000_000).toNumber()),
+      priceLimit,
+      expireTs: new BN(Math.floor(Date.now() / 1000) + 3600),
     };
     console.log('placePerpOrder Params : ', orderParams);
 
-    const tx = await this.program?.rpc?.placePerpOrder(1, orderParams, {
-      accounts: {
-        user: userAccountPublicKey,
-        authority: this.authority,
+    const remainingAccounts = [
+      {
+        pubkey: PERP_MARKET,
+        isSigner: false,
+        isWritable: true,
       },
-    });
+      {
+        pubkey: ORACLE_PDA,
+        isSigner: false,
+        isWritable: true,
+      },
+    ];
 
-    console.log('PlacePerpOrder Tx : ', tx);
-    return tx;
+    const placeOrderTx = await this.program.methods
+      .placePerpOrder(orderParams as any)
+      .remainingAccounts(remainingAccounts)
+      .accounts({
+        state: STATE_PDA,
+        user: userPda,
+        authority: this.authority,
+      })
+      .rpc()
+      .catch((e) => {
+        console.error(e);
+      });
+
+    console.log('PlacePerpOrder Tx : ', placeOrderTx);
+
+    if (!placeOrderTx) {
+      return;
+    }
+    await this.queryEvent(placeOrderTx, 'placePerpOrder evt');
+    return placeOrderTx;
   }
 
-  async fillPerpOrder(params: {tradePrice: number}) {
-    if (!this.authority) {
-      return false;
+  async fillPerpOrder(orderId: number) {
+    const userPda = this.genUserAccountPublicKey(ProgramAccountType.User);
+    const userStatPda = this.genUserAccountPublicKey(ProgramAccountType.UserStats);
+    const keeperPda = this.genUserAccountPublicKey(ProgramAccountType.DriftKeeper);
+    if (!userPda || !userStatPda || !keeperPda || !this.authority) {
+      return;
     }
-    const accountInfo = await this.createProgramUser(ProgramAccountType.User);
-    if (!accountInfo) {
-      return false;
-    }
-
-    const userAccountPublicKey = await this.getProgramUserAccountPublicKey();
-    if (!userAccountPublicKey) {
-      return false;
-    }
-    const amount = new BN(100);
-    const tradePrice = new BN(Number(params.tradePrice));
-    const fee = new BN(0.0005);
-
-    const tx = await this.program?.rpc?.fillPerpOrder(
-      1,
-      amount,
-      amount,
-      amount,
-      amount,
-      tradePrice,
-      fee,
+    const remainingAccounts = [
       {
-        accounts: {
-          user: userAccountPublicKey,
-          authority: this.authority,
-        },
-      }
+        pubkey: PERP_MARKET,
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        pubkey: ORACLE_PDA,
+        isSigner: false,
+        isWritable: true,
+      },
+    ];
+
+    const pool = await this.program.account.whirlpool.fetch(WHIRLPOOL);
+    const baseAssetAmount = new anchor.BN('-100000');
+    const priceLimit = PriceMath.priceToSqrtPriceX64(new Decimal(0.9), 9, 9);
+    const tickArrays = await this.getFillOrderTickArrays(
+      pool.tickCurrentIndex,
+      priceLimit,
+      baseAssetAmount.gt(new anchor.BN(0))
     );
 
-    console.log('FillPerpOrder Tx : ', tx);
+    if (tickArrays.length < 1) {
+      console.log('TickArray is empty');
+      return;
+    }
+
+    console.log(
+      'TickArrays : ',
+      tickArrays[0].toBase58(),
+      tickArrays[1].toBase58(),
+      tickArrays[2].toBase58()
+    );
+
+    const fillOrderTx = await this.program.methods
+      .fillPerpOrder(orderId)
+      .remainingAccounts(remainingAccounts)
+      .accounts({
+        user: userPda,
+        userStats: userStatPda,
+        keepers: keeperPda,
+        state: STATE_PDA,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        authority: this.authority,
+        whirlpool: WHIRLPOOL,
+        tokenOwnerAccountA: QUOTE_ASSET_VAULT,
+        tokenOwnerAccountB: BASE_ASSET_VAULT,
+        tokenVaultA: TOKEN_VAULT_A_PUBLIC_KEY,
+        tokenVaultB: TOKEN_VAULT_B_PUBLIC_KEY,
+        tickArray0: tickArrays[0],
+        tickArray1: tickArrays[1],
+        tickArray2: tickArrays[2],
+        observation: OBSERVATION_STATE_PUBLIC_KEY,
+      })
+      .rpc()
+      .catch((e) => console.error(e));
+
+    if (!fillOrderTx) {
+      return;
+    }
+    await this.queryEvent(fillOrderTx, 'fillPerpOrder evt');
+    console.log('FillPerpOrder Tx : ', fillOrderTx);
+    return fillOrderTx;
+  }
+
+  async getPoolTickCurrentIndex() {
+    const pool = await this.program.account.whirlpool.fetch(WHIRLPOOL);
+    console.log(pool);
+    return pool.tickCurrentIndex;
+  }
+
+  async addPerpLpShares(
+    tickLowerIndex: number,
+    tickUpperIndex: number,
+    liquidityAmount: number,
+    marketIndex: number = 0
+  ) {
+    const userPda = this.genUserAccountPublicKey(ProgramAccountType.User);
+    const userStatPda = this.genUserAccountPublicKey(ProgramAccountType.UserStats);
+    if (!userPda || !userStatPda) {
+      return;
+    }
+
+    const pool = await this.program.account.whirlpool.fetch(WHIRLPOOL);
+    if (!tickLowerIndex && !tickUpperIndex) {
+      tickLowerIndex = pool.tickCurrentIndex - 20;
+      tickUpperIndex = pool.tickCurrentIndex + 20;
+    }
+
+    tickLowerIndex = pool.tickCurrentIndex - 10 * 800;
+    tickUpperIndex = pool.tickCurrentIndex + 10 * 800;
+
+    const positionMintSeeds = [
+      Buffer.from('position_mint'),
+      Buffer.alloc(4),
+      Buffer.alloc(4),
+      WHIRLPOOL.toBuffer(),
+    ];
+    positionMintSeeds[1].writeInt32LE(tickLowerIndex);
+    positionMintSeeds[2].writeInt32LE(tickUpperIndex);
+    const positionMint = anchor.web3.PublicKey.findProgramAddressSync(
+      positionMintSeeds,
+      this.program.programId
+    )[0];
+
+    const positionTokenAccountSeeds = [
+      Buffer.from('position_token_account'),
+      Buffer.alloc(4),
+      Buffer.alloc(4),
+      WHIRLPOOL.toBuffer(),
+    ];
+    positionTokenAccountSeeds[1].writeInt32LE(tickLowerIndex);
+    positionTokenAccountSeeds[2].writeInt32LE(tickUpperIndex);
+    const positionTokenAccount = anchor.web3.PublicKey.findProgramAddressSync(
+      positionTokenAccountSeeds,
+      this.program.programId
+    )[0];
+    const position = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('position'), positionMint.toBuffer()],
+      this.program.programId
+    )[0];
+    console.log('Position Mint : ', positionMint.toBase58());
+    console.log('Position : ', position.toBase58());
+
+    const tickArrays = await this.initializeTickArrays(tickLowerIndex, tickUpperIndex);
+    const tickArrayLower = tickArrays[0];
+    const tickArrayUpper = tickArrays[tickArrays.length - 1];
+
+    const addTx = await this.program.methods
+      .addPerpLpShares(
+        new BN(Big(liquidityAmount).times(1_000_000_000).toNumber()),
+        marketIndex,
+        tickLowerIndex,
+        tickUpperIndex
+      )
+      .accounts({
+        whirlpool: WHIRLPOOL,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        position,
+        positionMint,
+        positionTokenAccount,
+        tokenOwnerAccountA: QUOTE_ASSET_VAULT,
+        tokenOwnerAccountB: BASE_ASSET_VAULT,
+        tokenVaultA: TOKEN_VAULT_A_PUBLIC_KEY,
+        tokenVaultB: TOKEN_VAULT_B_PUBLIC_KEY,
+        tickArrayLower: tickArrayLower,
+        tickArrayUpper: tickArrayUpper,
+        tokenMintA: TOKEN_MINT_A,
+        tokenMintB: TOKEN_MINT_B,
+        user: userPda,
+        state: STATE_PDA,
+        perpMarket: PERP_MARKET,
+        authority: this.authority,
+      })
+      .rpc({commitment: 'confirmed'})
+      .catch((e) => console.error(e));
+    if (addTx) {
+      await this.queryEvent(addTx, 'addPerpLpShares');
+    }
+    return addTx;
+  }
+
+  async addKeeper(address: string) {
+    const keeperPda = this.genUserAccountPublicKey(ProgramAccountType.DriftKeeper);
+    console.log('keeperPda : ', keeperPda?.toBase58());
+    if (!keeperPda || !address) {
+      return;
+    }
+
+    const tx = await this.program.methods
+      .addKeeper(new PublicKey(address))
+      .accounts({
+        state: STATE_PDA,
+        keepers: keeperPda,
+        admin: this.authority,
+      })
+      .rpc({commitment: 'confirmed'})
+      .catch((e) => console.log('Add Keeper : ', e));
+    console.log('Add Keeper Tx : ', tx);
     return tx;
   }
 
@@ -203,7 +444,7 @@ export class RateClient {
       },
     ];
     let tx = await this.program.methods
-      .deposit(0, new BN(Big(amount).times(1_000_000_000).toNumber()), false, 0)
+      .deposit(0, new BN(Big(amount).times(1_000_000_000).toNumber()))
       .accounts({
         user: userPda as any,
         authority: this.authority,
@@ -233,7 +474,7 @@ export class RateClient {
       },
     ];
     const tx = await this.program.methods
-      .withdraw(0, new BN(Big(amount).times(1_000_000_000).toNumber()), false, 0)
+      .withdraw(18, new BN(Big(amount).times(1_000_000_000).toNumber()))
       .accounts({
         state: STATE_PDA,
         user: userPda as any,
@@ -258,6 +499,9 @@ export class RateClient {
       return false;
     }
 
+    const balance = await this.getUserBalance();
+    console.log('Balance : ', balance);
+
     const userTokenAccount = getAssociatedTokenAddressSync(MINT_ACCOUNT, this.authority);
 
     const tx = await this.tokenFaucetProgram.methods
@@ -267,13 +511,13 @@ export class RateClient {
         faucetConfig: FAUCET_CONFIG_PDA,
         mintAccount: MINT_ACCOUNT,
         userTokenAccount,
-        mintAuthority: MINT_AUTHORITY,
+        mintAuthority: new PublicKey('9aTcv5rmbnYussBW61ok3caDyNZJCv2xpQF6t9b31wuj'),
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
       .signers([])
-      .rpc()
+      .rpc({commitment: 'confirmed'})
       .catch((e) => console.error(e));
     console.log('Mint To User : ', tx);
     return tx;
@@ -337,12 +581,12 @@ export class RateClient {
     }
   }
 
-  async genUserAccountPublicKey(type: ProgramAccountType, subAccountId: number = 0) {
+  genUserAccountPublicKey(type: ProgramAccountType, subAccountId: number = 0) {
     if (!this.authority) {
       return null;
     }
     const seeds = [Buffer.from(anchor.utils.bytes.utf8.encode(type))];
-    if (type === ProgramAccountType.User) {
+    if ([ProgramAccountType.User, ProgramAccountType.UserStats].includes(type)) {
       seeds.push(this.authority.toBuffer());
     }
     if (
@@ -355,6 +599,158 @@ export class RateClient {
     ) {
       seeds.push(new anchor.BN(subAccountId).toArrayLike(Buffer, 'le', 2));
     }
-    return (await PublicKey.findProgramAddress(seeds, this.program.programId))[0];
+    return PublicKey.findProgramAddressSync(seeds, this.program.programId)[0];
+  }
+
+  async queryEvent(txid: string, label: string) {
+    const tx = await this.connection.getTransaction(txid, {commitment: 'confirmed'});
+    if (!tx?.meta?.logMessages) {
+      return;
+    }
+    const evts = this.parser?.parseLogs(tx?.meta?.logMessages);
+    while (evts) {
+      const evt = evts.next();
+      if (evt.done) {
+        break;
+      }
+      console.log(label, evt);
+    }
+  }
+
+  getStartTickIndex(tickIndex: number) {
+    return Math.floor(tickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
+  }
+
+  async getFillOrderTickArrays(currTickIndex: number, sqrtPriceLimit: any, aTob: any) {
+    let tickIndexLimit = PriceMath.sqrtPriceX64ToTickIndex(sqrtPriceLimit);
+    let startTickIndex = this.getStartTickIndex(currTickIndex);
+    if (!aTob) {
+      let p = PriceMath.tickIndexToPrice(startTickIndex + 3 * TICK_ARRAY_SIZE, 9, 9);
+      console.log('pppp', p);
+
+      const tickBound = startTickIndex + 3 * TICK_ARRAY_SIZE;
+      if (tickBound < tickIndexLimit) {
+        throw Error(`out of bound 11 ${tickBound} ${tickIndexLimit}`);
+      }
+    } else {
+      const tickBound = startTickIndex - 2 * TICK_ARRAY_SIZE;
+      if (tickBound > tickIndexLimit) {
+        throw Error(`out of bound 22 ${tickBound} ${tickIndexLimit}`);
+      }
+    }
+
+    const tickArrays: PublicKey[] = [];
+    for (let i = 0; i < 10; ++i) {
+      const [tickArray] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from('tick_array'), WHIRLPOOL.toBuffer(), Buffer.from(startTickIndex.toString())],
+        this.program.programId
+      );
+      try {
+        const tickArrayAccount = await this.program.account.tickArray.fetch(tickArray);
+        console.log('found tick array', startTickIndex);
+        tickArrays.push(tickArray);
+      } catch (e) {
+        console.log('get tick array error', e, tickArray, startTickIndex);
+        break;
+        // continue
+      }
+
+      if (aTob) {
+        startTickIndex = Math.floor(startTickIndex / TICK_ARRAY_SIZE - 1) * TICK_ARRAY_SIZE;
+        if (startTickIndex < this.getStartTickIndex(tickIndexLimit)) {
+          console.log(`price limit triggered 11 ${startTickIndex} ${tickIndexLimit}`);
+          break;
+        }
+      } else {
+        startTickIndex = Math.floor(startTickIndex / TICK_ARRAY_SIZE + 1) * TICK_ARRAY_SIZE;
+        if (startTickIndex > tickIndexLimit) {
+          console.log(`price limit triggered 22 ${startTickIndex} ${tickIndexLimit}`);
+          break;
+        }
+      }
+
+      if (tickArrays.length >= 3) {
+        break;
+      }
+    }
+
+    if (tickArrays.length == 0) {
+      throw Error('no tick array available');
+    }
+
+    console.log('tickArrays.length', tickArrays.length);
+    for (let i = tickArrays.length + 1; i <= 3; ++i) {
+      tickArrays.push(tickArrays[tickArrays.length - 1]);
+      console.log('fill tick array');
+    }
+    return tickArrays;
+  }
+
+  async genFillOrderTickArrays1(startTickIndex: number) {
+    const tickArrays: PublicKey[] = [];
+    for (let i = 0; i < 5; i++) {
+      const {tickArray} = this.genTickArray(startTickIndex, i !== 0);
+      const accountInfo = await this.getAccountInfo(tickArray);
+      if (!!accountInfo) {
+        tickArrays.push(tickArray);
+      }
+      if (tickArrays.length > 2) {
+        break;
+      }
+    }
+    if (tickArrays.length > 0 && tickArrays.length < 3) {
+      const lastElement = tickArrays[tickArrays.length - 1];
+      while (tickArrays.length < 3) {
+        tickArrays.push(lastElement);
+      }
+      return tickArrays;
+    }
+    if (tickArrays.length > 3) {
+      return tickArrays.slice(0, 3);
+    }
+    return tickArrays;
+  }
+
+  genTickArray(startTickIndex: number, next: boolean = false) {
+    startTickIndex = Math.floor(startTickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
+
+    const [tickArray] = PublicKey.findProgramAddressSync(
+      [Buffer.from('tick_array'), WHIRLPOOL.toBuffer(), Buffer.from(startTickIndex.toString())],
+      this.program.programId
+    );
+    console.log('Initialize tick array index : ', startTickIndex, tickArray.toBase58());
+    return {tickArray, tickIndex: startTickIndex};
+  }
+
+  async initializeTickArrays(startTickIndex: number, endTickIndex: number) {
+    startTickIndex = Math.floor(startTickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
+    endTickIndex = Math.floor(endTickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
+    let tickArrays = [];
+    for (let i = startTickIndex; i <= endTickIndex; i += TICK_ARRAY_SIZE) {
+      const ta = await this.initializeTickArray(i);
+      tickArrays.push(ta);
+    }
+    return tickArrays;
+  }
+
+  async initializeTickArray(startTickIndex: number) {
+    const {tickArray, tickIndex} = this.genTickArray(startTickIndex);
+
+    const accountInfo = await this.getAccountInfo(tickArray);
+    if (!!accountInfo) {
+      return tickArray;
+    }
+    const txid = await this.program.methods
+      .initializeTickArray(tickIndex)
+      .accounts({
+        whirlpool: WHIRLPOOL,
+        tickArray,
+        funder: this.authority,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc({commitment: 'confirmed'});
+    console.log('Initialize Tick Array Tx : ', txid);
+    await this.queryEvent(txid, 'InitializeTickArray');
+    return tickArray;
   }
 }

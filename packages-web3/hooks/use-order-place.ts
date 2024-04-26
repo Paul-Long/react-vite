@@ -11,13 +11,16 @@ export function useOrderPlace(params: Params) {
   const [client] = useStream(rateXClient$);
   const {connected, connect} = useConnect();
 
-  const submit = useCallback(async () => {
-    if (!connected) {
-      return;
-    }
-    const tx = await client.placePerpOrder();
-    params?.onFinish(tx);
-  }, [connected, params]);
+  const submit = useCallback(
+    async (amount: number) => {
+      if (!connected) {
+        return;
+      }
+      const tx = await client?.placeOrder(amount);
+      params?.onFinish(tx);
+    },
+    [connected, params]
+  );
 
   return {
     submit,

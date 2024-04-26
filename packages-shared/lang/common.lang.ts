@@ -208,4 +208,7 @@ export const lang: any = {
   FollowUs: {
     en: 'Follow us',
   },
+  Trade: {
+    en: 'Trade',
+  },
 };

@@ -19,7 +19,8 @@ export function usePositions(mode: string) {
         fixed: env.isMobile ? false : 'left',
         width: env.isMobile ? 'auto' : '80px',
         shadowRight: true,
-        bodyCellStyle: {background: '#00162B'},
+        headerCellStyle: {background: '#000'},
+        bodyCellStyle: {background: '#000'},
         render: (_, i) => (i ?? 0) + 1,
       },
       {title: LG(lang.MarginType), dataIndex: 'marginType'},
@@ -50,21 +51,14 @@ export function usePositions(mode: string) {
         fixed: 'right',
         render: renderAction,
         shadowLeft: true,
-        shadowRight: true,
-        bodyCellStyle: {background: '#00162B'},
+        shadowRight: false,
+        headerCellStyle: {background: '#000'},
+        bodyCellStyle: {background: '#000'},
       },
     ];
     columns.forEach((c, i) => {
-      c.headerCellStyle = {
-        color: '#E0E0E0',
-        background: '#0A253D',
-        fontWeight: 700,
-      };
       if (i !== 0) {
         c.align = 'center';
-      }
-      if (c.dataIndex !== 'action' && c.dataIndex !== 'id') {
-        c.bodyCellStyle = {color: '#B7BDC6', fontWeight: 700};
       }
     });
     setColumns(columns);
@@ -85,7 +79,7 @@ export function usePositions(mode: string) {
       <div className="df fdr aic jcfe gap8px">
         <div className="flex-1 text-right">{row?.pnl}</div>
         <div className="flex-1 text-left">
-          <Button size="small" onClick={() => handleClose(row)}>
+          <Button type="default" onClick={() => handleClose(row)}>
             {LG(clang.Close)}
           </Button>
         </div>
@@ -96,8 +90,8 @@ export function usePositions(mode: string) {
   const renderAction = useCallback(() => {
     return (
       <div className="df fdr aic gap8px">
-        <Button size="small">{LG(clang.Deposit)}</Button>
-        <Button size="small">{LG(clang.Withdraw)}</Button>
+        <Button type="default">{LG(clang.Deposit)}</Button>
+        <Button type="default">{LG(clang.Withdraw)}</Button>
       </div>
     );
   }, []);

@@ -12,11 +12,11 @@ export function useFillOrder(props: Params) {
   const {connected, connect} = useConnect();
 
   const submit = useCallback(
-    async (params: any) => {
+    async (orderId: number) => {
       if (!connected) {
         return;
       }
-      const tx = await client?.fillPerpOrder(params);
+      const tx = await client?.fillPerpOrder(orderId);
       props?.onFinish(tx);
     },
     [connected, props]

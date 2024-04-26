@@ -9,6 +9,8 @@ import ReactDOM from 'react-dom';
 import 'templates-center';
 import 'virtual:uno.css';
 
+console.log('process.env : ', process.env.NODE_ENV);
+
 initWorker(() => new DataWorker());
 bootstrap((Component: any) => {
   ReactDOM.render(<Component />, document.getElementById('root'));

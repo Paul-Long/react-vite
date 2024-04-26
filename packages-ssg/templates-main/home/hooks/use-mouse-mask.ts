@@ -1,10 +1,15 @@
 import {MouseEvent, useCallback, useMemo, useState} from 'react';
 
-export function useMouseMask() {
+interface Props {
+  size?: number;
+}
+
+export function useMouseMask(props?: Props) {
+  const {size = 256} = props || {};
   const [state, setState] = useState<{x: number; y: number}>({x: 0, y: 0});
 
   const maskImage = useMemo(() => {
-    return `radial-gradient(256px at ${state.x}px ${state.y}px, #14F195, transparent)`;
+    return `radial-gradient(${size}px at ${state.x}px ${state.y}px, #14F195, transparent)`;
   }, [state]);
 
   const handleMouseMove = useCallback(

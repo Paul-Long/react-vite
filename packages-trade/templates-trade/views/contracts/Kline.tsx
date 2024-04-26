@@ -7,7 +7,7 @@ import {StyledWrap} from './styles';
 export function Kline() {
   const kline = useObservable(kLine$, []);
   return (
-    <StyledWrap className="df fdc gap24px max-h500px overflow-y-auto">
+    <StyledWrap className="flex flex-col gap-24px max-h-500px min-h-500px overflow-y-auto">
       <h2>Kline Data</h2>
       <Table columns={columns} dataSource={kline} />
     </StyledWrap>

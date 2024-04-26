@@ -10,7 +10,6 @@ import '@rx/helper/polyfill/map';
 import '@rx/helper/polyfill/rxjs';
 import {getAllTemplates} from '@rx/helper/template';
 import {LG$, genLG} from '@rx/streams/lang';
-import React from 'react';
 import {renderToString} from 'react-dom/server';
 import {ServerStyleSheet} from 'styled-components';
 import 'templates-center';
@@ -22,7 +21,6 @@ declare const __ENTRY_LANG_FILES__: string;
 
 const allTemplates = getAllTemplates();
 const locales = Object.keys(localeRecord) as Locale[];
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -56,12 +54,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 })();
 
 function writeHtmlFile(locale: Locale, template: Template, html: string) {
-  // TODO: support i18n
   const outputDir = resolve(__dirname, '../../client', locale, '.' + template.slug);
   mkdirSync(outputDir, {recursive: true});
   const file = resolve(outputDir, 'index.html');
   console.log(template.slug, `[${file}]`);
   writeFileSync(file, html, 'utf8');
+  if (locale === 'en') {
+    const outputDir = resolve(__dirname, '../../client', '.' + template.slug);
+    mkdirSync(outputDir, {recursive: true});
+    const file = resolve(outputDir, 'index.html');
+    console.log(template.slug, `[${file}]`);
+    writeFileSync(file, html, 'utf8');
+  }
 }
 
 function parserLang(locale: string) {

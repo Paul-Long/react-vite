@@ -35,12 +35,14 @@ export const IMAGES = {
 
 export const ASSETS_IMAGES: Record<string, string> = {
   SOL: 'https://static.rate-x.io/img/v1/99ca82/solana-sol-logo.svg',
+  M_SOL: 'https://static.rate-x.io/img/v1/d4c192/msol.svg',
+  JITO_SOL: '//static.rate-x.io/img/v1/6e8282/jitosol.svg',
 };
 
 export const HOME_IMAGES = {
   HOME_BG: '//static.rate-x.io/img/v1/06cdd8/home-bg.jpg',
   LOGO: '//static.rate-x.io/img/v1/065167/logo.svg',
-  HEADER_ICON: '//static.rate-x.io/img/v1/819415/home-banner.svg',
+  HEADER_ICON: '//static.rate-x.io/img/v1/4be4dd/home-banner.png',
   //
   MARGIN_YIELD_TRADING: '//static.rate-x.io/img/v1/a609ea/margin-yield-trading.svg',
   TRADING_STRATEGIES: '//static.rate-x.io/img/v1/f5014b/trading-strategies.svg',
@@ -66,7 +68,7 @@ export const HOME_IMAGES = {
   RESTAKING_TOKEN: '//static.rate-x.io/img/v1/d144ed/restaking-tokens.svg',
   RESTAKING_TOKEN_LIGHT: '//static.rate-x.io/img/v1/3a483c/restaking-tokens-light.svg',
   //
-  TIME_DECAY_AMM: '//static.rate-x.io/img/v1/cbb83d/time-decay-amm.svg',
+  TIME_DECAY_AMM: '//static.rate-x.io/img/v1/ba3ccd/time-decay-amm.svg',
   MULTI_LAYERED_LIQUIDITY_POOLS:
     '//static.rate-x.io/img/v1/adf0ca/multi-layered-liquidity-pools.svg',
   MULTI_LAYER_POOLS: '//static.rate-x.io/img/v1/f2a731/multi-layer-pools.svg',

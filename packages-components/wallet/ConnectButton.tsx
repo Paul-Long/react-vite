@@ -1,5 +1,5 @@
 import {loginApi} from '@rx/api/login';
-import {IMAGES} from '@rx/const/images';
+import {ASSETS_IMAGES} from '@rx/const/images';
 import {removeToken, writeToken} from '@rx/helper/token';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
@@ -40,13 +40,13 @@ export function ConnectButton() {
       <Dropdown
         contentStyle={{background: '#0A253D'}}
         content={
-          <Button style={{width: '100%'}} onClick={handleLogout}>
+          <Button style={{width: '100%'}} type="default" onClick={handleLogout}>
             {LG(clang.Disconnect)}
           </Button>
         }
       >
-        <StyledWalletConnected className="dif fdr aic gap10px border-rd-4px fw700 cp">
-          <img className="dib" src={IMAGES.sol} alt="sol" />
+        <StyledWalletConnected className="inline-flex flex-row items-center gap-10px rounded-4px font-medium cursor-pointer bg-gray-80 px-12px py-6px">
+          <img className="dib" src={ASSETS_IMAGES.SOL} alt="sol" />
           <span className="T3">{abbreviateString(user?.name as string)}</span>
           <i className="iconfont T3">&#xe624;</i>
         </StyledWalletConnected>
@@ -54,7 +54,7 @@ export function ConnectButton() {
     );
   }
   return (
-    <Button className="min-w160px font-size-18px" onClick={onSignIn}>
+    <Button className="min-w160px font-size-18px" type="primary" onClick={onSignIn}>
       {LG(clang.Connect)}
     </Button>
   );

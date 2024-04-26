@@ -59,7 +59,7 @@ function writeHtmlFile(locale: Locale, template: Template, html: string) {
   const file = resolve(outputDir, 'index.html');
   console.log(template.slug, `[${file}]`);
   writeFileSync(file, html, 'utf8');
-  if (template.slug === '/' && locale === 'en') {
+  if (locale === 'en') {
     const outputDir = resolve(__dirname, '../../client', '.' + template.slug);
     mkdirSync(outputDir, {recursive: true});
     const file = resolve(outputDir, 'index.html');

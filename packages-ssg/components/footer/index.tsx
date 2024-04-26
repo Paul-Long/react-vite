@@ -16,10 +16,10 @@ export function Footer() {
           </div>
         </div>
         <div className="flex-none flex flex-col gap-48px sm:gap-146px sm:flex-1 sm:justify-end sm:flex-row">
-          <div className="flex flex-col justify-start">
-            <div className="font-size-16px text-gray-400">{LG(lang.Audits)}</div>
-            <img className="w-170px h-48px" src={HOME_IMAGES.CERTIK} alt="" />
-          </div>
+          {/*<div className="flex flex-col justify-start">*/}
+          {/*  <div className="font-size-16px text-gray-400">{LG(lang.Audits)}</div>*/}
+          {/*  <img className="w-170px h-48px" src={HOME_IMAGES.CERTIK} alt="" />*/}
+          {/*</div>*/}
           <FollowUs align="left" />
         </div>
       </div>

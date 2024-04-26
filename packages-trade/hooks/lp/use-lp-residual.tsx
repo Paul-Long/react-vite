@@ -37,10 +37,10 @@ export function useLpResidual() {
         render: (record: any) => {
           return (
             <div className="df gap10px">
-              <Button type="default" size="small" onClick={() => handleClose(record)}>
+              <Button type="default" size="sm" onClick={() => handleClose(record)}>
                 {LG(clang.Close)}
               </Button>
-              <Button type="default" size="small">
+              <Button type="default" size="sm">
                 {LG(clang.Withdraw)}
               </Button>
             </div>

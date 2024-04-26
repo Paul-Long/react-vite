@@ -3,11 +3,11 @@ import {WalletModal} from '@rx/components/wallet';
 import {AutoConnect} from '@rx/components/wallet/AutoConnect';
 import {ContextProvider} from '@rx/web3';
 import {ToastManager} from '@rx/widgets';
-import React, {useEffect} from 'react';
+import React, {ReactNode, useEffect} from 'react';
 import {css, styled} from 'styled-components';
 
 interface PageProps {
-  children?: JSX.Element;
+  children?: ReactNode;
   showHeader?: boolean;
   title?: string;
   desc?: string;
@@ -17,7 +17,6 @@ interface PageProps {
 const headerHeight = '60px';
 const headerHeightResponsive = '60px';
 
-// 共享的样式，用于响应式设计
 const responsiveStyles = css<{$show?: boolean}>`
   @media (max-width: 640px) {
     padding: 0 16px;
@@ -36,23 +35,7 @@ const responsiveStyles = css<{$show?: boolean}>`
   }
 `;
 
-const StyledHeader = styled.header<{$show?: boolean}>`
-  display: ${({$show}) => ($show ? 'block' : 'none')};
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: ${headerHeight};
-  background: #fff;
-  z-index: 10;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 640px) {
-    height: ${headerHeightResponsive};
-  }
-`;
-
-const StyledContent = styled.main<{$show?: boolean; $scrollVisible: boolean}>`
+const StyledContent = styled.main<{$show?: boolean; $scrollVisible?: boolean}>`
   position: fixed;
   top: 0;
   left: 0;
@@ -61,19 +44,21 @@ const StyledContent = styled.main<{$show?: boolean; $scrollVisible: boolean}>`
   width: 100%;
   padding-top: ${headerHeight};
   box-sizing: border-box;
-  background: var(--dark-blue);
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .rotate-animation {
+    transform-origin: 60% 60%;
+    animation: rotate 120s linear infinite;
+  }
 
   ${responsiveStyles}
-  ${({$scrollVisible}) => {
-    if ($scrollVisible) {
-      return css`
-        overflow: auto;
-      `;
-    }
-    return css`
-      overflow: hidden;
-    `;
-  }}
 `;
 
 export const Page: React.FC<PageProps> = ({
@@ -83,6 +68,16 @@ export const Page: React.FC<PageProps> = ({
   desc,
   scrollVisible = true,
 }) => {
+  useEffect(() => {
+    const loadingEle: HTMLElement | null = document.getElementById('page-loading');
+    if (loadingEle) {
+      loadingEle.style.transition = 'opacity 0.2s';
+      loadingEle.style.opacity = '0';
+      setTimeout(() => {
+        loadingEle?.parentNode?.removeChild(loadingEle);
+      }, 200);
+    }
+  }, []);
   useEffect(() => {
     if (title) {
       document.title = title;
@@ -102,12 +97,8 @@ export const Page: React.FC<PageProps> = ({
 
   return (
     <ContextProvider>
-      <StyledHeader $show={showHeader}>
-        <Header />
-      </StyledHeader>
-      <StyledContent $show={showHeader} $scrollVisible={scrollVisible}>
-        {children}
-      </StyledContent>
+      <Header />
+      <StyledContent className="flex bg-black">{children}</StyledContent>
       <ToastManager />
       <AutoConnect />
       <WalletModal />

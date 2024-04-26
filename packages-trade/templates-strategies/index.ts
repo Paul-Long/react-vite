@@ -5,7 +5,7 @@ export const templates: Template[] = [
   {
     name: 'Strategy',
     slug: SLUGS.Strategy,
-    loader: () => import('./strategies'),
+    loader: () => import('./views'),
   },
 ];
 

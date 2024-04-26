@@ -2,12 +2,12 @@ import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
 import {csrLangFilePlugin} from '@rx/vite-plugins/plugin-lang-csr.mjs';
 import {vitePluginNodeGlobals} from '@rx/vite-plugins/vite-plugin-node-globals.mjs';
 import react from '@vitejs/plugin-react';
-import {btoa} from 'node:buffer';
 import {join} from 'node:path';
 import crypto from 'node:crypto'
 import UnoCSS from 'unocss/vite';
 import {build} from 'vite';
 import {viteExternalsPlugin} from 'vite-plugin-externals';
+import {nodePolyfills} from 'vite-plugin-node-polyfills';
 
 let __dirname;
 const langRecordDic = new Map();
@@ -96,6 +96,7 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
         'react-dom': 'ReactDOM',
       }),
       react(),
+      nodePolyfills({globals: {process: true, global: false}})
     ],
   });
   const entry = output.find((o) => o.isEntry);

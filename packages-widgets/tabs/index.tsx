@@ -1,72 +1,51 @@
-import cn from 'classnames';
-import React, {CSSProperties, useCallback, useEffect, useState} from 'react';
-import {StyledTab, StyledTabsWrap} from './styles';
+import {clsx} from 'clsx';
+import {useEffect, useState} from 'react';
 
-type Option = {text: string; key: string};
-
-interface TabsProps {
-  options: Option[];
-  active?: string;
-  size?: 'large' | 'small';
-  onChange?: (tab: any) => void;
-  type?: 'card' | 'line';
-  children?: React.ReactNode;
+interface Option {
+  text: string | JSX.Element;
+  value: string;
+}
+interface Props {
   className?: string;
-  style?: CSSProperties;
-  filled?: boolean;
+  size?: 'lg' | 'sm';
+  defaultValue?: string | number;
+  value: string | number;
+  onChange?: (tab: any) => void;
+  options: Option[];
 }
 
-export function Tabs(props: TabsProps) {
-  const {
-    options,
-    active,
-    size = 'large',
-    onChange,
-    type = 'line',
-    children,
-    className = '',
-    style = {},
-    filled = false,
-  } = props;
-  const [tab, setTab] = useState<string>();
+export function Tabs(props: Props) {
+  const {size = 'lg', onChange, value, className = ''} = props;
+  const [active, setActive] = useState<string | number>(props.defaultValue ?? props?.value ?? '');
 
   useEffect(() => {
-    if (active) {
-      setTab(active);
-    } else if (options[0]) {
-      setTab(options[0].key);
-    }
-  }, [active, options]);
-
-  const handleClick = useCallback(
-    (tab: string) => () => {
-      setTab(tab);
-      onChange?.(tab);
-    },
-    [onChange]
-  );
+    setActive(value);
+  }, [value]);
 
   return (
-    <StyledTabsWrap
-      className={cn(`pos-relative df fdr aic ${className}`)}
-      style={style}
-      $type={type}
-      $filled={filled}
+    <div
+      className={clsx(
+        'flex flex-row items-center w-100% font-size-16px fw-400',
+        [size === 'lg' && 'gap-50px'],
+        [size === 'sm' && 'gap-32px'],
+        className
+      )}
     >
-      {options.map((o) => (
-        <StyledTab
-          key={o.key}
-          className={cn(type)}
-          onClick={handleClick(o.key)}
-          $active={o.key === tab}
-          $size={size}
-          $type={type}
-          $filled={filled}
+      {props.options?.map((o) => (
+        <div
+          key={o.value}
+          onClick={() => onChange?.(o.value)}
+          className={clsx(
+            'flex justify-center items-center flex-nowrap text-nowrap h-100% b-style-solid text-gray-500 cursor-pointer box-border min-w-52px',
+            [active === o.value && 'fw-500 text-white'],
+            [active === o.value ? 'border-b-green-500' : 'b-b-transparent'],
+            [size === 'lg' && 'b-b-4px'],
+            [size === 'sm' && 'b-b-2px']
+          )}
         >
           {o.text}
-        </StyledTab>
+        </div>
       ))}
-      <div className="right df fdr aic">{children}</div>
-    </StyledTabsWrap>
+    </div>
   );
 }

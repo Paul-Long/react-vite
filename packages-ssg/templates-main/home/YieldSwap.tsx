@@ -8,7 +8,7 @@ export function YieldSwap() {
   const {LG} = useLang();
   return (
     <StyledYieldSwap className="df fdc aic mt-80px sm:mt-240px">
-      <div className="content grid gap-24px w-100% grid-cols-1 px-24px sm:w-1200px sm:px-0 sm:grid-cols-3">
+      <div className="content grid gap-24px w-100% grid-cols-1 px-24px sm:w-1200px max-w-100% sm:px-0 sm:grid-cols-3">
         {genCards(LG).map((card) => (
           <CardItem card={card} key={card.title} />
         ))}
@@ -26,8 +26,8 @@ function CardItem({card}: any) {
     >
       <img className="w-64px h-64px sm:w-120px sm:h-120px" src={card.img} alt={card.title} />
       <div className="flex flex-col items-center gap-8px sm:gap-18px mt-16px sm:mt-64px">
-        <div className="font-size-24px sm:font-size-32px">{card.title}</div>
-        <div className="text-center text-wrap font-size-16px text-gray-500 min-h-48px">
+        <div className="text-center font-size-24px lg:font-size-32px">{card.title}</div>
+        <div className="text-center text-wrap font-size-16px text-gray-600 min-h-48px">
           {card.desc}
         </div>
         <div className="go-page hidden sm:opacity-0 group-hover:opacity-100 sm:flex justify-center items-center">

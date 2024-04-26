@@ -60,7 +60,7 @@ export function H5Menu(props: Props) {
                     {m.children.map((cm) => (
                       <div
                         key={cm.key}
-                        className="block rounded-lg text-center font-light text-gray-500 font-size-18px"
+                        className="block rounded-lg text-center font-light text-gray-600 font-size-18px"
                       >
                         {cm.title}
                       </div>

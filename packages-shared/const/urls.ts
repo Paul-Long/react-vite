@@ -4,6 +4,8 @@ export const API_PREFIX = genApiUrl();
 export const API_URL = `${API_PREFIX}`;
 export const WS_URL = `${genWsUrl()}/gateway`;
 
+console.log(API_URL, WS_URL);
+
 function genApiUrl() {
   const hostname = calcHostname();
   const separator = calcSeparator(hostname);

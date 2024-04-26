@@ -1,5 +1,9 @@
+import {AddKeeper} from '@/views/contracts/AddKeeper';
+import {AddLiquidity} from '@/views/contracts/AddLiquidity';
 import {AssetsCategory} from '@/views/contracts/AssetsCategory';
 import {Deposit} from '@/views/contracts/Deposit';
+import {InitializeUser} from '@/views/contracts/InitializeUser';
+import {InitializeUserStats} from '@/views/contracts/InitializeUserStats';
 import {Kline} from '@/views/contracts/Kline';
 import {LastTradeSnapshot} from '@/views/contracts/LastTradeSnapshot';
 import {MintBalance} from '@/views/contracts/MintBalance';
@@ -9,8 +13,6 @@ import {PerpPlaceOrder} from '@/views/contracts/PerpPlaceOrder';
 import {RatePrice} from '@/views/contracts/RatePrice';
 import {ReferenceRate} from '@/views/contracts/ReferenceRate';
 import {UpdateOracle} from '@/views/contracts/UpdateOracle';
-import {StyledWrap} from '@/views/contracts/styles';
-import {ConnectButton} from '@rx/components/wallet';
 import {queryRatePrice$} from '@rx/streams/market/rate-price';
 import {load} from '@rx/streams/market/reference-price';
 import {kline$} from '@rx/streams/subscription/kline';
@@ -20,7 +22,6 @@ import {referencePrice$} from '@rx/streams/subscription/reference-price';
 import {tick$} from '@rx/streams/subscription/tick';
 import {queryKLine$} from '@rx/streams/trade/kline';
 import {queryLastTrade$} from '@rx/streams/trade/last-trade';
-import {MockMintToAccount} from '@rx/web3/components/MockMintToAccount';
 import {useEffect} from 'react';
 import {Withdraw} from './Withdraw';
 
@@ -38,15 +39,15 @@ export function Demo() {
   }, []);
 
   return (
-    <div className="df fdr jcc w100% gap48px">
-      <div className="df fdc aic w400px gap32px">
-        <StyledWrap className="df fdr jcfe">
-          <ConnectButton />
-        </StyledWrap>
+    <div className="flex flex-row justify-center w-100% gap-48px overflow-auto">
+      <div className="flex flex-col items-center w-400px gap-32px">
+        <InitializeUserStats />
+        <InitializeUser />
+        <AddKeeper />
         <MintBalance />
-        <MockMintToAccount />
         <PerpPlaceOrder />
         <PerpFillOrder />
+        <AddLiquidity />
         <MintToUser />
         <Deposit />
         <Withdraw />
