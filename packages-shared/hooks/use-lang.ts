@@ -1,15 +1,6 @@
-import {LG$} from '@rx/streams/lang';
-import {useEffect, useState} from 'react';
+import {usePageContext} from './use-page-context.tsx';
 
 export function useLang() {
-  const [LG, setLG] = useState(() => LG$.getValue());
-
-  useEffect(() => {
-    const unsubscription = LG$.subscribe((langFunc: Function) => setLG(() => langFunc));
-    return () => {
-      unsubscription.unsubscribe();
-    };
-  }, []);
-
+  const {LG} = usePageContext();
   return {LG};
 }

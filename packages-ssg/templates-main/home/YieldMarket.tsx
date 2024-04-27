@@ -1,7 +1,10 @@
 import {useMouseMask} from '@/home/hooks/use-mouse-mask';
 import {HOME_IMAGES} from '@rx/const/images';
+import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/home';
+import {Big} from 'big.js';
+import {clsx} from 'clsx';
 
 export function YieldMarket() {
   const {LG} = useLang();
@@ -32,19 +35,28 @@ function AssetItem({asset}: any) {
     >
       <div className="flex flex-col flex-1 overflow-hidden">
         <div className="flex flex-row items-start gap-20px">
-          <img
-            className="w-32px h-32px block sm:w-64px sm:h-64px group-hover:sm:block "
-            src={asset.img}
-            alt=""
-          />
-          <div className="flex flex-col flex-nowrap gap-8px">
-            <div className="font-size-18px sm:font-size-24px">{asset.asset}</div>
-            <div className="font-size-18px sm:font-size-24px overflow-hidden whitespace-nowrap text-ellipsis">
+          <div className="flex flex-row items-center min-h-48px sm:min-h-64px">
+            {asset.img.map((img: string, i: number) => (
+              <img
+                key={img}
+                className={clsx('w-32px h-32px block sm:w-64px sm:h-64px group-hover:sm:block', [
+                  i > 0 && 'ml-[-16px]',
+                ])}
+                src={img}
+                alt=""
+              />
+            ))}
+          </div>
+          <div className="flex flex-col h-full justify-center flex-nowrap">
+            {asset.asset && (
+              <div className="font-size-16px sm:font-size-24px sm:lh-32px">{asset.asset}</div>
+            )}
+            <div className="font-size-16px sm:font-size-24px sm:lh-32px overflow-hidden whitespace-nowrap text-ellipsis">
               {asset.contract}
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-start flex-nowrap mt-44px sm:mt-116px font-size-24px sm:font-size-48px gap-8px">
+        <div className="flex flex-col items-start flex-nowrap mt-44px sm:mt-82px font-size-24px sm:font-size-48px gap-8px">
           <span className="text-green-500 font-light">{asset.impliedYield}</span>
           <div className="flex flex-col font-size-14px sm:font-size-18px text-gray-600 text-nowrap fw-light">
             <span>{LG(lang.ImpliedYield)}</span>
@@ -69,31 +81,56 @@ function AssetItem({asset}: any) {
 
 const assets = (LG: any) => [
   {
-    asset: 'SOL',
-    contract: 'Native Staking',
-    impliedYield: '30%',
-    term: '25 Days',
-    img: '//static.rate-x.io/img/v1/c9ec99/sol-2.svg',
+    asset: '',
+    contract: 'SOL Staking',
+    impliedYield: '--%',
+    term: calcExpireIn(),
+    img: ['//static.rate-x.io/img/v1/c9ec99/sol-2.svg'],
   },
   {
-    asset: 'SOL',
+    asset: '',
     contract: 'JitoSOL',
-    impliedYield: '19%',
-    term: '17 Days',
-    img: '//static.rate-x.io/img/v1/6e8282/jitosol.svg',
+    impliedYield: '--%',
+    term: calcExpireIn(),
+    img: ['//static.rate-x.io/img/v1/e1350d/jito-sol.svg'],
   },
   {
-    asset: 'SOL',
+    asset: '',
     contract: 'JLP',
-    impliedYield: '28%',
-    term: '17 Days',
-    img: '//static.rate-x.io/img/v1/4f95e0/SOL-JLP.svg',
+    impliedYield: '--%',
+    term: calcExpireIn(),
+    img: ['//static.rate-x.io/img/v1/4f95e0/SOL-JLP.svg'],
   },
   {
-    asset: 'SOL',
+    asset: 'USDT',
     contract: 'USDC',
-    impliedYield: '28%',
-    term: '17 Days',
-    img: '//static.rate-x.io/img/v1/dbeb23/SOL-USDC.svg',
+    impliedYield: '--%',
+    term: calcExpireIn(),
+    img: [
+      '//static.rate-x.io/img/v1/9bfd67/USDT.svg',
+      '//static.rate-x.io/img/v1/dbeb23/SOL-USDC.svg',
+    ],
   },
 ];
+
+function calcExpireIn() {
+  const due = new Date('2024-12-28');
+  const time = new Date().getTime();
+
+  const maturity = Date.UTC(
+    due.getFullYear(),
+    due.getMonth(),
+    due.getDate(),
+    due.getHours(),
+    due.getMinutes(),
+    due.getSeconds()
+  );
+
+  const days = Big(maturity)
+    .minus(time)
+    .div(60 * 60 * 24 * 1000);
+  if (days.gt(Big(365))) {
+    return `${numUtil.trimEnd0(days.div(365).toFixed(0))} years`;
+  }
+  return `${numUtil.trimEnd0(days.toFixed(0))} days`;
+}

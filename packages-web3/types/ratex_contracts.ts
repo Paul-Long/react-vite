@@ -123,7 +123,7 @@ export type RatexContracts = {
         },
         {
           "name": "amount",
-          "type": "u64"
+          "type": "i64"
         }
       ]
     },
@@ -173,7 +173,7 @@ export type RatexContracts = {
         },
         {
           "name": "amount",
-          "type": "u64"
+          "type": "i64"
         }
       ]
     },
@@ -947,7 +947,7 @@ export type RatexContracts = {
       "args": [
         {
           "name": "decimals",
-          "type": "u8"
+          "type": "u32"
         }
       ]
     },
@@ -1813,7 +1813,7 @@ export type RatexContracts = {
               "To convert to the deposit token amount, multiply by the cumulative deposit interest",
               "precision: SPOT_BALANCE_PRECISION"
             ],
-            "type": "u64"
+            "type": "i64"
           },
           {
             "name": "nextDepositRecordId",
@@ -1878,7 +1878,7 @@ export type RatexContracts = {
           },
           {
             "name": "decimals",
-            "type": "u8"
+            "type": "u32"
           }
         ]
       }
@@ -2512,7 +2512,7 @@ export type RatexContracts = {
               "interest of corresponding market.",
               "precision: SPOT_BALANCE_PRECISION"
             ],
-            "type": "u64"
+            "type": "i64"
           },
           {
             "name": "balance",
@@ -2520,7 +2520,7 @@ export type RatexContracts = {
               "The cumulative deposits/borrows a user has made into a market",
               "precision: token mint precision"
             ],
-            "type": "u64"
+            "type": "i64"
           },
           {
             "name": "marketIndex",
@@ -3057,12 +3057,12 @@ export type RatexContracts = {
         },
         {
           "name": "amount",
-          "type": "u64",
+          "type": "i64",
           "index": false
         },
         {
           "name": "totalBalance",
-          "type": "u64",
+          "type": "i64",
           "index": false
         }
       ]
@@ -4569,231 +4569,236 @@ export type RatexContracts = {
     },
     {
       "code": 6251,
+      "name": "InvalidWithdraw",
+      "msg": "Invalid Withdraw"
+    },
+    {
+      "code": 6252,
       "name": "InvalidEnum",
       "msg": "Enum value could not be converted"
     },
     {
-      "code": 6252,
+      "code": 6253,
       "name": "InvalidStartTick",
       "msg": "Invalid start tick index provided."
     },
     {
-      "code": 6253,
+      "code": 6254,
       "name": "TickArrayExistInPool",
       "msg": "Tick-array already exists in this whirlpool"
     },
     {
-      "code": 6254,
+      "code": 6255,
       "name": "TickArrayIndexOutofBounds",
       "msg": "Attempt to search for a tick-array failed"
     },
     {
-      "code": 6255,
+      "code": 6256,
       "name": "InvalidTickSpacing",
       "msg": "Tick-spacing is not supported"
     },
     {
-      "code": 6256,
+      "code": 6257,
       "name": "ClosePositionNotEmpty",
       "msg": "Position is not empty It cannot be closed"
     },
     {
-      "code": 6257,
+      "code": 6258,
       "name": "DivideByZero",
       "msg": "Unable to divide by zero"
     },
     {
-      "code": 6258,
+      "code": 6259,
       "name": "NumberCastError",
       "msg": "Unable to cast number into BigInt"
     },
     {
-      "code": 6259,
+      "code": 6260,
       "name": "NumberDownCastError",
       "msg": "Unable to down cast number"
     },
     {
-      "code": 6260,
+      "code": 6261,
       "name": "TickNotFound",
       "msg": "Tick not found within tick array"
     },
     {
-      "code": 6261,
+      "code": 6262,
       "name": "InvalidTickIndex",
       "msg": "Provided tick index is either out of bounds or uninitializable"
     },
     {
-      "code": 6262,
+      "code": 6263,
       "name": "SqrtPriceOutOfBounds",
       "msg": "Provided sqrt price out of bounds"
     },
     {
-      "code": 6263,
+      "code": 6264,
       "name": "LiquidityZero",
       "msg": "Liquidity amount must be greater than zero"
     },
     {
-      "code": 6264,
+      "code": 6265,
       "name": "LiquidityTooHigh",
       "msg": "Liquidity amount must be less than i64::MAX"
     },
     {
-      "code": 6265,
+      "code": 6266,
       "name": "LiquidityOverflow",
       "msg": "Liquidity overflow"
     },
     {
-      "code": 6266,
+      "code": 6267,
       "name": "LiquidityUnderflow",
       "msg": "Liquidity underflow"
     },
     {
-      "code": 6267,
+      "code": 6268,
       "name": "LiquidityNetError",
       "msg": "Tick liquidity net underflowed or overflowed"
     },
     {
-      "code": 6268,
+      "code": 6269,
       "name": "TokenMaxExceeded",
       "msg": "Exceeded token max"
     },
     {
-      "code": 6269,
+      "code": 6270,
       "name": "TokenMinSubceeded",
       "msg": "Did not meet token min"
     },
     {
-      "code": 6270,
+      "code": 6271,
       "name": "MissingOrInvalidDelegate",
       "msg": "Position token account has a missing or invalid delegate"
     },
     {
-      "code": 6271,
+      "code": 6272,
       "name": "InvalidPositionTokenAmount",
       "msg": "Position token amount must be 1"
     },
     {
-      "code": 6272,
+      "code": 6273,
       "name": "InvalidTimestampConversion",
       "msg": "Timestamp should be convertible from i64 to u64"
     },
     {
-      "code": 6273,
+      "code": 6274,
       "name": "InvalidTimestamp",
       "msg": "Timestamp should be greater than the last updated timestamp"
     },
     {
-      "code": 6274,
+      "code": 6275,
       "name": "InvalidTickArraySequence",
       "msg": "Invalid tick array sequence provided for instruction."
     },
     {
-      "code": 6275,
+      "code": 6276,
       "name": "InvalidTokenMintOrder",
       "msg": "Token Mint in wrong order"
     },
     {
-      "code": 6276,
+      "code": 6277,
       "name": "RewardNotInitialized",
       "msg": "Reward not initialized"
     },
     {
-      "code": 6277,
+      "code": 6278,
       "name": "InvalidRewardIndex",
       "msg": "Invalid reward index"
     },
     {
-      "code": 6278,
+      "code": 6279,
       "name": "RewardVaultAmountInsufficient",
       "msg": "Reward vault requires amount to support emissions for at least one day"
     },
     {
-      "code": 6279,
+      "code": 6280,
       "name": "FeeRateMaxExceeded",
       "msg": "Exceeded max fee rate"
     },
     {
-      "code": 6280,
+      "code": 6281,
       "name": "ProtocolFeeRateMaxExceeded",
       "msg": "Exceeded max protocol fee rate"
     },
     {
-      "code": 6281,
+      "code": 6282,
       "name": "MultiplicationShiftRightOverflow",
       "msg": "Multiplication with shift right overflow"
     },
     {
-      "code": 6282,
+      "code": 6283,
       "name": "MulDivOverflow",
       "msg": "Muldiv overflow"
     },
     {
-      "code": 6283,
+      "code": 6284,
       "name": "MulDivInvalidInput",
       "msg": "Invalid div_u256 input"
     },
     {
-      "code": 6284,
+      "code": 6285,
       "name": "MultiplicationOverflow",
       "msg": "Multiplication overflow"
     },
     {
-      "code": 6285,
+      "code": 6286,
       "name": "InvalidSqrtPriceLimitDirection",
       "msg": "Provided SqrtPriceLimit not in the same direction as the swap."
     },
     {
-      "code": 6286,
+      "code": 6287,
       "name": "ZeroTradableAmount",
       "msg": "There are no tradable amount to swap."
     },
     {
-      "code": 6287,
+      "code": 6288,
       "name": "AmountOutBelowMinimum",
       "msg": "Amount out below minimum threshold"
     },
     {
-      "code": 6288,
+      "code": 6289,
       "name": "AmountInAboveMaximum",
       "msg": "Amount in above maximum threshold"
     },
     {
-      "code": 6289,
+      "code": 6290,
       "name": "TickArraySequenceInvalidIndex",
       "msg": "Invalid index for tick array sequence"
     },
     {
-      "code": 6290,
+      "code": 6291,
       "name": "AmountCalcOverflow",
       "msg": "Amount calculated overflows"
     },
     {
-      "code": 6291,
+      "code": 6292,
       "name": "AmountRemainingOverflow",
       "msg": "Amount remaining overflows"
     },
     {
-      "code": 6292,
+      "code": 6293,
       "name": "InvalidIntermediaryMint",
       "msg": "Invalid intermediary mint"
     },
     {
-      "code": 6293,
+      "code": 6294,
       "name": "DuplicateTwoHopPool",
       "msg": "Duplicate two hop pool"
     },
     {
-      "code": 6294,
+      "code": 6295,
       "name": "InvalidBundleIndex",
       "msg": "Bundle index is out of bounds"
     },
     {
-      "code": 6295,
+      "code": 6296,
       "name": "BundledPositionAlreadyOpened",
       "msg": "Position has already been opened"
     },
     {
-      "code": 6296,
+      "code": 6297,
       "name": "BundledPositionAlreadyClosed",
       "msg": "Position has already been closed"
     }
@@ -4925,7 +4930,7 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "amount",
-          "type": "u64"
+          "type": "i64"
         }
       ]
     },
@@ -4975,7 +4980,7 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "amount",
-          "type": "u64"
+          "type": "i64"
         }
       ]
     },
@@ -5749,7 +5754,7 @@ export const IDL: RatexContracts = {
       "args": [
         {
           "name": "decimals",
-          "type": "u8"
+          "type": "u32"
         }
       ]
     },
@@ -6615,7 +6620,7 @@ export const IDL: RatexContracts = {
               "To convert to the deposit token amount, multiply by the cumulative deposit interest",
               "precision: SPOT_BALANCE_PRECISION"
             ],
-            "type": "u64"
+            "type": "i64"
           },
           {
             "name": "nextDepositRecordId",
@@ -6680,7 +6685,7 @@ export const IDL: RatexContracts = {
           },
           {
             "name": "decimals",
-            "type": "u8"
+            "type": "u32"
           }
         ]
       }
@@ -7314,7 +7319,7 @@ export const IDL: RatexContracts = {
               "interest of corresponding market.",
               "precision: SPOT_BALANCE_PRECISION"
             ],
-            "type": "u64"
+            "type": "i64"
           },
           {
             "name": "balance",
@@ -7322,7 +7327,7 @@ export const IDL: RatexContracts = {
               "The cumulative deposits/borrows a user has made into a market",
               "precision: token mint precision"
             ],
-            "type": "u64"
+            "type": "i64"
           },
           {
             "name": "marketIndex",
@@ -7859,12 +7864,12 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "amount",
-          "type": "u64",
+          "type": "i64",
           "index": false
         },
         {
           "name": "totalBalance",
-          "type": "u64",
+          "type": "i64",
           "index": false
         }
       ]
@@ -9371,231 +9376,236 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6251,
+      "name": "InvalidWithdraw",
+      "msg": "Invalid Withdraw"
+    },
+    {
+      "code": 6252,
       "name": "InvalidEnum",
       "msg": "Enum value could not be converted"
     },
     {
-      "code": 6252,
+      "code": 6253,
       "name": "InvalidStartTick",
       "msg": "Invalid start tick index provided."
     },
     {
-      "code": 6253,
+      "code": 6254,
       "name": "TickArrayExistInPool",
       "msg": "Tick-array already exists in this whirlpool"
     },
     {
-      "code": 6254,
+      "code": 6255,
       "name": "TickArrayIndexOutofBounds",
       "msg": "Attempt to search for a tick-array failed"
     },
     {
-      "code": 6255,
+      "code": 6256,
       "name": "InvalidTickSpacing",
       "msg": "Tick-spacing is not supported"
     },
     {
-      "code": 6256,
+      "code": 6257,
       "name": "ClosePositionNotEmpty",
       "msg": "Position is not empty It cannot be closed"
     },
     {
-      "code": 6257,
+      "code": 6258,
       "name": "DivideByZero",
       "msg": "Unable to divide by zero"
     },
     {
-      "code": 6258,
+      "code": 6259,
       "name": "NumberCastError",
       "msg": "Unable to cast number into BigInt"
     },
     {
-      "code": 6259,
+      "code": 6260,
       "name": "NumberDownCastError",
       "msg": "Unable to down cast number"
     },
     {
-      "code": 6260,
+      "code": 6261,
       "name": "TickNotFound",
       "msg": "Tick not found within tick array"
     },
     {
-      "code": 6261,
+      "code": 6262,
       "name": "InvalidTickIndex",
       "msg": "Provided tick index is either out of bounds or uninitializable"
     },
     {
-      "code": 6262,
+      "code": 6263,
       "name": "SqrtPriceOutOfBounds",
       "msg": "Provided sqrt price out of bounds"
     },
     {
-      "code": 6263,
+      "code": 6264,
       "name": "LiquidityZero",
       "msg": "Liquidity amount must be greater than zero"
     },
     {
-      "code": 6264,
+      "code": 6265,
       "name": "LiquidityTooHigh",
       "msg": "Liquidity amount must be less than i64::MAX"
     },
     {
-      "code": 6265,
+      "code": 6266,
       "name": "LiquidityOverflow",
       "msg": "Liquidity overflow"
     },
     {
-      "code": 6266,
+      "code": 6267,
       "name": "LiquidityUnderflow",
       "msg": "Liquidity underflow"
     },
     {
-      "code": 6267,
+      "code": 6268,
       "name": "LiquidityNetError",
       "msg": "Tick liquidity net underflowed or overflowed"
     },
     {
-      "code": 6268,
+      "code": 6269,
       "name": "TokenMaxExceeded",
       "msg": "Exceeded token max"
     },
     {
-      "code": 6269,
+      "code": 6270,
       "name": "TokenMinSubceeded",
       "msg": "Did not meet token min"
     },
     {
-      "code": 6270,
+      "code": 6271,
       "name": "MissingOrInvalidDelegate",
       "msg": "Position token account has a missing or invalid delegate"
     },
     {
-      "code": 6271,
+      "code": 6272,
       "name": "InvalidPositionTokenAmount",
       "msg": "Position token amount must be 1"
     },
     {
-      "code": 6272,
+      "code": 6273,
       "name": "InvalidTimestampConversion",
       "msg": "Timestamp should be convertible from i64 to u64"
     },
     {
-      "code": 6273,
+      "code": 6274,
       "name": "InvalidTimestamp",
       "msg": "Timestamp should be greater than the last updated timestamp"
     },
     {
-      "code": 6274,
+      "code": 6275,
       "name": "InvalidTickArraySequence",
       "msg": "Invalid tick array sequence provided for instruction."
     },
     {
-      "code": 6275,
+      "code": 6276,
       "name": "InvalidTokenMintOrder",
       "msg": "Token Mint in wrong order"
     },
     {
-      "code": 6276,
+      "code": 6277,
       "name": "RewardNotInitialized",
       "msg": "Reward not initialized"
     },
     {
-      "code": 6277,
+      "code": 6278,
       "name": "InvalidRewardIndex",
       "msg": "Invalid reward index"
     },
     {
-      "code": 6278,
+      "code": 6279,
       "name": "RewardVaultAmountInsufficient",
       "msg": "Reward vault requires amount to support emissions for at least one day"
     },
     {
-      "code": 6279,
+      "code": 6280,
       "name": "FeeRateMaxExceeded",
       "msg": "Exceeded max fee rate"
     },
     {
-      "code": 6280,
+      "code": 6281,
       "name": "ProtocolFeeRateMaxExceeded",
       "msg": "Exceeded max protocol fee rate"
     },
     {
-      "code": 6281,
+      "code": 6282,
       "name": "MultiplicationShiftRightOverflow",
       "msg": "Multiplication with shift right overflow"
     },
     {
-      "code": 6282,
+      "code": 6283,
       "name": "MulDivOverflow",
       "msg": "Muldiv overflow"
     },
     {
-      "code": 6283,
+      "code": 6284,
       "name": "MulDivInvalidInput",
       "msg": "Invalid div_u256 input"
     },
     {
-      "code": 6284,
+      "code": 6285,
       "name": "MultiplicationOverflow",
       "msg": "Multiplication overflow"
     },
     {
-      "code": 6285,
+      "code": 6286,
       "name": "InvalidSqrtPriceLimitDirection",
       "msg": "Provided SqrtPriceLimit not in the same direction as the swap."
     },
     {
-      "code": 6286,
+      "code": 6287,
       "name": "ZeroTradableAmount",
       "msg": "There are no tradable amount to swap."
     },
     {
-      "code": 6287,
+      "code": 6288,
       "name": "AmountOutBelowMinimum",
       "msg": "Amount out below minimum threshold"
     },
     {
-      "code": 6288,
+      "code": 6289,
       "name": "AmountInAboveMaximum",
       "msg": "Amount in above maximum threshold"
     },
     {
-      "code": 6289,
+      "code": 6290,
       "name": "TickArraySequenceInvalidIndex",
       "msg": "Invalid index for tick array sequence"
     },
     {
-      "code": 6290,
+      "code": 6291,
       "name": "AmountCalcOverflow",
       "msg": "Amount calculated overflows"
     },
     {
-      "code": 6291,
+      "code": 6292,
       "name": "AmountRemainingOverflow",
       "msg": "Amount remaining overflows"
     },
     {
-      "code": 6292,
+      "code": 6293,
       "name": "InvalidIntermediaryMint",
       "msg": "Invalid intermediary mint"
     },
     {
-      "code": 6293,
+      "code": 6294,
       "name": "DuplicateTwoHopPool",
       "msg": "Duplicate two hop pool"
     },
     {
-      "code": 6294,
+      "code": 6295,
       "name": "InvalidBundleIndex",
       "msg": "Bundle index is out of bounds"
     },
     {
-      "code": 6295,
+      "code": 6296,
       "name": "BundledPositionAlreadyOpened",
       "msg": "Position has already been opened"
     },
     {
-      "code": 6296,
+      "code": 6297,
       "name": "BundledPositionAlreadyClosed",
       "msg": "Position has already been closed"
     }

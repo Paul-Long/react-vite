@@ -1,4 +1,4 @@
-export const lang = {
+export const lang: any = {
   Banner: {
     en: 'Any Future Earnings Can Be Exchanged',
   },

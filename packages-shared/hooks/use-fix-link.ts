@@ -1,15 +1,6 @@
-import {fixLink$} from '@rx/streams/lang';
-import {useEffect, useState} from 'react';
+import {usePageContext} from './use-page-context.tsx';
 
 export function useFixLink() {
-  const [fixLink, setFixLink] = useState(() => fixLink$.getValue());
-
-  useEffect(() => {
-    const unsubscription = fixLink$.subscribe((langFunc: any) => setFixLink(() => langFunc));
-    return () => {
-      unsubscription.unsubscribe();
-    };
-  }, []);
-
-  return {fixLink};
+  const {fixLink, slug} = usePageContext();
+  return {fixLink, slug};
 }

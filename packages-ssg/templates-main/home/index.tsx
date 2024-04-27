@@ -4,8 +4,8 @@ export function getPageDataLoaders(locale: Locale, slug: string): ContentLoader[
   return [
     () => ({
       initValue: {
-        title: '',
-        desc: '',
+        title: 'RateX',
+        desc: 'Any Future Earnings Can Be Exchanged',
       },
     }),
   ];

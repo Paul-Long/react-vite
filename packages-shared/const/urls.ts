@@ -22,7 +22,8 @@ function calcHostname() {
   if (env.isServer) {
     return 'rate-x.io';
   }
-  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
+  // const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
+  const hostname = env.isLocal ? 'app-dev10.rate-x.io' : location.hostname;
   // sample: dev11 -> dev1, dev12 -> dev1
   console.log(hostname, /^[a-z]*-[a-z]*[0-9]{2}\./i.test(hostname));
   if (/^(?:[a-z]*-)?[a-z]*[0-9]{2}\./i.test(hostname)) {

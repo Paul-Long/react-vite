@@ -1,10 +1,13 @@
 import {clsx} from 'clsx';
 import {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 
 interface Option {
   text: string | JSX.Element;
   value: string;
+  link?: string;
 }
+
 interface Props {
   className?: string;
   size?: 'lg' | 'sm';
@@ -43,7 +46,16 @@ export function Tabs(props: Props) {
             [size === 'sm' && 'b-b-2px']
           )}
         >
-          {o.text}
+          {!o.link ? (
+            o.text
+          ) : (
+            <Link
+              className="flex-1 flex justify-center items-center flex-nowrap text-nowrap"
+              to={o.link}
+            >
+              {o.text}
+            </Link>
+          )}
         </div>
       ))}
     </div>

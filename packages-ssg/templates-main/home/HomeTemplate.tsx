@@ -1,6 +1,5 @@
 import {AssetsCategory} from '@/home/AssetsCategory';
 import {Banner} from '@/home/Banner';
-import {Investors} from '@/home/Investors';
 import {Mechanism} from '@/home/Mechanism';
 import {YieldMarket} from '@/home/YieldMarket';
 import {YieldSwap} from '@/home/YieldSwap';
@@ -32,7 +31,7 @@ export function HomeTemplate() {
     >
       <Header notScrollTop={!isTop} onMenuShow={(s) => setShow(s)} />
       <div className="w-100% overflow-hidden">
-        <div className="relative w-1200px ml-auto mr-auto">
+        <div className="relative w-1200px ml-auto mr-auto hidden lg:block">
           <img
             className="rotate-animation hidden sm:block absolute left-10% top-[-160px] z-[-1]"
             src="//static.rate-x.io/img/v1/2160b9/home-bg-1.png"
@@ -52,14 +51,21 @@ export function HomeTemplate() {
           <YieldMarket />
           <AssetsCategory />
           <Mechanism />
-          <div className="mx-auto mt-100px px-24px sm:px-0">
-            <img
-              className="w-672px max-w-100%"
-              src="//static.rate-x.io/img/v1/b7df24/solana-foundation.png"
-              alt="solana-foundation"
-            />
+          <div className="mx-auto mt-160px mb-80px px-24px sm:px-0">
+            <div className="flex flex-col sm:flex-row items-center w-full sm:w-672px gap-40px sm:gap-80px">
+              <img
+                className="flex-1"
+                src="//static.rate-x.io/img/v1/86ce57/Granted-by.svg"
+                alt="solana-foundation"
+              />
+              <img
+                className="flex-1 w-324px"
+                src="//static.rate-x.io/img/v1/39a481/solana-fundation.png"
+                alt="solana-foundation"
+              />
+            </div>
           </div>
-          <Investors />
+          {/*<Investors />*/}
           <Footer />
         </StyledContent>
       </div>

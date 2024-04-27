@@ -6,6 +6,7 @@
   "scripts": {
     "deploy-ssg-dev10": "node ssg/deploy-dev10.mjs",
     "deploy-ssg-dev11": "node ssg/deploy-dev11.mjs",
+    "deploy-ssg-prod": "node ssg/deploy-prod.mjs",
     "deploy-trade-dev10": "node trade/deploy-dev10.mjs",
     "deploy-trade-dev11": "node trade/deploy-dev11.mjs",
     "deploy-global-3rd": "node 3rd/deploy-global-3rd.mjs",
@@ -15,10 +16,12 @@
     "deploy-local-ssg": "cp -Ra ../packages-ssg/app/dist/client/ /usr/local/var/www",
     "deploy-local-trade": "cp -Ra ../packages-trade/app/dist/client/* /usr/local/var/www",
     "deploy-local-css": "cp -Ra ../packages-shared/scss/dist/* /usr/local/var/www/css",
-    "deploy-local-clear": "find /usr/local/var/www -mindepth 1 -maxdepth 1 ! -name '3rd' ! -name 'css' ! -name 'font' -exec rm -rf {} +"
+    "deploy-local-clear": "find /usr/local/var/www -mindepth 1 -maxdepth 1 ! -name '3rd' ! -name 'css' ! -name 'font' -exec rm -rf {} +",
+    "refresh-cdn": "node aws/refresh-cdn.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.525.0",
+    "@aws-sdk/client-cloudfront": "3.564.0",
     "glob": "10.3.10",
     "json5": "2.2.3",
     "mime": "4.0.1",

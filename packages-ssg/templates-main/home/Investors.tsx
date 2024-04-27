@@ -8,7 +8,7 @@ export function Investors() {
       <div className="font-size-24px sm:font-size-48px text-wrap text-center sm:w-584px">
         {LG(lang.OurInvestors)}
       </div>
-      <div className="flex flex-col sm:flex-row sm:justify-center sm:flex-wrap sm:overflow-hidden items-center sm:w-1200px max-w-100% gap-32px sm:gap-20px mt-64px sm:mt-80px hide-scrollbar">
+      <div className="flex flex-col sm:flex-row sm:justify-center sm:flex-wrap sm:overflow-hidden items-center sm:w-1200px max-w-100% gap-32px sm:gap-20px sm:not-last:ml-40px mt-64px sm:mt-80px hide-scrollbar">
         {items.map((s) => (
           <div
             key={s}
@@ -28,6 +28,6 @@ export const items = [
   '//static.rate-x.io/img/v1/c00a43/snz.svg',
   '//static.rate-x.io/img/v1/a61654/animoca.svg',
   '//static.rate-x.io/img/v1/580fa2/presto-labs.svg',
-  '//static.rate-x.io/img/v1/fd75cd/gsr.png',
-  '//static.rate-x.io/img/v1/7762f2/lead-block.png',
+  // '//static.rate-x.io/img/v1/fd75cd/gsr.png',
+  // '//static.rate-x.io/img/v1/7762f2/lead-block.png',
 ];

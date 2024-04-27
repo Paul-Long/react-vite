@@ -22,7 +22,6 @@ import {
   TOKEN_VAULT_B_PUBLIC_KEY,
   WHIRLPOOL,
 } from '@/sdk/const';
-import {UserLayout} from '@/sdk/layout/user-layout';
 import {getUserAccountPublicKey} from '@/sdk/utils';
 import type {RateXClientConfig} from '@/types/rate-x-client';
 import type {RatexContracts} from '@/types/ratex_contracts';
@@ -32,6 +31,7 @@ import * as anchor from '@coral-xyz/anchor';
 import {AnchorProvider, BN, EventParser, Program, Wallet} from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  getAccount,
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
@@ -157,22 +157,19 @@ export class RateClient {
     if (!userPda) {
       return;
     }
-    const user = await this.connection.getAccountInfo(userPda);
-    if (!user?.data) {
-      return;
+    try {
+      console.log('query user-pda : ', userPda.toBase58());
+      const user = await this.program.account.user.fetch(userPda);
+      console.log('user authority : ', user.authority.toBase58());
+      return user;
+    } catch (e) {
+      console.error(e);
+      return null;
     }
-    const data = UserLayout.decode(user.data);
-    console.log('query user-pda : ', userPda.toBase58());
-    console.log('user authority : ', data.authority.toBase58());
-    return data;
   }
 
   async getUserOrders() {
-    return (await this.getUserAccountInfo())?.orders;
-  }
-
-  async getUserOrderIndex() {
-    return (await this.getUserOrders())?.findIndex((o) => o.order_id === 0);
+    return (await this.getUserAccountInfo())?.orders ?? [];
   }
 
   async placeOrder(amount: number) {
@@ -186,13 +183,12 @@ export class RateClient {
     const priceLimit = PriceMath.priceToSqrtPriceX64(new Decimal(0.9), 9, 9);
     console.log('priceLimit', priceLimit.toString());
 
-    const orderId = await this.getUserOrderIndex();
-
-    console.log('Order ID : ', orderId);
+    const pm = await this.program.account.perpMarket.fetch(PERP_MARKET);
+    const ai = await this.connection.getAccountInfo(PERP_MARKET);
+    console.log('PERP_MARKET : ', pm, ai?.owner?.toBase58());
 
     const orderParams = {
       orderType: OrderType.MARKET,
-      userOrderId: orderId,
       marketIndex: 2,
       direction: PositionDirection.LONG,
       baseAssetAmount: new BN(Big(amount).times(1_000_000_000).toNumber()),
@@ -318,7 +314,7 @@ export class RateClient {
     tickLowerIndex: number,
     tickUpperIndex: number,
     liquidityAmount: number,
-    marketIndex: number = 0
+    marketIndex: number = 2
   ) {
     const userPda = this.genUserAccountPublicKey(ProgramAccountType.User);
     const userStatPda = this.genUserAccountPublicKey(ProgramAccountType.UserStats);
@@ -332,8 +328,8 @@ export class RateClient {
       tickUpperIndex = pool.tickCurrentIndex + 20;
     }
 
-    tickLowerIndex = pool.tickCurrentIndex - 10 * 800;
-    tickUpperIndex = pool.tickCurrentIndex + 10 * 800;
+    tickLowerIndex = pool.tickCurrentIndex - 10 * 2;
+    tickUpperIndex = pool.tickCurrentIndex + 10 * 2;
 
     const positionMintSeeds = [
       Buffer.from('position_mint'),
@@ -371,10 +367,17 @@ export class RateClient {
     const tickArrayLower = tickArrays[0];
     const tickArrayUpper = tickArrays[tickArrays.length - 1];
 
+    const ta = await getAccount(this.connection, QUOTE_ASSET_VAULT);
+    console.log('QUOTE_ASSET_VAULT : ', ta.mint.toBase58(), TOKEN_MINT_A.toBase58());
+    const tb = await getAccount(this.connection, BASE_ASSET_VAULT);
+    console.log('BASE_ASSET_VAULT : ', tb.mint.toBase58(), TOKEN_MINT_B.toBase58());
+    const pm = await this.program.account.perpMarket.fetch(PERP_MARKET);
+    console.log('PERP_MARKET : ', pm, marketIndex);
+
     const addTx = await this.program.methods
       .addPerpLpShares(
         new BN(Big(liquidityAmount).times(1_000_000_000).toNumber()),
-        marketIndex,
+        2,
         tickLowerIndex,
         tickUpperIndex
       )
@@ -402,6 +405,7 @@ export class RateClient {
     if (addTx) {
       await this.queryEvent(addTx, 'addPerpLpShares');
     }
+    console.log('addPerpLpShares : ', addTx);
     return addTx;
   }
 
@@ -444,7 +448,7 @@ export class RateClient {
       },
     ];
     let tx = await this.program.methods
-      .deposit(0, new BN(Big(amount).times(1_000_000_000).toNumber()))
+      .deposit(18, new BN(Big(amount).times(1_000_000_000).toNumber()))
       .accounts({
         user: userPda as any,
         authority: this.authority,

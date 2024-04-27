@@ -60,8 +60,8 @@ export const TOKEN_VAULT_B_PUBLIC_KEY = new PublicKey(
 export const OBSERVATION_STATE_PUBLIC_KEY = new PublicKey(
   '37kYnahYikPMV2mcvvtHzEuBEVVApvT9GE1AbMTZkC6x'
 );
-export const TOKEN_MINT_A = new PublicKey('2fCgaC4X8Hb5yPbHrHZYGPACcmbHpYLsbBZNbNjeuRqY');
-export const TOKEN_MINT_B = new PublicKey('xc53fBNVf5bKnzE7zPLgD8QjotQXPd6Gfqz7mDxvESP');
+export const TOKEN_MINT_A = new PublicKey('xc53fBNVf5bKnzE7zPLgD8QjotQXPd6Gfqz7mDxvESP');
+export const TOKEN_MINT_B = new PublicKey('2fCgaC4X8Hb5yPbHrHZYGPACcmbHpYLsbBZNbNjeuRqY');
 export const PERP_MARKET = new PublicKey('GXeut8zda5hVkrb3G1xJGaM1E7yBTGckXUXUDkT1R3wi');
 export const QUOTE_ASSET_VAULT = new PublicKey('3f83GJhiUnWS6fSvW2UAEc7odiyh89sYyezz2GXBXfZy');
 export const BASE_ASSET_VAULT = new PublicKey('bE8XL8d1LGmzWkuHKqU5KcfHMQwKrcWgnAnzLGDGYKp');

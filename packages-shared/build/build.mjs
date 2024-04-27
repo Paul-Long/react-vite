@@ -86,6 +86,7 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
       },
     },
     plugins: [
+      nodePolyfills({globals: {process: true, global: false}}),
       UnoCSS(),
       createAliasPlugin(),
       createOneRouteGroupPlugin(moduleId),
@@ -96,7 +97,6 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
         'react-dom': 'ReactDOM',
       }),
       react(),
-      nodePolyfills({globals: {process: true, global: false}})
     ],
   });
   const entry = output.find((o) => o.isEntry);

@@ -1,12 +1,11 @@
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
-import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
-import {csrLangFilePlugin} from '@rx/vite-plugins/plugin-lang-csr.mjs';
 import react from '@vitejs/plugin-react';
+import polyfillNode from 'rollup-plugin-polyfill-node';
 import UnoCSS from 'unocss/vite';
 import {defineConfig} from 'vite';
 import buildPackage from './package.json';
@@ -17,7 +16,7 @@ const langRecordDic = new Map();
 
 export default defineConfig({
   publicDir: isProd ? undefined : '../../public',
-  plugins: [UnoCSS(), createAliasPlugin(), react()],
+  plugins: [polyfillNode(), UnoCSS(), createAliasPlugin(), react()],
   server: {
     host: '0.0.0.0',
     port: 3000,
@@ -28,13 +27,6 @@ export default defineConfig({
     assetsDir: 'js',
     target: 'esnext',
     rollupOptions: {
-      // @ts-ignore
-      plugins: [
-        UnoCSS(),
-        createAliasPlugin(),
-        csrLangFilePlugin(langRecordDic, join(__dirname, 'dist'), buildPackage.buildId),
-        react(),
-      ],
       output: {
         entryFileNames: `s-${buildPackage.buildId}/js/main-[hash].js`,
         chunkFileNames: `s-${buildPackage.buildId}/js/chunk-[hash].js`,

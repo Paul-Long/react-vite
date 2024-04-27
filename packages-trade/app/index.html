@@ -12,14 +12,10 @@
     <meta name="description" content="Put your description here." />
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/css/global-xs.css" media="screen and (max-width:640px)" />
-    <style>@keyframes breath-animation{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:0.7;}}.breath-effect{animation:breath-animation 1.5s ease-in-out infinite;}</style>
   </head>
   <body>
-    <div id='page-loading' style='position: fixed;display: flex;justify-content: center;align-items: center;width: 100%;height: 100vh;background: #000;z-index: 9999'>
-      <img class='breath-effect' src='https://static.rate-x.io/img/v1/065167/logo.svg' alt='Rate-X' height='40'>
-    </div>
     <div id="root"></div>
     <div id="popup"></div>
-    <script type="module" src="./entry-client-dev.tsx"></script>
+    <script type="module" src="./entry-client.tsx"></script>
   </body>
 </html>
