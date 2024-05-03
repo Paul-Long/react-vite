@@ -813,6 +813,11 @@
           "isSigner": false
         },
         {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "userStats",
           "isMut": true,
           "isSigner": false
@@ -879,11 +884,6 @@
         },
         {
           "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "observation",
           "isMut": true,
           "isSigner": false
         },
@@ -1583,6 +1583,31 @@
         {
           "name": "rate",
           "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "setState",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "collateralRatioInitial",
+          "type": "i64"
+        },
+        {
+          "name": "collateralRatioMaintenance",
+          "type": "i64"
         }
       ]
     },
@@ -2445,6 +2470,10 @@
             "type": "u16"
           },
           {
+            "name": "paddingA",
+            "type": "u32"
+          },
+          {
             "name": "marginPositions",
             "docs": [
               "The user's collateral"
@@ -2508,7 +2537,7 @@
             "type": {
               "array": [
                 "u8",
-                21
+                20
               ]
             }
           }
@@ -2539,7 +2568,7 @@
             "type": {
               "array": [
                 "u8",
-                6
+                14
               ]
             }
           },
@@ -3038,7 +3067,7 @@
             "type": {
               "array": [
                 "u8",
-                4
+                6
               ]
             }
           }
@@ -3065,6 +3094,15 @@
           {
             "name": "marketIndex",
             "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
           }
         ]
       }
@@ -3104,6 +3142,15 @@
               "The market index for the perp market"
             ],
             "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
           }
         ]
       }
@@ -3756,6 +3803,73 @@
       ]
     },
     {
+      "name": "LiquidationRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "filler",
+          "type": {
+            "option": "publicKey"
+          },
+          "index": false
+        },
+        {
+          "name": "marketIndex",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "baseAmountFilled",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "quoteAmountFilled",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "baseAmountHeld",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "quoteAmountHeld",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "tradePrice",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "fee",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "rate",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
       "name": "CancelOrderRecord",
       "fields": [
         {
@@ -3800,68 +3914,6 @@
         },
         {
           "name": "marketRate",
-          "type": "u64",
-          "index": false
-        }
-      ]
-    },
-    {
-      "name": "LiquidationRecord",
-      "fields": [
-        {
-          "name": "ts",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "userAuthority",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "user",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "liquidator",
-          "type": {
-            "option": "publicKey"
-          },
-          "index": false
-        },
-        {
-          "name": "marginRequirement",
-          "type": "u128",
-          "index": false
-        },
-        {
-          "name": "totalCollateral",
-          "type": "i128",
-          "index": false
-        },
-        {
-          "name": "liquidationId",
-          "type": "u16",
-          "index": false
-        },
-        {
-          "name": "bankrupt",
-          "type": "bool",
-          "index": false
-        },
-        {
-          "name": "baseAmountFilled",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "quoteAmountFilled",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "tradePrice",
           "type": "u64",
           "index": false
         }
@@ -5526,5 +5578,8 @@
       "name": "ObservationStateNotFound",
       "msg": "Observation state not found"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "HWgynLtmjaPeTzSSxSHHXwNGz9Bppk893BjtZq6iEZxD"
+  }
 }
