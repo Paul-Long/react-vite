@@ -1,4 +1,4 @@
-import {Wallet} from '@coral-xyz/anchor';
+import {BN, Wallet} from '@coral-xyz/anchor';
 import type {ConfirmOptions, Connection, PublicKey} from '@solana/web3.js';
 
 export type RateXClientConfig = {
@@ -8,3 +8,35 @@ export type RateXClientConfig = {
   authority?: PublicKey;
   opts?: ConfirmOptions;
 };
+
+interface RateXPosition {
+  userPda: string;
+  baseAssetAmount: BN | number;
+  lastRate?: BN | number;
+  marketIndex: number;
+  quoteAssetAmount: BN | number;
+}
+
+type MarginType = 'CROSS' | 'ISOLATED';
+type OrderType = 'MARKET' | 'LIMIT';
+type DirectionType = 'LONG' | 'SHORT';
+
+interface RateXPlaceOrderParams {
+  marginType: MarginType;
+  amount: number;
+  marketIndex: number;
+  orderType: OrderType;
+  direction: DirectionType;
+  margin?: number;
+}
+
+interface RateXClosePositionParams {
+  marginType: MarginType;
+  amount: number;
+  marketIndex: number;
+  orderType: OrderType;
+  direction: DirectionType;
+  margin?: number;
+  userPda: string;
+  userOrdersPda: string;
+}
