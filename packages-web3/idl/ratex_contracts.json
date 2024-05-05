@@ -1367,22 +1367,22 @@
           "isSigner": false
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "baseAssetMint",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "quoteAssetVault",
+          "name": "quoteAssetMint",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "baseAssetVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "quoteAssetVault",
           "isMut": true,
           "isSigner": false
         },
@@ -2537,7 +2537,7 @@
             "type": {
               "array": [
                 "u8",
-                20
+                22
               ]
             }
           }
@@ -2568,7 +2568,7 @@
             "type": {
               "array": [
                 "u8",
-                14
+                6
               ]
             }
           },
@@ -5595,8 +5595,5 @@
       "name": "ObservationStateNotFound",
       "msg": "Observation state not found"
     }
-  ],
-  "metadata": {
-    "address": "5PCKnTPG5opy6kWGfL5ZDHiDVdqQ4QiMjysBqwjEPFWY"
-  }
+  ]
 }
