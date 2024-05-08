@@ -11,13 +11,14 @@ export function Assets() {
   const assets = useObservable(assets$, []);
 
   return (
-    <div className="flex flex-col w-280px max-w-280px  min-w-280px gap-24px">
+    <div className="flex flex-col w-280px max-w-280px  min-w-280px gap-24px bg-black">
       <div className="overflow-hidden flex px-24px mt24px">
         <Search />
       </div>
       <div className="flex flex-col text-#DEE4EE font-size-16px">
         {assets?.map((a) => (
           <div
+            key={a.symbolCategory}
             className={clsx(
               'flex flex-row items-center px-24px py-16px box-border b-r-4px b-s-solid gap-8px cursor-pointer',
               [asset === a.symbolCategory && 'bg-gray-80'],

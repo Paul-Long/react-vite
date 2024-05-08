@@ -6,9 +6,5 @@ interface Props {
 }
 export function Position(props: Props) {
   const {columns, dataSource} = usePositions(props.mode);
-  return (
-    <>
-      <Table columns={columns} dataSource={dataSource as any[]} />
-    </>
-  );
+  return <Table columns={columns} dataSource={dataSource as any[]} />;
 }

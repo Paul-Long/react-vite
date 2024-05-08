@@ -22,3 +22,8 @@ export enum ReferencePriceSubTypes {
   Subscribe = 'reference-price-subscribe',
   Unsubscribe = 'reference-price-unsubscribe',
 }
+
+export enum PositionSubTypes {
+  Subscribe = 'position-subscribe',
+  Unsubscribe = 'position-unsubscribe',
+}

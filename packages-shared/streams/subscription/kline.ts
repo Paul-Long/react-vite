@@ -9,9 +9,9 @@ export const kline$ = new TopicSubject({
   formatter: formatData,
 });
 
-kline$.subscribe((o) => {
-  console.log(KlineSubTypes.Subscribe, o);
-});
+// kline$.subscribe((o) => {
+//   console.log(KlineSubTypes.Subscribe, o);
+// });
 
 function formatData(content?: string[]) {
   return content

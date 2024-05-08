@@ -1,4 +1,4 @@
-export const lang = {
+export const lang: any = {
   Position: {
     en: 'Position',
   },
@@ -225,6 +225,6 @@ export const lang = {
     en: 'Rec.Floating',
   },
   Orders: {
-    en: 'Orders'
-  }
+    en: 'Orders',
+  },
 };

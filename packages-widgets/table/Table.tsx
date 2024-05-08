@@ -35,7 +35,7 @@ export function Table(props: TableProps) {
   }, []);
 
   return (
-    <div ref={ref} className="relative max-w-100% overflow-x-auto">
+    <div ref={ref} className="relative max-w-100% overflow-x-auto sv">
       <StyledTableWrap
         $rows={rows}
         $grid={columns.reduce((s: string[], c) => [...s, c.width ?? '1fr'], []).join(' ')}
@@ -43,7 +43,7 @@ export function Table(props: TableProps) {
         <StyledRow>
           {columns.map((column, index) => (
             <StyledTh
-              className="font-size-12px lh-20px text-gray-400"
+              className="font-size-14px lh-20px text-gray-600"
               $fixed={column.fixed}
               $align={column.align ?? 'left'}
               $shadowLeft={!!column.shadowLeft && hasX && !isRight}
@@ -66,7 +66,7 @@ export function Table(props: TableProps) {
                 $shadowLeft={!!column.shadowLeft && hasX && !isRight}
                 $shadowRight={!!column.shadowRight && hasX && !isLeft}
                 style={column?.bodyCellStyle ?? {}}
-                key={column.dataIndex}
+                key={`${index}-${column.dataIndex}`}
               >
                 {renderCell(data, index, column)}
               </StyledTd>

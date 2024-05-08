@@ -8,14 +8,19 @@ const _kLine$ = new BehaviorSubject([]);
 export const kLine$ = _kLine$.asObservable();
 export const queryKLine$ = new Subject();
 
-const klineState$ = queryKLine$.pipe(switchMap(() => load()));
+const klineState$ = queryKLine$.pipe(
+  switchMap((query: any) => {
+    _kLine$.next([]);
+    return load(query);
+  })
+);
 
 combineLatest([klineState$, wsKline$])
   .pipe(map(([a, b]) => mergeData(a, b)))
   .subscribe(_kLine$);
 
-async function load() {
-  const {data} = await klineApi.queryKLine();
+async function load(query: any) {
+  const {data} = await klineApi.queryKLine(query);
   return data
     ?.map(formatKlineRow)
     .filter(Boolean)
@@ -28,6 +33,8 @@ function mergeData(reqList: any, wsList: any) {
   if (!!last) {
     wsList = [...(wsList || [])].filter((o) => o.closeTime > last.closeTime);
   }
-  console.log('Kline : ', newList, wsList);
-  return [...newList, ...(wsList || [])];
+  return [...newList, ...(wsList || [])].map(({closeTime, ...d}) => ({
+    ...d,
+    time: new Date(closeTime).getTime() / 1000,
+  }));
 }

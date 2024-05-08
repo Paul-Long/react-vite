@@ -14,13 +14,13 @@ const StyledInputContainer = styled.div<{size: string; bordered: string; align: 
       border: 1px solid var(--lead-gray);
       &:hover,
       &:focus-within {
-        border-color: #007bff;
+        border-color: #14f195;
       }
     `}
 
   .input {
     flex: 1;
-    padding: 12px 0;
+    padding: 8px 12px;
     border: none;
     border-radius: 4px;
     width: 100%;
@@ -28,6 +28,11 @@ const StyledInputContainer = styled.div<{size: string; bordered: string; align: 
     color: inherit;
     text-align: ${({align}) => align};
     font-family: BASE;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
+    }
     &:hover,
     &:focus {
       outline: none;

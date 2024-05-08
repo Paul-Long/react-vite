@@ -16,18 +16,19 @@ export function useInitializeUser(params: Params) {
       if (!connected) {
         return;
       }
-      const tx = await client?.initializeUser(isIsolated, isTrader);
-      params?.onFinish?.(tx);
+      await client?.initializeUser(isIsolated, isTrader);
+      params?.onFinish?.();
     },
-    [connected]
+    [connected, client]
   );
 
   const query = useCallback(async () => {
     return await client?.getUserAccountInfo();
-  }, [connected]);
+  }, [connected, client]);
 
   return {
     query,
     submit,
+    client,
   };
 }

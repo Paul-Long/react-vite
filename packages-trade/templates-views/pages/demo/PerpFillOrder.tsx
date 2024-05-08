@@ -6,7 +6,9 @@ import {useCallback, useState} from 'react';
 import {StyledWrap} from './styles';
 
 export function PerpFillOrder() {
-  const [value, setValue] = useState(1);
+  const [userPda, setUserPda] = useState('');
+  const [marketIndex, setMarketIndex] = useState(2);
+  const [orderId, setOrderId] = useState(0);
   const [tx, setTx] = useState<string>('');
   const {connected} = useConnect();
   const {submit} = useFillOrder({
@@ -20,8 +22,8 @@ export function PerpFillOrder() {
       walletModalVisible$.next(true);
       return;
     }
-    submit(value).then();
-  }, [connected, value]);
+    submit({userPda, marketIndex, orderId}).then();
+  }, [connected, userPda, marketIndex, orderId]);
 
   return (
     <StyledWrap className="df fdc gap24px">
@@ -29,6 +31,19 @@ export function PerpFillOrder() {
         TX: {tx}
       </p>
 
+      <div className="flex flex-row items-center gap-12px w-full">
+        <label htmlFor="MarketIndex" className="font-medium text-white">
+          Market Index:
+        </label>
+        <input
+          type="text"
+          name="MarketIndex"
+          className="flex-1 block w-full text-right rounded-md border-0 py-1.5 text-white bg-transparent shadow-sm ring-1 ring-inset ring-gray-80 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none px-10px"
+          spellCheck={false}
+          placeholder="Order ID"
+          onChange={(ev) => setMarketIndex(Number(ev.target.value))}
+        />
+      </div>
       <div className="flex flex-row items-center gap-12px w-full">
         <label htmlFor="orderID" className="font-medium text-white">
           Order ID :
@@ -39,7 +54,20 @@ export function PerpFillOrder() {
           className="flex-1 block w-full text-right rounded-md border-0 py-1.5 text-white bg-transparent shadow-sm ring-1 ring-inset ring-gray-80 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none px-10px"
           spellCheck={false}
           placeholder="Order ID"
-          onChange={(ev) => setValue(Number(ev.target.value))}
+          onChange={(ev) => setOrderId(Number(ev.target.value))}
+        />
+      </div>
+      <div className="flex flex-row items-center gap-12px w-full">
+        <label htmlFor="userPda" className="font-medium text-white">
+          User Pda :
+        </label>
+        <input
+          type="text"
+          name="userPda"
+          className="flex-1 block w-full text-right rounded-md border-0 py-1.5 text-white bg-transparent shadow-sm ring-1 ring-inset ring-gray-80 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none px-10px"
+          spellCheck={false}
+          placeholder="Order ID"
+          onChange={(ev) => setUserPda(ev.target.value)}
         />
       </div>
       <div className="df jcfe">

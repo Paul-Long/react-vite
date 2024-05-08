@@ -27,8 +27,8 @@ const formatMonthDayTime = (t) => {
   return [formatMonthDay(t), formatTime(t)].join(' ');
 };
 
-const formatDateTime = (t) => {
-  return [formatDate(t), formatTime(t)].join(' ');
+const formatDateTime = (t, slice = ' ') => {
+  return [formatDate(t), formatTime(t)].join(slice);
 };
 
 const formatUTCDate = (t) => {

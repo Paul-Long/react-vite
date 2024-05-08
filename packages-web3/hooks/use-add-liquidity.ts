@@ -28,12 +28,12 @@ export function useAddLiquidity(params: Params) {
       if (!connected) {
         return;
       }
-      const tx = await client?.addPerpLpShares(
+      const tx = await client?.addPerpLpShares({
         tickLowerIndex,
         tickUpperIndex,
         liquidityAmount,
-        marketIndex
-      );
+        marketIndex,
+      });
       params?.onFinish(tx);
     },
     [connected, params]

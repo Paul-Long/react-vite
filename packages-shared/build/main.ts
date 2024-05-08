@@ -1,8 +1,5 @@
 import {findStaticTemplate} from '@rx/helper/template';
 import {syncRouter} from '@rx/router/sync';
-import {checkAuth} from '@rx/streams/auth';
-import {loadConfig} from '@rx/streams/config';
-import {loadEpochStartTime} from '@rx/streams/epoch';
 import {updateUrl, url$} from '@rx/streams/url';
 import {Buffer} from 'buffer';
 import {filter, switchMap} from 'rxjs/operators';
@@ -20,7 +17,7 @@ declare global {
 export async function bootstrap(render: Function) {
   window.Buffer = Buffer;
   try {
-    await Promise.all([checkAuth().then(), loadEpochStartTime().then(), loadConfig().then()]);
+    // await Promise.all([checkAuth().then(), loadEpochStartTime().then(), loadConfig().then()]);
   } catch (e) {}
   syncRouter(updateUrl);
   url$.pipe(filter(routeFilter), switchMap(startRoute)).subscribe(() => {

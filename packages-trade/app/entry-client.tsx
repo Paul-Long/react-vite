@@ -2,7 +2,9 @@ import {localeRecord, PageContextProvider} from '@rx/hooks/use-page-context';
 import {checkAuth} from '@rx/streams/auth';
 import {loadConfig} from '@rx/streams/config';
 import {loadEpochStartTime} from '@rx/streams/epoch';
+import {initWorker} from '@rx/streams/worker';
 import {main, routers} from '@trade/views/routers';
+import DataWorker from '@trade/worker/index?worker';
 import {Buffer} from 'buffer';
 import {lazy, ReactNode, Suspense} from 'react';
 import {createRoot} from 'react-dom/client';
@@ -10,6 +12,10 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import 'virtual:uno.css';
 
 window.Buffer = Buffer;
+
+(async () => {
+  initWorker(() => new DataWorker());
+})();
 
 (async () => {
   try {

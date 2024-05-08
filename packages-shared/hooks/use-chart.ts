@@ -44,7 +44,7 @@ export function useChart(options?: Options) {
         },
         layout: {
           textColor: 'white',
-          background: {type: ColorType.Solid, color: 'rgb(0, 15, 29)', ...layout_background},
+          background: {type: ColorType.Solid, color: 'black', ...layout_background},
         },
         grid: {
           horzLines: {

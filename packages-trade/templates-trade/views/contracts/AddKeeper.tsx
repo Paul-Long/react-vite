@@ -9,7 +9,7 @@ export function AddKeeper() {
   const [tx, setTx] = useState<string>('');
   const [value, setValue] = useState('');
   const {connected} = useConnect();
-  const {submit} = useAddKeeper({
+  const {submit, client} = useAddKeeper({
     onFinish(t: string) {
       setTx(t);
     },
@@ -21,7 +21,7 @@ export function AddKeeper() {
       return;
     }
     submit(value).then();
-  }, [connected, value]);
+  }, [connected, value, client]);
 
   return (
     <StyledWrap className="flex flex-col gap-24px">

@@ -46,12 +46,11 @@ export const InitDriftClient: FC = () => {
   const {connection} = useConnection();
   const wallet = useWallet();
   useEffect(() => {
-    if (!client) {
+    if (!!wallet && wallet.connected && !client) {
       setClient(new RateClient({connection, wallet: wallet as any}));
-      return;
     }
-    if (!!wallet) {
-      client.updateWallet(wallet);
+    if (!!wallet && wallet.connected) {
+      client?.updateWallet(wallet);
     }
   }, [client, connection, wallet]);
   return <></>;

@@ -1,249 +1,150 @@
-import * as anchor from '@coral-xyz/anchor';
-import {AnchorProvider, BN} from '@coral-xyz/anchor';
-import {
-  AccountLayout,
-  MintLayout,
-  TOKEN_PROGRAM_ID,
-  createInitializeAccountInstruction,
-  createInitializeMintInstruction,
-  createMintToInstruction,
-  getMinimumBalanceForRentExemptMint,
-} from '@solana/spl-token';
-import {
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  Transaction,
-  sendAndConfirmTransaction,
-} from '@solana/web3.js';
-import {Buffer} from 'buffer';
+import {PublicKey} from '@solana/web3.js';
 
-export async function getUserAccountPublicKeyAndNonce(
-  programId: PublicKey,
-  authority: PublicKey,
-  subAccountId = 0
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
-    [
-      Buffer.from(anchor.utils.bytes.utf8.encode('user')),
-      authority.toBuffer(),
-      new anchor.BN(subAccountId).toArrayLike(Buffer, 'le', 2),
-    ],
-    programId
-  );
+export function getMarginMarketPda(marginIndex: number): any {
+  return {
+    0: new PublicKey('3rXubG8SSHxkFTQUEB1nMrv6VPq77grGCr9qk5AC5qHq'),
+    1: new PublicKey('FVgvwqwQL2pPSosuAhMioH9Gr7h8m3MTeXEvqQ7MjmQf'),
+    3: new PublicKey('99GA3XhP2UXEmgVJwxV5ZLUQBzQK3qXi9uhMqjwUB6cB'),
+  }[marginIndex];
 }
 
-export async function getUserAccountPublicKey(
-  programId: PublicKey,
-  authority: PublicKey,
-  subAccountId = 0
-): Promise<PublicKey> {
-  return (await getUserAccountPublicKeyAndNonce(programId, authority, subAccountId))[0];
+export function getMarginMarketVaultPda(marginIndex: number): any {
+  return {
+    1: new PublicKey('8MM9xcx9VzTE9h3rZe9zePZRwx6AL38gjWNYveCvcEy4'),
+    3: new PublicKey('2bzQpzcXu3uJGtbdtv7GMgCpCcCpbFmvtCpdngmkWaVr'),
+  }[marginIndex];
 }
 
-export async function getMarginVaultPublicKey(
-  programId: PublicKey,
-  authority: PublicKey,
-  subAccountId: number
-) {
-  return (
-    await PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode('spot_market_vault')),
-        authority.toBuffer(),
-        new anchor.BN(subAccountId).toArrayLike(Buffer, 'le', 2),
-      ],
-      programId
-    )
-  )[0];
+export function getMintAccountPda(marginIndex: number): any {
+  return {
+    1: new PublicKey('6w58sdgsLcxa9UD43GHKVxtfXMe7su5r7UqMJcPwZpp8'),
+    3: new PublicKey('6ATaSXxpiiFCGfQMv3hKYmnVYEaBLYmXstuJjqCXXXJg'),
+  }[marginIndex];
 }
 
-export async function mockMSOLMint(provider: AnchorProvider): Promise<Keypair> {
-  const fakeMSOLMint = Keypair.generate();
-  const lamportsNeeded = await getMinimumBalanceForRentExemptMint(provider.connection);
-
-  const createMSOLMintAccountIx = SystemProgram.createAccount({
-    fromPubkey: provider.wallet.publicKey,
-    newAccountPubkey: fakeMSOLMint.publicKey,
-    lamports: lamportsNeeded,
-    space: MintLayout.span,
-    programId: TOKEN_PROGRAM_ID,
-  });
-
-  const initMSOLMintIx = createInitializeMintInstruction(
-    fakeMSOLMint.publicKey,
-    9, // Assuming 9 decimal places for the mint
-    provider.wallet.publicKey, // Authority, assuming the wallet's public key
-    provider.wallet.publicKey // Freeze authority, assuming the wallet's public key
-  );
-
-  const transaction = new Transaction();
-  transaction.add(createMSOLMintAccountIx, initMSOLMintIx);
-
-  // Fetch the recent blockhash from the network
-  const {blockhash} = await provider.connection.getRecentBlockhash();
-  transaction.recentBlockhash = blockhash;
-
-  // Sign the transaction with the provider's wallet and the newly created fake mint's secret key
-  transaction.sign(fakeMSOLMint);
-
-  // Since we're signing with the fake mint's secret key manually, we don't need to pass it separately
-  const signature = await provider.sendAndConfirm(transaction, [fakeMSOLMint]);
-
-  console.log(`Mint created with transaction signature: ${signature}`);
-
-  return fakeMSOLMint;
+export function getFaucetConfigPda(marginIndex: number): any {
+  return {
+    1: new PublicKey('HALSfZXvKUFEAVA74CQxNG8umP18hJCMu3EHS9XgKybr'),
+    3: new PublicKey('2rgQosahMCugsB21H8wfpDKvFy4wCQtFCpfTgfwagnUu'),
+  }[marginIndex];
 }
 
-export async function mockUserMSOLAccount(
-  fakeUSDCMint: PublicKey,
-  usdcMintAmount: BN,
-  provider: AnchorProvider,
-  owner?: PublicKey
-): Promise<Keypair> {
-  const userUSDCAccount = anchor.web3.Keypair.generate();
-  const fakeUSDCTx = new Transaction();
-
-  if (owner === undefined) {
-    owner = provider.wallet.publicKey;
-  }
-
-  const lamportsForRent = await getMinimumBalanceForRentExemptMint(provider.connection);
-
-  const createUSDCTokenAccountIx = SystemProgram.createAccount({
-    fromPubkey: provider.wallet.publicKey,
-    newAccountPubkey: userUSDCAccount.publicKey,
-    lamports: lamportsForRent,
-    space: AccountLayout.span,
-    programId: TOKEN_PROGRAM_ID,
-  });
-  fakeUSDCTx.add(createUSDCTokenAccountIx);
-
-  const initUSDCTokenAccountIx = createInitializeAccountInstruction(
-    userUSDCAccount.publicKey,
-    fakeUSDCMint,
-    owner as any
-  );
-  fakeUSDCTx.add(initUSDCTokenAccountIx);
-
-  const mintToUserAccountIx = createMintToInstruction(
-    fakeUSDCMint,
-    userUSDCAccount.publicKey,
-    owner as any,
-    usdcMintAmount.toNumber(),
-    []
-  );
-  fakeUSDCTx.add(mintToUserAccountIx);
-
-  // 添加所有必要的签名者
-  const signers = [userUSDCAccount];
-  if (!owner?.equals(provider.wallet.publicKey)) {
-    // signers.push(fakeUSDCMint);
-  }
-
-  console.log(userUSDCAccount.publicKey.toBase58());
-  console.log(owner?.toBase58());
-
-  try {
-    const fakeUSDCTxResult = await sendAndConfirmTransaction(
-      provider.connection,
-      fakeUSDCTx,
-      signers,
-      {
-        skipPreflight: false,
-        commitment: 'finalized',
-        preflightCommitment: 'finalized',
-      }
-    );
-    console.log(`Transaction confirmed with signature: ${fakeUSDCTxResult}`);
-  } catch (error) {
-    console.error('Error during transaction', error);
-    throw error;
-  }
-  return userUSDCAccount;
+export function getPerpMarketPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('Dz2FqfaXMtQ7ZVG3Sg5hFi3bnecjZGbJjNU1yGTr3MFJ'),
+    2: new PublicKey('EcPPGQbrUrJYFEgCyp2vAKdKiM88kUm6RQF45LpsFs9g'),
+    4: new PublicKey('CsrEbQpqk1LBYok9JsPTY8YKuTWwznV464TtHxLWaAw7'),
+    6: new PublicKey('3csQhSdsSdcfVQg9WVyjc18iBeRBvfewwR7ioJnjfLvE'),
+    8: new PublicKey('BtQhEYiKrH5JitVQPo1vRc1LePDgDFai2ADxs4kAxaDT'),
+    9: new PublicKey('8qWg2CjJARrXimFciXBG8FNaygC3qGmN4rBWZ7MMV31w'),
+    10: new PublicKey('Gz4jtNCUxbXhWqQhG84quqqyP9XtFWMApBZXJ5Hfa1QB'),
+  }[marketIndex];
 }
 
-export async function mockUserMSOLAccount2(
-  fakeUSDCMint: PublicKey,
-  usdcMintAmount: BN,
-  provider: AnchorProvider,
-  programId: PublicKey,
-  owner?: PublicKey
-): Promise<Keypair> {
-  // 生成一个新的密钥对来存放USDC代币
-  const userUSDCAccount = Keypair.generate();
+export function getOraclePda(marketIndex: number): any {
+  return {
+    0: new PublicKey('FQXkMKt1v7g1WgBS4D9BrXYXeZV2fYHMSAjTUEQvxvi5'),
+    2: new PublicKey('FQXkMKt1v7g1WgBS4D9BrXYXeZV2fYHMSAjTUEQvxvi5'),
+    8: new PublicKey('FQXkMKt1v7g1WgBS4D9BrXYXeZV2fYHMSAjTUEQvxvi5'),
+    9: new PublicKey('FQXkMKt1v7g1WgBS4D9BrXYXeZV2fYHMSAjTUEQvxvi5'),
+    4: new PublicKey('344UyqjAxyWYPijYXkzRmhyaXLz25x2rt9G5bUu7zWqb'),
+    6: new PublicKey('344UyqjAxyWYPijYXkzRmhyaXLz25x2rt9G5bUu7zWqb'),
+    10: new PublicKey('344UyqjAxyWYPijYXkzRmhyaXLz25x2rt9G5bUu7zWqb'),
+  }[marketIndex];
+}
 
-  // 获取为新账户支付租金所需的lamports数量
-  const lamportsForRent = await getMinimumBalanceForRentExemptMint(provider.connection);
+export function getQuoteAssetVaultPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('7JqK4ns4sHzmaSPVG1Dqa4JcwbkUhYXJFveFhdkD8C75'),
+    2: new PublicKey('5PMZ6NmGAcvkaQxDrArifHdYoMBPwtr1CYFErqH9TXt4'),
+    4: new PublicKey('4pNU2FVNgtuivtmhRE86CTXZk1EbKok5nqQT2EHXeK7B'),
+    6: new PublicKey('9URc5i434WqrWGKBbPiKm7kXpbgumGz8LqMcrFrvhRzb'),
+    8: new PublicKey('3KGGr4YQKTQvDZ2GAqhzG2wpSKK6CPefqD3oeDk7crTp'),
+    9: new PublicKey('7PCnem6kSVrLRifzLgrxwCGnzfXNJ6NZEKxzxza85PF6'),
+    10: new PublicKey('2m8U2KNHz4NWkfoQ2jhd4cAsxrD6Cr2ZAQLweL93tXf1'),
+  }[marketIndex];
+}
 
-  // 创建USDC token账户的交易指令
-  const createUSDCTokenAccountIx = SystemProgram.createAccount({
-    fromPubkey: provider.wallet.publicKey,
-    newAccountPubkey: userUSDCAccount.publicKey,
-    lamports: lamportsForRent,
-    space: AccountLayout.span,
-    programId,
-  });
+export function getBaseAssetVaultPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('E2gMJDFHTrYr3mmqiP4fM3XQ5DJMJoTiYVUbN2yUFvdd'),
+    2: new PublicKey('ENgBTs8QupH2NQhptQn9ChhpERRqijBsGMLUXA8jsDVN'),
+    4: new PublicKey('6CwdDGb737GGCkbdnyt75Zk2ScgBZr9BFD4LYeZ8Z46x'),
+    6: new PublicKey('HKjLNdPZDMpSQJCZccKGjYS4nzaWXX96nBTG7jQLfq74'),
+    8: new PublicKey('6Ns3zJCkcvMKEYWVjDDUXStKU3R3xHn3dYyXbAihS8aG'),
+    9: new PublicKey('DQuUr6xkPSTKovmJn5ouDxMKMHGck949hWL9DMQ2Gbpf'),
+    10: new PublicKey('2iZd7nuf6UNtz1gx5sRmab5qxzFzEEeV7LJJHvnGp7QN'),
+  }[marketIndex];
+}
 
-  // 初始化USDC token账户的交易指令
-  const initUSDCTokenAccountIx = createInitializeAccountInstruction(
-    userUSDCAccount.publicKey,
-    fakeUSDCMint,
-    provider.wallet.publicKey, // owner即为当前钱包用户
-    programId
-  );
+export function getTokenVaultAPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('3kJMUjJ9pxP99FBtHLtztAza4pLxyAwSqDBUVxWcZnP4'),
+    2: new PublicKey('4diyiebgYXCaa5xNiCq1AVbb8vBL2ASjjNwxsQVC3iHW'),
+    4: new PublicKey('GeAv8hRmfCsCJbrXzPTnExuop9qyupAA4kuhBn2TQePd'),
+    6: new PublicKey('4Ktko9f9y3zzQgqGLT3tjwGwGU8L2GPomxvAPsqn6ehw'),
+    8: new PublicKey('5PNrc7aE3W5ZagtwcSXLSqDg7BXTvNhGc9m3vmZv9d7A'),
+    9: new PublicKey('EkPMroLYMwfQnU7tQ6VDJYB1iHW85xvTqi8MNN9wbp25'),
+    10: new PublicKey('A6bwtgRC4ndF7ysQMpHVcKx8VXyqFgY25LdaPkEXSSXu'),
+  }[marketIndex];
+}
 
-  // 向USDC token账户铸造代币的交易指令
-  const mintToUserAccountIx = createMintToInstruction(
-    fakeUSDCMint,
-    userUSDCAccount.publicKey,
-    provider.wallet.publicKey, // owner即为当前钱包用户，也是铸造权限的持有者
-    usdcMintAmount.toNumber(),
-    [], // 铸造代币不需要multi-signature签名者
-    programId
-  );
+export function getTokenVaultBPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('GsXWHGd1j3K2YHLbcee97PK7HxSgcmVjrjuMyiT1qfRw'),
+    2: new PublicKey('951Hs2KLgmMf4vZT8GtanpyDBi1wfEykZaCcHi8JZmBJ'),
+    4: new PublicKey('57mbqb5c47sHnRPjUUq96VhZPEAcgzvoBdCYbSnCGMW7'),
+    6: new PublicKey('vmK12WPJ43xZxAB2tiMAbFXTb5Stw9TDiTsDd9mej6E'),
+    8: new PublicKey('6WXgooJKYuhmkwaAs4KcoB6HTHbdjgTDPjrWSoa3vTMB'),
+    9: new PublicKey('FrhSsGi7Jvr5hWKPcD6xrpXe52NeHrk6UsM9GdzZjYpt'),
+    10: new PublicKey('7HbBSsvNYWX5DmAUVM68YsQXgTJfFHJ19zvGTQNcuiuF'),
+  }[marketIndex];
+}
 
-  // 创建交易并添加交易指令
-  const transaction = new Transaction()
-    .add(createUSDCTokenAccountIx)
-    .add(initUSDCTokenAccountIx)
-    .add(mintToUserAccountIx);
-  const {blockhash} = await provider.connection.getRecentBlockhash();
-  transaction.feePayer = provider.wallet.publicKey;
-  transaction.recentBlockhash = blockhash;
+export function getObservationPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('3f6D7mMM2vYba2kRNJ8SN3nc3RekPNUNRnhrViZBdbaL'),
+    2: new PublicKey('4Tf3Hp32YY3N1dnL3BiMmyWWVxqvwqiUJcXPTPumbi4u'),
+    4: new PublicKey('9tUSCYnPjfsHwU3pcvHrEfSY7PL9um6buYRLT2a4N8Fc'),
+    6: new PublicKey('344UyqjAxyWYPijYXkzRmhyaXLz25x2rt9G5bUu7zWqb'),
+    8: new PublicKey('2A7FM2ZuGnhMWSCwefHqGSikydwCrxjDUsJqxLUCX32X'),
+    9: new PublicKey('Bx2w1b3PXntUBXKLYRuRUDymTN6DPGHDLGzyCuVv3TvT'),
+    10: new PublicKey('2dWkYfL99hBj1aFZ1gy2ZHZ3ogfajYQALV4yABbqJidy'),
+  }[marketIndex];
+}
 
-  console.log('UserUSDCAccount : ', userUSDCAccount.publicKey.toBase58());
-  console.log('Wallet PublicKey : ', provider.wallet.publicKey.toBase58());
-  console.log('fakeUSDCMint : ', fakeUSDCMint.toBase58());
-  console.log('TOKEN_PROGRAM_ID : ', TOKEN_PROGRAM_ID.toBase58());
+export function getTokenMintAPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('7LagK2Vtt1j1jCAPjAATMRRYe4Xft61ViiHyUir1e3or'),
+    2: new PublicKey('7o6uANUb4JBST6dmbyGaLBu9M4cjrkNeChdKkfS362rQ'),
+    4: new PublicKey('NuByya82ZKCWrWWhQARSwDWnPVwRj9z9b3RJjv52bCM'),
+    6: new PublicKey('2U2Sb7DHAA2SAxaCED7mnqk4hLheg7p25tFtXokJui5u'),
+    8: new PublicKey('HQBW5Nf8PFikHWTPuHN175KHi3sptRAcDsmYCTUN1qt'),
+    9: new PublicKey('CWFh946EycCHoQmHuhvJdxcazG6M3AKRDQMmbundK1U5'),
+    10: new PublicKey('6SN411ktoNSairCvra16tRJz5yjuu2gDT7r6qgfjGDMW'),
+  }[marketIndex];
+}
 
-  // 签名并发送交易
-  try {
-    // 钱包签名交易
-    const signedTransaction = await provider.wallet.signTransaction(transaction);
+export function getTokenMintBPda(marketIndex: number): any {
+  return {
+    0: new PublicKey('9HRLQi3MfRSEkNCabwFefQ6T67m8unACj2ZBWDZDh5go'),
+    2: new PublicKey('CpCA19NdUC9PCcgWkaxUXoZdKk34eAestef9WNhhLjeV'),
+    4: new PublicKey('36VCCEtq4TvzBML13R9jrD9tvFuPJjQkgRqGmmMGBcPD'),
+    6: new PublicKey('3tcVwg8UT7h8U9UhF9KMukKHL26e2u1zQoFu3ZMa3Z3A'),
+    8: new PublicKey('6V9LEeaRZmsjfo9y4yhA3p2kgtbiG1UgqwdwyrT6HTMA'),
+    9: new PublicKey('GFfgHjy9eXY8uLiVALSDWn6XFP8Pkrfn4R5mmwec98MV'),
+    10: new PublicKey('BTbUZ3E3dp2i9HSxjzc37fg6VzQZJkfzHaCvyauK923G'),
+  }[marketIndex];
+}
 
-    signedTransaction.partialSign(userUSDCAccount);
-
-    // const simulateResult = await provider.connection.simulateTransaction(transaction);
-    // if (simulateResult.value.err) {
-    //   console.error('模拟交易错误:', simulateResult.value.err);
-    // } else {
-    const signature = await provider.connection.sendRawTransaction(signedTransaction.serialize());
-    await provider.connection.confirmTransaction(signature);
-    // 添加新生成的USDC账户作为签名者
-    // signedTransaction.partialSign(userUSDCAccount);
-    // 发送并确认交易
-    // const signature = await provider.sendAndConfirm(signedTransaction, [userUSDCAccount]);
-    // const signature = await sendAndConfirmTransaction(provider.connection, signedTransaction, [
-    //   userUSDCAccount,
-    // ]);
-
-    console.log(`Transaction confirmed with signature: ${signature}`);
-    // }
-  } catch (error) {
-    console.error('Error during transaction', error);
-    throw error;
-  }
-
-  return userUSDCAccount;
+export function getMarginIndexByMarketIndex(marketIndex: number): number {
+  return {
+    0: 1,
+    2: 1,
+    8: 1,
+    9: 1,
+    4: 1,
+    6: 1,
+    10: 1,
+  }[marketIndex] as number;
 }

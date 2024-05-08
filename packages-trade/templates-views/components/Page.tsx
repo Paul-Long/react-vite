@@ -95,7 +95,7 @@ export default ({children, showHeader = true, title, desc, scrollVisible = true}
     <ContextProvider>
       <Header />
       <StyledContent className="flex w-full bg-black">
-        <div className="w-full h-100% overflow-hidden">
+        <div className="w-full min-h-100% overflow-hidden">
           <div className="flex w-1200px mx-auto">
             <img
               className="rotate-animation hidden sm:block absolute left-10% top-[-240px] z-[-1]"
@@ -104,7 +104,7 @@ export default ({children, showHeader = true, title, desc, scrollVisible = true}
               width={1920}
             />
           </div>
-          <div className="w-100% bg-#00000033 backdrop-filter backdrop-blur-160px h-full max-h-100% overflow-auto">
+          <div className="flex w-100% bg-#00000033 backdrop-filter backdrop-blur-160px h-full max-h-100% overflow-auto rv">
             <Outlet />
           </div>
         </div>

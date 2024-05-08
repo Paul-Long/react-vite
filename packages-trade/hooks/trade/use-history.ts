@@ -1,5 +1,5 @@
-import {db, useQuery} from '@rx/db';
-import {timeUtil} from '@rx/helper/time';
+import {tradeApi} from '@rx/api/trade.ts';
+import {numUtil} from '@rx/helper/num.ts';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
@@ -8,6 +8,7 @@ import {useEffect, useState} from 'react';
 
 export function useHistory() {
   const {LG} = useLang();
+  const [dataSource, setDataSource] = useState<any[]>([]);
   const [columns, setColumns] = useState<Column[]>([]);
 
   useEffect(() => {
@@ -22,19 +23,22 @@ export function useHistory() {
         bodyCellStyle: {background: '#000'},
         render: (_, i) => (i ?? 0) + 1,
       },
-      {title: LG(lang.MarginType), dataIndex: 'marginType'},
-      {title: LG(clang.Contract), dataIndex: 'Contract'},
-      {title: LG(clang.Direction), dataIndex: 'direction'},
+      {
+        title: LG(lang.MarginType),
+        dataIndex: 'marginType',
+        render: (row: any) => (row.PositionType === '1' ? LG(lang.Isolated) : LG(lang.Cross)),
+      },
+      {title: LG(clang.Contract), dataIndex: 'Symbol'},
+      {
+        title: LG(clang.Direction),
+        dataIndex: 'direction',
+        render: (row: any) => (row.Side === '1' ? LG(clang.Long) : LG(clang.Short)),
+      },
       {title: LG(clang.Order), dataIndex: 'orderType'},
       {
-        title: LG(clang.Notional),
-        dataIndex: 'notional',
-        render: (record) => (record.mode === 'YT' ? '-' : record.amount + ' SOL'),
-      },
-      {
         title: LG(clang.Amount),
-        dataIndex: 'amount',
-        render: (record) => (record.mode === 'YT' ? record.amount : '-'),
+        dataIndex: 'LastQty',
+        render: (row: any) => (row?.LastQty ? numUtil.trimEnd0(row?.LastQty) : '-'),
       },
       {
         title: LG(lang.EntryYield),
@@ -46,15 +50,18 @@ export function useHistory() {
         dataIndex: 'entryPrice',
         render: (record) => (record.mode === 'YT' ? record.entry : '-'),
       },
-      {title: LG(lang.TradingFee), dataIndex: 'estimatedTradingFee'},
+      {
+        title: LG(lang.TradingFee),
+        dataIndex: 'Fee',
+        render: (row: any) => (row?.Fee ? numUtil.trimEnd0(row?.Fee) : '-'),
+      },
       {
         title: LG(lang.Transaction),
-        dataIndex: 'transaction',
+        dataIndex: 'UpdateTime',
         fixed: 'right',
         shadowLeft: true,
         headerCellStyle: {background: '#000'},
         bodyCellStyle: {background: '#000'},
-        render: (record) => timeUtil.formatDateTime(record.transaction),
       },
     ];
     columns.forEach((c, i) => {
@@ -65,7 +72,12 @@ export function useHistory() {
     setColumns(columns);
   }, [LG]);
 
-  const dataSource = useQuery<any[]>(() => db.closePositions.toArray());
+  useEffect(() => {
+    (async () => {
+      const res = await tradeApi.loadOrderHistory();
+      setDataSource(res?.data ?? []);
+    })();
+  }, []);
 
   return {columns, dataSource};
 }

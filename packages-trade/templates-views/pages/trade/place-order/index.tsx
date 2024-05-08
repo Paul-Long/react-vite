@@ -1,35 +1,19 @@
 import {useLang} from '@rx/hooks/use-lang';
 import {RadioButton} from '@rx/widgets';
-import {useCallback, useState} from 'react';
+import {useForm} from '../hooks/use-form.ts';
 import {AmountInput} from './AmountInput';
 import {AssetsInfo} from './AssetsInfo';
 import {DepositMargin} from './DepositMargin';
 import {Leverage} from './Leverage';
-import {RateInput} from './RateInput';
 import {SlippageTolerance} from './SlippageTolerance';
 import {SubmitButton} from './SubmitButton';
-import {genDirection, genMargin, genMode} from './const';
+import {genDirection, genMargin} from './const';
 
 export function PlaceOrder() {
   const {LG} = useLang();
-  const [state, setState] = useState({
-    marginType: 'Cross',
-    direction: 'Short',
-    mode: 'Yield',
-  });
-
-  const handleChange = useCallback(
-    (key: string) => {
-      return (v: string | number) => {
-        setState((prevState) => {
-          return {...prevState, [key]: v};
-        });
-      };
-    },
-    [state]
-  );
+  const {state, info, handleSubmit, handleChange} = useForm();
   return (
-    <div className="max-w-424px min-w-424px w-424px flex flex-col px-24px py-24px gap-16px">
+    <div className="max-w-424px min-w-424px w-424px flex flex-col px-24px py-24px gap-16px bg-black">
       <RadioButton
         options={genMargin(LG)}
         value={state.marginType}
@@ -40,16 +24,15 @@ export function PlaceOrder() {
         value={state.direction}
         onChange={handleChange('direction')}
       />
-      <RadioButton options={genMode(LG)} value={state.mode} onChange={handleChange('mode')} />
       <div className="flex flex-col b-1px b-solid b-gray-40">
-        <AmountInput />
-        <Leverage />
-        <DepositMargin />
-        <SlippageTolerance />
-        <RateInput />
+        <AmountInput value={state.amount} onChange={handleChange('amount')} />
+        <Leverage value={state.leverage} onChange={handleChange('leverage')} />
+        <DepositMargin value={state.margin} onChange={handleChange('margin')} />
+        <SlippageTolerance value={state.slippage} onChange={handleChange('slippage')} />
+        {/*<RateInput />*/}
       </div>
-      <AssetsInfo />
-      <SubmitButton />
+      <AssetsInfo info={info} />
+      <SubmitButton onSubmit={handleSubmit} />
     </div>
   );
 }

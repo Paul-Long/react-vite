@@ -1231,6 +1231,117 @@
       "args": []
     },
     {
+      "name": "simulateSwap",
+      "accounts": [
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "whirlpool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray0",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray1",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray2",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "observation",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "baseAssetAmount",
+          "type": "i64"
+        },
+        {
+          "name": "sqrtPriceLimit",
+          "type": "u128"
+        }
+      ],
+      "returns": {
+        "defined": "SwapResult"
+      }
+    },
+    {
+      "name": "calculatePositionValue",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": "PositionValue"
+      }
+    },
+    {
+      "name": "calculateMarginValue",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": "MarginValue"
+      }
+    },
+    {
       "name": "initialize",
       "accounts": [
         {
@@ -2644,6 +2755,54 @@
     }
   ],
   "types": [
+    {
+      "name": "SwapResult",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amountBaseSwap",
+            "type": "u64"
+          },
+          {
+            "name": "amountQuoteSwap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionValue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "positionAssetValue",
+            "type": "i64"
+          },
+          {
+            "name": "positionLiabilityValue",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarginValue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "marginAssetValue",
+            "type": "i64"
+          },
+          {
+            "name": "marginLiabilityValue",
+            "type": "i64"
+          }
+        ]
+      }
+    },
     {
       "name": "Whirlpool",
       "type": {

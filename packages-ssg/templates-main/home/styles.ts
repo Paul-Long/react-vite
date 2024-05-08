@@ -19,6 +19,7 @@ export const StyledContent = styled.div`
   padding-top: 80px;
   min-height: 100%;
   background: #00000033;
+  -webkit-backdrop-filter: blur(90px);
   backdrop-filter: blur(90px);
 
   @media (max-width: 640px) {

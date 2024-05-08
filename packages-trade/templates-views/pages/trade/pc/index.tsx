@@ -7,17 +7,19 @@ import {Info} from './Info';
 
 export function TradePC() {
   return (
-    <div className="flex-1 flex flex-row justify-between max-w-100% overflow-y-auto">
-      <Assets />
-      <div className="flex-1 flex flex-col b-x-1px b-solid b-x-gray-40 box-border overflow-hidden">
-        <div className="flex flex-row items-center px-20px py-23px b-b-1px b-solid b-b-gray-40 gap-50px">
-          <SubAssetsSelect />
-          <Info />
+    <div className="w-full max-w-full">
+      <div className="flex-1 flex flex-row justify-between bg-black min-h-full">
+        <Assets />
+        <div className="flex flex-1 flex-col b-x-1px b-solid b-x-gray-40 box-border bg-black h-fit overflow-x-hidden">
+          <div className="flex flex-row items-center px-20px py-23px b-b-1px b-solid b-b-gray-40 gap-50px">
+            <SubAssetsSelect />
+            <Info />
+          </div>
+          <ChartWrap />
+          <Positions />
         </div>
-        <ChartWrap />
-        <Positions />
+        <PlaceOrder />
       </div>
-      <PlaceOrder />
     </div>
   );
 }

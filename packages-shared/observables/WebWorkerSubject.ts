@@ -14,7 +14,7 @@ export class WebWorkerSubject<T> extends Subject<T> {
 
   init(createDataWorker: () => Worker) {
     this.worker = createDataWorker();
-    this.worker.subscribe('message', ({data}) => {
+    this.worker.onmessage = ({data}) => {
       if (this.closed) {
         throw new Error();
       }
@@ -26,7 +26,7 @@ export class WebWorkerSubject<T> extends Subject<T> {
           copy[i].next(data);
         }
       }
-    });
+    };
   }
   next(message: T) {
     this.worker && this.worker.postMessage(message);

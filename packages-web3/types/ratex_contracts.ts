@@ -16,6 +16,11 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "authority",
           "isMut": false,
           "isSigner": true
@@ -50,6 +55,104 @@ export type RatexContracts = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "initializeUserOrders",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "subAccountId",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "deleteUser",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deleteUserOrders",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
     },
     {
       "name": "initializeUserStats",
@@ -118,7 +221,7 @@ export type RatexContracts = {
       ],
       "args": [
         {
-          "name": "marginIndex",
+          "name": "marketIndex",
           "type": "u16"
         },
         {
@@ -168,7 +271,7 @@ export type RatexContracts = {
       ],
       "args": [
         {
-          "name": "marginIndex",
+          "name": "marketIndex",
           "type": "u16"
         },
         {
@@ -191,6 +294,11 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "authority",
           "isMut": false,
           "isSigner": true
@@ -202,6 +310,37 @@ export type RatexContracts = {
           "type": {
             "defined": "OrderParams"
           }
+        }
+      ]
+    },
+    {
+      "name": "cancelOrder",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u32"
         }
       ]
     },
@@ -259,8 +398,8 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
-          "isMut": true,
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -300,7 +439,7 @@ export type RatexContracts = {
         },
         {
           "name": "perpMarket",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -372,8 +511,8 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
-          "isMut": true,
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -413,7 +552,7 @@ export type RatexContracts = {
         },
         {
           "name": "perpMarket",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -485,6 +624,11 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "userStats",
           "isMut": true,
           "isSigner": false
@@ -497,6 +641,200 @@ export type RatexContracts = {
         {
           "name": "state",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whirlpool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray0",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray1",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray2",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "beginLiquidate",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "endLiquidate",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "liquidate",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -550,15 +888,176 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "observation",
-          "isMut": true,
-          "isSigner": false
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
         }
       ],
       "args": [
         {
-          "name": "orderId",
-          "type": "u32"
+          "name": "marketIndex",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "beginJupSwap",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "outMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "outTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "inMarketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "outMarketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "otherAmountThreshold",
+          "type": "u64"
+        },
+        {
+          "name": "isExactIn",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "endJupSwap",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "outMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "outTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "inMarketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "outMarketIndex",
+          "type": "u16"
         }
       ]
     },
@@ -597,6 +1096,11 @@ export type RatexContracts = {
           "name": "tokenAuthority",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "whirlpool",
@@ -671,7 +1175,7 @@ export type RatexContracts = {
       "name": "observe",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "perpMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -691,6 +1195,150 @@ export type RatexContracts = {
       ],
       "returns": {
         "vec": "u128"
+      }
+    },
+    {
+      "name": "getAmmTwap",
+      "accounts": [
+        {
+          "name": "perpMarket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "observation",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "secondsAgo",
+          "type": "u32"
+        }
+      ],
+      "returns": "u128"
+    },
+    {
+      "name": "loadObservationState",
+      "accounts": [
+        {
+          "name": "whirlpool",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "simulateSwap",
+      "accounts": [
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "whirlpool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray0",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray1",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray2",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "observation",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "baseAssetAmount",
+          "type": "i64"
+        },
+        {
+          "name": "sqrtPriceLimit",
+          "type": "u128"
+        }
+      ],
+      "returns": {
+        "defined": "SwapResult"
+      }
+    },
+    {
+      "name": "calculatePositionValue",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": "PositionValue"
+      }
+    },
+    {
+      "name": "calculateMarginValue",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": "MarginValue"
       }
     },
     {
@@ -796,10 +1444,6 @@ export type RatexContracts = {
       ],
       "args": [
         {
-          "name": "activeStatus",
-          "type": "bool"
-        },
-        {
           "name": "name",
           "type": {
             "array": [
@@ -834,17 +1478,12 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "baseAssetMint",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "quoteAssetVault",
+          "name": "quoteAssetMint",
           "isMut": true,
           "isSigner": false
         },
@@ -854,8 +1493,18 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
-          "isMut": false,
+          "name": "quoteAssetVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultB",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -866,6 +1515,21 @@ export type RatexContracts = {
         {
           "name": "oracle",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whirlpoolsConfig",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeTier",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "observationState",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -881,16 +1545,12 @@ export type RatexContracts = {
       ],
       "args": [
         {
-          "name": "marketIndex",
+          "name": "tickSpacing",
           "type": "u16"
         },
         {
-          "name": "marginRatioInitial",
-          "type": "u32"
-        },
-        {
-          "name": "marginRatioMaintenance",
-          "type": "u32"
+          "name": "sqrtPrice",
+          "type": "u128"
         },
         {
           "name": "orderStepSize",
@@ -899,6 +1559,10 @@ export type RatexContracts = {
         {
           "name": "minOrderSize",
           "type": "u64"
+        },
+        {
+          "name": "startTs",
+          "type": "i64"
         },
         {
           "name": "expireTs",
@@ -1034,6 +1698,31 @@ export type RatexContracts = {
       ]
     },
     {
+      "name": "setState",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "collateralRatioInitial",
+          "type": "i64"
+        },
+        {
+          "name": "collateralRatioMaintenance",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "initializeConfig",
       "docs": [
         "Initializes a WhirlpoolsConfig account that hosts info & authorities",
@@ -1081,95 +1770,6 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "initializePool",
-      "docs": [
-        "Initializes a Whirlpool account.",
-        "Fee rate is set to the default values on the config and supplied fee_tier.",
-        "",
-        "### Parameters",
-        "- `bumps` - The bump value when deriving the PDA of the Whirlpool address.",
-        "- `tick_spacing` - The desired tick spacing for this pool.",
-        "- `initial_sqrt_price` - The desired initial sqrt-price for this pool",
-        "",
-        "#### Special Errors",
-        "`InvalidTokenMintOrder` - The order of mints have to be ordered by",
-        "`SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64",
-        ""
-      ],
-      "accounts": [
-        {
-          "name": "whirlpoolsConfig",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMintA",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMintB",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "funder",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "whirlpool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenVaultA",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "feeTier",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "oracle",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "tickSpacing",
-          "type": "u16"
-        },
-        {
-          "name": "initialSqrtPrice",
-          "type": "u128"
-        }
-      ]
-    },
-    {
       "name": "initializeTickArray",
       "docs": [
         "Initializes a tick_array account to represent a tick-range in a Whirlpool.",
@@ -1184,7 +1784,7 @@ export type RatexContracts = {
       ],
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "perpMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -1233,6 +1833,11 @@ export type RatexContracts = {
         {
           "name": "whirlpool",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1328,6 +1933,11 @@ export type RatexContracts = {
         {
           "name": "whirlpool",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1502,122 +2112,6 @@ export type RatexContracts = {
       }
     },
     {
-      "name": "whirlpool",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "whirlpoolsConfig",
-            "type": "publicKey"
-          },
-          {
-            "name": "whirlpoolBump",
-            "type": {
-              "array": [
-                "u8",
-                1
-              ]
-            }
-          },
-          {
-            "name": "tickSpacing",
-            "type": "u16"
-          },
-          {
-            "name": "tickSpacingSeed",
-            "type": {
-              "array": [
-                "u8",
-                2
-              ]
-            }
-          },
-          {
-            "name": "feeRate",
-            "type": "u16"
-          },
-          {
-            "name": "protocolFeeRate",
-            "type": "u16"
-          },
-          {
-            "name": "liquidity",
-            "type": "u128"
-          },
-          {
-            "name": "sqrtPrice",
-            "type": "u128"
-          },
-          {
-            "name": "tickCurrentIndex",
-            "type": "i32"
-          },
-          {
-            "name": "protocolFeeOwedA",
-            "type": "u64"
-          },
-          {
-            "name": "protocolFeeOwedB",
-            "type": "u64"
-          },
-          {
-            "name": "tokenMintA",
-            "type": "publicKey"
-          },
-          {
-            "name": "tokenVaultA",
-            "type": "publicKey"
-          },
-          {
-            "name": "feeGrowthGlobalA",
-            "type": "u128"
-          },
-          {
-            "name": "tokenMintB",
-            "type": "publicKey"
-          },
-          {
-            "name": "tokenVaultB",
-            "type": "publicKey"
-          },
-          {
-            "name": "feeGrowthGlobalB",
-            "type": "u128"
-          },
-          {
-            "name": "rewardLastUpdatedTimestamp",
-            "type": "u64"
-          },
-          {
-            "name": "rewardInfos",
-            "type": {
-              "array": [
-                {
-                  "defined": "WhirlpoolRewardInfo"
-                },
-                3
-              ]
-            }
-          },
-          {
-            "name": "oracle",
-            "type": "publicKey"
-          },
-          {
-            "name": "observationIndex",
-            "docs": [
-              "the most-recently updated index of the observations array"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "observationUpdateDuration",
-            "type": "u16"
-          }
-        ]
-      }
-    },
-    {
       "name": "tickArray",
       "type": {
         "kind": "struct",
@@ -1712,8 +2206,8 @@ export type RatexContracts = {
             "type": "bool"
           },
           {
-            "name": "poolId",
-            "type": "publicKey"
+            "name": "marketIndex",
+            "type": "u16"
           },
           {
             "name": "observations",
@@ -1840,13 +2334,21 @@ export type RatexContracts = {
             }
           },
           {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                48
-              ]
-            }
+            "name": "flashLoanAmount",
+            "docs": [
+              "For swaps, the amount of token loaned out in the begin_swap ix",
+              "precision: token mint precision"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "flashLoanInitialTokenAmount",
+            "docs": [
+              "For swaps, the amount in the users token account in the begin_swap ix",
+              "Used to calculate how much of the token left the system in end_swap ix",
+              "precision: token mint precision"
+            ],
+            "type": "u64"
           }
         ]
       }
@@ -1915,23 +2417,11 @@ export type RatexContracts = {
             }
           },
           {
-            "name": "collateralRatioInitial",
+            "name": "startTs",
             "docs": [
-              "The margin ratio which determines how much collateral is required to open a position",
-              "e.g. margin ratio of .1 means a user must have $100 of total collateral to open a $1000 position",
-              "precision: MARGIN_PRECISION"
+              "start time"
             ],
-            "type": "u32"
-          },
-          {
-            "name": "collateralRatioMaintenance",
-            "docs": [
-              "The margin ratio which determines when a user will be liquidated",
-              "e.g. margin ratio of .05 means a user must have $50 of total collateral to maintain a $1000 position",
-              "else they will be liquidated",
-              "precision: MARGIN_PRECISION"
-            ],
-            "type": "u32"
+            "type": "i64"
           },
           {
             "name": "expireTs",
@@ -1963,10 +2453,6 @@ export type RatexContracts = {
             "type": "u64"
           },
           {
-            "name": "whirlpool",
-            "type": "publicKey"
-          },
-          {
             "name": "numberOfUsers",
             "docs": [
               "number of users in a position (pnl) or pnl (quote)"
@@ -1988,8 +2474,18 @@ export type RatexContracts = {
             }
           },
           {
-            "name": "bump",
+            "name": "padding0",
             "type": "u8"
+          },
+          {
+            "name": "insuranceAmount",
+            "type": "i64"
+          },
+          {
+            "name": "pool",
+            "type": {
+              "defined": "Whirlpool"
+            }
           },
           {
             "name": "padding",
@@ -2025,12 +2521,20 @@ export type RatexContracts = {
             "type": "u64"
           },
           {
-            "name": "numberOfMarkets",
+            "name": "numberOfPerpMarkets",
             "type": "u16"
           },
           {
             "name": "numberOfMarginMarkets",
             "type": "u16"
+          },
+          {
+            "name": "collateralRatioInitial",
+            "type": "i64"
+          },
+          {
+            "name": "collateralRatioMaintenance",
+            "type": "i64"
           },
           {
             "name": "signerNonce",
@@ -2039,15 +2543,6 @@ export type RatexContracts = {
           {
             "name": "exchangeStatus",
             "type": "u8"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                10
-              ]
-            }
           }
         ]
       }
@@ -2086,6 +2581,10 @@ export type RatexContracts = {
             "type": "u16"
           },
           {
+            "name": "paddingA",
+            "type": "u32"
+          },
+          {
             "name": "marginPositions",
             "docs": [
               "The user's collateral"
@@ -2095,22 +2594,17 @@ export type RatexContracts = {
                 {
                   "defined": "MarginPosition"
                 },
-                8
+                2
               ]
             }
           },
           {
-            "name": "liquidityPositions",
+            "name": "liquidityPosition",
             "docs": [
               "The user's liquidity"
             ],
             "type": {
-              "array": [
-                {
-                  "defined": "LiquidityPosition"
-                },
-                8
-              ]
+              "defined": "LiquidityPosition"
             }
           },
           {
@@ -2124,20 +2618,6 @@ export type RatexContracts = {
                   "defined": "PerpPosition"
                 },
                 8
-              ]
-            }
-          },
-          {
-            "name": "orders",
-            "docs": [
-              "The user's orders"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "Order"
-                },
-                32
               ]
             }
           },
@@ -2168,9 +2648,61 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                21
+                22
               ]
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "userOrders",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The owner/authority of the account"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "subAccountId",
+            "docs": [
+              "The sub account id for this user"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "orders",
+            "docs": [
+              "The user's orders"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "Order"
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "lastActiveSlot",
+            "docs": [
+              "The last slot a user was active. Used to determine if a user is idle"
+            ],
+            "type": "u64"
           }
         ]
       }
@@ -2223,6 +2755,139 @@ export type RatexContracts = {
     }
   ],
   "types": [
+    {
+      "name": "Whirlpool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whirlpoolsConfig",
+            "type": "publicKey"
+          },
+          {
+            "name": "whirlpoolBump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "padding0",
+            "type": "u8"
+          },
+          {
+            "name": "tickSpacing",
+            "type": "u16"
+          },
+          {
+            "name": "tickSpacingSeed",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "feeRate",
+            "type": "u16"
+          },
+          {
+            "name": "protocolFeeRate",
+            "type": "u16"
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "sqrtPrice",
+            "type": "u128"
+          },
+          {
+            "name": "tickCurrentIndex",
+            "type": "i32"
+          },
+          {
+            "name": "padding2",
+            "type": "i32"
+          },
+          {
+            "name": "protocolFeeOwedA",
+            "type": "u64"
+          },
+          {
+            "name": "protocolFeeOwedB",
+            "type": "u64"
+          },
+          {
+            "name": "tokenMintA",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenVaultA",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeGrowthGlobalA",
+            "type": "u128"
+          },
+          {
+            "name": "tokenMintB",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenVaultB",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeGrowthGlobalB",
+            "type": "u128"
+          },
+          {
+            "name": "rewardLastUpdatedTimestamp",
+            "type": "u64"
+          },
+          {
+            "name": "rewardInfos",
+            "type": {
+              "array": [
+                {
+                  "defined": "WhirlpoolRewardInfo"
+                },
+                3
+              ]
+            }
+          },
+          {
+            "name": "oracle",
+            "type": "publicKey"
+          },
+          {
+            "name": "observationIndex",
+            "docs": [
+              "the most-recently updated index of the observations array"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "observationUpdateDuration",
+            "type": "u16"
+          }
+        ]
+      }
+    },
     {
       "name": "WhirlpoolRewardInfo",
       "docs": [
@@ -2393,10 +3058,6 @@ export type RatexContracts = {
             }
           },
           {
-            "name": "userOrderId",
-            "type": "u32"
-          },
-          {
             "name": "marketIndex",
             "type": "u16"
           },
@@ -2493,7 +3154,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                20
+                24
               ]
             }
           }
@@ -2534,7 +3195,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                4
+                6
               ]
             }
           }
@@ -2561,6 +3222,15 @@ export type RatexContracts = {
           {
             "name": "marketIndex",
             "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
           }
         ]
       }
@@ -2600,6 +3270,15 @@ export type RatexContracts = {
               "The market index for the perp market"
             ],
             "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
           }
         ]
       }
@@ -2771,56 +3450,6 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "InitializePoolEvent",
-      "fields": [
-        {
-          "name": "whirlpool",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "bump",
-          "type": "u8",
-          "index": false
-        },
-        {
-          "name": "whirlpoolsConfig",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenMintA",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenMintB",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenVaultA",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenVaultB",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "oracle",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "defaultFeeRate",
-          "type": "u16",
-          "index": false
-        }
-      ]
-    },
-    {
       "name": "ClosePositionEvent",
       "fields": [
         {
@@ -2951,36 +3580,96 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "InitializePositionEvent",
+      "name": "InitializeMarginMarketRecord",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "marketIndex",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "marginMarket",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "positionMint",
+          "name": "marginMarketMint",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "position",
+          "name": "marginMarketVault",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "owner",
+          "name": "insuranceFundVault",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "tickLowerIndex",
-          "type": "i32",
+          "name": "oracle",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "InitializePerpMarketRecord",
+      "fields": [
+        {
+          "name": "marketIndex",
+          "type": "u16",
           "index": false
         },
         {
-          "name": "tickUpperIndex",
-          "type": "i32",
+          "name": "defaultFeeRate",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "tickSpacing",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "initialSqrtPrice",
+          "type": "u128",
+          "index": false
+        },
+        {
+          "name": "perpMarket",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "quoteAssetMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAssetMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "quoteAssetVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAssetVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "oracle",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "observationState",
+          "type": "publicKey",
           "index": false
         }
       ]
@@ -3016,6 +3705,81 @@ export type RatexContracts = {
         {
           "name": "isTrader",
           "type": "bool",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewUserOrdersRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subAccountId",
+          "type": "u16",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteUserRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subAccountId",
+          "type": "u16",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteUserOrdersRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subAccountId",
+          "type": "u16",
           "index": false
         }
       ]
@@ -3167,6 +3931,98 @@ export type RatexContracts = {
       ]
     },
     {
+      "name": "LiquidationRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "filler",
+          "type": {
+            "option": "publicKey"
+          },
+          "index": false
+        },
+        {
+          "name": "marketIndex",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "baseAmountFilled",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "quoteAmountFilled",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "baseAmountHeld",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "quoteAmountHeld",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "tradePrice",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "fee",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "rate",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "CancelOrderRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "orderId",
+          "type": "u32",
+          "index": false
+        }
+      ]
+    },
+    {
       "name": "UpdateOracleRecord",
       "fields": [
         {
@@ -3186,68 +4042,6 @@ export type RatexContracts = {
         },
         {
           "name": "marketRate",
-          "type": "u64",
-          "index": false
-        }
-      ]
-    },
-    {
-      "name": "LiquidationRecord",
-      "fields": [
-        {
-          "name": "ts",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "userAuthority",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "user",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "liquidator",
-          "type": {
-            "option": "publicKey"
-          },
-          "index": false
-        },
-        {
-          "name": "marginRequirement",
-          "type": "u128",
-          "index": false
-        },
-        {
-          "name": "totalCollateral",
-          "type": "i128",
-          "index": false
-        },
-        {
-          "name": "liquidationId",
-          "type": "u16",
-          "index": false
-        },
-        {
-          "name": "bankrupt",
-          "type": "bool",
-          "index": false
-        },
-        {
-          "name": "baseAmountFilled",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "quoteAmountFilled",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "tradePrice",
           "type": "u64",
           "index": false
         }
@@ -3306,6 +4100,76 @@ export type RatexContracts = {
         {
           "name": "liquidityAmount",
           "type": "u128",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "InitializePositionEvent",
+      "fields": [
+        {
+          "name": "whirlpool",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "positionMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "position",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "owner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "tickLowerIndex",
+          "type": "i32",
+          "index": false
+        },
+        {
+          "name": "tickUpperIndex",
+          "type": "i32",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "JupSwapRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amountOut",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "amountIn",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "outMarketIndex",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "inMarketIndex",
+          "type": "u16",
           "index": false
         }
       ]
@@ -4504,303 +5368,343 @@ export type RatexContracts = {
     },
     {
       "code": 6238,
+      "name": "InvalidJupSwap",
+      "msg": "InvalidJupSwap"
+    },
+    {
+      "code": 6239,
+      "name": "UnableToGetTwapPrice",
+      "msg": "Unable to get twap price"
+    },
+    {
+      "code": 6240,
       "name": "AccountLiquidated",
       "msg": "Account liquidated"
     },
     {
-      "code": 6239,
+      "code": 6241,
       "name": "InvalidOracleAccount",
       "msg": "Invalid oracle account"
     },
     {
-      "code": 6240,
+      "code": 6242,
       "name": "UnableToLoadOracleAccount",
       "msg": "Unable to load oracle account"
     },
     {
-      "code": 6241,
+      "code": 6243,
       "name": "CouldNotLoadOracleData",
       "msg": "could not load oracle data"
     },
     {
-      "code": 6242,
+      "code": 6244,
       "name": "OracleWrongMutability",
       "msg": "wrong oracle mutablility"
     },
     {
-      "code": 6243,
+      "code": 6245,
       "name": "KeeperAlreadyExists",
       "msg": "The keeper already exists in the list."
     },
     {
-      "code": 6244,
+      "code": 6246,
       "name": "KeepersListFull",
       "msg": "The keepers list is full."
     },
     {
-      "code": 6245,
+      "code": 6247,
       "name": "KeeperNotFound",
       "msg": "The keeper was not found in the list."
     },
     {
-      "code": 6246,
+      "code": 6248,
       "name": "MaxOpenInterestExceeded",
       "msg": "Max open interest exceeded"
     },
     {
-      "code": 6247,
+      "code": 6249,
       "name": "InvalidOrderStepSize",
       "msg": "Invalid order step size"
     },
     {
-      "code": 6248,
+      "code": 6250,
       "name": "OrderExpired",
       "msg": "Order expired"
     },
     {
-      "code": 6249,
+      "code": 6251,
       "name": "OnlyTrader",
       "msg": "Only trader"
     },
     {
-      "code": 6250,
+      "code": 6252,
       "name": "OnlyLP",
       "msg": "Only LP"
     },
     {
-      "code": 6251,
+      "code": 6253,
       "name": "InvalidWithdraw",
       "msg": "Invalid Withdraw"
     },
     {
-      "code": 6252,
+      "code": 6254,
+      "name": "InvalidLiquidate",
+      "msg": "Invalid Liquidate"
+    },
+    {
+      "code": 6255,
+      "name": "MeetMaintenanceCollateralRequirement",
+      "msg": "Meet maintenance collateral requirement"
+    },
+    {
+      "code": 6256,
+      "name": "FailToMeetMaintenanceCollateralRequirement",
+      "msg": "Fail to meet maintenance collateral requirement"
+    },
+    {
+      "code": 6257,
+      "name": "FailToMeetInitialCollateralRequirement",
+      "msg": "Fail to meet initial collateral requirement"
+    },
+    {
+      "code": 6258,
       "name": "InvalidEnum",
       "msg": "Enum value could not be converted"
     },
     {
-      "code": 6253,
+      "code": 6259,
       "name": "InvalidStartTick",
       "msg": "Invalid start tick index provided."
     },
     {
-      "code": 6254,
+      "code": 6260,
       "name": "TickArrayExistInPool",
       "msg": "Tick-array already exists in this whirlpool"
     },
     {
-      "code": 6255,
+      "code": 6261,
       "name": "TickArrayIndexOutofBounds",
       "msg": "Attempt to search for a tick-array failed"
     },
     {
-      "code": 6256,
+      "code": 6262,
       "name": "InvalidTickSpacing",
       "msg": "Tick-spacing is not supported"
     },
     {
-      "code": 6257,
+      "code": 6263,
       "name": "ClosePositionNotEmpty",
       "msg": "Position is not empty It cannot be closed"
     },
     {
-      "code": 6258,
+      "code": 6264,
       "name": "DivideByZero",
       "msg": "Unable to divide by zero"
     },
     {
-      "code": 6259,
+      "code": 6265,
       "name": "NumberCastError",
       "msg": "Unable to cast number into BigInt"
     },
     {
-      "code": 6260,
+      "code": 6266,
       "name": "NumberDownCastError",
       "msg": "Unable to down cast number"
     },
     {
-      "code": 6261,
+      "code": 6267,
       "name": "TickNotFound",
       "msg": "Tick not found within tick array"
     },
     {
-      "code": 6262,
+      "code": 6268,
       "name": "InvalidTickIndex",
       "msg": "Provided tick index is either out of bounds or uninitializable"
     },
     {
-      "code": 6263,
+      "code": 6269,
       "name": "SqrtPriceOutOfBounds",
       "msg": "Provided sqrt price out of bounds"
     },
     {
-      "code": 6264,
+      "code": 6270,
       "name": "LiquidityZero",
       "msg": "Liquidity amount must be greater than zero"
     },
     {
-      "code": 6265,
+      "code": 6271,
       "name": "LiquidityTooHigh",
       "msg": "Liquidity amount must be less than i64::MAX"
     },
     {
-      "code": 6266,
+      "code": 6272,
       "name": "LiquidityOverflow",
       "msg": "Liquidity overflow"
     },
     {
-      "code": 6267,
+      "code": 6273,
       "name": "LiquidityUnderflow",
       "msg": "Liquidity underflow"
     },
     {
-      "code": 6268,
+      "code": 6274,
       "name": "LiquidityNetError",
       "msg": "Tick liquidity net underflowed or overflowed"
     },
     {
-      "code": 6269,
+      "code": 6275,
       "name": "TokenMaxExceeded",
       "msg": "Exceeded token max"
     },
     {
-      "code": 6270,
+      "code": 6276,
       "name": "TokenMinSubceeded",
       "msg": "Did not meet token min"
     },
     {
-      "code": 6271,
+      "code": 6277,
       "name": "MissingOrInvalidDelegate",
       "msg": "Position token account has a missing or invalid delegate"
     },
     {
-      "code": 6272,
+      "code": 6278,
       "name": "InvalidPositionTokenAmount",
       "msg": "Position token amount must be 1"
     },
     {
-      "code": 6273,
+      "code": 6279,
       "name": "InvalidTimestampConversion",
       "msg": "Timestamp should be convertible from i64 to u64"
     },
     {
-      "code": 6274,
+      "code": 6280,
       "name": "InvalidTimestamp",
       "msg": "Timestamp should be greater than the last updated timestamp"
     },
     {
-      "code": 6275,
+      "code": 6281,
       "name": "InvalidTickArraySequence",
       "msg": "Invalid tick array sequence provided for instruction."
     },
     {
-      "code": 6276,
+      "code": 6282,
       "name": "InvalidTokenMintOrder",
       "msg": "Token Mint in wrong order"
     },
     {
-      "code": 6277,
+      "code": 6283,
       "name": "RewardNotInitialized",
       "msg": "Reward not initialized"
     },
     {
-      "code": 6278,
+      "code": 6284,
       "name": "InvalidRewardIndex",
       "msg": "Invalid reward index"
     },
     {
-      "code": 6279,
+      "code": 6285,
       "name": "RewardVaultAmountInsufficient",
       "msg": "Reward vault requires amount to support emissions for at least one day"
     },
     {
-      "code": 6280,
+      "code": 6286,
       "name": "FeeRateMaxExceeded",
       "msg": "Exceeded max fee rate"
     },
     {
-      "code": 6281,
+      "code": 6287,
       "name": "ProtocolFeeRateMaxExceeded",
       "msg": "Exceeded max protocol fee rate"
     },
     {
-      "code": 6282,
+      "code": 6288,
       "name": "MultiplicationShiftRightOverflow",
       "msg": "Multiplication with shift right overflow"
     },
     {
-      "code": 6283,
+      "code": 6289,
       "name": "MulDivOverflow",
       "msg": "Muldiv overflow"
     },
     {
-      "code": 6284,
+      "code": 6290,
       "name": "MulDivInvalidInput",
       "msg": "Invalid div_u256 input"
     },
     {
-      "code": 6285,
+      "code": 6291,
       "name": "MultiplicationOverflow",
       "msg": "Multiplication overflow"
     },
     {
-      "code": 6286,
+      "code": 6292,
       "name": "InvalidSqrtPriceLimitDirection",
       "msg": "Provided SqrtPriceLimit not in the same direction as the swap."
     },
     {
-      "code": 6287,
+      "code": 6293,
       "name": "ZeroTradableAmount",
       "msg": "There are no tradable amount to swap."
     },
     {
-      "code": 6288,
+      "code": 6294,
       "name": "AmountOutBelowMinimum",
       "msg": "Amount out below minimum threshold"
     },
     {
-      "code": 6289,
+      "code": 6295,
       "name": "AmountInAboveMaximum",
       "msg": "Amount in above maximum threshold"
     },
     {
-      "code": 6290,
+      "code": 6296,
       "name": "TickArraySequenceInvalidIndex",
       "msg": "Invalid index for tick array sequence"
     },
     {
-      "code": 6291,
+      "code": 6297,
       "name": "AmountCalcOverflow",
       "msg": "Amount calculated overflows"
     },
     {
-      "code": 6292,
+      "code": 6298,
       "name": "AmountRemainingOverflow",
       "msg": "Amount remaining overflows"
     },
     {
-      "code": 6293,
+      "code": 6299,
       "name": "InvalidIntermediaryMint",
       "msg": "Invalid intermediary mint"
     },
     {
-      "code": 6294,
+      "code": 6300,
       "name": "DuplicateTwoHopPool",
       "msg": "Duplicate two hop pool"
     },
     {
-      "code": 6295,
+      "code": 6301,
       "name": "InvalidBundleIndex",
       "msg": "Bundle index is out of bounds"
     },
     {
-      "code": 6296,
+      "code": 6302,
       "name": "BundledPositionAlreadyOpened",
       "msg": "Position has already been opened"
     },
     {
-      "code": 6297,
+      "code": 6303,
       "name": "BundledPositionAlreadyClosed",
       "msg": "Position has already been closed"
+    },
+    {
+      "code": 6304,
+      "name": "UnableToLoadObservationStateAccount",
+      "msg": "Unable To Observation state"
+    },
+    {
+      "code": 6305,
+      "name": "ObservationStateNotFound",
+      "msg": "Observation state not found"
     }
   ]
 };
@@ -4823,6 +5727,11 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "authority",
           "isMut": false,
           "isSigner": true
@@ -4857,6 +5766,104 @@ export const IDL: RatexContracts = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "initializeUserOrders",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "subAccountId",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "deleteUser",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deleteUserOrders",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
     },
     {
       "name": "initializeUserStats",
@@ -4925,7 +5932,7 @@ export const IDL: RatexContracts = {
       ],
       "args": [
         {
-          "name": "marginIndex",
+          "name": "marketIndex",
           "type": "u16"
         },
         {
@@ -4975,7 +5982,7 @@ export const IDL: RatexContracts = {
       ],
       "args": [
         {
-          "name": "marginIndex",
+          "name": "marketIndex",
           "type": "u16"
         },
         {
@@ -4998,6 +6005,11 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "authority",
           "isMut": false,
           "isSigner": true
@@ -5009,6 +6021,37 @@ export const IDL: RatexContracts = {
           "type": {
             "defined": "OrderParams"
           }
+        }
+      ]
+    },
+    {
+      "name": "cancelOrder",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u32"
         }
       ]
     },
@@ -5066,8 +6109,8 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
-          "isMut": true,
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -5107,7 +6150,7 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "perpMarket",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -5179,8 +6222,8 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
-          "isMut": true,
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -5220,7 +6263,7 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "perpMarket",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -5292,6 +6335,11 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "userStats",
           "isMut": true,
           "isSigner": false
@@ -5304,6 +6352,200 @@ export const IDL: RatexContracts = {
         {
           "name": "state",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whirlpool",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenOwnerAccountB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray0",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray1",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray2",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "beginLiquidate",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "endLiquidate",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "liquidate",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -5357,15 +6599,176 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "observation",
-          "isMut": true,
-          "isSigner": false
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
         }
       ],
       "args": [
         {
-          "name": "orderId",
-          "type": "u32"
+          "name": "marketIndex",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "beginJupSwap",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "outMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "outTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "inMarketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "outMarketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "otherAmountThreshold",
+          "type": "u64"
+        },
+        {
+          "name": "isExactIn",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "endJupSwap",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userStats",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "outMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inMarginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "outTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "inTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "instructions",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "Instructions Sysvar for instruction introspection"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "inMarketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "outMarketIndex",
+          "type": "u16"
         }
       ]
     },
@@ -5404,6 +6807,11 @@ export const IDL: RatexContracts = {
           "name": "tokenAuthority",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "whirlpool",
@@ -5478,7 +6886,7 @@ export const IDL: RatexContracts = {
       "name": "observe",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "perpMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -5499,6 +6907,39 @@ export const IDL: RatexContracts = {
       "returns": {
         "vec": "u128"
       }
+    },
+    {
+      "name": "getAmmTwap",
+      "accounts": [
+        {
+          "name": "perpMarket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "observation",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "secondsAgo",
+          "type": "u32"
+        }
+      ],
+      "returns": "u128"
+    },
+    {
+      "name": "loadObservationState",
+      "accounts": [
+        {
+          "name": "whirlpool",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     },
     {
       "name": "initialize",
@@ -5603,10 +7044,6 @@ export const IDL: RatexContracts = {
       ],
       "args": [
         {
-          "name": "activeStatus",
-          "type": "bool"
-        },
-        {
           "name": "name",
           "type": {
             "array": [
@@ -5641,17 +7078,12 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "quoteAssetMint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "baseAssetMint",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "quoteAssetVault",
+          "name": "quoteAssetMint",
           "isMut": true,
           "isSigner": false
         },
@@ -5661,8 +7093,18 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
-          "isMut": false,
+          "name": "quoteAssetVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultB",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -5673,6 +7115,21 @@ export const IDL: RatexContracts = {
         {
           "name": "oracle",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whirlpoolsConfig",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeTier",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "observationState",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -5688,16 +7145,12 @@ export const IDL: RatexContracts = {
       ],
       "args": [
         {
-          "name": "marketIndex",
+          "name": "tickSpacing",
           "type": "u16"
         },
         {
-          "name": "marginRatioInitial",
-          "type": "u32"
-        },
-        {
-          "name": "marginRatioMaintenance",
-          "type": "u32"
+          "name": "sqrtPrice",
+          "type": "u128"
         },
         {
           "name": "orderStepSize",
@@ -5706,6 +7159,10 @@ export const IDL: RatexContracts = {
         {
           "name": "minOrderSize",
           "type": "u64"
+        },
+        {
+          "name": "startTs",
+          "type": "i64"
         },
         {
           "name": "expireTs",
@@ -5841,6 +7298,31 @@ export const IDL: RatexContracts = {
       ]
     },
     {
+      "name": "setState",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "collateralRatioInitial",
+          "type": "i64"
+        },
+        {
+          "name": "collateralRatioMaintenance",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "initializeConfig",
       "docs": [
         "Initializes a WhirlpoolsConfig account that hosts info & authorities",
@@ -5888,95 +7370,6 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "initializePool",
-      "docs": [
-        "Initializes a Whirlpool account.",
-        "Fee rate is set to the default values on the config and supplied fee_tier.",
-        "",
-        "### Parameters",
-        "- `bumps` - The bump value when deriving the PDA of the Whirlpool address.",
-        "- `tick_spacing` - The desired tick spacing for this pool.",
-        "- `initial_sqrt_price` - The desired initial sqrt-price for this pool",
-        "",
-        "#### Special Errors",
-        "`InvalidTokenMintOrder` - The order of mints have to be ordered by",
-        "`SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64",
-        ""
-      ],
-      "accounts": [
-        {
-          "name": "whirlpoolsConfig",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMintA",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenMintB",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "funder",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "whirlpool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenVaultA",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "feeTier",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "oracle",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "tickSpacing",
-          "type": "u16"
-        },
-        {
-          "name": "initialSqrtPrice",
-          "type": "u128"
-        }
-      ]
-    },
-    {
       "name": "initializeTickArray",
       "docs": [
         "Initializes a tick_array account to represent a tick-range in a Whirlpool.",
@@ -5991,7 +7384,7 @@ export const IDL: RatexContracts = {
       ],
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "perpMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -6040,6 +7433,11 @@ export const IDL: RatexContracts = {
         {
           "name": "whirlpool",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -6135,6 +7533,11 @@ export const IDL: RatexContracts = {
         {
           "name": "whirlpool",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "driftSigner",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -6309,122 +7712,6 @@ export const IDL: RatexContracts = {
       }
     },
     {
-      "name": "whirlpool",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "whirlpoolsConfig",
-            "type": "publicKey"
-          },
-          {
-            "name": "whirlpoolBump",
-            "type": {
-              "array": [
-                "u8",
-                1
-              ]
-            }
-          },
-          {
-            "name": "tickSpacing",
-            "type": "u16"
-          },
-          {
-            "name": "tickSpacingSeed",
-            "type": {
-              "array": [
-                "u8",
-                2
-              ]
-            }
-          },
-          {
-            "name": "feeRate",
-            "type": "u16"
-          },
-          {
-            "name": "protocolFeeRate",
-            "type": "u16"
-          },
-          {
-            "name": "liquidity",
-            "type": "u128"
-          },
-          {
-            "name": "sqrtPrice",
-            "type": "u128"
-          },
-          {
-            "name": "tickCurrentIndex",
-            "type": "i32"
-          },
-          {
-            "name": "protocolFeeOwedA",
-            "type": "u64"
-          },
-          {
-            "name": "protocolFeeOwedB",
-            "type": "u64"
-          },
-          {
-            "name": "tokenMintA",
-            "type": "publicKey"
-          },
-          {
-            "name": "tokenVaultA",
-            "type": "publicKey"
-          },
-          {
-            "name": "feeGrowthGlobalA",
-            "type": "u128"
-          },
-          {
-            "name": "tokenMintB",
-            "type": "publicKey"
-          },
-          {
-            "name": "tokenVaultB",
-            "type": "publicKey"
-          },
-          {
-            "name": "feeGrowthGlobalB",
-            "type": "u128"
-          },
-          {
-            "name": "rewardLastUpdatedTimestamp",
-            "type": "u64"
-          },
-          {
-            "name": "rewardInfos",
-            "type": {
-              "array": [
-                {
-                  "defined": "WhirlpoolRewardInfo"
-                },
-                3
-              ]
-            }
-          },
-          {
-            "name": "oracle",
-            "type": "publicKey"
-          },
-          {
-            "name": "observationIndex",
-            "docs": [
-              "the most-recently updated index of the observations array"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "observationUpdateDuration",
-            "type": "u16"
-          }
-        ]
-      }
-    },
-    {
       "name": "tickArray",
       "type": {
         "kind": "struct",
@@ -6519,8 +7806,8 @@ export const IDL: RatexContracts = {
             "type": "bool"
           },
           {
-            "name": "poolId",
-            "type": "publicKey"
+            "name": "marketIndex",
+            "type": "u16"
           },
           {
             "name": "observations",
@@ -6647,13 +7934,21 @@ export const IDL: RatexContracts = {
             }
           },
           {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                48
-              ]
-            }
+            "name": "flashLoanAmount",
+            "docs": [
+              "For swaps, the amount of token loaned out in the begin_swap ix",
+              "precision: token mint precision"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "flashLoanInitialTokenAmount",
+            "docs": [
+              "For swaps, the amount in the users token account in the begin_swap ix",
+              "Used to calculate how much of the token left the system in end_swap ix",
+              "precision: token mint precision"
+            ],
+            "type": "u64"
           }
         ]
       }
@@ -6722,23 +8017,11 @@ export const IDL: RatexContracts = {
             }
           },
           {
-            "name": "collateralRatioInitial",
+            "name": "startTs",
             "docs": [
-              "The margin ratio which determines how much collateral is required to open a position",
-              "e.g. margin ratio of .1 means a user must have $100 of total collateral to open a $1000 position",
-              "precision: MARGIN_PRECISION"
+              "start time"
             ],
-            "type": "u32"
-          },
-          {
-            "name": "collateralRatioMaintenance",
-            "docs": [
-              "The margin ratio which determines when a user will be liquidated",
-              "e.g. margin ratio of .05 means a user must have $50 of total collateral to maintain a $1000 position",
-              "else they will be liquidated",
-              "precision: MARGIN_PRECISION"
-            ],
-            "type": "u32"
+            "type": "i64"
           },
           {
             "name": "expireTs",
@@ -6770,10 +8053,6 @@ export const IDL: RatexContracts = {
             "type": "u64"
           },
           {
-            "name": "whirlpool",
-            "type": "publicKey"
-          },
-          {
             "name": "numberOfUsers",
             "docs": [
               "number of users in a position (pnl) or pnl (quote)"
@@ -6795,8 +8074,18 @@ export const IDL: RatexContracts = {
             }
           },
           {
-            "name": "bump",
+            "name": "padding0",
             "type": "u8"
+          },
+          {
+            "name": "insuranceAmount",
+            "type": "i64"
+          },
+          {
+            "name": "pool",
+            "type": {
+              "defined": "Whirlpool"
+            }
           },
           {
             "name": "padding",
@@ -6832,12 +8121,20 @@ export const IDL: RatexContracts = {
             "type": "u64"
           },
           {
-            "name": "numberOfMarkets",
+            "name": "numberOfPerpMarkets",
             "type": "u16"
           },
           {
             "name": "numberOfMarginMarkets",
             "type": "u16"
+          },
+          {
+            "name": "collateralRatioInitial",
+            "type": "i64"
+          },
+          {
+            "name": "collateralRatioMaintenance",
+            "type": "i64"
           },
           {
             "name": "signerNonce",
@@ -6846,15 +8143,6 @@ export const IDL: RatexContracts = {
           {
             "name": "exchangeStatus",
             "type": "u8"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                10
-              ]
-            }
           }
         ]
       }
@@ -6893,6 +8181,10 @@ export const IDL: RatexContracts = {
             "type": "u16"
           },
           {
+            "name": "paddingA",
+            "type": "u32"
+          },
+          {
             "name": "marginPositions",
             "docs": [
               "The user's collateral"
@@ -6902,22 +8194,17 @@ export const IDL: RatexContracts = {
                 {
                   "defined": "MarginPosition"
                 },
-                8
+                2
               ]
             }
           },
           {
-            "name": "liquidityPositions",
+            "name": "liquidityPosition",
             "docs": [
               "The user's liquidity"
             ],
             "type": {
-              "array": [
-                {
-                  "defined": "LiquidityPosition"
-                },
-                8
-              ]
+              "defined": "LiquidityPosition"
             }
           },
           {
@@ -6931,20 +8218,6 @@ export const IDL: RatexContracts = {
                   "defined": "PerpPosition"
                 },
                 8
-              ]
-            }
-          },
-          {
-            "name": "orders",
-            "docs": [
-              "The user's orders"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "Order"
-                },
-                32
               ]
             }
           },
@@ -6975,9 +8248,61 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                21
+                22
               ]
             }
+          }
+        ]
+      }
+    },
+    {
+      "name": "userOrders",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The owner/authority of the account"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "subAccountId",
+            "docs": [
+              "The sub account id for this user"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "orders",
+            "docs": [
+              "The user's orders"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "Order"
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "lastActiveSlot",
+            "docs": [
+              "The last slot a user was active. Used to determine if a user is idle"
+            ],
+            "type": "u64"
           }
         ]
       }
@@ -7030,6 +8355,139 @@ export const IDL: RatexContracts = {
     }
   ],
   "types": [
+    {
+      "name": "Whirlpool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "whirlpoolsConfig",
+            "type": "publicKey"
+          },
+          {
+            "name": "whirlpoolBump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "padding0",
+            "type": "u8"
+          },
+          {
+            "name": "tickSpacing",
+            "type": "u16"
+          },
+          {
+            "name": "tickSpacingSeed",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "feeRate",
+            "type": "u16"
+          },
+          {
+            "name": "protocolFeeRate",
+            "type": "u16"
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "liquidity",
+            "type": "u128"
+          },
+          {
+            "name": "sqrtPrice",
+            "type": "u128"
+          },
+          {
+            "name": "tickCurrentIndex",
+            "type": "i32"
+          },
+          {
+            "name": "padding2",
+            "type": "i32"
+          },
+          {
+            "name": "protocolFeeOwedA",
+            "type": "u64"
+          },
+          {
+            "name": "protocolFeeOwedB",
+            "type": "u64"
+          },
+          {
+            "name": "tokenMintA",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenVaultA",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeGrowthGlobalA",
+            "type": "u128"
+          },
+          {
+            "name": "tokenMintB",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenVaultB",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeGrowthGlobalB",
+            "type": "u128"
+          },
+          {
+            "name": "rewardLastUpdatedTimestamp",
+            "type": "u64"
+          },
+          {
+            "name": "rewardInfos",
+            "type": {
+              "array": [
+                {
+                  "defined": "WhirlpoolRewardInfo"
+                },
+                3
+              ]
+            }
+          },
+          {
+            "name": "oracle",
+            "type": "publicKey"
+          },
+          {
+            "name": "observationIndex",
+            "docs": [
+              "the most-recently updated index of the observations array"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "observationUpdateDuration",
+            "type": "u16"
+          }
+        ]
+      }
+    },
     {
       "name": "WhirlpoolRewardInfo",
       "docs": [
@@ -7200,10 +8658,6 @@ export const IDL: RatexContracts = {
             }
           },
           {
-            "name": "userOrderId",
-            "type": "u32"
-          },
-          {
             "name": "marketIndex",
             "type": "u16"
           },
@@ -7300,7 +8754,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                20
+                24
               ]
             }
           }
@@ -7341,7 +8795,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                4
+                6
               ]
             }
           }
@@ -7368,6 +8822,15 @@ export const IDL: RatexContracts = {
           {
             "name": "marketIndex",
             "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
           }
         ]
       }
@@ -7407,6 +8870,15 @@ export const IDL: RatexContracts = {
               "The market index for the perp market"
             ],
             "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
           }
         ]
       }
@@ -7578,56 +9050,6 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "InitializePoolEvent",
-      "fields": [
-        {
-          "name": "whirlpool",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "bump",
-          "type": "u8",
-          "index": false
-        },
-        {
-          "name": "whirlpoolsConfig",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenMintA",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenMintB",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenVaultA",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "tokenVaultB",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "oracle",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "defaultFeeRate",
-          "type": "u16",
-          "index": false
-        }
-      ]
-    },
-    {
       "name": "ClosePositionEvent",
       "fields": [
         {
@@ -7758,36 +9180,96 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "InitializePositionEvent",
+      "name": "InitializeMarginMarketRecord",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "marketIndex",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "marginMarket",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "positionMint",
+          "name": "marginMarketMint",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "position",
+          "name": "marginMarketVault",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "owner",
+          "name": "insuranceFundVault",
           "type": "publicKey",
           "index": false
         },
         {
-          "name": "tickLowerIndex",
-          "type": "i32",
+          "name": "oracle",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "InitializePerpMarketRecord",
+      "fields": [
+        {
+          "name": "marketIndex",
+          "type": "u16",
           "index": false
         },
         {
-          "name": "tickUpperIndex",
-          "type": "i32",
+          "name": "defaultFeeRate",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "tickSpacing",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "initialSqrtPrice",
+          "type": "u128",
+          "index": false
+        },
+        {
+          "name": "perpMarket",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "quoteAssetMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAssetMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "quoteAssetVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "baseAssetVault",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "oracle",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "observationState",
+          "type": "publicKey",
           "index": false
         }
       ]
@@ -7823,6 +9305,81 @@ export const IDL: RatexContracts = {
         {
           "name": "isTrader",
           "type": "bool",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewUserOrdersRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subAccountId",
+          "type": "u16",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteUserRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subAccountId",
+          "type": "u16",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteUserOrdersRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subAccountId",
+          "type": "u16",
           "index": false
         }
       ]
@@ -7974,6 +9531,98 @@ export const IDL: RatexContracts = {
       ]
     },
     {
+      "name": "LiquidationRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "filler",
+          "type": {
+            "option": "publicKey"
+          },
+          "index": false
+        },
+        {
+          "name": "marketIndex",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "baseAmountFilled",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "quoteAmountFilled",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "baseAmountHeld",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "quoteAmountHeld",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "tradePrice",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "fee",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "rate",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "CancelOrderRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "orderId",
+          "type": "u32",
+          "index": false
+        }
+      ]
+    },
+    {
       "name": "UpdateOracleRecord",
       "fields": [
         {
@@ -7993,68 +9642,6 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "marketRate",
-          "type": "u64",
-          "index": false
-        }
-      ]
-    },
-    {
-      "name": "LiquidationRecord",
-      "fields": [
-        {
-          "name": "ts",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "userAuthority",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "user",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "liquidator",
-          "type": {
-            "option": "publicKey"
-          },
-          "index": false
-        },
-        {
-          "name": "marginRequirement",
-          "type": "u128",
-          "index": false
-        },
-        {
-          "name": "totalCollateral",
-          "type": "i128",
-          "index": false
-        },
-        {
-          "name": "liquidationId",
-          "type": "u16",
-          "index": false
-        },
-        {
-          "name": "bankrupt",
-          "type": "bool",
-          "index": false
-        },
-        {
-          "name": "baseAmountFilled",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "quoteAmountFilled",
-          "type": "i64",
-          "index": false
-        },
-        {
-          "name": "tradePrice",
           "type": "u64",
           "index": false
         }
@@ -8113,6 +9700,76 @@ export const IDL: RatexContracts = {
         {
           "name": "liquidityAmount",
           "type": "u128",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "InitializePositionEvent",
+      "fields": [
+        {
+          "name": "whirlpool",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "positionMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "position",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "owner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "tickLowerIndex",
+          "type": "i32",
+          "index": false
+        },
+        {
+          "name": "tickUpperIndex",
+          "type": "i32",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "JupSwapRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amountOut",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "amountIn",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "outMarketIndex",
+          "type": "u16",
+          "index": false
+        },
+        {
+          "name": "inMarketIndex",
+          "type": "u16",
           "index": false
         }
       ]
@@ -9311,303 +10968,343 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6238,
+      "name": "InvalidJupSwap",
+      "msg": "InvalidJupSwap"
+    },
+    {
+      "code": 6239,
+      "name": "UnableToGetTwapPrice",
+      "msg": "Unable to get twap price"
+    },
+    {
+      "code": 6240,
       "name": "AccountLiquidated",
       "msg": "Account liquidated"
     },
     {
-      "code": 6239,
+      "code": 6241,
       "name": "InvalidOracleAccount",
       "msg": "Invalid oracle account"
     },
     {
-      "code": 6240,
+      "code": 6242,
       "name": "UnableToLoadOracleAccount",
       "msg": "Unable to load oracle account"
     },
     {
-      "code": 6241,
+      "code": 6243,
       "name": "CouldNotLoadOracleData",
       "msg": "could not load oracle data"
     },
     {
-      "code": 6242,
+      "code": 6244,
       "name": "OracleWrongMutability",
       "msg": "wrong oracle mutablility"
     },
     {
-      "code": 6243,
+      "code": 6245,
       "name": "KeeperAlreadyExists",
       "msg": "The keeper already exists in the list."
     },
     {
-      "code": 6244,
+      "code": 6246,
       "name": "KeepersListFull",
       "msg": "The keepers list is full."
     },
     {
-      "code": 6245,
+      "code": 6247,
       "name": "KeeperNotFound",
       "msg": "The keeper was not found in the list."
     },
     {
-      "code": 6246,
+      "code": 6248,
       "name": "MaxOpenInterestExceeded",
       "msg": "Max open interest exceeded"
     },
     {
-      "code": 6247,
+      "code": 6249,
       "name": "InvalidOrderStepSize",
       "msg": "Invalid order step size"
     },
     {
-      "code": 6248,
+      "code": 6250,
       "name": "OrderExpired",
       "msg": "Order expired"
     },
     {
-      "code": 6249,
+      "code": 6251,
       "name": "OnlyTrader",
       "msg": "Only trader"
     },
     {
-      "code": 6250,
+      "code": 6252,
       "name": "OnlyLP",
       "msg": "Only LP"
     },
     {
-      "code": 6251,
+      "code": 6253,
       "name": "InvalidWithdraw",
       "msg": "Invalid Withdraw"
     },
     {
-      "code": 6252,
+      "code": 6254,
+      "name": "InvalidLiquidate",
+      "msg": "Invalid Liquidate"
+    },
+    {
+      "code": 6255,
+      "name": "MeetMaintenanceCollateralRequirement",
+      "msg": "Meet maintenance collateral requirement"
+    },
+    {
+      "code": 6256,
+      "name": "FailToMeetMaintenanceCollateralRequirement",
+      "msg": "Fail to meet maintenance collateral requirement"
+    },
+    {
+      "code": 6257,
+      "name": "FailToMeetInitialCollateralRequirement",
+      "msg": "Fail to meet initial collateral requirement"
+    },
+    {
+      "code": 6258,
       "name": "InvalidEnum",
       "msg": "Enum value could not be converted"
     },
     {
-      "code": 6253,
+      "code": 6259,
       "name": "InvalidStartTick",
       "msg": "Invalid start tick index provided."
     },
     {
-      "code": 6254,
+      "code": 6260,
       "name": "TickArrayExistInPool",
       "msg": "Tick-array already exists in this whirlpool"
     },
     {
-      "code": 6255,
+      "code": 6261,
       "name": "TickArrayIndexOutofBounds",
       "msg": "Attempt to search for a tick-array failed"
     },
     {
-      "code": 6256,
+      "code": 6262,
       "name": "InvalidTickSpacing",
       "msg": "Tick-spacing is not supported"
     },
     {
-      "code": 6257,
+      "code": 6263,
       "name": "ClosePositionNotEmpty",
       "msg": "Position is not empty It cannot be closed"
     },
     {
-      "code": 6258,
+      "code": 6264,
       "name": "DivideByZero",
       "msg": "Unable to divide by zero"
     },
     {
-      "code": 6259,
+      "code": 6265,
       "name": "NumberCastError",
       "msg": "Unable to cast number into BigInt"
     },
     {
-      "code": 6260,
+      "code": 6266,
       "name": "NumberDownCastError",
       "msg": "Unable to down cast number"
     },
     {
-      "code": 6261,
+      "code": 6267,
       "name": "TickNotFound",
       "msg": "Tick not found within tick array"
     },
     {
-      "code": 6262,
+      "code": 6268,
       "name": "InvalidTickIndex",
       "msg": "Provided tick index is either out of bounds or uninitializable"
     },
     {
-      "code": 6263,
+      "code": 6269,
       "name": "SqrtPriceOutOfBounds",
       "msg": "Provided sqrt price out of bounds"
     },
     {
-      "code": 6264,
+      "code": 6270,
       "name": "LiquidityZero",
       "msg": "Liquidity amount must be greater than zero"
     },
     {
-      "code": 6265,
+      "code": 6271,
       "name": "LiquidityTooHigh",
       "msg": "Liquidity amount must be less than i64::MAX"
     },
     {
-      "code": 6266,
+      "code": 6272,
       "name": "LiquidityOverflow",
       "msg": "Liquidity overflow"
     },
     {
-      "code": 6267,
+      "code": 6273,
       "name": "LiquidityUnderflow",
       "msg": "Liquidity underflow"
     },
     {
-      "code": 6268,
+      "code": 6274,
       "name": "LiquidityNetError",
       "msg": "Tick liquidity net underflowed or overflowed"
     },
     {
-      "code": 6269,
+      "code": 6275,
       "name": "TokenMaxExceeded",
       "msg": "Exceeded token max"
     },
     {
-      "code": 6270,
+      "code": 6276,
       "name": "TokenMinSubceeded",
       "msg": "Did not meet token min"
     },
     {
-      "code": 6271,
+      "code": 6277,
       "name": "MissingOrInvalidDelegate",
       "msg": "Position token account has a missing or invalid delegate"
     },
     {
-      "code": 6272,
+      "code": 6278,
       "name": "InvalidPositionTokenAmount",
       "msg": "Position token amount must be 1"
     },
     {
-      "code": 6273,
+      "code": 6279,
       "name": "InvalidTimestampConversion",
       "msg": "Timestamp should be convertible from i64 to u64"
     },
     {
-      "code": 6274,
+      "code": 6280,
       "name": "InvalidTimestamp",
       "msg": "Timestamp should be greater than the last updated timestamp"
     },
     {
-      "code": 6275,
+      "code": 6281,
       "name": "InvalidTickArraySequence",
       "msg": "Invalid tick array sequence provided for instruction."
     },
     {
-      "code": 6276,
+      "code": 6282,
       "name": "InvalidTokenMintOrder",
       "msg": "Token Mint in wrong order"
     },
     {
-      "code": 6277,
+      "code": 6283,
       "name": "RewardNotInitialized",
       "msg": "Reward not initialized"
     },
     {
-      "code": 6278,
+      "code": 6284,
       "name": "InvalidRewardIndex",
       "msg": "Invalid reward index"
     },
     {
-      "code": 6279,
+      "code": 6285,
       "name": "RewardVaultAmountInsufficient",
       "msg": "Reward vault requires amount to support emissions for at least one day"
     },
     {
-      "code": 6280,
+      "code": 6286,
       "name": "FeeRateMaxExceeded",
       "msg": "Exceeded max fee rate"
     },
     {
-      "code": 6281,
+      "code": 6287,
       "name": "ProtocolFeeRateMaxExceeded",
       "msg": "Exceeded max protocol fee rate"
     },
     {
-      "code": 6282,
+      "code": 6288,
       "name": "MultiplicationShiftRightOverflow",
       "msg": "Multiplication with shift right overflow"
     },
     {
-      "code": 6283,
+      "code": 6289,
       "name": "MulDivOverflow",
       "msg": "Muldiv overflow"
     },
     {
-      "code": 6284,
+      "code": 6290,
       "name": "MulDivInvalidInput",
       "msg": "Invalid div_u256 input"
     },
     {
-      "code": 6285,
+      "code": 6291,
       "name": "MultiplicationOverflow",
       "msg": "Multiplication overflow"
     },
     {
-      "code": 6286,
+      "code": 6292,
       "name": "InvalidSqrtPriceLimitDirection",
       "msg": "Provided SqrtPriceLimit not in the same direction as the swap."
     },
     {
-      "code": 6287,
+      "code": 6293,
       "name": "ZeroTradableAmount",
       "msg": "There are no tradable amount to swap."
     },
     {
-      "code": 6288,
+      "code": 6294,
       "name": "AmountOutBelowMinimum",
       "msg": "Amount out below minimum threshold"
     },
     {
-      "code": 6289,
+      "code": 6295,
       "name": "AmountInAboveMaximum",
       "msg": "Amount in above maximum threshold"
     },
     {
-      "code": 6290,
+      "code": 6296,
       "name": "TickArraySequenceInvalidIndex",
       "msg": "Invalid index for tick array sequence"
     },
     {
-      "code": 6291,
+      "code": 6297,
       "name": "AmountCalcOverflow",
       "msg": "Amount calculated overflows"
     },
     {
-      "code": 6292,
+      "code": 6298,
       "name": "AmountRemainingOverflow",
       "msg": "Amount remaining overflows"
     },
     {
-      "code": 6293,
+      "code": 6299,
       "name": "InvalidIntermediaryMint",
       "msg": "Invalid intermediary mint"
     },
     {
-      "code": 6294,
+      "code": 6300,
       "name": "DuplicateTwoHopPool",
       "msg": "Duplicate two hop pool"
     },
     {
-      "code": 6295,
+      "code": 6301,
       "name": "InvalidBundleIndex",
       "msg": "Bundle index is out of bounds"
     },
     {
-      "code": 6296,
+      "code": 6302,
       "name": "BundledPositionAlreadyOpened",
       "msg": "Position has already been opened"
     },
     {
-      "code": 6297,
+      "code": 6303,
       "name": "BundledPositionAlreadyClosed",
       "msg": "Position has already been closed"
+    },
+    {
+      "code": 6304,
+      "name": "UnableToLoadObservationStateAccount",
+      "msg": "Unable To Observation state"
+    },
+    {
+      "code": 6305,
+      "name": "ObservationStateNotFound",
+      "msg": "Observation state not found"
     }
   ]
 };

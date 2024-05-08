@@ -1,9 +1,9 @@
 import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
-import {csrLangFilePlugin} from '@rx/vite-plugins/plugin-lang-csr.mjs';
+// import {csrLangFilePlugin} from '@rx/vite-plugins/plugin-lang-csr.mjs';
 import {vitePluginNodeGlobals} from '@rx/vite-plugins/vite-plugin-node-globals.mjs';
 import react from '@vitejs/plugin-react';
-import {join} from 'node:path';
-import crypto from 'node:crypto'
+import crypto from 'node:crypto';
+import {join, parse} from 'node:path';
 import UnoCSS from 'unocss/vite';
 import {build} from 'vite';
 import {viteExternalsPlugin} from 'vite-plugin-externals';
@@ -15,7 +15,6 @@ const langRecordDic = new Map();
 export const buildAll = async ({dirname, worker, csr, ssr, buildPackages}) => {
   __dirname = dirname;
   const workerEntryFileName = await buildWorker(worker);
-  // TODO: 检查 buildId 是否重复
   for (const buildPackage of buildPackages) {
     const output = await buildCSR(csr, buildPackage, workerEntryFileName);
     await buildSSG(ssr, buildPackage, output);
@@ -76,13 +75,24 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
             }
             return 'assets/assets-[hash][extname]';
           },
-          chunkFileNames: 'js/chunk-[hash].js',
+          manualChunks(id) {
+            const name = parse(id).name;
+            if (id.endsWith('.lang.ts')) {
+              return `${name}.lang.ts`;
+            }
+          },
+          chunkFileNames: (chunkInfo) => {
+            if (chunkInfo.name.endsWith('.lang.ts')) {
+              return 'lang/lang-[hash].js';
+            }
+            return `js/chunk-[hash].js`;
+          },
         },
       },
     },
     resolve: {
       alias: {
-        'crypto': 'crypto-browserify',
+        crypto: 'crypto-browserify',
       },
     },
     plugins: [
@@ -90,7 +100,7 @@ async function buildCSR(csr, buildPackage, workerEntryFileName) {
       UnoCSS(),
       createAliasPlugin(),
       createOneRouteGroupPlugin(moduleId),
-      csrLangFilePlugin(langRecordDic, join(__dirname, 'dist'), id),
+      // csrLangFilePlugin(langRecordDic, join(__dirname, 'dist'), id),
       viteExternalsPlugin({
         echarts: 'echarts',
         react: 'React',
@@ -134,7 +144,7 @@ async function buildSSG(ssr, buildPackage, output) {
     },
     resolve: {
       alias: {
-        'crypto': 'crypto-browserify',
+        crypto: 'crypto-browserify',
       },
     },
     plugins: [

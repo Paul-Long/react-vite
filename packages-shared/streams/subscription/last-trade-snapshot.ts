@@ -6,7 +6,3 @@ export const lastTradeSnapshot$ = new TopicSubject({
   Types: LastTradeSnapshotSubTypes,
   initValue: {},
 });
-
-lastTradeSnapshot$.subscribe((o) => {
-  console.log(LastTradeSnapshotSubTypes.Subscribe, o);
-});

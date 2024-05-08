@@ -11,15 +11,19 @@ export function useAddKeeper(params: Params) {
   const [client] = useStream(rateXClient$);
   const {connected, connect} = useConnect();
 
-  const submit = useCallback(async (address: string) => {
-    if (!connected) {
-      return;
-    }
-    const tx = await client?.addKeeper(address);
-    params?.onFinish?.(tx);
-  }, [connected]);
+  const submit = useCallback(
+    async (address: string) => {
+      if (!connected) {
+        return;
+      }
+      const tx = await client?.addKeeper(address);
+      params?.onFinish?.(tx);
+    },
+    [connected, client]
+  );
 
   return {
+    client,
     submit,
   };
 }

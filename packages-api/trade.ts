@@ -13,4 +13,16 @@ export const tradeApi = {
     };
     return post(API_URL, {params});
   },
+  loadOrderHistory() {
+    const params = {
+      serverName: 'AdminSvr',
+      method: 'queryExecOrder',
+      content: {
+        cid: guid.build(),
+        pageNum: 0,
+        pageSize: 200,
+      },
+    };
+    return post(API_URL, {params});
+  },
 };

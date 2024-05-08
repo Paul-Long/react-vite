@@ -12,11 +12,11 @@ export function useDeposit(params: Params) {
   const {connected, connect} = useConnect();
 
   const submit = useCallback(
-    async (amount: number) => {
+    async (userPda: string, order: {marginIndex: number; amount: number}) => {
       if (!connected) {
         return;
       }
-      const tx = await client?.deposit(amount);
+      const tx = await client?.deposit(userPda, order);
       params?.onFinish?.(tx);
     },
     [connected]

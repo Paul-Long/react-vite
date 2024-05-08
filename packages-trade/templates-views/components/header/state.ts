@@ -12,7 +12,7 @@ export function useMenus(props?: Props) {
   const {LG} = useLang();
   const {fixLink, slug} = useFixLink();
   const [select, setSelect] = useState<string>(slug);
-  const menus = useMemo(() => genMenus(LG, fixLink), [LG]);
+  const menus = useMemo(() => genMenus(LG, fixLink as any), [LG]);
 
   return {select, setSelect, menus};
 }

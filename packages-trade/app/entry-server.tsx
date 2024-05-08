@@ -18,7 +18,6 @@ const locales: string[] = Object.keys(localeRecord);
 
 (async () => {
   const {default: Page} = await main();
-  console.log(__ENTRY_FILE_NAME__, __ENTRY_CSS_FILES__, __ENTRY_LANG_FILES__);
   for (let i = 0; i < routers.length; i++) {
     for (let j = 0; j < locales.length; j++) {
       const locale: any = locales[j];

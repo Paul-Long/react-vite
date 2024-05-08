@@ -17,6 +17,15 @@ interface RateXPosition {
   quoteAssetAmount: BN | number;
 }
 
+interface RateXOrder {
+  userPda: string;
+  orderId: number;
+  baseAssetAmount: BN | number;
+  lastRate?: BN | number;
+  marketIndex: number;
+  quoteAssetAmount: BN | number;
+}
+
 type MarginType = 'CROSS' | 'ISOLATED';
 type OrderType = 'MARKET' | 'LIMIT';
 type DirectionType = 'LONG' | 'SHORT';

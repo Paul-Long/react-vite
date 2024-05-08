@@ -1,5 +1,5 @@
 import {clsx} from 'clsx';
-import {useCallback, useEffect, useRef} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {css, styled} from 'styled-components';
 
 const Wrap = styled.div<{$isPercentage: boolean; $size: string}>`
@@ -52,12 +52,15 @@ interface Props {
   align?: 'left' | 'right' | 'center';
   type?: 'number' | 'percentage';
   color?: string;
+  value?: string | number;
+  onChange?: (e: any) => void;
 }
 
 export function InputNumber(props: Props) {
-  const {size = 'lg', align = 'left', type = 'number', color = 'text-green-500'} = props;
+  const {size = 'lg', align = 'left', type = 'number', color = 'text-green-500', onChange} = props;
   const wrap = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState(props.value);
 
   useEffect(() => {
     ref.current?.addEventListener('input', function () {
@@ -76,6 +79,14 @@ export function InputNumber(props: Props) {
       let v = this.value;
     });
     updatePercentagePosition();
+  }, []);
+
+  useEffect(() => {
+    onChange?.(value);
+  }, [value]);
+
+  const handleChange = useCallback((e: any) => {
+    setValue(e.target.value);
   }, []);
 
   const updatePercentagePosition = useCallback(() => {
@@ -117,6 +128,8 @@ export function InputNumber(props: Props) {
           [align === 'right' && 'text-right']
         )}
         type="number"
+        value={props.value}
+        onChange={handleChange}
       />
     </Wrap>
   );

@@ -24,7 +24,7 @@ export function RadioButton(props: Props) {
         <div
           key={o.value}
           className={clsx(
-            'flex-1 flex justify-center items-center text-center font-size-14px lh-16px text-wrap text-gray-400 bg-gray-40 transition-bg duration-100',
+            'flex-1 flex justify-center items-center text-center font-size-14px lh-16px text-wrap text-gray-600 bg-gray-40 transition-bg duration-100',
             [value === o.value && 'font-semibold text-white bg-gray-80']
           )}
           onClick={() => onChange?.(o.value)}

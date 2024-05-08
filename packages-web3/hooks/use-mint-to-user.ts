@@ -12,17 +12,18 @@ export function useMintToUser(params: Params) {
   const {connected, connect} = useConnect();
 
   const submit = useCallback(
-    async (value: number) => {
+    async (order: any) => {
       if (!connected) {
         return;
       }
-      const tx = await client?.mintToUser(value);
+      const tx = await client?.mintToUser(order);
       params?.onFinish?.(tx);
     },
-    [connected]
+    [connected, client]
   );
 
   return {
     submit,
+    client,
   };
 }

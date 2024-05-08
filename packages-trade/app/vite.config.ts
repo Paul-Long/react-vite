@@ -1,8 +1,6 @@
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
-import {fileURLToPath} from 'node:url';
-
 import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
 import react from '@vitejs/plugin-react';
 import polyfillNode from 'rollup-plugin-polyfill-node';
@@ -11,8 +9,6 @@ import {defineConfig} from 'vite';
 import buildPackage from './package.json';
 
 const isProd = process.env['NODE_ENV'] === 'production';
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const langRecordDic = new Map();
 
 export default defineConfig({
   publicDir: isProd ? undefined : '../../public',

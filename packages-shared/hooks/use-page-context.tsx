@@ -12,7 +12,7 @@ interface PageContext {
   slug: string;
   locale: string;
   LG: (langItem: LangItem, params?: Record<string, string>) => string;
-  fixLink: (link: string) => string;
+  fixLink?: (link: string) => string;
 }
 
 export function PageContextProvider({
@@ -98,7 +98,7 @@ function format(template: string, params: Record<string, string>) {
   );
 }
 
-function genFixLink(locale?: Locale) {
+export function genFixLink(locale?: Locale) {
   return function (link: string) {
     if (!locale) {
       return link;

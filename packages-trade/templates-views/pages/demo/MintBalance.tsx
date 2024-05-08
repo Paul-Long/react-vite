@@ -7,7 +7,7 @@ import {StyledWrap} from './styles';
 
 export function MintBalance() {
   const {connected} = useConnect();
-  const {query, balance} = useMintBalance();
+  const {query, balance, client} = useMintBalance();
 
   const handleSubmit = useCallback(() => {
     if (!connected) {
@@ -15,7 +15,7 @@ export function MintBalance() {
       return;
     }
     query().then();
-  }, [connected]);
+  }, [connected, client]);
 
   return (
     <StyledWrap className="df fdc gap24px">

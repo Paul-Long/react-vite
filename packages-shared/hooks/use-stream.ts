@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {BehaviorSubject, Subject} from 'rxjs';
 
 export function useStream<T extends any>(stream$: Subject<T> | BehaviorSubject<T>) {
-  const [data, setData] = useState<T>();
+  const [data, setData] = useState<T>((stream$ as any).getValue());
 
   useEffect(() => {
     const subscription = stream$.subscribe((value: T) => {

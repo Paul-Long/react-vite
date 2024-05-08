@@ -5,6 +5,7 @@ import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/home';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
+import {MarqueeDivs} from './Marquee';
 
 export function YieldMarket() {
   const {LG} = useLang();
@@ -13,12 +14,17 @@ export function YieldMarket() {
       <div className="font-size-24px sm:font-size-48px text-wrap w-100% sm:w-1200px max-w-100% px-24px sm:px-0">
         {LG(lang.YieldMarket)}
       </div>
-      <div className="flex flex-row justify-start sm:justify-center sm:w-1200px max-w-100%  overflow-x-auto">
-        <div className="flex flex-row flex-nowrap px-24px sm: px-0 w-100% gap-24px sm:w-100% overflow-y-visible overflow-x-auto mt-32px sm:mt-66px sm:pt-14px  hide-scrollbar">
+      <div className="flex flex-row justify-start sm:justify-center w-full max-w-full  overflow-x-auto">
+        <MarqueeDivs>
           {assets(LG).map((a, i) => (
-            <AssetItem key={a.contract} asset={a} />
+            <div
+              key={a.contract}
+              className="flex flex-row flex-nowrap sm:px-0 w-100% gap-24px sm:w-full overflow-y-visible overflow-x-auto mt-32px sm:mt-66px sm:pt-14px  hide-scrollbar"
+            >
+              <AssetItem asset={a} />
+            </div>
           ))}
-        </div>
+        </MarqueeDivs>
       </div>
     </div>
   );

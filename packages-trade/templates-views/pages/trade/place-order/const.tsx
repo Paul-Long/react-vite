@@ -1,13 +1,13 @@
 import {lang} from '@rx/lang/trade.lang';
 
 export const genMargin = (LG: any) => [
-  {label: LG(lang.CrossMargin), value: 'Cross'},
-  {label: LG(lang.IsolatedMargin), value: 'Isolated'},
+  {label: LG(lang.CrossMargin), value: 'CROSS'},
+  {label: LG(lang.IsolatedMargin), value: 'ISOLATED'},
 ];
 
 export const genDirection = (LG: any) => [
-  {label: LG(lang.LongYieldFloater), value: 'Long'},
-  {label: LG(lang.ShortYieldFixer), value: 'Short'},
+  {label: LG(lang.LongYieldFloater), value: 'LONG'},
+  {label: LG(lang.ShortYieldFixer), value: 'SHORT'},
 ];
 
 export const genMode = (LG: any) => [

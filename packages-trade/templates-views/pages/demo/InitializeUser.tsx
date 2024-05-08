@@ -10,16 +10,20 @@ export function InitializeUser() {
   const [isIsolated, setIsolated] = useState(false);
   const [isTrader, setTrader] = useState(false);
   const {connected} = useConnect();
-  const {submit, query} = useInitializeUser({
+  const {submit, query, client} = useInitializeUser({
     onFinish(t: string) {
       setTx(t);
     },
   });
 
+  const handleDeleteUser = useCallback(async () => {
+    await client?.deleteAllUser();
+  }, [client]);
+
   const queryInfo = useCallback(async () => {
     const info = await query();
     console.log('User Info : ', info);
-  }, [connected]);
+  }, [connected, client]);
 
   const handleSubmit = useCallback(() => {
     if (!connected) {
@@ -27,7 +31,7 @@ export function InitializeUser() {
       return;
     }
     submit(isIsolated, isTrader).then();
-  }, [connected, isIsolated, isTrader]);
+  }, [connected, isIsolated, isTrader, client]);
 
   return (
     <StyledWrap className="flex flex-col gap-24px">
@@ -68,6 +72,11 @@ export function InitializeUser() {
           </Button>
           <Button className="font-size-16px text-nowrap" onClick={handleSubmit}>
             Initialize User
+          </Button>
+        </div>
+        <div className="flex justify-end gap-24px">
+          <Button className="font-size-16px text-nowrap" onClick={handleDeleteUser}>
+            Delete User 3 Count
           </Button>
         </div>
       </div>

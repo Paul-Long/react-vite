@@ -11,11 +11,13 @@ export function Positions() {
   const [mode, setMode] = useState('YT');
   const [tab, setTab] = useState<string>('position');
   return (
-    <div className="min-h-280px flex-1 b-solid b-gray-40 b-t-1px box-border px-16px py-16px overflow-hidden">
+    <div className="flex flex-col b-solid b-gray-40 b-t-1px box-border px-16px py-16px">
       <CardTabs options={genTabs(LG)} value={tab} onChange={(t) => setTab(t)} />
-      {tab === 'position' && <Position mode={mode} />}
-      {tab === 'orders' && <Orders mode={mode} />}
-      {tab === 'history' && <History />}
+      <div className="flex overflow-hidden">
+        {tab === 'position' && <Position mode={mode} />}
+        {tab === 'orders' && <Orders mode={mode} />}
+        {tab === 'history' && <History />}
+      </div>
     </div>
   );
 }

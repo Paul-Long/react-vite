@@ -5,6 +5,7 @@
   "type": "module",
   "main": "index.ts",
   "dependencies": {
+    "@rx/api": "^1.0.0",
     "@rx/const": "^1.0.0",
     "@rx/db": "^1.0.0",
     "@rx/env": "^1.0.0",

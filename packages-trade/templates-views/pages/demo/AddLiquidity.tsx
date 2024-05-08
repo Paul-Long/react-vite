@@ -1,7 +1,7 @@
 import {walletModalVisible$} from '@rx/streams/wallet';
 import {useAddLiquidity} from '@rx/web3/hooks/use-add-liquidity';
 import {useConnect} from '@rx/web3/hooks/use-connect';
-import {Button, Toast} from '@rx/widgets';
+import {Button} from '@rx/widgets';
 import {useCallback, useState} from 'react';
 import {StyledWrap} from './styles';
 
@@ -24,18 +24,6 @@ export function AddLiquidity() {
   const handleSubmit = useCallback(() => {
     if (!connected) {
       walletModalVisible$.next(true);
-      return;
-    }
-    if (!state.tickLowerIndex) {
-      Toast.warn('Please input TickLowerIndex');
-      return;
-    }
-    if (!state.tickUpperIndex) {
-      Toast.warn('Please input TickUpperIndex');
-      return;
-    }
-    if (!state.liquidityAmount) {
-      Toast.warn('Please input LiquidityAmount');
       return;
     }
     submit(state.tickLowerIndex, state.tickUpperIndex, state.liquidityAmount).then();

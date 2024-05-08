@@ -7,6 +7,7 @@ interface Options {
   Types: Record<string, any>;
   initValue?: any;
   formatter?: (o: any) => any;
+  matchTopic?: (t1: string, t2: string) => boolean;
 }
 
 export class TopicSubject extends BehaviorSubject<any> {
@@ -14,6 +15,7 @@ export class TopicSubject extends BehaviorSubject<any> {
   _serverName: string;
   _subscription: Subscription;
   _formatter?: (o: any) => any;
+  _matchTopic?: (t1: string, t2: string) => boolean;
   Types: Record<string, any>;
   private readonly _unsubscribe$ = new Subject<void>();
 
@@ -21,6 +23,7 @@ export class TopicSubject extends BehaviorSubject<any> {
     super(opts.initValue);
     this._serverName = opts.serverName;
     this._formatter = opts.formatter;
+    this._matchTopic = opts.matchTopic;
     this.Types = opts.Types;
   }
 
@@ -40,7 +43,16 @@ export class TopicSubject extends BehaviorSubject<any> {
         switchMap(() => {
           sendToWorker({type: this.Types.Subscribe, serverName: this._serverName, topic});
           return worker$.pipe(
-            filter((o) => o.type === this.Types.Subscribe && o?.data?.topic === topic),
+            filter((o) => {
+              if (
+                this._matchTopic &&
+                o.type === this.Types.Subscribe &&
+                this._matchTopic(topic, o?.data?.topic)
+              ) {
+                return true;
+              }
+              return o.type === this.Types.Subscribe && o?.data?.topic === topic;
+            }),
             map((o) => o.data?.content),
             filter(Boolean),
             map((o) => (this._formatter ? this._formatter(o) : o))

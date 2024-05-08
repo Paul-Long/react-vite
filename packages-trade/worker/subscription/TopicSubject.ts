@@ -7,6 +7,7 @@ import {uiMsg$} from '../ui';
 interface Options {
   toJson?: boolean;
   Types: Record<string, any>;
+  matchTopic?: (t1: string, t2: string) => boolean;
 }
 
 export class TopicSubject extends Subject<any> {
@@ -15,12 +16,14 @@ export class TopicSubject extends Subject<any> {
   _serverName?: string;
   _send?: Subscription;
   _receive?: Subscription;
+  _matchTopic?: (t1: string, t2: string) => boolean;
   Types: Record<any, any>;
 
   constructor(opts: Options) {
     super();
     this.Types = opts.Types;
     this._toJson = opts.toJson ?? true;
+    this._matchTopic = opts.matchTopic;
     this.init();
   }
 
@@ -49,7 +52,12 @@ export class TopicSubject extends Subject<any> {
       .pipe(
         map((o) => o.dataObject?.body),
         filter(Boolean),
-        filter((o) => o?.topic === this._topic)
+        filter((o) => {
+          if (this._matchTopic && this._topic && this._matchTopic(this._topic, o?.topic)) {
+            return true;
+          }
+          return o?.topic === this._topic;
+        })
       )
       .subscribe((o) => {
         const {topic, content} = o;

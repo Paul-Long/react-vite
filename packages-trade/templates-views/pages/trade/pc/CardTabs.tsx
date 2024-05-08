@@ -29,7 +29,7 @@ export function CardTabs(props: Props) {
           key={o.value}
           onClick={() => onChange?.(o.value)}
           className={clsx(
-            'flex justify-center items-center flex-nowrap cursor-pointer text-gray-400 font-medium font-size-14px lh-16px rounded-4px box-border px-12px py-6px',
+            'flex justify-center items-center flex-nowrap cursor-pointer text-gray-600 font-medium font-size-14px lh-16px rounded-4px box-border px-12px py-6px',
             [value === o.value && 'text-white font-bold bg-gray-80']
           )}
         >

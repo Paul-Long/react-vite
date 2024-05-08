@@ -26,7 +26,7 @@ export function HomeTemplate() {
   }, []);
   return (
     <StyledPage
-      className={clsx('overflow-auto w-100% h-100vh', [show && 'overflow-hidden'])}
+      className={clsx('overflow-auto w-100% h-100vh sv', [show && 'overflow-hidden'])}
       ref={ref}
     >
       <Header notScrollTop={!isTop} onMenuShow={(s) => setShow(s)} />

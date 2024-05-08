@@ -39,7 +39,7 @@ export function Tabs(props: Props) {
           key={o.value}
           onClick={() => onChange?.(o.value)}
           className={clsx(
-            'flex justify-center items-center flex-nowrap text-nowrap h-100% b-style-solid text-gray-500 cursor-pointer box-border min-w-52px',
+            'flex justify-center items-center flex-nowrap text-nowrap h-100% b-style-solid text-gray-600 cursor-pointer box-border min-w-52px',
             [active === o.value && 'fw-500 text-white'],
             [active === o.value ? 'border-b-green-500' : 'b-b-transparent'],
             [size === 'lg' && 'b-b-4px'],
