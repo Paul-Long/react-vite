@@ -38,28 +38,28 @@ export class OrderManager {
       new Decimal(direction === 'LONG' ? 1.1 : 0.9)
     );
 
-    let cp = PriceMath.sqrtPriceX64ToPrice(perp.pool.sqrtPrice, 9, 9);
-    let lp = cp.times(new Decimal(0.1));
-    let up = cp.times(new Decimal(3));
-    let lp64 = PriceMath.priceToSqrtPriceX64(lp, 9, 9);
-    let up64 = PriceMath.priceToSqrtPriceX64(up, 9, 9);
-    let lpIndex = PriceMath.sqrtPriceX64ToTickIndex(lp64);
-    let upIndex = PriceMath.sqrtPriceX64ToTickIndex(up64);
-
-    console.log('perpMarket : ', perp);
-    console.log(
-      'ObservationPda : ',
-      perp.oracle.toBase58(),
-      getObservationPda(marketIndex).toBase58(),
-      getOraclePda(marketIndex).toBase58()
-    );
-    console.log('Current PriceLimit : ', cp.toString());
-    console.log('Lower PriceLimit : ', lp.toString());
-    console.log('Upper PriceLimit : ', up.toString());
-    console.log('Lower PriceLimit 64 : ', lp64.toString());
-    console.log('Upper PriceLimit 64 : ', up64.toString());
-    console.log('Lower PriceLimit index : ', lpIndex.toString());
-    console.log('Upper PriceLimit index : ', upIndex.toString());
+    // let cp = PriceMath.sqrtPriceX64ToPrice(perp.pool.sqrtPrice, 9, 9);
+    // let lp = cp.times(new Decimal(0.1));
+    // let up = cp.times(new Decimal(3));
+    // let lp64 = PriceMath.priceToSqrtPriceX64(lp, 9, 9);
+    // let up64 = PriceMath.priceToSqrtPriceX64(up, 9, 9);
+    // let lpIndex = PriceMath.sqrtPriceX64ToTickIndex(lp64);
+    // let upIndex = PriceMath.sqrtPriceX64ToTickIndex(up64);
+    //
+    // console.log('perpMarket : ', perp);
+    // console.log(
+    //   'ObservationPda : ',
+    //   perp.oracle.toBase58(),
+    //   getObservationPda(marketIndex).toBase58(),
+    //   getOraclePda(marketIndex).toBase58()
+    // );
+    // console.log('Current PriceLimit : ', cp.toString());
+    // console.log('Lower PriceLimit : ', lp.toString());
+    // console.log('Upper PriceLimit : ', up.toString());
+    // console.log('Lower PriceLimit 64 : ', lp64.toString());
+    // console.log('Upper PriceLimit 64 : ', up64.toString());
+    // console.log('Lower PriceLimit index : ', lpIndex.toString());
+    // console.log('Upper PriceLimit index : ', upIndex.toString());
 
     priceLimit = PriceMath.priceToSqrtPriceX64(priceLimit, 9, 9);
     const expireTs = new BN(Math.floor(Date.now() / 1000) + 10 * 60);
@@ -81,17 +81,17 @@ export class OrderManager {
 
     const remainingAccounts: any = this.getRemainingAccounts(marketIndex);
 
-    console.log('****************');
-    console.log('marketIndex : ', marketIndex);
-    console.log('orderType : ', orderType);
-    console.log('direction : ', direction);
-    console.log('marginType : ', marginType);
-    console.log('base Asset Amount : ', baseAssetAmount.toString());
-    console.log('priceLimit : ', priceLimit.toString());
-    console.log('Price Limit : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit));
-    console.log('Price Current index: ', perp.pool.tickCurrentIndex);
-    console.log('userPda : ', userPda.toBase58());
-    console.log('****************');
+    // console.log('****************');
+    // console.log('marketIndex : ', marketIndex);
+    // console.log('orderType : ', orderType);
+    // console.log('direction : ', direction);
+    // console.log('marginType : ', marginType);
+    // console.log('base Asset Amount : ', baseAssetAmount.toString());
+    // console.log('priceLimit : ', priceLimit.toString());
+    // console.log('Price Limit : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit));
+    // console.log('Price Current index: ', perp.pool.tickCurrentIndex);
+    // console.log('userPda : ', userPda.toBase58());
+    // console.log('****************');
 
     return await program.methods
       .placePerpOrder(orderParams)
@@ -116,7 +116,7 @@ export class OrderManager {
       marketIndex: number;
     }
   ) {
-    const {amount, marketIndex, direction} = params;
+    const {marketIndex, direction} = params;
     const perpMarket = getPerpMarketPda(marketIndex);
     const perp = await program.account.perpMarket.fetch(perpMarket);
     let priceLimit = PriceMath.tickIndexToPrice(perp.pool.tickCurrentIndex, 5, 5);
@@ -130,7 +130,7 @@ export class OrderManager {
         .toNumber()
     );
 
-    console.log('PriceLimit : ', priceLimit.toString());
+    // console.log('PriceLimit : ', priceLimit.toString());
     const tickArrays = await tm.getFillOrderTickArrays(
       program,
       authority,
@@ -140,68 +140,42 @@ export class OrderManager {
       baseAssetAmount.lt(new BN(0))
     );
 
-    console.log('**********************');
-    console.log('Direction : ', direction);
-    console.log('MarketIndex : ', marketIndex);
-    console.log('BaseAssetAmount : ', amount);
-    console.log('PerpMarket : ', perp);
-    console.log('tickCurrentIndex : ', perp.pool.tickCurrentIndex);
-    console.log('priceLimit x64 : ', priceLimit.toString());
-    console.log('priceLimit index : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit).toString());
-    console.log(
-      'priceLimit to price : ',
-      PriceMath.sqrtPriceX64ToPrice(priceLimit, 5, 5).toString()
-    );
-    for (let i = 0; i < 3; i++) {
-      const ai = await program.account.tickArray.fetch(tickArrays[i]);
-      console.log(`TickArray ${i} :  `, tickArrays[i].toBase58(), ai, perp.pool.tickCurrentIndex);
-    }
-    console.log('**********************');
+    // console.log('**********************');
+    // console.log('Direction : ', direction);
+    // console.log('MarketIndex : ', marketIndex);
+    // console.log('BaseAssetAmount : ', amount);
+    // console.log('PerpMarket : ', perp);
+    // console.log('tickCurrentIndex : ', perp.pool.tickCurrentIndex);
+    // console.log('priceLimit x64 : ', priceLimit.toString());
+    // console.log('priceLimit index : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit).toString());
+    // console.log(
+    //   'priceLimit to price : ',
+    //   PriceMath.sqrtPriceX64ToPrice(priceLimit, 5, 5).toString()
+    // );
+    // for (let i = 0; i < 3; i++) {
+    //   const ai = await program.account.tickArray.fetch(tickArrays[i]);
+    //   console.log(`TickArray ${i} :  `, tickArrays[i].toBase58(), ai, perp.pool.tickCurrentIndex);
+    // }
+    // console.log('**********************');
 
-    const swapResult = await program.methods.simulateSwap(baseAssetAmount, priceLimit).accounts({
-      state: am.statePda,
-      observation: getObservationPda(marketIndex),
-      driftSigner: am.signerPda,
-      authority,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      whirlpool: perpMarket,
-      tokenOwnerAccountA: getBaseAssetVaultPda(marketIndex),
-      tokenOwnerAccountB: getQuoteAssetVaultPda(marketIndex),
-      tokenVaultA: getTokenVaultAPda(marketIndex),
-      tokenVaultB: getTokenVaultBPda(marketIndex),
-      tickArray0: tickArrays[0],
-      tickArray1: tickArrays[1],
-      tickArray2: tickArrays[2],
-    });
-    // .simulate();
-
-    try {
-      // let row: any = swapResult.raw.find((elm: any) => elm.indexOf('return') > 0);
-      // row = row.slice(row.indexOf(program.programId.toBase58()));
-
-      let buf = Buffer.from('AMqaOwAAAACYA40GAAAAAA==', 'base64');
-      // let buf = Buffer.from(row.slice(row.indexOf(' ')), 'base64');
-      const amountBaseSwap = buf.readBigUInt64LE(0);
-      const amountQuoteSwap = buf.readBigUInt64LE(8);
-      const baseAssetAmount = Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber();
-
-      console.log('amount base swap : ', amountBaseSwap);
-      console.log('amount quote swap : ', amountQuoteSwap);
-
-      return {
-        baseAssetAmount: Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber(),
-        quoteAssetAmount: Big(Number(amountQuoteSwap))
-          .div(1_000_000_000)
-          .div(baseAssetAmount)
-          .toNumber(),
-      };
-    } catch (e) {
-      console.error('SimulateSwap : ', e);
-      return {
-        baseAssetAmount: amount,
-        quoteAssetAmount: 0,
-      };
-    }
+    return await program.methods
+      .simulateSwap(baseAssetAmount, priceLimit)
+      .accounts({
+        state: am.statePda,
+        observation: getObservationPda(marketIndex),
+        driftSigner: am.signerPda,
+        authority,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        whirlpool: perpMarket,
+        tokenOwnerAccountA: getBaseAssetVaultPda(marketIndex),
+        tokenOwnerAccountB: getQuoteAssetVaultPda(marketIndex),
+        tokenVaultA: getTokenVaultAPda(marketIndex),
+        tokenVaultB: getTokenVaultBPda(marketIndex),
+        tickArray0: tickArrays[0],
+        tickArray1: tickArrays[1],
+        tickArray2: tickArrays[2],
+      })
+      .instruction();
   }
 
   async fillOrder(
@@ -295,13 +269,7 @@ export class OrderManager {
       .rpc();
   }
 
-  async getPositionValue(
-    program: Program<RatexContracts>,
-    authority: PublicKey,
-    am: AccountManager,
-    userPda: PublicKey,
-    userOrdersPda: PublicKey
-  ) {
+  async getPositionValue(program: Program<RatexContracts>, userPda: PublicKey) {
     const user = await program.account.user.fetch(userPda);
     const perpMarkets = user?.perpPositions
       ?.reduce((indexs: number[], p: any) => {
@@ -338,15 +306,19 @@ export class OrderManager {
     return {positionValue, marginValue};
   }
 
-  async getTwap(program: Program<RatexContracts>, params: {marketIndex: number}) {
-    const twap = await program.methods
+  async getAmmTwap(program: Program<RatexContracts>, params: {marketIndex: number}) {
+    const perpMarket = getPerpMarketPda(params.marketIndex);
+    const observation = getObservationPda(params.marketIndex);
+
+    const perp = await program.account.perpMarket.fetch(perpMarket);
+    console.log('observation : ', perp.pool.oracle.toBase58(), observation.toBase58());
+    return await program.methods
       .getAmmTwap(900)
       .accounts({
         perpMarket: getPerpMarketPda(params.marketIndex),
         observation: getObservationPda(params.marketIndex),
       })
-      .view();
-    console.log('Get Twap : ', twap);
+      .instruction();
   }
 
   async cancelOrder(

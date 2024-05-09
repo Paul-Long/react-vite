@@ -49,9 +49,6 @@ export const InitDriftClient: FC = () => {
     if (!!wallet && wallet.connected && !client) {
       setClient(new RateClient({connection, wallet: wallet as any}));
     }
-    if (!!wallet && wallet.connected) {
-      client?.updateWallet(wallet);
-    }
   }, [client, connection, wallet]);
   return <></>;
 };

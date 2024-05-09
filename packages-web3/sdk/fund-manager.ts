@@ -82,17 +82,17 @@ export class FundManager {
     const remainingAccounts = this.getRemainingAccounts(marginMarketPda);
     const baseAmount = new BN(Big(amount).times(1_000_000_000).round().toNumber());
 
-    const ac = await program.provider.connection.getAccountInfo(marginMarketPda);
-    const ai = await program.account.marginMarket.fetch(marginMarketPda);
+    // const ac = await program.provider.connection.getAccountInfo(marginMarketPda);
+    // const ai = await program.account.marginMarket.fetch(marginMarketPda);
 
-    console.log('****************');
-    console.log('Margin Market Pda owner : ', ac?.owner?.toBase58(), program.programId.toBase58());
-    console.log('Margin Market mint : ', ai?.mint?.toBase58(), mintAccount.toBase58());
-    console.log('Market Index : ', ai?.marketIndex, marginIndex);
-    console.log('User Token Account : ', userTokenAccount.toBase58());
-    console.log('User Pda : ', userPda.toBase58());
-    console.log('Amount : ', amount);
-    console.log('****************');
+    // console.log('****************');
+    // console.log('Margin Market Pda owner : ', ac?.owner?.toBase58(), program.programId.toBase58());
+    // console.log('Margin Market mint : ', ai?.mint?.toBase58(), mintAccount.toBase58());
+    // console.log('Market Index : ', ai?.marketIndex, marginIndex);
+    // console.log('User Token Account : ', userTokenAccount.toBase58());
+    // console.log('User Pda : ', userPda.toBase58());
+    // console.log('Amount : ', amount);
+    // console.log('****************');
 
     return await program.methods
       .deposit(marginIndex, baseAmount)

@@ -9,7 +9,15 @@ import type {TokenFaucet} from '@/types/token_faucet';
 import * as anchor from '@coral-xyz/anchor';
 import {AnchorProvider, BN, EventParser, Program, Wallet} from '@coral-xyz/anchor';
 import {getAssociatedTokenAddressSync} from '@solana/spl-token';
-import {ConfirmOptions, Connection, PublicKey, Transaction} from '@solana/web3.js';
+import {
+  ConfirmOptions,
+  Connection,
+  PublicKey,
+  Transaction,
+  TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction,
+} from '@solana/web3.js';
 import Big from 'big.js';
 import Decimal from 'decimal.js';
 import * as idl from '../idl/ratex_contracts.json';
@@ -35,6 +43,7 @@ export class RateClient {
   tm: TickManager;
   fm: FundManager;
   lp: LpManager;
+  isReady: boolean;
   public parser?: EventParser;
   public program: Program<RatexContracts>;
   public tokenFaucetProgram: Program<TokenFaucet>;
@@ -61,6 +70,7 @@ export class RateClient {
     this.tm = new TickManager();
     this.fm = new FundManager();
     this.lp = new LpManager();
+    this.isReady = !!this.authority;
     clientReady$.next(!!this.authority);
     console.log('Create RateXClient : ', this);
   }
@@ -80,6 +90,7 @@ export class RateClient {
     this.program = newProgram;
     this.authority = this.wallet?.publicKey;
     this.parser = new anchor.EventParser(this.program.programId, this.program.coder);
+    this.isReady = !!this.authority;
     clientReady$.next(!!this.authority);
     console.log('Update DriftClient Wallet : ', this);
   }
@@ -163,7 +174,7 @@ export class RateClient {
     );
     if (marginType === 'CROSS' && !transaction2 && !transaction3) {
       const zero = new BN(0);
-      const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
+      // const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
       const position = user?.perpPositions?.find((p: any) => p.marketIndex === marketIndex);
       if (!!position) {
         const order = user?.orders?.find((o: any) => {
@@ -199,6 +210,7 @@ export class RateClient {
     combinedTransaction.add(transaction5);
     combinedTransaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
     combinedTransaction.feePayer = this.authority;
+
     try {
       const signedTransaction = await this.wallet.signTransaction(combinedTransaction);
       const signature = await this.connection.sendRawTransaction(signedTransaction.serialize(), {
@@ -280,7 +292,34 @@ export class RateClient {
     if (!this.authority) {
       return;
     }
-    const res = await this.om.simulateSwap(this.program, this.authority, this.am, this.tm, params);
+    const instruction = await this.om.simulateSwap(
+      this.program,
+      this.authority,
+      this.am,
+      this.tm,
+      params
+    );
+    const result: any = await this.sendViewTransaction([instruction]);
+    let res: any = {
+      baseAssetAmount: params.amount,
+      quoteAssetAmount: 0,
+    };
+    if (result?.value?.returnData?.data) {
+      const [data, type] = result?.value?.returnData.data;
+      let buf = Buffer.from(data, type);
+      const amountBaseSwap = buf.readBigUInt64LE(0);
+      const amountQuoteSwap = buf.readBigUInt64LE(8);
+      const baseAssetAmount = Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber();
+      console.log('amount base swap : ', amountBaseSwap);
+      console.log('amount quote swap : ', amountQuoteSwap);
+      res = {
+        baseAssetAmount: Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber(),
+        quoteAssetAmount: Big(Number(amountQuoteSwap))
+          .div(1_000_000_000)
+          .div(baseAssetAmount)
+          .toNumber(),
+      };
+    }
     const entryPrice = new Decimal(res.quoteAssetAmount).div(new Decimal(res.baseAssetAmount));
     const py = new Decimal(res.quoteAssetAmount);
     const daysInYear = new Decimal(365);
@@ -288,8 +327,7 @@ export class RateClient {
     const impliedSwapRate = Decimal.pow(1 / (1 - py.toNumber()), daysInYear.div(period).toNumber())
       .minus(1)
       .toNumber();
-    console.log(res, py.toString(), entryPrice.toString(), impliedSwapRate);
-    return {py: py.toString(), impliedSwapRate};
+    return {py: py.toFixed(9), impliedSwapRate};
   }
 
   async getPoolTickCurrentIndex() {
@@ -412,6 +450,17 @@ export class RateClient {
     }
   }
 
+  async getAmmTwap(params: {marketIndex: number}) {
+    const instruction = await this.om.getAmmTwap(this.program, params);
+    const result = await this.sendViewTransaction([instruction]);
+    if (result?.value?.returnData?.data) {
+      const [data, type] = result?.value?.returnData.data;
+      let buf = Buffer.from(data, type);
+      const ammTwap = buf.readBigUInt64LE(0);
+      return new Decimal(ammTwap.toString()).div(new Decimal(2).pow(64)).toString();
+    }
+  }
+
   async deleteAllUser() {
     if (!this.authority) {
       return;
@@ -450,6 +499,31 @@ export class RateClient {
       console.log(label, evt);
     }
   }
+
+  async sendViewTransaction(instructions: TransactionInstruction[]) {
+    try {
+      const recentBlockhash = await this.program.provider.connection.getRecentBlockhash();
+      const message = new TransactionMessage({
+        payerKey: this.authority as any,
+        recentBlockhash: recentBlockhash.blockhash,
+        instructions,
+      }).compileToV0Message([]);
+
+      let versionedTransaction = new VersionedTransaction(message);
+
+      const result = await this.program.provider.connection.simulateTransaction(
+        versionedTransaction,
+        {
+          sigVerify: false,
+        }
+      );
+      console.log('View Transaction Result : ', result);
+      return result;
+    } catch (e) {
+      console.error('Send View Transaction Error: ', e);
+    }
+  }
+
   async sendTransaction(combinedTransaction: Transaction) {
     try {
       combinedTransaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
