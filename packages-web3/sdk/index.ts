@@ -136,7 +136,7 @@ export class RateClient {
       return;
     }
     const {marketIndex, marginType, margin} = params;
-    const [userStatPda, transaction1] = await this.am.initializeUserStatsTransaction(
+    const [userStatPda, transaction1, statInfo] = await this.am.initializeUserStatsTransaction(
       this.program,
       this.authority
     );
@@ -146,7 +146,8 @@ export class RateClient {
       this.program,
       this.authority,
       marginType === 'ISOLATED',
-      true
+      true,
+      statInfo
     );
     let userPda = user?.userPda;
     if (!user) {
@@ -166,12 +167,18 @@ export class RateClient {
     } else {
       subAccountId = user.subAccountId;
     }
-    const [userOrdersPda, transaction3] = await this.am.initializeUserOrdersTransaction(
-      this.program,
-      this.authority,
-      userPda,
-      subAccountId
-    );
+    let transaction3;
+    let userOrdersPda = user.userOrdersPda;
+    if (!user.userOrdersPdaExist) {
+      const [uop, t3] = await this.am.initializeUserOrdersTransaction(
+        this.program,
+        this.authority,
+        userPda,
+        subAccountId
+      );
+      userOrdersPda = uop;
+      transaction3 = t3;
+    }
     if (marginType === 'CROSS' && !transaction2 && !transaction3) {
       const zero = new BN(0);
       // const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
@@ -215,9 +222,11 @@ export class RateClient {
       const signedTransaction = await this.wallet.signTransaction(combinedTransaction);
       const signature = await this.connection.sendRawTransaction(signedTransaction.serialize(), {
         skipPreflight: true,
+        preflightCommitment: 'confirmed',
       });
       await this.connection.confirmTransaction(signature, 'confirmed');
       console.log('Combined Transaction successful!', signature);
+      await this.queryEvent(signature, 'Place Order : ');
       return signature;
     } catch (error) {
       console.error('Combined Transaction failed', error);
@@ -487,6 +496,7 @@ export class RateClient {
 
   async queryEvent(txid: string, label: string) {
     const tx = await this.connection.getTransaction(txid, {commitment: 'confirmed'});
+    console.log(label, tx);
     if (!tx?.meta?.logMessages) {
       return;
     }

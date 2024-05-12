@@ -9,7 +9,7 @@ export const klineApi = {
       content: {
         securityID: query.securityID,
         num: 2000,
-        text: '1M',
+        text: query.text,
       },
     };
     return post(API_URL, {params});

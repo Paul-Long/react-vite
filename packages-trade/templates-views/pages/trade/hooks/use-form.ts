@@ -1,8 +1,10 @@
+import {query$} from '@/streams/positions';
+import {tradeApi} from '@rx/api/trade';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {ttmMap$} from '@rx/streams/epoch';
 import {walletModalVisible$} from '@rx/streams/wallet';
-import {useConnect} from '@rx/web3/hooks/use-connect.ts';
+import {useConnect} from '@rx/web3/hooks/use-connect';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Toast} from '@rx/widgets';
 import {Big} from 'big.js';
@@ -13,11 +15,16 @@ export function useForm() {
   const current = useRef<string>('amount');
   const timer = useRef<any>(null);
   const twapTimer = useRef<any>(null);
-  const ttmMap = useObservable<Record<string, any>>(ttmMap$, {});
-  const [twap, setTwap] = useState();
+
   const [client] = useStream(rateXClient$);
-  const {baseContract} = useContract();
+  const [twap, setTwap] = useState();
   const [info, setInfo] = useState<any>({});
+  const ttmMap = useObservable<Record<string, any>>(ttmMap$, {});
+
+  const {baseContract} = useContract();
+
+  const [loading, setLoading] = useState(false);
+
   const [state, setState] = useState({
     marginType: 'CROSS',
     direction: 'SHORT',
@@ -35,7 +42,7 @@ export function useForm() {
     }
     current.current = 'amount';
     getTwap().then();
-    genSwap(1);
+    genSwap(state);
   }, [baseContract, client]);
 
   useEffect(() => {
@@ -69,8 +76,8 @@ export function useForm() {
             current.current = key;
             !v && (newState.amount = '');
           }
-          if (['amount', 'margin', 'leverage', 'marginType'].includes(key)) {
-            genSwap(newState.amount);
+          if (['amount', 'margin', 'leverage', 'marginType', 'direction'].includes(key)) {
+            genSwap(newState);
             getTwap().then();
             setInfo((prevState: any) => {
               const fee = Big(newState?.amount || 0)
@@ -87,8 +94,8 @@ export function useForm() {
   );
 
   const genSwap = useCallback(
-    (amount: number) => {
-      if (amount <= 0 || !baseContract) {
+    (state: any) => {
+      if (state.amount <= 0 || !baseContract) {
         return;
       }
       if (timer.current) {
@@ -103,7 +110,7 @@ export function useForm() {
         ].join('_');
 
         const res = await client.simulatePlaceOrder({
-          amount,
+          amount: state.amount,
           direction: state.direction,
           marketIndex,
           days: ttmMap?.[key]?.days,
@@ -120,9 +127,9 @@ export function useForm() {
 
         clearTimeout(timer.current);
         timer.current = null;
-      }, 1000);
+      }, 100);
     },
-    [state, baseContract, client, ttmMap]
+    [baseContract, client, ttmMap]
   );
 
   const getTwap = useCallback(async () => {
@@ -147,9 +154,11 @@ export function useForm() {
       walletModalVisible$.next(true);
       return;
     }
-    if (!baseContract) {
+    if (!baseContract || loading) {
       return;
     }
+    setLoading(true);
+    const start = Date.now();
     const {margin, marginType, direction, amount} = state;
     const order = {
       marginType,
@@ -163,14 +172,20 @@ export function useForm() {
     const tx = await client.placeOrder2(order);
     if (tx === false) {
       Toast.warn('Order placement failed, please check current positions and orders.');
-      return;
     }
     if (tx) {
-      Toast.success('Place Order success');
+      await tradeApi.processSignature(tx);
+      Toast.success(
+        `Place Order success ${Big(Date.now() - start)
+          .div(1000)
+          .toFixed(1)}s`
+      );
+      query$.next(0);
     }
+    setLoading(false);
   }, [connected, state, baseContract, client]);
 
-  return {state, info, handleChange, handleSubmit};
+  return {state, info, handleChange, handleSubmit, loading};
 }
 
 function calcLiqPrice(
@@ -183,7 +198,7 @@ function calcLiqPrice(
   if (direction === 'LONG') {
     return Big(mcr * Math.abs(st) - margin)
       .div(yt)
-      .toFixed(0);
+      .toFixed(9);
   }
   return Big(Math.abs(st) + margin)
     .div(mcr * Math.abs(yt))

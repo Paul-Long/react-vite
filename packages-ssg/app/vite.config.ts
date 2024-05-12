@@ -1,6 +1,6 @@
-/// <reference types="vitest" />
 /// <reference types="vite/client" />
 
+// @ts-ignore
 import {createAliasPlugin} from '@rx/vite-plugins/alias.mjs';
 import react from '@vitejs/plugin-react';
 import UnoCSS from 'unocss/vite';

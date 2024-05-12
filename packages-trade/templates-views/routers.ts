@@ -11,5 +11,6 @@ export const routers: RouteType[] = [
   {slug: '/trade/contracts', loader: () => import('./pages/demo')},
   {slug: '/strategy', loader: () => import('./pages/strategy')},
   {slug: '/lp', loader: () => import('./pages/lp')},
+  {slug: '/lp/slp', loader: () => import('./pages/lp/slp')},
   {slug: '/account', loader: () => import('./pages/account')},
 ];

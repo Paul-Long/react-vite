@@ -10,15 +10,15 @@ interface Params {
 }
 
 export function useSignIn(params: Params) {
-  const {signIn, publicKey, select} = useWallet();
+  const wallet = useWallet();
 
   useEffect(() => {
-    select(<WalletName>'Phantom');
-  }, []);
+    wallet.select(<WalletName>'Phantom');
+  }, [wallet]);
 
   const onSignIn = useCallback(async () => {
     try {
-      if (!signIn) {
+      if (!wallet.signIn) {
         Toast.error('Wallet does not support Sign In With Solana!');
         return;
       }
@@ -26,7 +26,7 @@ export function useSignIn(params: Params) {
       const input: SolanaSignInInput = {
         statement: 'Welcome to RateX',
       };
-      const output = await signIn(input);
+      const output = await wallet.signIn(input);
 
       const result: SignResult = {
         signature: bs58.encode(output.signature),
@@ -38,7 +38,7 @@ export function useSignIn(params: Params) {
     } catch (e) {
       console.error('SignIn Error: ', e);
     }
-  }, [signIn]);
+  }, [wallet]);
 
   return {onSignIn};
 }

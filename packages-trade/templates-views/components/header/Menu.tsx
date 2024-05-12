@@ -1,5 +1,4 @@
 import {useMenus} from '@/components/header/state';
-import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useStream} from '@rx/hooks/use-stream';
 import {url$} from '@rx/streams/url';
 import {Tabs} from '@rx/widgets';
@@ -7,19 +6,22 @@ import {useCallback, useEffect} from 'react';
 
 export function Menu() {
   const [url] = useStream(url$);
-  const {fixLink} = useFixLink();
   const {menus, select, setSelect} = useMenus();
 
   useEffect(() => {
-    const menu = menus.find((m) => m.value === url?.slug);
+    const menu = menus.find((m) => {
+      if (url.slug === '/') {
+        return url.slug === m.value;
+      }
+      return url?.slug?.startsWith(m.value) && m.value !== '/';
+    });
     if (menu) {
-      setSelect(url.slug);
+      setSelect(menu.value);
     }
   }, [url]);
 
   const handleChange = useCallback((m: string) => {
     setSelect(m);
-    // router.goto(fixLink(m));
   }, []);
 
   return (

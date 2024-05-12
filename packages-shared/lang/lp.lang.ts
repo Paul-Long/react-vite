@@ -1,4 +1,4 @@
-export const lang = {
+export const lang: any = {
   PoolsMarket: {
     en: 'Pools Market',
   },
@@ -94,5 +94,20 @@ export const lang = {
   },
   Asset: {
     en: 'Asset',
+  },
+  UniversalLiquidityPool: {
+    en: 'Universal Liquidity Pool',
+  },
+  SpecificLiquidityPool: {
+    en: 'Specific Liquidity Pool',
+  },
+  Detail: {
+    en: 'Detail',
+  },
+  ExpireIn: {
+    en: 'Expire In',
+  },
+  ULPPrice: {
+    en: 'ULP Price',
   },
 };

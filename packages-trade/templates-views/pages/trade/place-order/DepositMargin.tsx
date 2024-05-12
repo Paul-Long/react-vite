@@ -18,7 +18,7 @@ export function DepositMargin(props: Props) {
   useEffect(() => {
     setInterval(async () => {
       await query();
-    }, 15000);
+    }, 15 * 1000);
   }, [connected, client]);
   return (
     <div className="flex flex-col p-16px gap-8px not-last:b-b-1px b-solid b-gray-40">

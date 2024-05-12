@@ -1,5 +1,5 @@
 import {SLUGS} from '@rx/const/slugs';
-import {useFixLink} from '@rx/hooks/use-fix-link.ts';
+import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/common.lang';
 import {useMemo, useState} from 'react';

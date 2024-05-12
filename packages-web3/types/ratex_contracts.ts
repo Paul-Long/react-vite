@@ -231,6 +231,51 @@ export type RatexContracts = {
       ]
     },
     {
+      "name": "multiSigDeposit",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "marginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "marketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "amount",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "withdraw",
       "accounts": [
         {
@@ -329,6 +374,11 @@ export type RatexContracts = {
         {
           "name": "userOrders",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1231,51 +1281,11 @@ export type RatexContracts = {
       "args": []
     },
     {
-      "name": "simulateSwap",
+      "name": "calculateSwap",
       "accounts": [
         {
-          "name": "driftSigner",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "authority",
-          "isMut": false,
-          "isSigner": true
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "state",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "whirlpool",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenOwnerAccountA",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenVaultA",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenOwnerAccountB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenVaultB",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1290,11 +1300,6 @@ export type RatexContracts = {
         },
         {
           "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "observation",
           "isMut": true,
           "isSigner": false
         }
@@ -2756,6 +2761,54 @@ export type RatexContracts = {
   ],
   "types": [
     {
+      "name": "SwapResult",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amountBaseSwap",
+            "type": "u64"
+          },
+          {
+            "name": "amountQuoteSwap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionValue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "positionAssetValue",
+            "type": "i64"
+          },
+          {
+            "name": "positionLiabilityValue",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarginValue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "marginAssetValue",
+            "type": "i64"
+          },
+          {
+            "name": "marginLiabilityValue",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
       "name": "Whirlpool",
       "type": {
         "kind": "struct",
@@ -5378,331 +5431,336 @@ export type RatexContracts = {
     },
     {
       "code": 6240,
+      "name": "UnauthorizedUserOrKeeper",
+      "msg": "Unauthorized user or keeper"
+    },
+    {
+      "code": 6241,
       "name": "AccountLiquidated",
       "msg": "Account liquidated"
     },
     {
-      "code": 6241,
+      "code": 6242,
       "name": "InvalidOracleAccount",
       "msg": "Invalid oracle account"
     },
     {
-      "code": 6242,
+      "code": 6243,
       "name": "UnableToLoadOracleAccount",
       "msg": "Unable to load oracle account"
     },
     {
-      "code": 6243,
+      "code": 6244,
       "name": "CouldNotLoadOracleData",
       "msg": "could not load oracle data"
     },
     {
-      "code": 6244,
+      "code": 6245,
       "name": "OracleWrongMutability",
       "msg": "wrong oracle mutablility"
     },
     {
-      "code": 6245,
+      "code": 6246,
       "name": "KeeperAlreadyExists",
       "msg": "The keeper already exists in the list."
     },
     {
-      "code": 6246,
+      "code": 6247,
       "name": "KeepersListFull",
       "msg": "The keepers list is full."
     },
     {
-      "code": 6247,
+      "code": 6248,
       "name": "KeeperNotFound",
       "msg": "The keeper was not found in the list."
     },
     {
-      "code": 6248,
+      "code": 6249,
       "name": "MaxOpenInterestExceeded",
       "msg": "Max open interest exceeded"
     },
     {
-      "code": 6249,
+      "code": 6250,
       "name": "InvalidOrderStepSize",
       "msg": "Invalid order step size"
     },
     {
-      "code": 6250,
+      "code": 6251,
       "name": "OrderExpired",
       "msg": "Order expired"
     },
     {
-      "code": 6251,
+      "code": 6252,
       "name": "OnlyTrader",
       "msg": "Only trader"
     },
     {
-      "code": 6252,
+      "code": 6253,
       "name": "OnlyLP",
       "msg": "Only LP"
     },
     {
-      "code": 6253,
+      "code": 6254,
       "name": "InvalidWithdraw",
       "msg": "Invalid Withdraw"
     },
     {
-      "code": 6254,
+      "code": 6255,
       "name": "InvalidLiquidate",
       "msg": "Invalid Liquidate"
     },
     {
-      "code": 6255,
+      "code": 6256,
       "name": "MeetMaintenanceCollateralRequirement",
       "msg": "Meet maintenance collateral requirement"
     },
     {
-      "code": 6256,
+      "code": 6257,
       "name": "FailToMeetMaintenanceCollateralRequirement",
       "msg": "Fail to meet maintenance collateral requirement"
     },
     {
-      "code": 6257,
+      "code": 6258,
       "name": "FailToMeetInitialCollateralRequirement",
       "msg": "Fail to meet initial collateral requirement"
     },
     {
-      "code": 6258,
+      "code": 6259,
       "name": "InvalidEnum",
       "msg": "Enum value could not be converted"
     },
     {
-      "code": 6259,
+      "code": 6260,
       "name": "InvalidStartTick",
       "msg": "Invalid start tick index provided."
     },
     {
-      "code": 6260,
+      "code": 6261,
       "name": "TickArrayExistInPool",
       "msg": "Tick-array already exists in this whirlpool"
     },
     {
-      "code": 6261,
+      "code": 6262,
       "name": "TickArrayIndexOutofBounds",
       "msg": "Attempt to search for a tick-array failed"
     },
     {
-      "code": 6262,
+      "code": 6263,
       "name": "InvalidTickSpacing",
       "msg": "Tick-spacing is not supported"
     },
     {
-      "code": 6263,
+      "code": 6264,
       "name": "ClosePositionNotEmpty",
       "msg": "Position is not empty It cannot be closed"
     },
     {
-      "code": 6264,
+      "code": 6265,
       "name": "DivideByZero",
       "msg": "Unable to divide by zero"
     },
     {
-      "code": 6265,
+      "code": 6266,
       "name": "NumberCastError",
       "msg": "Unable to cast number into BigInt"
     },
     {
-      "code": 6266,
+      "code": 6267,
       "name": "NumberDownCastError",
       "msg": "Unable to down cast number"
     },
     {
-      "code": 6267,
+      "code": 6268,
       "name": "TickNotFound",
       "msg": "Tick not found within tick array"
     },
     {
-      "code": 6268,
+      "code": 6269,
       "name": "InvalidTickIndex",
       "msg": "Provided tick index is either out of bounds or uninitializable"
     },
     {
-      "code": 6269,
+      "code": 6270,
       "name": "SqrtPriceOutOfBounds",
       "msg": "Provided sqrt price out of bounds"
     },
     {
-      "code": 6270,
+      "code": 6271,
       "name": "LiquidityZero",
       "msg": "Liquidity amount must be greater than zero"
     },
     {
-      "code": 6271,
+      "code": 6272,
       "name": "LiquidityTooHigh",
       "msg": "Liquidity amount must be less than i64::MAX"
     },
     {
-      "code": 6272,
+      "code": 6273,
       "name": "LiquidityOverflow",
       "msg": "Liquidity overflow"
     },
     {
-      "code": 6273,
+      "code": 6274,
       "name": "LiquidityUnderflow",
       "msg": "Liquidity underflow"
     },
     {
-      "code": 6274,
+      "code": 6275,
       "name": "LiquidityNetError",
       "msg": "Tick liquidity net underflowed or overflowed"
     },
     {
-      "code": 6275,
+      "code": 6276,
       "name": "TokenMaxExceeded",
       "msg": "Exceeded token max"
     },
     {
-      "code": 6276,
+      "code": 6277,
       "name": "TokenMinSubceeded",
       "msg": "Did not meet token min"
     },
     {
-      "code": 6277,
+      "code": 6278,
       "name": "MissingOrInvalidDelegate",
       "msg": "Position token account has a missing or invalid delegate"
     },
     {
-      "code": 6278,
+      "code": 6279,
       "name": "InvalidPositionTokenAmount",
       "msg": "Position token amount must be 1"
     },
     {
-      "code": 6279,
+      "code": 6280,
       "name": "InvalidTimestampConversion",
       "msg": "Timestamp should be convertible from i64 to u64"
     },
     {
-      "code": 6280,
+      "code": 6281,
       "name": "InvalidTimestamp",
       "msg": "Timestamp should be greater than the last updated timestamp"
     },
     {
-      "code": 6281,
+      "code": 6282,
       "name": "InvalidTickArraySequence",
       "msg": "Invalid tick array sequence provided for instruction."
     },
     {
-      "code": 6282,
+      "code": 6283,
       "name": "InvalidTokenMintOrder",
       "msg": "Token Mint in wrong order"
     },
     {
-      "code": 6283,
+      "code": 6284,
       "name": "RewardNotInitialized",
       "msg": "Reward not initialized"
     },
     {
-      "code": 6284,
+      "code": 6285,
       "name": "InvalidRewardIndex",
       "msg": "Invalid reward index"
     },
     {
-      "code": 6285,
+      "code": 6286,
       "name": "RewardVaultAmountInsufficient",
       "msg": "Reward vault requires amount to support emissions for at least one day"
     },
     {
-      "code": 6286,
+      "code": 6287,
       "name": "FeeRateMaxExceeded",
       "msg": "Exceeded max fee rate"
     },
     {
-      "code": 6287,
+      "code": 6288,
       "name": "ProtocolFeeRateMaxExceeded",
       "msg": "Exceeded max protocol fee rate"
     },
     {
-      "code": 6288,
+      "code": 6289,
       "name": "MultiplicationShiftRightOverflow",
       "msg": "Multiplication with shift right overflow"
     },
     {
-      "code": 6289,
+      "code": 6290,
       "name": "MulDivOverflow",
       "msg": "Muldiv overflow"
     },
     {
-      "code": 6290,
+      "code": 6291,
       "name": "MulDivInvalidInput",
       "msg": "Invalid div_u256 input"
     },
     {
-      "code": 6291,
+      "code": 6292,
       "name": "MultiplicationOverflow",
       "msg": "Multiplication overflow"
     },
     {
-      "code": 6292,
+      "code": 6293,
       "name": "InvalidSqrtPriceLimitDirection",
       "msg": "Provided SqrtPriceLimit not in the same direction as the swap."
     },
     {
-      "code": 6293,
+      "code": 6294,
       "name": "ZeroTradableAmount",
       "msg": "There are no tradable amount to swap."
     },
     {
-      "code": 6294,
+      "code": 6295,
       "name": "AmountOutBelowMinimum",
       "msg": "Amount out below minimum threshold"
     },
     {
-      "code": 6295,
+      "code": 6296,
       "name": "AmountInAboveMaximum",
       "msg": "Amount in above maximum threshold"
     },
     {
-      "code": 6296,
+      "code": 6297,
       "name": "TickArraySequenceInvalidIndex",
       "msg": "Invalid index for tick array sequence"
     },
     {
-      "code": 6297,
+      "code": 6298,
       "name": "AmountCalcOverflow",
       "msg": "Amount calculated overflows"
     },
     {
-      "code": 6298,
+      "code": 6299,
       "name": "AmountRemainingOverflow",
       "msg": "Amount remaining overflows"
     },
     {
-      "code": 6299,
+      "code": 6300,
       "name": "InvalidIntermediaryMint",
       "msg": "Invalid intermediary mint"
     },
     {
-      "code": 6300,
+      "code": 6301,
       "name": "DuplicateTwoHopPool",
       "msg": "Duplicate two hop pool"
     },
     {
-      "code": 6301,
+      "code": 6302,
       "name": "InvalidBundleIndex",
       "msg": "Bundle index is out of bounds"
     },
     {
-      "code": 6302,
+      "code": 6303,
       "name": "BundledPositionAlreadyOpened",
       "msg": "Position has already been opened"
     },
     {
-      "code": 6303,
+      "code": 6304,
       "name": "BundledPositionAlreadyClosed",
       "msg": "Position has already been closed"
     },
     {
-      "code": 6304,
+      "code": 6305,
       "name": "UnableToLoadObservationStateAccount",
       "msg": "Unable To Observation state"
     },
     {
-      "code": 6305,
+      "code": 6306,
       "name": "ObservationStateNotFound",
       "msg": "Observation state not found"
     }
@@ -5942,6 +6000,51 @@ export const IDL: RatexContracts = {
       ]
     },
     {
+      "name": "multiSigDeposit",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "marginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "marketIndex",
+          "type": "u16"
+        },
+        {
+          "name": "amount",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "withdraw",
       "accounts": [
         {
@@ -6040,6 +6143,11 @@ export const IDL: RatexContracts = {
         {
           "name": "userOrders",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "keepers",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -6940,6 +7048,72 @@ export const IDL: RatexContracts = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "calculateSwap",
+      "accounts": [
+        {
+          "name": "whirlpool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray0",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray1",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tickArray2",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "baseAssetAmount",
+          "type": "i64"
+        },
+        {
+          "name": "sqrtPriceLimit",
+          "type": "u128"
+        }
+      ],
+      "returns": {
+        "defined": "SwapResult"
+      }
+    },
+    {
+      "name": "calculatePositionValue",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": "PositionValue"
+      }
+    },
+    {
+      "name": "calculateMarginValue",
+      "accounts": [
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": "MarginValue"
+      }
     },
     {
       "name": "initialize",
@@ -8356,6 +8530,54 @@ export const IDL: RatexContracts = {
   ],
   "types": [
     {
+      "name": "SwapResult",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amountBaseSwap",
+            "type": "u64"
+          },
+          {
+            "name": "amountQuoteSwap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionValue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "positionAssetValue",
+            "type": "i64"
+          },
+          {
+            "name": "positionLiabilityValue",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarginValue",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "marginAssetValue",
+            "type": "i64"
+          },
+          {
+            "name": "marginLiabilityValue",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
       "name": "Whirlpool",
       "type": {
         "kind": "struct",
@@ -10978,331 +11200,336 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6240,
+      "name": "UnauthorizedUserOrKeeper",
+      "msg": "Unauthorized user or keeper"
+    },
+    {
+      "code": 6241,
       "name": "AccountLiquidated",
       "msg": "Account liquidated"
     },
     {
-      "code": 6241,
+      "code": 6242,
       "name": "InvalidOracleAccount",
       "msg": "Invalid oracle account"
     },
     {
-      "code": 6242,
+      "code": 6243,
       "name": "UnableToLoadOracleAccount",
       "msg": "Unable to load oracle account"
     },
     {
-      "code": 6243,
+      "code": 6244,
       "name": "CouldNotLoadOracleData",
       "msg": "could not load oracle data"
     },
     {
-      "code": 6244,
+      "code": 6245,
       "name": "OracleWrongMutability",
       "msg": "wrong oracle mutablility"
     },
     {
-      "code": 6245,
+      "code": 6246,
       "name": "KeeperAlreadyExists",
       "msg": "The keeper already exists in the list."
     },
     {
-      "code": 6246,
+      "code": 6247,
       "name": "KeepersListFull",
       "msg": "The keepers list is full."
     },
     {
-      "code": 6247,
+      "code": 6248,
       "name": "KeeperNotFound",
       "msg": "The keeper was not found in the list."
     },
     {
-      "code": 6248,
+      "code": 6249,
       "name": "MaxOpenInterestExceeded",
       "msg": "Max open interest exceeded"
     },
     {
-      "code": 6249,
+      "code": 6250,
       "name": "InvalidOrderStepSize",
       "msg": "Invalid order step size"
     },
     {
-      "code": 6250,
+      "code": 6251,
       "name": "OrderExpired",
       "msg": "Order expired"
     },
     {
-      "code": 6251,
+      "code": 6252,
       "name": "OnlyTrader",
       "msg": "Only trader"
     },
     {
-      "code": 6252,
+      "code": 6253,
       "name": "OnlyLP",
       "msg": "Only LP"
     },
     {
-      "code": 6253,
+      "code": 6254,
       "name": "InvalidWithdraw",
       "msg": "Invalid Withdraw"
     },
     {
-      "code": 6254,
+      "code": 6255,
       "name": "InvalidLiquidate",
       "msg": "Invalid Liquidate"
     },
     {
-      "code": 6255,
+      "code": 6256,
       "name": "MeetMaintenanceCollateralRequirement",
       "msg": "Meet maintenance collateral requirement"
     },
     {
-      "code": 6256,
+      "code": 6257,
       "name": "FailToMeetMaintenanceCollateralRequirement",
       "msg": "Fail to meet maintenance collateral requirement"
     },
     {
-      "code": 6257,
+      "code": 6258,
       "name": "FailToMeetInitialCollateralRequirement",
       "msg": "Fail to meet initial collateral requirement"
     },
     {
-      "code": 6258,
+      "code": 6259,
       "name": "InvalidEnum",
       "msg": "Enum value could not be converted"
     },
     {
-      "code": 6259,
+      "code": 6260,
       "name": "InvalidStartTick",
       "msg": "Invalid start tick index provided."
     },
     {
-      "code": 6260,
+      "code": 6261,
       "name": "TickArrayExistInPool",
       "msg": "Tick-array already exists in this whirlpool"
     },
     {
-      "code": 6261,
+      "code": 6262,
       "name": "TickArrayIndexOutofBounds",
       "msg": "Attempt to search for a tick-array failed"
     },
     {
-      "code": 6262,
+      "code": 6263,
       "name": "InvalidTickSpacing",
       "msg": "Tick-spacing is not supported"
     },
     {
-      "code": 6263,
+      "code": 6264,
       "name": "ClosePositionNotEmpty",
       "msg": "Position is not empty It cannot be closed"
     },
     {
-      "code": 6264,
+      "code": 6265,
       "name": "DivideByZero",
       "msg": "Unable to divide by zero"
     },
     {
-      "code": 6265,
+      "code": 6266,
       "name": "NumberCastError",
       "msg": "Unable to cast number into BigInt"
     },
     {
-      "code": 6266,
+      "code": 6267,
       "name": "NumberDownCastError",
       "msg": "Unable to down cast number"
     },
     {
-      "code": 6267,
+      "code": 6268,
       "name": "TickNotFound",
       "msg": "Tick not found within tick array"
     },
     {
-      "code": 6268,
+      "code": 6269,
       "name": "InvalidTickIndex",
       "msg": "Provided tick index is either out of bounds or uninitializable"
     },
     {
-      "code": 6269,
+      "code": 6270,
       "name": "SqrtPriceOutOfBounds",
       "msg": "Provided sqrt price out of bounds"
     },
     {
-      "code": 6270,
+      "code": 6271,
       "name": "LiquidityZero",
       "msg": "Liquidity amount must be greater than zero"
     },
     {
-      "code": 6271,
+      "code": 6272,
       "name": "LiquidityTooHigh",
       "msg": "Liquidity amount must be less than i64::MAX"
     },
     {
-      "code": 6272,
+      "code": 6273,
       "name": "LiquidityOverflow",
       "msg": "Liquidity overflow"
     },
     {
-      "code": 6273,
+      "code": 6274,
       "name": "LiquidityUnderflow",
       "msg": "Liquidity underflow"
     },
     {
-      "code": 6274,
+      "code": 6275,
       "name": "LiquidityNetError",
       "msg": "Tick liquidity net underflowed or overflowed"
     },
     {
-      "code": 6275,
+      "code": 6276,
       "name": "TokenMaxExceeded",
       "msg": "Exceeded token max"
     },
     {
-      "code": 6276,
+      "code": 6277,
       "name": "TokenMinSubceeded",
       "msg": "Did not meet token min"
     },
     {
-      "code": 6277,
+      "code": 6278,
       "name": "MissingOrInvalidDelegate",
       "msg": "Position token account has a missing or invalid delegate"
     },
     {
-      "code": 6278,
+      "code": 6279,
       "name": "InvalidPositionTokenAmount",
       "msg": "Position token amount must be 1"
     },
     {
-      "code": 6279,
+      "code": 6280,
       "name": "InvalidTimestampConversion",
       "msg": "Timestamp should be convertible from i64 to u64"
     },
     {
-      "code": 6280,
+      "code": 6281,
       "name": "InvalidTimestamp",
       "msg": "Timestamp should be greater than the last updated timestamp"
     },
     {
-      "code": 6281,
+      "code": 6282,
       "name": "InvalidTickArraySequence",
       "msg": "Invalid tick array sequence provided for instruction."
     },
     {
-      "code": 6282,
+      "code": 6283,
       "name": "InvalidTokenMintOrder",
       "msg": "Token Mint in wrong order"
     },
     {
-      "code": 6283,
+      "code": 6284,
       "name": "RewardNotInitialized",
       "msg": "Reward not initialized"
     },
     {
-      "code": 6284,
+      "code": 6285,
       "name": "InvalidRewardIndex",
       "msg": "Invalid reward index"
     },
     {
-      "code": 6285,
+      "code": 6286,
       "name": "RewardVaultAmountInsufficient",
       "msg": "Reward vault requires amount to support emissions for at least one day"
     },
     {
-      "code": 6286,
+      "code": 6287,
       "name": "FeeRateMaxExceeded",
       "msg": "Exceeded max fee rate"
     },
     {
-      "code": 6287,
+      "code": 6288,
       "name": "ProtocolFeeRateMaxExceeded",
       "msg": "Exceeded max protocol fee rate"
     },
     {
-      "code": 6288,
+      "code": 6289,
       "name": "MultiplicationShiftRightOverflow",
       "msg": "Multiplication with shift right overflow"
     },
     {
-      "code": 6289,
+      "code": 6290,
       "name": "MulDivOverflow",
       "msg": "Muldiv overflow"
     },
     {
-      "code": 6290,
+      "code": 6291,
       "name": "MulDivInvalidInput",
       "msg": "Invalid div_u256 input"
     },
     {
-      "code": 6291,
+      "code": 6292,
       "name": "MultiplicationOverflow",
       "msg": "Multiplication overflow"
     },
     {
-      "code": 6292,
+      "code": 6293,
       "name": "InvalidSqrtPriceLimitDirection",
       "msg": "Provided SqrtPriceLimit not in the same direction as the swap."
     },
     {
-      "code": 6293,
+      "code": 6294,
       "name": "ZeroTradableAmount",
       "msg": "There are no tradable amount to swap."
     },
     {
-      "code": 6294,
+      "code": 6295,
       "name": "AmountOutBelowMinimum",
       "msg": "Amount out below minimum threshold"
     },
     {
-      "code": 6295,
+      "code": 6296,
       "name": "AmountInAboveMaximum",
       "msg": "Amount in above maximum threshold"
     },
     {
-      "code": 6296,
+      "code": 6297,
       "name": "TickArraySequenceInvalidIndex",
       "msg": "Invalid index for tick array sequence"
     },
     {
-      "code": 6297,
+      "code": 6298,
       "name": "AmountCalcOverflow",
       "msg": "Amount calculated overflows"
     },
     {
-      "code": 6298,
+      "code": 6299,
       "name": "AmountRemainingOverflow",
       "msg": "Amount remaining overflows"
     },
     {
-      "code": 6299,
+      "code": 6300,
       "name": "InvalidIntermediaryMint",
       "msg": "Invalid intermediary mint"
     },
     {
-      "code": 6300,
+      "code": 6301,
       "name": "DuplicateTwoHopPool",
       "msg": "Duplicate two hop pool"
     },
     {
-      "code": 6301,
+      "code": 6302,
       "name": "InvalidBundleIndex",
       "msg": "Bundle index is out of bounds"
     },
     {
-      "code": 6302,
+      "code": 6303,
       "name": "BundledPositionAlreadyOpened",
       "msg": "Position has already been opened"
     },
     {
-      "code": 6303,
+      "code": 6304,
       "name": "BundledPositionAlreadyClosed",
       "msg": "Position has already been closed"
     },
     {
-      "code": 6304,
+      "code": 6305,
       "name": "UnableToLoadObservationStateAccount",
       "msg": "Unable To Observation state"
     },
     {
-      "code": 6305,
+      "code": 6306,
       "name": "ObservationStateNotFound",
       "msg": "Observation state not found"
     }

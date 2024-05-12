@@ -12,7 +12,7 @@ import {rateXClient$} from '@rx/web3/streams/rate-x-client.ts';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import {Big} from 'big.js';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {positions$} from '../streams/positions.ts';
 
 export function usePositions(mode: string) {
@@ -21,7 +21,7 @@ export function usePositions(mode: string) {
   const lastTrade = useObservable<any>(lastTrade$, {});
   const contracts = useObservable<ConfigSymbol[]>(contracts$, []);
   const [columns, setColumns] = useState<Column[]>([]);
-  const data = useObservable(positions$, []);
+  const dataSource = useObservable(positions$, []);
 
   useEffect(() => {
     const columns: Column[] = [
@@ -50,10 +50,10 @@ export function usePositions(mode: string) {
       },
       {title: LG(clang.PnL), dataIndex: 'pnl', render: renderPnl},
       {title: LG(clang.Entry), dataIndex: 'entry', render: calcEntry},
-      {title: LG(clang.Current), dataIndex: 'markPrice'},
-      {title: LG(clang.Liq) + '.', dataIndex: 'liq'},
+      {title: LG(clang.Current), dataIndex: 'LastPrice'},
+      {title: LG(clang.Liq) + '.', dataIndex: 'liq', render: renderLipPrice},
       {title: LG(clang.TP) + '/' + LG(clang.SL), dataIndex: 'tpsl'},
-      {title: mode === 'YT' ? LG(clang.CR) : LG(clang.MR), dataIndex: 'cr'},
+      {title: LG(clang.CR), dataIndex: 'cr', render: (row: any) => !!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'},
       {
         title: LG(clang.Margin),
         dataIndex: 'action',
@@ -77,23 +77,11 @@ export function usePositions(mode: string) {
     if (!row.baseAssetAmount || !row.quoteAssetAmount) {
       return '-';
     }
-    return numUtil.trimEnd0(Big(row.quoteAssetAmount).div(row.baseAssetAmount).toFixed(9));
+    return numUtil.trimEnd0(Big(row.quoteAssetAmount).div(row.baseAssetAmount).abs().toFixed(9));
   };
-
-  const contractsMap: Record<number, ConfigSymbol> = useMemo(() => {
-    return contracts?.reduce((m, c) => ({...m, [c.id]: c}), {});
-  }, [contracts]);
-
-  const dataSource = useMemo(() => {
-    return data?.map((d) => {
-      const symbol = contractsMap?.[d.marketIndex] ?? {};
-      return {...d, ...symbol, markPrice: lastTrade?.[symbol.symbol]?.MarkPrice ?? '-'};
-    });
-  }, [data, contractsMap, lastTrade]);
 
   const handleClose = useCallback(
     async (row: any) => {
-      console.log(row);
       const {baseAssetAmount, marketIndex, userPda, userOrdersPda, marginType, direction} = row;
       const params = {
         marginType,
@@ -144,6 +132,27 @@ export function usePositions(mode: string) {
     },
     [client]
   );
+
+  const renderLipPrice = useCallback((record: any) => {
+    if (!record.isIsolated) {
+      return;
+    }
+    const {baseAssetAmount, quoteAssetAmount, margin} = record;
+    if (baseAssetAmount > 0) {
+      return Big(1.05 * Math.abs(quoteAssetAmount))
+        .minus(margin)
+        .div(baseAssetAmount)
+        .toFixed(9);
+    }
+    return Big(Math.abs(quoteAssetAmount))
+      .add(margin)
+      .div(1.05 * Math.abs(baseAssetAmount))
+      .toFixed(9);
+  }, []);
+
+  useEffect(() => {
+    console.log(dataSource);
+  }, [dataSource]);
 
   return {columns, dataSource};
 }

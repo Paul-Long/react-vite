@@ -1,7 +1,7 @@
-import {numUtil} from '@rx/helper/num.ts';
+import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {Big} from 'big.js';
-import {useContractInfo} from '../hooks/use-contract-info.ts';
+import {useContractInfo} from '../hooks/use-contract-info';
 
 export function Info() {
   const {LG} = useLang();
@@ -28,7 +28,7 @@ export function Info() {
 const genInfo = (LG: (s: string) => string, data: any) => [
   {title: 'TTM', value: data?.ttm},
   {title: 'Yield', value: data?.Yield ? Big(data?.Yield).times(100).toFixed(2) + '%' : '-'},
-  {title: 'Price', value: data?.MarkPrice},
+  {title: 'Price', value: data?.LastPrice},
   {
     title: 'Cumulative Price',
     value: data?.CumulativePrice

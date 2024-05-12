@@ -1,6 +1,7 @@
 import {useLang} from '@rx/hooks/use-lang';
 import {useStream} from '@rx/hooks/use-stream.ts';
 import {lang} from '@rx/lang/common.lang';
+import {useKlineData} from '../hooks/use-kline-data.ts';
 import {useTradeYieldChart} from '../hooks/use-trade-yield-chart.ts';
 import {time$} from '../streams/streams';
 import {CardTabs} from './CardTabs';
@@ -8,6 +9,7 @@ import {CardTabs} from './CardTabs';
 export function ChartWrap() {
   const {LG} = useLang();
   const [time, setTime] = useStream<string>(time$);
+  useKlineData();
   const {resize, container} = useTradeYieldChart({});
   return (
     <div

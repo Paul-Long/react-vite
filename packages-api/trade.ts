@@ -25,4 +25,15 @@ export const tradeApi = {
     };
     return post(API_URL, {params});
   },
+  processSignature(signature: string) {
+    const params = {
+      serverName: 'TradeSvr',
+      method: 'processSignature',
+      content: {
+        cid: guid.build(),
+        signature,
+      },
+    };
+    return post(API_URL, {params});
+  },
 };

@@ -13,4 +13,14 @@ export const epochApi = {
     };
     return post(API_URL, {params});
   },
+  ratePrice() {
+    const params = {
+      serverName: 'APSSvr',
+      method: 'dc.aps.dprice',
+      content: {
+        cid: guid.build(),
+      },
+    };
+    return post(API_URL, {params});
+  },
 };

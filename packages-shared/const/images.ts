@@ -35,8 +35,8 @@ export const IMAGES = {
 
 export const ASSETS_IMAGES: Record<string, string> = {
   SOL: 'https://static.rate-x.io/img/v1/99ca82/solana-sol-logo.svg',
-  M_SOL: 'https://static.rate-x.io/img/v1/d4c192/msol.svg',
-  JITO_SOL: '//static.rate-x.io/img/v1/6e8282/jitosol.svg',
+  MSOL: 'https://static.rate-x.io/img/v1/d4c192/msol.svg',
+  JITOSOL: '//static.rate-x.io/img/v1/6e8282/jitosol.svg',
 };
 
 export const HOME_IMAGES = {

@@ -16,8 +16,6 @@ import {
   getOraclePda,
   getPerpMarketPda,
   getQuoteAssetVaultPda,
-  getTokenVaultAPda,
-  getTokenVaultBPda,
 } from './utils.ts';
 
 export class OrderManager {
@@ -66,8 +64,9 @@ export class OrderManager {
     const baseAssetAmount = new BN(
       Big(params.amount)
         .times(direction === 'LONG' ? 1 : -1)
-        .times(1_000_000_000)
+        .times(100_000)
         .round(0)
+        .times(10_000)
         .toNumber()
     );
     const orderParams: any = {
@@ -159,18 +158,9 @@ export class OrderManager {
     // console.log('**********************');
 
     return await program.methods
-      .simulateSwap(baseAssetAmount, priceLimit)
+      .calculateSwap(baseAssetAmount, priceLimit)
       .accounts({
-        state: am.statePda,
-        observation: getObservationPda(marketIndex),
-        driftSigner: am.signerPda,
-        authority,
-        tokenProgram: TOKEN_PROGRAM_ID,
         whirlpool: perpMarket,
-        tokenOwnerAccountA: getBaseAssetVaultPda(marketIndex),
-        tokenOwnerAccountB: getQuoteAssetVaultPda(marketIndex),
-        tokenVaultA: getTokenVaultAPda(marketIndex),
-        tokenVaultB: getTokenVaultBPda(marketIndex),
         tickArray0: tickArrays[0],
         tickArray1: tickArrays[1],
         tickArray2: tickArrays[2],
@@ -307,11 +297,6 @@ export class OrderManager {
   }
 
   async getAmmTwap(program: Program<RatexContracts>, params: {marketIndex: number}) {
-    const perpMarket = getPerpMarketPda(params.marketIndex);
-    const observation = getObservationPda(params.marketIndex);
-
-    const perp = await program.account.perpMarket.fetch(perpMarket);
-    console.log('observation : ', perp.pool.oracle.toBase58(), observation.toBase58());
     return await program.methods
       .getAmmTwap(900)
       .accounts({
@@ -338,6 +323,7 @@ export class OrderManager {
         state: am.statePda,
         user: userPda,
         userOrders: userOrdersPda,
+        keepers: am.keeperPda,
         authority,
       })
       .rpc();

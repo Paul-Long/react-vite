@@ -1,8 +1,6 @@
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {contractMap$, maturityMap$} from '@rx/streams/config';
-import {kline$} from '@rx/streams/subscription/kline.ts';
-import {queryKLine$} from '@rx/streams/trade/kline';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {asset$, contract$, maturity$} from '../streams/streams';
 
@@ -48,8 +46,8 @@ export function useContract() {
 
   useEffect(() => {
     if (contract && maturity) {
-      queryKLine$.next({securityID: [contract, maturity].join('-')});
-      kline$.next(`dc.md.kline.1M.${[contract, maturity].join('-')}`);
+      // queryKLine$.next({securityID: [contract, maturity].join('-')});
+      // kline$.next(`dc.md.kline.1M.${[contract, maturity].join('-')}`);
     }
   }, [contract, maturity]);
 

@@ -19,11 +19,6 @@
     "@rx/streams": "^1.0.0",
     "@rx/styled": "^1.0.0",
     "@rx/vite-plugins": "^1.0.0",
-    "@trade/account": "^0.0.0",
-    "@trade/lp": "^0.0.0",
-    "@trade/market": "^0.0.0",
-    "@trade/strategies": "^0.0.0",
-    "@trade/trade": "^0.0.0",
     "@trade/views": "^0.0.0",
     "@trade/worker": "^0.0.0"
   },

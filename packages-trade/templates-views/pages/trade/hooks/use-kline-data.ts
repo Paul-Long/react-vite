@@ -1,6 +1,6 @@
 import {useStream} from '@rx/hooks/use-stream';
-import {kline$} from '@rx/streams/subscription/kline.ts';
-import {queryKLine$} from '@rx/streams/trade/kline.ts';
+import {kline$} from '@rx/streams/subscription/kline';
+import {queryKLine$} from '@rx/streams/trade/kline';
 import {useEffect} from 'react';
 import {contract$, maturity$, time$} from '../streams/streams';
 

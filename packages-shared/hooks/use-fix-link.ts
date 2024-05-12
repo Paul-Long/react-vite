@@ -1,6 +1,6 @@
-import {usePageContext} from './use-page-context.tsx';
+import {usePageContext} from './use-page-context';
 
-export function useFixLink() {
+export function useFixLink(): {fixLink: (l: string) => string; slug: string} {
   const {fixLink, slug} = usePageContext();
-  return {fixLink, slug};
+  return {fixLink: fixLink as any, slug};
 }

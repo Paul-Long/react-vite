@@ -11,6 +11,8 @@ export const contractMap$ = _contractMap$.asObservable();
 
 const _maturityMap$ = new BehaviorSubject<Record<string, ConfigSymbol[]>>({});
 export const maturityMap$ = _maturityMap$.asObservable();
+const _symbolMapById$ = new BehaviorSubject<Record<string, ConfigSymbol[]>>({});
+export const symbolMapById$ = _symbolMapById$.asObservable();
 
 const _contracts$ = new BehaviorSubject([]);
 export const contracts$ = _contracts$.asObservable();
@@ -20,6 +22,7 @@ export async function loadConfig() {
   const assets = [];
   const contractMap = {};
   const maturityMap = {};
+  const symbolMapById = {};
 
   categories.forEach((category: ConfigCategory) => {
     const {level, parentSymbolCategory} = category;
@@ -42,6 +45,7 @@ export async function loadConfig() {
       maturityMap[key] = [];
     }
     maturityMap[key].push(symbol);
+    symbolMapById[symbol.id] = symbol;
     maturityMap[key].sort((a, b) => a.sort - b.sort);
   });
 
@@ -52,6 +56,7 @@ export async function loadConfig() {
   _assets$.next(assets);
   _contractMap$.next(contractMap);
   _maturityMap$.next(maturityMap);
+  _symbolMapById$.next(symbolMapById)
   _contracts$.next(symbols);
   sendToWorker({type: 'foundation-data', url: WS_URL});
 }

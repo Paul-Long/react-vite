@@ -31,7 +31,7 @@ export function Infos() {
             >
               <i className="iconfont font-size-12px lh-12px transform-rotate-180deg">&#xe63c;</i>
             </div>
-            <img src={ASSETS_IMAGES.M_SOL} alt="" width={28} height={28} />
+            <img src={ASSETS_IMAGES.MSOL} alt="" width={28} height={28} />
             {detail?.symbolName}
           </div>
           <div className="flex flex-row items-center font-size-14px lh-20px gap-42px">

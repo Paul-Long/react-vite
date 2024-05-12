@@ -13,6 +13,11 @@ export enum MarkPriceSubTypes {
   Unsubscribe = 'mark-price-unsubscribe',
 }
 
+export enum RatePriceSubTypes {
+  Subscribe = 'rate-price-subscribe',
+  Unsubscribe = 'rate-price-unsubscribe',
+}
+
 export enum LastTradeSnapshotSubTypes {
   Subscribe = 'last-trade-snapshot-subscribe',
   Unsubscribe = 'last-trade-snapshot-unsubscribe',

@@ -17,7 +17,6 @@ export function AssetsInfo({info, marginType}: any) {
         <InfoRow text={LG(lang.LiquidationPrice)} value={info?.lipPrice ?? '-'} />
       )}
       <InfoRow text={LG(lang.TradingFee)} value={info?.fee ?? '-'} />
-      <InfoRow text={LG(lang.EstimatedGasExecution)} value="-" />
     </div>
   );
 }

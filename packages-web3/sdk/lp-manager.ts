@@ -34,7 +34,7 @@ export class LpManager {
     }
   ) {
     const {amount = 50000} = params;
-    const marketIndex = 9;
+    const marketIndex = 10;
     let {tickLowerIndex, tickUpperIndex} = params;
     const perpMarket: PublicKey = getPerpMarketPda(marketIndex);
     const quoteAssetVault: PublicKey = getQuoteAssetVaultPda(marketIndex);

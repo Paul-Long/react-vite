@@ -2,6 +2,7 @@ import type {RateXOrder, RateXPosition} from '@/types/rate-x-client';
 import type {RatexContracts} from '@/types/ratex_contracts.ts';
 import {BN, Program} from '@coral-xyz/anchor';
 import {
+  AccountInfo,
   PublicKey,
   SYSVAR_RENT_PUBKEY,
   SystemProgram,
@@ -52,10 +53,11 @@ export class AccountManager {
   async initializeUserStatsTransaction(
     program: Program<RatexContracts>,
     authority: PublicKey
-  ): Promise<[PublicKey, TransactionInstruction | null]> {
+  ): Promise<[PublicKey, TransactionInstruction | null, AccountInfo<any> | null]> {
     const userStatPda = this.createUserStatPda(authority);
-    if (!!(await this.getUserAccount(program, userStatPda))) {
-      return [userStatPda, null];
+    const statInfo = await this.getUserAccount(program, userStatPda);
+    if (!!statInfo) {
+      return [userStatPda, null, statInfo];
     }
     console.log('****************');
     console.log('Initialize User Stats Pda : ', userStatPda.toBase58());
@@ -70,7 +72,7 @@ export class AccountManager {
         systemProgram: SystemProgram.programId,
       })
       .instruction();
-    return [userStatPda, transaction];
+    return [userStatPda, transaction, null];
   }
 
   async initializeUser(
@@ -190,15 +192,22 @@ export class AccountManager {
     return [userOrdersPda, transaction];
   }
 
-  async getSubAccounts(program: Program<RatexContracts>, authority: PublicKey) {
+  async getSubAccounts(
+    program: Program<RatexContracts>,
+    authority: PublicKey,
+    subAccountCount?: number
+  ) {
     try {
-      const userStatPda = this.createUserStatPda(authority);
-      const statInfo = await program.provider.connection.getAccountInfo(userStatPda);
-      if (!statInfo) {
-        return [];
+      let count = subAccountCount ?? 0;
+      if (subAccountCount === undefined) {
+        const userStatPda = this.createUserStatPda(authority);
+        const statInfo = await program.provider.connection.getAccountInfo(userStatPda);
+        if (!statInfo) {
+          return [];
+        }
+        const stat = program.coder.accounts.decode('UserStats', statInfo.data);
+        count = stat.numberOfSubAccountsCreated ?? 0;
       }
-      const stat = program.coder.accounts.decode('UserStats', statInfo.data);
-      const count = stat.numberOfSubAccountsCreated ?? 0;
       const allUserPda = [];
       const allUserOrdersPda = [];
       const pdaMap: any = {};
@@ -214,10 +223,12 @@ export class AccountManager {
           userOrdersPdaAddress: userOrdersPda.toBase58(),
         };
       }
-      const userAccounts = await program.provider.connection.getMultipleAccountsInfo(allUserPda);
-      const userOrderAccounts = await program.provider.connection.getMultipleAccountsInfo(
-        allUserOrdersPda
-      );
+      const accounts = await program.provider.connection.getMultipleAccountsInfo([
+        ...allUserPda,
+        ...allUserOrdersPda,
+      ]);
+      const userAccounts = accounts.slice(0, count);
+      const userOrderAccounts = accounts.slice(count, count + count);
       const userOrders: any = userOrderAccounts
         .filter((u) => !!u)
         .reduce((m, u: any) => {
@@ -237,6 +248,7 @@ export class AccountManager {
             ...user,
             ...pdaMap[user.subAccountId],
             orders: userOrders?.[user.subAccountId] ?? [],
+            userOrdersPdaExist: !!userOrders?.[user.subAccountId],
           };
         });
     } catch (e) {
@@ -249,9 +261,15 @@ export class AccountManager {
     program: Program<RatexContracts>,
     authority: PublicKey,
     isIsolated: boolean,
-    isTrader: boolean
+    isTrader: boolean,
+    statInfo: AccountInfo<any> | null
   ) {
-    const accounts = await this.getSubAccounts(program, authority);
+    let subAccountId = 0;
+    if (statInfo) {
+      const stat = program.coder.accounts.decode('UserStats', statInfo.data);
+      subAccountId = stat.numberOfSubAccountsCreated ?? 0;
+    }
+    const accounts = await this.getSubAccounts(program, authority, subAccountId);
     const zero = new BN(0);
     let user;
     if (!isIsolated) {
@@ -309,70 +327,82 @@ export class AccountManager {
   async getAllPosition(program: Program<RatexContracts>, authority: PublicKey) {
     const zero = new BN(0);
     const accounts = await this.getSubAccounts(program, authority);
-    return accounts.reduce((ps: RateXPosition[], u: any) => {
-      const positions = u?.perpPositions
-        ?.map((p: any) => {
-          const {baseAssetAmount, lastRate, quoteAssetAmount, marketIndex} = p;
-          return {
-            userPda: u.userPdaAddress,
-            userOrdersPda: u.userOrdersPdaAddress,
-            isIsolated: u.isIsolated,
-            marginType: u.isIsolated ? 'ISOLATED' : 'CROSS',
-            direction: baseAssetAmount.gt(zero) ? 'LONG' : 'SHORT',
-            marketIndex,
-            lastRate: lastRate.toNumber(),
-            baseAssetAmount: Big(baseAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
-            quoteAssetAmount: Big(quoteAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
-            enableClose:
-              u.orders?.filter((o: any) => {
-                if (
-                  o.marketIndex === marketIndex &&
-                  baseAssetAmount.gt(zero) &&
-                  o.baseAssetAmount.lt(zero)
-                ) {
-                  return true;
-                }
-                return false;
-              })?.length > 0,
-          };
-        })
-        .filter((p: any) => p.baseAssetAmount != 0);
-      return [...ps, ...positions];
-    }, []);
+    return accounts
+      .filter((u) => !!u.isTrader)
+      .reduce((ps: RateXPosition[], u: any) => {
+        const marginBalance = u?.marginPositions
+          ?.filter((mp: any) => mp.marketIndex === 1 && !mp.balance.eq(zero))
+          ?.reduce((total: Big, mp: any) => {
+            return total.add(mp.balance.toString());
+          }, new Big(0))
+          .div(1_000_000_000)
+          .toString();
+        const positions = u?.perpPositions
+          ?.map((p: any) => {
+            const {baseAssetAmount, lastRate, quoteAssetAmount, marketIndex} = p;
+            return {
+              userPda: u.userPdaAddress,
+              userOrdersPda: u.userOrdersPdaAddress,
+              isIsolated: u.isIsolated,
+              marginType: u.isIsolated ? 'ISOLATED' : 'CROSS',
+              direction: baseAssetAmount.gt(zero) ? 'LONG' : 'SHORT',
+              marketIndex,
+              margin: marginBalance,
+              lastRate: Big(lastRate.toString()).div(1_000_000_000).toString(),
+              baseAssetAmount: Big(baseAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
+              quoteAssetAmount: Big(quoteAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
+              enableClose:
+                u.orders?.filter((o: any) => {
+                  if (
+                    o.marketIndex === marketIndex &&
+                    baseAssetAmount.gt(zero) &&
+                    o.baseAssetAmount.lt(zero)
+                  ) {
+                    return true;
+                  }
+                  return false;
+                })?.length > 0,
+            };
+          })
+          .filter((p: any) => p.baseAssetAmount != 0);
+        return [...ps, ...positions];
+      }, []);
   }
 
   async getAllOrders(program: Program<RatexContracts>, authority: PublicKey) {
     const accounts = await this.getSubAccounts(program, authority);
-    return accounts.reduce((ps: RateXPosition[], u: any) => {
-      const positions = u?.orders?.map((p: any) => {
-        const {
-          baseAssetAmount,
-          baseAssetAmountFilled,
-          quoteAssetAmountFilled,
-          marketIndex,
-          orderId,
-          status,
-          priceLimit,
-        } = p;
-        return {
-          userPda: u.userPdaAddress,
-          userOrdersPda: u.userOrdersPdaAddress,
-          isIsolated: u.isIsolated,
-          baseAssetAmount: Big(baseAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
-          baseAssetAmountFilled: Big(baseAssetAmountFilled.toNumber())
-            .div(1_000_000_000)
-            .toNumber(),
-          quoteAssetAmountFilled: Big(quoteAssetAmountFilled.toNumber())
-            .div(1_000_000_000)
-            .toNumber(),
-          marketIndex,
-          orderId,
-          status,
-          priceLimit,
-        };
-      });
-      return [...ps, ...positions];
-    }, []);
+    return accounts
+      .filter((u) => !!u.isTrader)
+      .reduce((ps: RateXPosition[], u: any) => {
+        const positions = u?.orders?.map((p: any) => {
+          const {
+            baseAssetAmount,
+            baseAssetAmountFilled,
+            quoteAssetAmountFilled,
+            marketIndex,
+            orderId,
+            status,
+            priceLimit,
+          } = p;
+          return {
+            userPda: u.userPdaAddress,
+            userOrdersPda: u.userOrdersPdaAddress,
+            isIsolated: u.isIsolated,
+            baseAssetAmount: Big(baseAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
+            baseAssetAmountFilled: Big(baseAssetAmountFilled.toNumber())
+              .div(1_000_000_000)
+              .toNumber(),
+            quoteAssetAmountFilled: Big(quoteAssetAmountFilled.toNumber())
+              .div(1_000_000_000)
+              .toNumber(),
+            marketIndex,
+            orderId,
+            status,
+            priceLimit,
+          };
+        });
+        return [...ps, ...positions];
+      }, []);
   }
 
   async getAccountInfo(
