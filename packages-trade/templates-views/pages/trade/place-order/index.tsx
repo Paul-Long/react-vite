@@ -1,7 +1,7 @@
 import {useForm} from '@/pages/trade/hooks/use-form';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/trade.lang';
-import {Button, RadioButton} from '@rx/widgets';
+import {Button, Loading, RadioButton} from '@rx/widgets';
 import {AmountInput} from './AmountInput';
 import {AssetsInfo} from './AssetsInfo';
 import {DepositMargin} from './DepositMargin';
@@ -33,7 +33,10 @@ export function PlaceOrder() {
       </div>
       <AssetsInfo info={info} marginType={state.marginType} />
       <Button type="trade" disabled={loading} onClick={handleSubmit}>
-        {LG(lang.Trade)}
+        <div className="flex flex-row justify-center items-center flex-nowrap gap-10px font-size-16px lh-18px">
+          {loading && <Loading size={18} />}
+          {LG(lang.Trade)}
+        </div>
       </Button>
     </div>
   );

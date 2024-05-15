@@ -17,7 +17,7 @@ export function useMintBalance() {
     if (!connected) {
       return;
     }
-    const account = await client?.getUserMintAccount(1);
+    const account = await client?.getUserMintAccount(0);
     if (!!account) {
       const b = await client?.getTokenAccountBalance(account);
       setBalance(Big(b).div(1_000_000_000).toFixed(4));

@@ -1,22 +1,23 @@
-import {RateXPlaceOrderParams} from '@/types/rate-x-client';
-import type {RatexContracts} from '@/types/ratex_contracts.ts';
-import {BN, Program} from '@coral-xyz/anchor';
-import {TOKEN_PROGRAM_ID} from '@solana/spl-token';
-import {ComputeBudgetProgram, PublicKey, TransactionInstruction} from '@solana/web3.js';
-import {Big} from 'big.js';
-import Decimal from 'decimal.js';
-import {PriceMath} from '../utils/price-math.ts';
-import {AccountManager} from './account-manager.ts';
-import {OrderType, PositionDirection} from './const.ts';
-import {TickManager} from './tick-manager.ts';
+import {AccountManager} from '@/sdk/account-manager';
+import {OrderType, PositionDirection} from '@/sdk/const';
+import {TickManager} from '@/sdk/tick-manager';
 import {
-  getBaseAssetVaultPda,
+  getMarginIndexByMarketIndex,
   getMarginMarketPda,
+  getMarginMarketVaultPda,
+  getMintAccountPda,
   getObservationPda,
   getOraclePda,
   getPerpMarketPda,
-  getQuoteAssetVaultPda,
-} from './utils.ts';
+} from '@/sdk/utils';
+import {RateXPlaceOrderParams} from '@/types/rate-x-client';
+import type {RatexContracts} from '@/types/ratex_contracts.ts';
+import {PriceMath} from '@/utils/price-math';
+import {BN, Program} from '@coral-xyz/anchor';
+import {TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync} from '@solana/spl-token';
+import {ComputeBudgetProgram, PublicKey, TransactionInstruction} from '@solana/web3.js';
+import {Big} from 'big.js';
+import Decimal from 'decimal.js';
 
 export class OrderManager {
   constructor() {}
@@ -179,10 +180,15 @@ export class OrderManager {
       orderId: number;
     }
   ) {
+    const start = new Date();
+    console.log('fill order start time : ', start);
     const {marketIndex, orderId, userPda} = params;
 
     const userStatPda = await am.initializeUserStats(program, authority);
     const userOrdersPda = await am.initializeUserOrders(program, authority, userPda);
+
+    const mintAccount: PublicKey = getMintAccountPda(getMarginIndexByMarketIndex(marketIndex));
+    const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
 
     const user = await program.account.userOrders.fetch(userOrdersPda);
     const order = user.orders?.find((o) => {
@@ -213,27 +219,39 @@ export class OrderManager {
       order.priceLimit,
       baseAssetAmount.lt(new BN(0))
     );
-    console.log('**********************');
-    console.log('Order ', order);
-    console.log('perpMarket : ', perp);
-    console.log('oracle : ', perp.pool.oracle.toBase58());
-    console.log('Price Limit : ', order.priceLimit.toString());
-    console.log('Base Asset Amount : ', baseAssetAmount.toString());
-    console.log('remainingAccounts : ', remainingAccounts);
-    console.log('market index : ', marketIndex);
-    console.log('user Pda ', userPda);
-    for (let i = 0; i < 3; i++) {
-      const ai = await program.account.tickArray.fetch(tickArrays[i]);
-      console.log(`TickArray ${i} :  `, tickArrays[i].toBase58(), ai, perp.pool.tickCurrentIndex);
-    }
-    console.log('**********************');
+    // console.log('**********************');
+    // console.log('Order ', order);
+    // console.log('perpMarket : ', perp);
+    // console.log('oracle : ', perp.pool.oracle.toBase58());
+    // console.log('Price Limit : ', order.priceLimit.toString());
+    // console.log('Base Asset Amount : ', baseAssetAmount.toString());
+    // console.log('remainingAccounts : ', remainingAccounts);
+    // console.log('market index : ', marketIndex);
+    // console.log('user Pda ', userPda);
+    // for (let i = 0; i < 3; i++) {
+    //   const ai = await program.account.tickArray.fetch(tickArrays[i]);
+    //   console.log(`TickArray ${i} :  `, tickArrays[i].toBase58(), ai, perp.pool.tickCurrentIndex);
+    // }
+    // console.log('**********************');
     if (tickArrays.length < 1) {
       console.log('TickArray is empty');
       return;
     }
+    const mm = await program.account.marginMarket.fetch(
+      getMarginMarketPda(getMarginIndexByMarketIndex(marketIndex))
+    );
+    const marginMarketVault = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from('margin_market_vault'),
+        new BN(getMarginIndexByMarketIndex(marketIndex)).toArrayLike(Buffer, 'le', 2),
+      ],
+      program.programId
+    )[0];
+    console.log('margin market vault : ', mm, mm.vault.toBase58());
     const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
       units: 1600000,
     });
+    console.log('fill order end time : ', new Date(), Date.now() - start.getTime());
     return await program.methods
       .fillPerpOrder(orderId)
       .preInstructions([modifyComputeUnits])
@@ -247,10 +265,12 @@ export class OrderManager {
         authority,
         userOrders: userOrdersPda,
         whirlpool: perpMarket,
-        tokenOwnerAccountA: getBaseAssetVaultPda(marketIndex),
-        tokenOwnerAccountB: getQuoteAssetVaultPda(marketIndex),
+        marginMarketVault,
+        tokenOwnerAccountA: am.createBaseAssetVaultPda(marketIndex),
+        tokenOwnerAccountB: am.createQuoteAssetVaultPda(marketIndex),
         tokenVaultA,
         tokenVaultB,
+        userTokenAccount,
         tickArray0: tickArrays[0],
         tickArray1: tickArrays[1],
         tickArray2: tickArrays[2],
@@ -272,7 +292,11 @@ export class OrderManager {
       .map((m) => ({pubkey: getPerpMarketPda(m), isSigner: false, isWritable: true}));
 
     const remainingAccounts = [
-      {pubkey: getMarginMarketPda(1), isSigner: false, isWritable: true},
+      {
+        pubkey: getMarginMarketPda(0),
+        isSigner: false,
+        isWritable: true,
+      },
       ...perpMarkets,
       {pubkey: getOraclePda(0), isSigner: false, isWritable: true},
       {pubkey: getOraclePda(4), isSigner: false, isWritable: true},
@@ -329,80 +353,57 @@ export class OrderManager {
       .rpc();
   }
 
+  async cancelIsolatedOrder(
+    program: Program<RatexContracts>,
+    authority: PublicKey,
+    am: AccountManager,
+    params: {
+      userPda: PublicKey;
+      userOrdersPda: PublicKey;
+      orderId: number;
+      marketIndex: number;
+    }
+  ) {
+    const {orderId, userPda, userOrdersPda, marketIndex} = params;
+    const marginMarket = getMarginIndexByMarketIndex(marketIndex);
+    const mintAccount: PublicKey = getMintAccountPda(getMarginIndexByMarketIndex(marketIndex));
+    const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
+
+    return await program.methods
+      .cancelIsolatedOrder(orderId)
+      .accounts({
+        state: am.statePda,
+        user: userPda,
+        userOrders: userOrdersPda,
+        keepers: am.keeperPda,
+        marginMarketVault: getMarginMarketVaultPda(marginMarket),
+        driftSigner: am.signerPda,
+        userTokenAccount,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        authority,
+      })
+      .rpc();
+  }
+
   getRemainingAccounts(marketIndex: number) {
     return [
       {
-        pubkey: getMarginMarketPda(0),
+        pubkey: getMarginMarketPda(getMarginIndexByMarketIndex(marketIndex)),
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: getMarginMarketPda(1),
+        pubkey: getPerpMarketPda(marketIndex),
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: getPerpMarketPda(2),
+        pubkey: getOraclePda(marketIndex),
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: getPerpMarketPda(4),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getPerpMarketPda(8),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getPerpMarketPda(9),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getPerpMarketPda(10),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: new PublicKey('9HdYPM2z3rdXrMAEHhsSRF48UKCQNcrdzMHtH4zKF6fu'),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getOraclePda(0),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getOraclePda(4),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getObservationPda(2),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getObservationPda(4),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getObservationPda(8),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getObservationPda(9),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: getObservationPda(10),
+        pubkey: getObservationPda(marketIndex),
         isSigner: false,
         isWritable: true,
       },

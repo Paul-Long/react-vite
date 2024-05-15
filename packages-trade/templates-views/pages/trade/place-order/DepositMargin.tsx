@@ -1,8 +1,8 @@
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
-import {useConnect} from '@rx/web3/hooks/use-connect.ts';
-import {useMintBalance} from '@rx/web3/hooks/use-mint-balance.ts';
+import {useConnect} from '@rx/web3/hooks/use-connect';
+import {useMintBalance} from '@rx/web3/hooks/use-mint-balance';
 import {useEffect} from 'react';
 import {InputNumber} from './InputNumber';
 
@@ -19,6 +19,7 @@ export function DepositMargin(props: Props) {
     setInterval(async () => {
       await query();
     }, 15 * 1000);
+    query().then();
   }, [connected, client]);
   return (
     <div className="flex flex-col p-16px gap-8px not-last:b-b-1px b-solid b-gray-40">

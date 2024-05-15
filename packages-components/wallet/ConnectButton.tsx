@@ -15,7 +15,7 @@ import {useCallback} from 'react';
 
 export function ConnectButton() {
   const {LG} = useLang();
-  const {disconnect} = useConnect();
+  const {disconnect, address} = useConnect();
   const isLogin = useObservable<boolean>(isLogin$, false);
   const user = useObservable<User | null>(user$, null);
 
@@ -47,7 +47,7 @@ export function ConnectButton() {
       >
         <StyledWalletConnected className="inline-flex flex-row items-center gap-10px rounded-4px font-medium cursor-pointer bg-gray-80 px-12px py-6px">
           <img className="dib" src={ASSETS_IMAGES.SOL} alt="sol" />
-          <span className="T3">{abbreviateString(user?.name as string)}</span>
+          <span className="T3">{address ? abbreviateString(address as string) : '***'}</span>
           <i className="iconfont T3">&#xe624;</i>
         </StyledWalletConnected>
       </Dropdown>

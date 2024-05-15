@@ -27,14 +27,25 @@ export function Info() {
 
 const genInfo = (LG: (s: string) => string, data: any) => [
   {title: 'TTM', value: data?.ttm},
-  {title: 'Yield', value: data?.Yield ? Big(data?.Yield).times(100).toFixed(2) + '%' : '-'},
-  {title: 'Price', value: data?.LastPrice},
+  {
+    title: 'Yield',
+    value: data?.Yield
+      ? Big(data?.Yield ?? 0)
+          .times(100)
+          .toFixed(2) + '%'
+      : '-',
+  },
+  {title: 'Price', value: data?.LastPrice ?? '-'},
   {
     title: 'Cumulative Price',
     value: data?.CumulativePrice
-      ? numUtil.trimEnd0(Big(data.MarkPrice).plus(data.CumulativePrice).toFixed(8))
+      ? numUtil.trimEnd0(
+          Big(data?.MarkPrice ?? 0)
+            .plus(data.CumulativePrice)
+            .toFixed(8)
+        )
       : '-',
   },
-  {title: 'OpenInterest', value: data?.OpenInterest},
+  {title: 'OpenInterest', value: data?.OpenInterest ?? '-'},
   {title: 'Ava.Liquidity', value: '-'},
 ];

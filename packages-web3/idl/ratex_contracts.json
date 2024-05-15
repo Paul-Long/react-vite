@@ -6105,8 +6105,5 @@
       "name": "InvalidImpliedRate",
       "msg": "Implied rate must be divided by 1%"
     }
-  ],
-  "metadata": {
-    "address": "Ap8mUq5RERsiaX28QkY8egfyL9c9koaRvBWdV5SgbKfP"
-  }
+  ]
 }

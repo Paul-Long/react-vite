@@ -1,12 +1,23 @@
 import {ProgressSlider} from '@/pages/lp/ProgressSlider';
 import {IMAGES} from '@/pages/lp/const';
+import {InputNumber} from '@/pages/trade/place-order/InputNumber';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/lp.lang';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 
-export function WalletBalance() {
+interface Props {
+  value?: string | number;
+  onChange?: (v: string | number) => void;
+}
+
+export function WalletBalance(props: Props) {
   const {LG} = useLang();
   const [percent, setPercent] = useState(10);
+
+  const handlePercentChange = useCallback(() => {}, []);
+
+  const handleChange = useCallback(() => {}, []);
+
   return (
     <>
       <div className="font-size-16px lh-24px">{LG(lang.AddLiquidity)}</div>
@@ -20,7 +31,12 @@ export function WalletBalance() {
             <img src={IMAGES.WALLET} alt="" />
             10.0000
           </div>
-          <span className="text-#FFD166 fw-medium">10.0189</span>
+          <InputNumber
+            align="right"
+            color="text-#FFD166"
+            value={props.value}
+            onChange={props.onChange}
+          />
         </div>
       </div>
 

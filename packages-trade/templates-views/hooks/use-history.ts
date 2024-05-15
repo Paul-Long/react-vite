@@ -1,5 +1,5 @@
-import {tradeApi} from '@rx/api/trade.ts';
-import {numUtil} from '@rx/helper/num.ts';
+import {tradeApi} from '@rx/api/trade';
+import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';

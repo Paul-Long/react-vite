@@ -1,7 +1,7 @@
-import {useStream} from '@rx/hooks/use-stream.ts';
+import {useStream} from '@rx/hooks/use-stream';
 import {walletModalVisible$} from '@rx/streams/wallet';
 import {useConnect} from '@rx/web3/hooks/use-connect';
-import {rateXClient$} from '@rx/web3/streams/rate-x-client.ts';
+import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button, Toast} from '@rx/widgets';
 import {useCallback, useState} from 'react';
 import {StyledWrap} from './styles';

@@ -17,8 +17,6 @@
     "@rx/router": "^1.0.0",
     "@rx/web3": "^1.0.0",
     "@rx/widgets": "^1.0.0",
-    "@rx/streams": "^1.0.0",
-    "@trade/components": "^1.0.0",
-    "@trade/hooks": "^1.0.0"
+    "@rx/streams": "^1.0.0"
   }
 }

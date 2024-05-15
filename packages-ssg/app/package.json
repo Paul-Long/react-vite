@@ -16,7 +16,6 @@
     "@rx/env": "^1.0.0",
     "@rx/helper": "^1.0.0",
     "@rx/streams": "^1.0.0",
-    "@rx/styled": "^1.0.0",
     "@rx/vite-plugins": "^1.0.0"
   },
   "author": "",

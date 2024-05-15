@@ -112,7 +112,7 @@ export function useForm() {
         const res = await client.simulatePlaceOrder({
           amount: state.amount,
           direction: state.direction,
-          marketIndex,
+          marketIndex: 0,
           days: ttmMap?.[key]?.days,
         });
         setInfo((prevState: any) => {
@@ -139,7 +139,7 @@ export function useForm() {
     if (twapTimer.current) {
       return;
     }
-    const t = await client.getAmmTwap({marketIndex: baseContract.id});
+    const t = await client.getAmmTwap({marketIndex: 0});
     if (t) {
       setTwap(t);
       twapTimer.current = setTimeout(() => {

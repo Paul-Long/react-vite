@@ -1,27 +1,27 @@
+import {positions$, query$} from '@/streams/positions';
 import {env} from '@rx/env';
-import {numUtil} from '@rx/helper/num.ts';
+import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
-import {useObservable} from '@rx/hooks/use-observable.ts';
-import {useStream} from '@rx/hooks/use-stream.ts';
+import {useObservable} from '@rx/hooks/use-observable';
+import {useStream} from '@rx/hooks/use-stream';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
-import {contracts$} from '@rx/streams/config.ts';
-import {lastTrade$} from '@rx/streams/trade/last-trade.ts';
-import {depositModal$} from '@rx/streams/wallet.ts';
-import {rateXClient$} from '@rx/web3/streams/rate-x-client.ts';
+import {depositModal$} from '@rx/streams/wallet';
+import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import {Big} from 'big.js';
 import {useCallback, useEffect, useState} from 'react';
-import {positions$} from '../streams/positions.ts';
 
 export function usePositions(mode: string) {
   const {LG} = useLang();
   const [client] = useStream(rateXClient$);
-  const lastTrade = useObservable<any>(lastTrade$, {});
-  const contracts = useObservable<ConfigSymbol[]>(contracts$, []);
   const [columns, setColumns] = useState<Column[]>([]);
   const dataSource = useObservable(positions$, []);
+
+  useEffect(() => {
+    query$.next(0);
+  }, []);
 
   useEffect(() => {
     const columns: Column[] = [
@@ -53,7 +53,11 @@ export function usePositions(mode: string) {
       {title: LG(clang.Current), dataIndex: 'LastPrice'},
       {title: LG(clang.Liq) + '.', dataIndex: 'liq', render: renderLipPrice},
       {title: LG(clang.TP) + '/' + LG(clang.SL), dataIndex: 'tpsl'},
-      {title: LG(clang.CR), dataIndex: 'cr', render: (row: any) => !!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'},
+      {
+        title: LG(clang.CR),
+        dataIndex: 'cr',
+        render: (row: any) => (!!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'),
+      },
       {
         title: LG(clang.Margin),
         dataIndex: 'action',
@@ -83,6 +87,7 @@ export function usePositions(mode: string) {
   const handleClose = useCallback(
     async (row: any) => {
       const {baseAssetAmount, marketIndex, userPda, userOrdersPda, marginType, direction} = row;
+      console.log('Close Position : ', marketIndex, userPda, Math.abs(baseAssetAmount));
       const params = {
         marginType,
         marketIndex,

@@ -1,5 +1,5 @@
+import {useMarketOverview} from '@/pages/market/hooks/use-market-overview';
 import {Table} from '@rx/widgets';
-import {useMarketOverview} from '@trade/hooks/market/use-market-overview';
 
 export function Overview({onSelect}: any) {
   const {genColumns, dataSource} = useMarketOverview();

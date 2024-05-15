@@ -1,12 +1,20 @@
+import {WalletBalance} from '@/pages/lp/WalletBalance';
 import {Info} from '@/pages/lp/slp/Info';
 import {Range} from '@/pages/lp/slp/Range';
-import {WalletBalance} from '@/pages/lp/WalletBalance';
 import {useLang} from '@rx/hooks/use-lang';
+import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
+import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button} from '@rx/widgets';
+import {useCallback, useState} from 'react';
 
-export function PlaceOrder() {
+interface Props {
+  contract: any;
+}
+export function PlaceOrder(props: Props) {
   const {LG} = useLang();
+  const {state, handleChange, handleSubmit} = usePlaceOrder(props);
+  console.log(props);
   return (
     <div className="flex flex-row gap-24px">
       <div className="flex flex-col flex-1">
@@ -14,10 +22,10 @@ export function PlaceOrder() {
       </div>
       <div className="flex flex-col w-384px rounded-8px bg-gray-40 py-16px px-24px gap-20px">
         <div className="font-size-16px">{LG(lang.StandardRange)}</div>
-        <Range />
+        <Range value={state.range} onChange={handleChange('range')} />
         <div className="flex flex-col">
           <div className="w-full h-1px bg-gray-40 mb-8px" />
-          <WalletBalance />
+          <WalletBalance value={state.amount} onChange={handleChange('amount')} />
           <div className="w-full h-1px bg-gray-40 mt-16px" />
         </div>
         <div className="flex flex-row items-center justify-between">
@@ -26,8 +34,47 @@ export function PlaceOrder() {
             0.03%
           </span>
         </div>
-        <Button type="trade">{LG(lang.AddLiquidity)}</Button>
+        <Button type="trade" onClick={handleSubmit}>
+          {LG(lang.AddLiquidity)}
+        </Button>
       </div>
     </div>
   );
+}
+
+function usePlaceOrder(props: Props) {
+  const [client] = useStream(rateXClient$);
+  const [state, setState] = useState({
+    amount: '',
+    range: '0.06-0.08',
+  });
+
+  const handleChange = useCallback(
+    (key: string) => (value: string | number) => {
+      setState((prevState: any) => {
+        return {...prevState, [key]: value};
+      });
+    },
+    []
+  );
+
+  const handleSubmit = useCallback(async () => {
+    if (!client) {
+      return;
+    }
+    const {range, amount} = state;
+    const [lowerRate, upperRate] = range.split('-');
+    const params = {
+      lowerRate,
+      upperRate,
+      amount,
+      marketIndex: props?.contract?.id,
+      maturity: props?.contract?.maturity,
+    };
+    console.log('order ', params);
+    const tx = await client.addPerpLpShares(params);
+    console.log('add lp tx : ', tx);
+  }, [state, client, props]);
+
+  return {state, handleChange, handleSubmit};
 }

@@ -1,11 +1,15 @@
 import {useMenus} from '@/components/header/state';
+import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useStream} from '@rx/hooks/use-stream';
 import {url$} from '@rx/streams/url';
 import {Tabs} from '@rx/widgets';
 import {useCallback, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 export function Menu() {
   const [url] = useStream(url$);
+  const navigate = useNavigate();
+  const {fixLink} = useFixLink();
   const {menus, select, setSelect} = useMenus();
 
   useEffect(() => {
@@ -22,6 +26,7 @@ export function Menu() {
 
   const handleChange = useCallback((m: string) => {
     setSelect(m);
+    navigate(fixLink(m));
   }, []);
 
   return (

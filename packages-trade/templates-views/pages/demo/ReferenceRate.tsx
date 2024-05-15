@@ -1,5 +1,5 @@
+import {useReferenceRate} from '@/pages/demo/hooks/use-reference-rate';
 import {Table} from '@rx/widgets';
-import {useReferenceRate} from '@trade/hooks/market/use-reference-rate';
 import {StyledWrap} from './styles';
 
 export function ReferenceRate() {

@@ -1,4 +1,11 @@
+import {AccountManager, PROGRAM_ID, TOKEN_FAUCET} from '@/sdk/account-manager';
 import {ORACLE_PDA} from '@/sdk/const';
+import {FundManager} from '@/sdk/fund-manager';
+import {LpManager} from '@/sdk/lp-manager';
+import {OrderManager} from '@/sdk/order-manager';
+import {TickManager} from '@/sdk/tick-manager';
+import {getMarginIndexByMarketIndex, getMintAccountPda} from '@/sdk/utils';
+import {clientReady$} from '@/streams/rate-x-client';
 import {
   RateXClientConfig,
   RateXClosePositionParams,
@@ -10,6 +17,7 @@ import * as anchor from '@coral-xyz/anchor';
 import {AnchorProvider, BN, EventParser, Program, Wallet} from '@coral-xyz/anchor';
 import {getAssociatedTokenAddressSync} from '@solana/spl-token';
 import {
+  ComputeBudgetProgram,
   ConfirmOptions,
   Connection,
   PublicKey,
@@ -22,13 +30,6 @@ import Big from 'big.js';
 import Decimal from 'decimal.js';
 import * as idl from '../idl/ratex_contracts.json';
 import * as tokenFaucetIDL from '../idl/token_faucet.json';
-import {clientReady$} from '../streams/rate-x-client.ts';
-import {AccountManager, PROGRAM_ID, TOKEN_FAUCET} from './account-manager.ts';
-import {FundManager} from './fund-manager.ts';
-import {LpManager} from './lp-manager.ts';
-import {OrderManager} from './order-manager.ts';
-import {TickManager} from './tick-manager.ts';
-import {getMarginIndexByMarketIndex, getMintAccountPda} from './utils.ts';
 
 export class RateClient {
   connection: Connection;
@@ -36,14 +37,12 @@ export class RateClient {
   wallet: Wallet;
   authority?: PublicKey;
   opts?: ConfirmOptions;
-  userPda?: PublicKey;
-  userStatPda?: PublicKey;
   am: AccountManager;
   om: OrderManager;
   tm: TickManager;
   fm: FundManager;
   lp: LpManager;
-  isReady: boolean;
+
   public parser?: EventParser;
   public program: Program<RatexContracts>;
   public tokenFaucetProgram: Program<TokenFaucet>;
@@ -70,7 +69,6 @@ export class RateClient {
     this.tm = new TickManager();
     this.fm = new FundManager();
     this.lp = new LpManager();
-    this.isReady = !!this.authority;
     clientReady$.next(!!this.authority);
     console.log('Create RateXClient : ', this);
   }
@@ -90,7 +88,6 @@ export class RateClient {
     this.program = newProgram;
     this.authority = this.wallet?.publicKey;
     this.parser = new anchor.EventParser(this.program.programId, this.program.coder);
-    this.isReady = !!this.authority;
     clientReady$.next(!!this.authority);
     console.log('Update DriftClient Wallet : ', this);
   }
@@ -142,7 +139,7 @@ export class RateClient {
     );
     let subAccountId = 0;
     let transaction2;
-    let user = await this.am.findUser(
+    let user = await this.am.findTraderUser(
       this.program,
       this.authority,
       marginType === 'ISOLATED',
@@ -168,8 +165,8 @@ export class RateClient {
       subAccountId = user.subAccountId;
     }
     let transaction3;
-    let userOrdersPda = user.userOrdersPda;
-    if (!user.userOrdersPdaExist) {
+    let userOrdersPda = user?.userOrdersPda;
+    if (!user?.userOrdersPdaExist) {
       const [uop, t3] = await this.am.initializeUserOrdersTransaction(
         this.program,
         this.authority,
@@ -225,8 +222,7 @@ export class RateClient {
         preflightCommitment: 'confirmed',
       });
       await this.connection.confirmTransaction(signature, 'confirmed');
-      console.log('Combined Transaction successful!', signature);
-      await this.queryEvent(signature, 'Place Order : ');
+      console.log('Combined Transaction successful!', new Date(), signature);
       return signature;
     } catch (error) {
       console.error('Combined Transaction failed', error);
@@ -273,7 +269,7 @@ export class RateClient {
     if (!!tx) {
       setTimeout(async () => {
         await this.queryEvent(tx, 'fillPerpOrder evt');
-      }, 2000);
+      }, 0);
     }
     console.log('FillPerpOrder Tx : ', tx);
     return tx;
@@ -289,6 +285,26 @@ export class RateClient {
       orderId: params.orderId,
     });
     console.log('Cancel Order : ', tx);
+    return tx;
+  }
+
+  async cancelIsolatedOrder(params: {
+    userPda: string;
+    userOrdersPda: string;
+    orderId: number;
+    marketIndex: number;
+  }) {
+    if (!this.authority) {
+      return;
+    }
+    const {userPda, userOrdersPda, orderId, marketIndex} = params;
+    const tx = await this.om.cancelIsolatedOrder(this.program, this.authority, this.am, {
+      userPda: new PublicKey(userPda),
+      userOrdersPda: new PublicKey(params.userOrdersPda),
+      orderId,
+      marketIndex,
+    });
+    console.log('Cancel Isolated Order : ', tx);
     return tx;
   }
 
@@ -344,22 +360,62 @@ export class RateClient {
   }
 
   async addPerpLpShares(params: {
-    tickLowerIndex: number;
-    tickUpperIndex: number;
+    lowerRate: number;
+    upperRate: number;
+    maturity: number;
     amount: number;
     marketIndex: number;
   }) {
     if (!this.authority) {
       return;
     }
-    const tx = await this.lp.addPerpLpShares(
+    const [_, transaction1, statInfo] = await this.am.initializeUserStatsTransaction(
+      this.program,
+      this.authority
+    );
+    let subAccountId = 0;
+    let transaction2;
+    let userPda;
+    let user = await this.am.findLpUser(this.program, this.authority, statInfo);
+    if (!user) {
+      if (statInfo?.data) {
+        const stat = await this.program.coder.accounts.decode('UserStat', statInfo.data);
+        subAccountId = stat.numberOfSubAccountsCreated ?? 0;
+      }
+      const [pda, t] = await this.am.initializeUserTransaction(
+        this.program,
+        this.authority,
+        true,
+        false,
+        subAccountId
+      );
+      userPda = pda;
+      transaction2 = t;
+    } else {
+      userPda = user.userPda;
+    }
+
+    const transaction3 = await this.lp.addPerpLpShares(
       this.program,
       this.wallet,
       this.authority,
       this.am,
       this.tm,
+      userPda,
       params
     );
+    const combinedTransaction = new Transaction();
+    !!transaction1 && combinedTransaction.add(transaction1);
+    !!transaction2 && combinedTransaction.add(transaction2);
+    combinedTransaction.add(transaction3);
+    combinedTransaction.add(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 1_400_000,
+      })
+    );
+    combinedTransaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
+    combinedTransaction.feePayer = this.authority;
+    const tx = await this.sendTransaction(combinedTransaction);
     if (tx) {
       await this.queryEvent(tx, 'addPerpLpShares');
     }
@@ -492,6 +548,9 @@ export class RateClient {
       !!transaction2 && combinedTransaction.add(transaction2);
     }
     await this.sendTransaction(combinedTransaction);
+  }
+  async getPerpMarketInfo(params: {marketIndex: number}) {
+    return await this.lp.getPerpMarketInfo(this.program, params);
   }
 
   async queryEvent(txid: string, label: string) {

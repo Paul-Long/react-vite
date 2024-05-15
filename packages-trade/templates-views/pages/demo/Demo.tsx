@@ -1,3 +1,4 @@
+import {PerpMarketInfo} from '@/pages/demo/PerpMarketInfo';
 import {queryRatePrice$} from '@rx/streams/market/rate-price';
 import {load} from '@rx/streams/market/reference-price';
 import {kline$} from '@rx/streams/subscription/kline';
@@ -43,6 +44,7 @@ export function Demo() {
       <div className="flex flex-col items-center w-400px gap-32px">
         <InitializeUserStats />
         <InitializeUser />
+        <PerpMarketInfo />
         <AddKeeper />
         <MintBalance />
         <PerpPlaceOrder />

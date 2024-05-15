@@ -3,16 +3,16 @@ import {priceMap$} from '@rx/streams/rate-price';
 import {positionUpdate$} from '@rx/streams/subscription/position';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';
-import {rateXClient$} from '@rx/web3/streams/rate-x-client';
+import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Toast} from '@rx/widgets';
 import {Big} from 'big.js';
 import {
   BehaviorSubject,
   combineLatest,
+  debounceTime,
   shareReplay,
   startWith,
   switchMap,
-  throttleTime,
   timer,
 } from 'rxjs';
 
@@ -20,20 +20,18 @@ const source = timer(0, 60 * 1000);
 
 export const query$ = new BehaviorSubject(0);
 positionUpdate$.subscribe((data: any) => {
-  console.log('Position Update : ', data);
   if (data?.length > 0) {
+    positionUpdate$.clear();
     query$.next(0);
     data?.forEach((p: any) => {
       Toast.success(`Fill Order ${p.SecurityID} [${p.LastQty}]`);
     });
   }
 });
-
-const getPositions$ = combineLatest([rateXClient$, query$, source]).pipe(
-  throttleTime(200),
-  switchMap(([client]) => load(client)),
-  startWith([]),
-  shareReplay()
+const getPositions$ = combineLatest([rateXClient$, clientReady$, query$, source]).pipe(
+  debounceTime(200),
+  switchMap(([client, ready]) => load(client, ready)),
+  startWith([])
 );
 
 export const positions$ = combineLatest([
@@ -42,7 +40,7 @@ export const positions$ = combineLatest([
   lastTrade$,
   symbolMapById$,
 ]).pipe(
-  throttleTime(200),
+  debounceTime(200),
   switchMap(([positions, rateMap, trade, symbolMap]: any) =>
     calcPositions(positions, rateMap, trade, symbolMap)
   ),
@@ -50,16 +48,20 @@ export const positions$ = combineLatest([
   shareReplay()
 );
 
-async function load(client: RateClient) {
-  if (!client || !client?.isReady) {
+async function load(client: RateClient, ready: boolean) {
+  if (!client || !ready) {
     return [];
   }
+  console.log('Position Load : ', client.wallet);
   return await client.getAllPositions();
 }
 
 const rateKeyMap: any = {
-  9: 'mSOL',
-  10: 'JitoSOL',
+  0: 'mSOL',
+  1: 'mSOL',
+  4: 'mSOL',
+  2: 'JitoSOL',
+  3: 'JitoSOL',
 };
 async function calcPositions(
   positions: any[],

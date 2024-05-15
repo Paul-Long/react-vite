@@ -27,6 +27,10 @@ export class TopicSubject extends BehaviorSubject<any> {
     this.Types = opts.Types;
   }
 
+  clear() {
+    super.next(null);
+  }
+
   next(topic: string) {
     if (topic === this._topic) {
       return;

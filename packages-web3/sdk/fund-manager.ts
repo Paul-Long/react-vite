@@ -1,5 +1,12 @@
-import type {RatexContracts} from '@/types/ratex_contracts.ts';
-import type {TokenFaucet} from '@/types/token_faucet.ts';
+import {AccountManager} from '@/sdk/account-manager';
+import {
+  getFaucetConfigPda,
+  getMarginMarketPda,
+  getMarginMarketVaultPda,
+  getMintAccountPda,
+} from '@/sdk/utils';
+import type {RatexContracts} from '@/types/ratex_contracts';
+import type {TokenFaucet} from '@/types/token_faucet';
 import {BN, Program} from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -8,13 +15,6 @@ import {
 } from '@solana/spl-token';
 import {PublicKey, SystemProgram, TransactionInstruction} from '@solana/web3.js';
 import {Big} from 'big.js';
-import {AccountManager} from './account-manager.ts';
-import {
-  getFaucetConfigPda,
-  getMarginMarketPda,
-  getMarginMarketVaultPda,
-  getMintAccountPda,
-} from './utils.ts';
 
 const MintAuthority = new PublicKey('9aTcv5rmbnYussBW61ok3caDyNZJCv2xpQF6t9b31wuj');
 

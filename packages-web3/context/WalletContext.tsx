@@ -16,7 +16,10 @@ export const WalletContextProvider: FC<{children: ReactNode}> = ({children}) => 
   const network = WalletAdapterNetwork.Devnet;
 
   const endpoint = useMemo(
-    () => 'https://devnet.helius-rpc.com/?api-key=21f80e34-a310-431d-b970-ecb7a7c16565',
+    // () => 'https://devnet.helius-rpc.com/?api-key=21f80e34-a310-431d-b970-ecb7a7c16565',
+    () =>
+      'https://convincing-green-sea.solana-devnet.quiknode.pro/e155ea13e0808fe562d72760eaf1c69daf3498c2/',
+    // () => clusterApiUrl(network),
     [network]
   );
 
@@ -67,11 +70,16 @@ export const InitDriftClient: FC = () => {
     };
   }, [wallet]);
 
-  console.log('Wallet Connected : ', wallet.connected);
   useEffect(() => {
-    if (!!wallet && wallet.connected && !client) {
-      setClient(new RateClient({connection, wallet: wallet as any}));
+    if (!!wallet && wallet.connected) {
+      if (!client) {
+        setClient(new RateClient({connection, wallet: wallet as any}));
+      } else {
+        client.updateWallet(wallet);
+      }
+    } else {
+      setClient(null);
     }
-  }, [client, connection, wallet]);
+  }, [client, wallet]);
   return <></>;
 };

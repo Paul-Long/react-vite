@@ -1,11 +1,11 @@
 import {useLang} from '@rx/hooks/use-lang';
-import {useObservable} from '@rx/hooks/use-observable.ts';
-import {useStream} from '@rx/hooks/use-stream.ts';
+import {useObservable} from '@rx/hooks/use-observable';
+import {useStream} from '@rx/hooks/use-stream';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
-import {contracts$} from '@rx/streams/config.ts';
-import {positionUpdate$} from '@rx/streams/subscription/position.ts';
-import {rateXClient$} from '@rx/web3/streams/rate-x-client.ts';
+import {contracts$} from '@rx/streams/config';
+import {positionUpdate$} from '@rx/streams/subscription/position';
+import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import {useCallback, useEffect, useMemo, useState} from 'react';
@@ -94,14 +94,22 @@ export function useOrders() {
     return data?.map((d) => ({...d, ...(contractsMap?.[d.marketIndex] ?? {})}));
   }, [data, contractsMap]);
 
-  console.log(dataSource);
-
   const handleCancel = async (row: any) => {
-    const tx = await client?.cancelOrder({
-      userPda: row.userPda,
-      userOrdersPda: row.userOrdersPda,
-      orderId: row.orderId,
-    });
+    let tx;
+    if (row.isIsolated) {
+      tx = await client?.cancelIsolatedOrder({
+        userPda: row.userPda,
+        userOrdersPda: row.userOrdersPda,
+        orderId: row.orderId,
+        marketIndex: row.marketIndex,
+      });
+    } else {
+      tx = await client?.cancelOrder({
+        userPda: row.userPda,
+        userOrdersPda: row.userOrdersPda,
+        orderId: row.orderId,
+      });
+    }
     if (tx) {
       await query();
     }

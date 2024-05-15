@@ -1,5 +1,5 @@
 import {useLang} from '@rx/hooks/use-lang';
-import {useStream} from '@rx/hooks/use-stream.ts';
+import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/trade.lang';
 import {contract$, maturity$} from '../streams/streams';
 import {InputNumber} from './InputNumber';

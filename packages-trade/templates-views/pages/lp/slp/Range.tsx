@@ -1,8 +1,11 @@
 import {clsx} from 'clsx';
-import {useState} from 'react';
 
-export function Range() {
-  const [select, setSelect] = useState('0.06-0.08');
+interface Props {
+  value: string | number;
+  onChange: (v: string | number) => void;
+}
+
+export function Range(props: Props) {
   return (
     <div className="grid grid-cols-2 gap-8px">
       {[
@@ -15,9 +18,9 @@ export function Range() {
           key={key}
           className={clsx(
             'font-size-16px lh-22px text-center py-12px rounded-8px bg-gray-40 cursor-pointer',
-            [select === key ? '0.06-0.08 fw-semibold text-white' : 'text-gray-600']
+            [props.value === key ? '0.06-0.08 fw-semibold text-white' : 'text-gray-600']
           )}
-          onClick={() => setSelect(key)}
+          onClick={() => props.onChange(key)}
         >
           {text}
         </div>

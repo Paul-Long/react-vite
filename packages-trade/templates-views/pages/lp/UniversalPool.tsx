@@ -1,11 +1,14 @@
 import {IMAGES} from '@/pages/lp/const';
 import {useLang} from '@rx/hooks/use-lang';
+import {useObservable} from '@rx/hooks/use-observable';
 import {lang} from '@rx/lang/lp.lang';
+import {contracts$} from '@rx/streams/config';
 import {clsx} from 'clsx';
 import {useState} from 'react';
 
 export function UniversalPool() {
   const {LG} = useLang();
+  useData();
   const [select, setSelect] = useState('mSOL');
   return (
     <div className="flex flex-col mt-38px">
@@ -73,4 +76,9 @@ export function UniversalPool() {
       </div>
     </div>
   );
+}
+
+function useData() {
+  const contracts = useObservable(contracts$, []);
+  return {contracts};
 }

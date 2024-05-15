@@ -17,7 +17,6 @@
     "@rx/helper": "^1.0.0",
     "@rx/hooks": "^1.0.0",
     "@rx/streams": "^1.0.0",
-    "@rx/styled": "^1.0.0",
     "@rx/vite-plugins": "^1.0.0",
     "@trade/views": "^0.0.0",
     "@trade/worker": "^0.0.0"

@@ -11,7 +11,7 @@ import {
 import {Big} from 'big.js';
 import {Buffer} from 'buffer';
 
-export const PROGRAM_ID = new PublicKey('5PCKnTPG5opy6kWGfL5ZDHiDVdqQ4QiMjysBqwjEPFWY');
+export const PROGRAM_ID = new PublicKey('Ap8mUq5RERsiaX28QkY8egfyL9c9koaRvBWdV5SgbKfP');
 
 export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
 
@@ -257,7 +257,7 @@ export class AccountManager {
     }
   }
 
-  async findUser(
+  async findTraderUser(
     program: Program<RatexContracts>,
     authority: PublicKey,
     isIsolated: boolean,
@@ -290,6 +290,26 @@ export class AccountManager {
       return user;
     }
     return null;
+  }
+
+  async findLpUser(
+    program: Program<RatexContracts>,
+    authority: PublicKey,
+    statInfo: AccountInfo<any> | null
+  ) {
+    let subAccountId = 0;
+    if (statInfo) {
+      const stat = program.coder.accounts.decode('UserStats', statInfo.data);
+      subAccountId = stat.numberOfSubAccountsCreated ?? 0;
+    }
+    const accounts = (await this.getSubAccounts(program, authority, subAccountId)).filter(
+      (u) => !u.isTrader
+    );
+    const zero = new BN(0);
+    return accounts.find((u: any) => {
+      const positions = u.liquidityPositions || [];
+      return !positions.some((p: any) => !p.baseAssetAmount.eq(zero));
+    });
   }
 
   async getUserPda(
@@ -331,13 +351,14 @@ export class AccountManager {
       .filter((u) => !!u.isTrader)
       .reduce((ps: RateXPosition[], u: any) => {
         const marginBalance = u?.marginPositions
-          ?.filter((mp: any) => mp.marketIndex === 1 && !mp.balance.eq(zero))
+          ?.filter((mp: any) => mp.marketIndex === 0 && !mp.balance.eq(zero))
           ?.reduce((total: Big, mp: any) => {
             return total.add(mp.balance.toString());
           }, new Big(0))
           .div(1_000_000_000)
           .toString();
         const positions = u?.perpPositions
+          .filter((p: any) => !p.baseAssetAmount.eq(zero))
           ?.map((p: any) => {
             const {baseAssetAmount, lastRate, quoteAssetAmount, marketIndex} = p;
             return {
@@ -353,18 +374,14 @@ export class AccountManager {
               quoteAssetAmount: Big(quoteAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
               enableClose:
                 u.orders?.filter((o: any) => {
-                  if (
+                  return !!(
                     o.marketIndex === marketIndex &&
                     baseAssetAmount.gt(zero) &&
                     o.baseAssetAmount.lt(zero)
-                  ) {
-                    return true;
-                  }
-                  return false;
+                  );
                 })?.length > 0,
             };
-          })
-          .filter((p: any) => p.baseAssetAmount != 0);
+          });
         return [...ps, ...positions];
       }, []);
   }
@@ -517,6 +534,18 @@ export class AccountManager {
         authority.toBuffer(),
         new BN(subAccountId).toArrayLike(Buffer, 'le', 2),
       ],
+      PROGRAM_ID
+    )[0];
+  }
+  createQuoteAssetVaultPda(marketIndex: number) {
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from('quote_asset_vault'), new BN(marketIndex).toArrayLike(Buffer, 'le', 2)],
+      PROGRAM_ID
+    )[0];
+  }
+  createBaseAssetVaultPda(marketIndex: number) {
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from('base_asset_vault'), new BN(marketIndex).toArrayLike(Buffer, 'le', 2)],
       PROGRAM_ID
     )[0];
   }

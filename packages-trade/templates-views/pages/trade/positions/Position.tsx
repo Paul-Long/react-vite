@@ -1,5 +1,5 @@
+import {usePositions} from '@/hooks/use-positions';
 import {Table} from '@rx/widgets';
-import {usePositions} from '../../../hooks/use-positions';
 
 interface Props {
   mode: string;
