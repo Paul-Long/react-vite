@@ -1,5 +1,5 @@
-import {FollowUs} from '@/components/FollowUs';
-import {StyledFooter} from '@/footer/styles';
+import {FollowUs} from '@/components/footer/FollowUs';
+import {StyledFooter} from '@/components/footer/styles';
 import {HOME_IMAGES} from '@rx/const/images';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/home';

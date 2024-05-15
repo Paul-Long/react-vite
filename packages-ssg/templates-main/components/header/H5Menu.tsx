@@ -1,6 +1,6 @@
-import {FollowUs} from '@/components/FollowUs';
-import {useMenus} from '@/header/state';
-import {StyledH5Content} from '@/header/styles';
+import {FollowUs} from '@/components/footer/FollowUs';
+import {useMenus} from '@/components/header/state';
+import {StyledH5Content} from '@/components/header/styles';
 import {HOME_IMAGES} from '@rx/const/images';
 import {clsx} from 'clsx';
 

@@ -1,5 +1,5 @@
-import {H5Menu} from '@/header/H5Menu';
-import {Menu} from '@/header/Menu';
+import {H5Menu} from '@/components/header/H5Menu';
+import {Menu} from '@/components/header/Menu';
 import {HOME_IMAGES} from '@rx/const/images';
 import {clsx} from 'clsx';
 import {useEffect, useState} from 'react';

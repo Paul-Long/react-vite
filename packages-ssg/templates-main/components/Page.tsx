@@ -1,16 +1,11 @@
-import {AssetsCategory} from '@/home/AssetsCategory';
-import {Banner} from '@/home/Banner';
-import {Mechanism} from '@/home/Mechanism';
-import {YieldMarket} from '@/home/YieldMarket';
-import {YieldSwap} from '@/home/YieldSwap';
-import {StyledContent, StyledPage} from '@/home/styles';
+import {Header} from '@/components/header';
 import {useScroll} from '@rx/hooks/use-scroll';
-import {Footer} from '@ssg/components/footer';
-import {Header} from '@ssg/components/header';
 import clsx from 'clsx';
 import {useEffect, useState} from 'react';
+import {Outlet} from 'react-router-dom';
+import {StyledContent, StyledPage} from './styles';
 
-export function HomeTemplate() {
+export default function Page() {
   const [show, setShow] = useState<boolean>(false);
   const {ref, isTop} = useScroll();
 
@@ -29,7 +24,7 @@ export function HomeTemplate() {
       className={clsx('overflow-auto w-100% h-100vh sv', [show && 'overflow-hidden'])}
       ref={ref}
     >
-      <Header notScrollTop={!isTop} onMenuShow={(s) => setShow(s)} />
+      <Header notScrollTop={!isTop} onMenuShow={(s: any) => setShow(s)} />
       <div className="w-100% overflow-hidden">
         <div className="relative w-1200px ml-auto mr-auto hidden lg:block">
           <img
@@ -46,27 +41,7 @@ export function HomeTemplate() {
           />
         </div>
         <StyledContent className="content relative w100% flex flex-col">
-          <Banner />
-          <YieldSwap />
-          <YieldMarket />
-          <AssetsCategory />
-          <Mechanism />
-          <div className="mx-auto mt-160px mb-80px px-24px sm:px-0">
-            <div className="flex flex-col sm:flex-row items-center w-full sm:w-672px gap-40px sm:gap-80px">
-              <img
-                className="flex-1"
-                src="//static.rate-x.io/img/v1/86ce57/Granted-by.svg"
-                alt="solana-foundation"
-              />
-              <img
-                className="flex-1 w-324px"
-                src="//static.rate-x.io/img/v1/39a481/solana-fundation.png"
-                alt="solana-foundation"
-              />
-            </div>
-          </div>
-          {/*<Investors />*/}
-          <Footer />
+          <Outlet />
         </StyledContent>
       </div>
     </StyledPage>
