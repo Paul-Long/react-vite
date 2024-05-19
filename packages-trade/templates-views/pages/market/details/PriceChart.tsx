@@ -4,7 +4,7 @@ import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/dashboard.lang';
 import {kline$} from '@rx/streams/subscription/kline';
-import {kLine$, queryKLine$} from '@rx/streams/trade/kline';
+import {clear$, kLine$, queryKLine$} from '@rx/streams/trade/kline';
 import dayjs from 'dayjs';
 import {useEffect, useRef} from 'react';
 
@@ -24,6 +24,9 @@ export function PriceChart({ready}: {ready: boolean}) {
       });
       kline$.next(`dc.md.kline.1D.${symbol}`);
     }
+    return () => {
+      clear$.next(0);
+    };
   }, [detail]);
 
   useEffect(() => {
@@ -55,8 +58,8 @@ export function PriceChart({ready}: {ready: boolean}) {
             if (params?.[0]) {
               const {axisValue, value} = params[0];
               return `<span style='color:white'>${value}</span> </br><span style='color:rgba(255, 255, 255, 0.6)'>${dayjs(
-                axisValue
-              ).format('YYYY-MM-DD HH:mm:ss')}</span>`;
+                Number(axisValue)
+              ).format('YYYY-MM-DD')}</span>`;
             }
             return '';
           },
@@ -135,9 +138,16 @@ export function PriceChart({ready}: {ready: boolean}) {
           },
         ],
       };
-      chart.current.setOption(option);
+      chart.current.setOption(option, true);
       chart.current.resize();
     }
+    return () => {
+      if (chart.current) {
+        chart.current.clear();
+        chart.current.dispose();
+        chart.current = null;
+      }
+    };
   }, [klineData, ready]);
   return (
     <div className="flex-[60%] flex flex-col gap-16px">

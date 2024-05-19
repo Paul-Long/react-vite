@@ -1,12 +1,14 @@
 import {kline$ as wsKline$} from '@/subscription/kline';
 import {formatKlineRow} from '@/utils/format-kline';
 import {klineApi} from '@rx/api/kline';
+import dayjs from 'dayjs';
 import {BehaviorSubject, Subject, combineLatest, switchMap} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 const _kLine$ = new BehaviorSubject([]);
 export const kLine$ = _kLine$.asObservable();
 export const queryKLine$ = new Subject();
+export const clear$ = new Subject();
 
 const klineState$ = queryKLine$.pipe(
   switchMap((query: any) => {
@@ -14,6 +16,11 @@ const klineState$ = queryKLine$.pipe(
     return load(query);
   })
 );
+
+clear$.subscribe(() => {
+  _kLine$.next([]);
+  wsKline$.clear();
+});
 
 combineLatest([klineState$, wsKline$])
   .pipe(map(([a, b]) => mergeData(a, b)))
@@ -29,15 +36,9 @@ async function load(query: any) {
 
 function mergeData(reqList: any, wsList: any) {
   let newList = [...(reqList || [])];
-  const last = newList?.[newList?.length - 1];
-  if (wsList.some((w) => w.timeFormat === last?.timeFormat)) {
-    newList = newList.slice(0, newList.length - 1);
-  }
-  if (!!last) {
-    wsList = [...(wsList || [])].filter((o) => o.closeTime > last.closeTime);
-  }
+  newList = newList.filter((n) => !wsList.some((w) => w.timeFormat === n?.timeFormat));
   return [...newList, ...(wsList || [])].map(({closeTime, ...d}) => ({
     ...d,
-    time: new Date(closeTime).getTime() / 1000,
+    time: dayjs(closeTime).valueOf() / 1000,
   }));
 }
