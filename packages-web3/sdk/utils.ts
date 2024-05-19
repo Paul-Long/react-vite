@@ -1,6 +1,6 @@
 import {PublicKey} from '@solana/web3.js';
 
-export const WSOLOraclePda = new PublicKey('AMxYa2B4Edf7s4nAu9YCaJw8USS9y6cC7D3N6XvLTAty');
+export const WSOLOraclePda = new PublicKey('KjuADW3Ujt3iqkxDzq1uyJ3pkBAxhZBexqe5ThiSpWm');
 
 export function getMarginMarketPda(marginIndex: number): any {
   return {
