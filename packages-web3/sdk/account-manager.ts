@@ -11,7 +11,7 @@ import {
 import {Big} from 'big.js';
 import {Buffer} from 'buffer';
 
-export const PROGRAM_ID = new PublicKey('Ap8mUq5RERsiaX28QkY8egfyL9c9koaRvBWdV5SgbKfP');
+export const PROGRAM_ID = new PublicKey('53bNcYWPHmRvCLeNKRX7PwABVCDTMVsJsbwgafn8d2if');
 
 export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
 
