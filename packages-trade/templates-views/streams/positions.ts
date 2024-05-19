@@ -29,7 +29,6 @@ positionUpdate$.subscribe((data: any) => {
     positionUpdate$.clear();
     loading$.next(true);
     query$.next(0);
-    console.log(data);
     data?.forEach((p: any) => {
       Toast.success(`Fill Order ${p.SecurityID} [${p.LastQty}]`);
     });

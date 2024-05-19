@@ -85,6 +85,5 @@ export function SpecificPool() {
 
 function useData() {
   const contracts = useObservable(contracts$, []);
-  console.log(contracts);
   return {contracts};
 }

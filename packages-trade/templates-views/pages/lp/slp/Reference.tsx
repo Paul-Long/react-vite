@@ -8,7 +8,6 @@ import {useMemo} from 'react';
 export function Reference({symbol}: {symbol: string}) {
   const reference = useObservable(referencePrice$, []);
   const {LG} = useLang();
-  console.log(reference);
   const refer = useMemo<any>(() => {
     return reference?.find((r) => r.token === symbol) ?? {};
   }, [symbol, reference]);

@@ -1,3 +1,4 @@
+import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {lang} from '@rx/lang/dashboard.lang';
@@ -7,9 +8,12 @@ import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import {useCallback, useMemo} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 export function useMarketOverview() {
   const {LG} = useLang();
+  const {fixLink} = useFixLink();
+  const navigate = useNavigate();
   const maturityMap = useObservable(maturityMap$, {});
   const lastTrade: any = useObservable(lastTrade$, {});
   const ttmMap: any = useObservable(ttmMap$, {});
@@ -64,13 +68,19 @@ export function useMarketOverview() {
     return columns;
   }, []);
 
-  console.log(dataSource);
+  const gotoTrade = useCallback((row: any) => {
+    return function (event: any) {
+      event.stopPropagation();
+      window.location.assign(fixLink('/trade') + '/' + row.SecurityID);
+    };
+  }, []);
 
-  function renderAction() {
+  function renderAction(row: any) {
     return (
       <div className="flex flex-row gap-8px">
-        <Button type="primary">{LG(lang.Trade)}</Button>
-        <Button type="default">{LG(lang.Earn)}</Button>
+        <Button type="primary" onClick={gotoTrade(row)}>
+          {LG(lang.Trade)}
+        </Button>
       </div>
     );
   }

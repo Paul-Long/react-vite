@@ -1,5 +1,6 @@
 import {ASSETS_IMAGES} from '@rx/const/images';
 import {numUtil} from '@rx/helper/num';
+import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
@@ -10,6 +11,7 @@ import {useCallback, useMemo} from 'react';
 import {detail$} from '../streams';
 
 export function Infos() {
+  const {fixLink} = useFixLink();
   const reference = useObservable(referencePrice$, []);
   const [detail, setDetail] = useStream(detail$);
   const {LG} = useLang();
@@ -19,6 +21,14 @@ export function Infos() {
   }, [detail, reference]);
 
   const handleBack = useCallback(() => setDetail(null), []);
+
+  const gotoTrade = useCallback(
+    (event: any) => {
+      event.stopPropagation();
+      window.location.assign(fixLink('/trade') + '/' + detail.SecurityID);
+    },
+    [detail]
+  );
 
   return (
     <div className="flex flex-col mt-50px gap-64px">
@@ -56,7 +66,9 @@ export function Infos() {
           </div>
         </div>
         <div className="flex flex-row items-center gap-18px">
-          <Button type="primary">{LG(lang.Trade)}</Button>
+          <Button type="primary" onClick={gotoTrade}>
+            {LG(lang.Trade)}
+          </Button>
           {/*<Button type="aqua">{LG(lang.Earn)}</Button>*/}
         </div>
       </div>
