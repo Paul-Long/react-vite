@@ -4,18 +4,32 @@ export const API_PREFIX = genApiUrl();
 export const API_URL = `${API_PREFIX}`;
 export const WS_URL = `${genWsUrl()}/gateway`;
 
-console.log(API_URL, WS_URL);
-
 function genApiUrl() {
   const hostname = calcHostname();
   const separator = calcSeparator(hostname);
-  return ['https://api10', hostname].join(separator);
+  return [getApiPrefix(), hostname].join(separator);
 }
 
 function genWsUrl() {
   const hostname = calcHostname();
   const separator = calcSeparator(hostname);
-  return ['wss://ws10', hostname].join(separator);
+  return [getWsPrefix(), hostname].join(separator);
+}
+
+function getApiPrefix() {
+  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
+  if (hostname.startsWith('app-dev11')) {
+    return 'https://api11';
+  }
+  return 'https://api10';
+}
+
+function getWsPrefix() {
+  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
+  if (hostname.startsWith('app-dev11')) {
+    return 'wss://ws11';
+  }
+  return 'wss://ws10';
 }
 
 function calcHostname() {
@@ -23,9 +37,8 @@ function calcHostname() {
     return 'rate-x.io';
   }
   // const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
-  const hostname = env.isLocal ? 'app-dev10.rate-x.io' : location.hostname;
+  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
   // sample: dev11 -> dev1, dev12 -> dev1
-  console.log(hostname, /^[a-z]*-[a-z]*[0-9]{2}\./i.test(hostname));
   if (/^(?:[a-z]*-)?[a-z]*[0-9]{2}\./i.test(hostname)) {
     return hostname
       .split('.')
