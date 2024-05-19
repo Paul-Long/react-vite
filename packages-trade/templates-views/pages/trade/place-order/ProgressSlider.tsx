@@ -27,6 +27,7 @@ const Wrap = styled.div<{$color: string}>`
     height: 16px;
     border: none;
     cursor: pointer;
+    outline: none;
     -webkit-appearance: none;
     background-color: transparent;
     &:focus,
