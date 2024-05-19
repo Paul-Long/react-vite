@@ -19,9 +19,12 @@ const locales: string[] = Object.keys(localeRecord);
 (async () => {
   const {default: Page} = await main();
   for (let i = 0; i < routers.length; i++) {
+    const route = routers[i];
+    if (route.slug.includes(':')) {
+      continue;
+    }
     for (let j = 0; j < locales.length; j++) {
       const locale: any = locales[j];
-      const route = routers[i];
       const {default: Component} = await route.loader();
       const langFiles = parserLang(locale);
       const sheet = new ServerStyleSheet();

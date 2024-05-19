@@ -97,7 +97,6 @@ function useData() {
       data.maturity = ttmMap?.[key]?.days;
       data.maturityStr = ttmMap?.[key].ttm + ttmMap?.[key].unit;
     }
-    console.log('ttm map : ', ttmMap);
     return data;
   }, [search, contracts, ttmMap]);
   return {contract};
