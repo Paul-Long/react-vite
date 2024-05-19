@@ -18,6 +18,14 @@ export default function () {
     queryReferencePrice$.next(0);
     referencePrice$.next('dc.aps.referenceprice');
   }, []);
+
+  const renderDetail = useCallback(() => {
+    if (!detail) {
+      return null;
+    }
+    return <Details />;
+  }, [detail]);
+
   return (
     <>
       {!detail && (
@@ -26,7 +34,7 @@ export default function () {
           <Overview onSelect={handleSelect} />
         </div>
       )}
-      {!!detail && <Details />}
+      {renderDetail()}
     </>
   );
 }

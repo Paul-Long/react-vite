@@ -122,6 +122,12 @@ export function TermStructure({ready}: {ready: boolean}) {
       chart.current.setOption(option);
       chart.current.resize();
     }
+    return () => {
+      if (chart.current) {
+        chart.current.clear();
+        chart.current.dispose();
+      }
+    };
   }, [data, ready]);
 
   return (

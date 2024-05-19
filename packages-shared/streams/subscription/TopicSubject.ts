@@ -16,11 +16,13 @@ export class TopicSubject extends BehaviorSubject<any> {
   _subscription: Subscription;
   _formatter?: (o: any) => any;
   _matchTopic?: (t1: string, t2: string) => boolean;
+  _initValue?: any;
   Types: Record<string, any>;
   private readonly _unsubscribe$ = new Subject<void>();
 
   constructor(opts: Options) {
     super(opts.initValue);
+    this._initValue = opts.initValue;
     this._serverName = opts.serverName;
     this._formatter = opts.formatter;
     this._matchTopic = opts.matchTopic;
@@ -28,7 +30,7 @@ export class TopicSubject extends BehaviorSubject<any> {
   }
 
   clear() {
-    super.next(null);
+    super.next(this._initValue);
   }
 
   next(topic: string) {

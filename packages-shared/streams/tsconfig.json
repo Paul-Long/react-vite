@@ -6,6 +6,7 @@
     "target": "ES2020",
     "types": ["node"],
     "lib": ["DOM", "ES2020", "esnext"],
+    "allowSyntheticDefaultImports": true,
     "composite": true,
     "baseUrl": ".",
     "paths": {
