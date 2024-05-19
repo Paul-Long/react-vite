@@ -1,41 +1,37 @@
 import {detail$} from '@/pages/market/streams';
+import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/dashboard.lang';
-import {kline$} from '@rx/streams/subscription/kline';
-import {kLine$, queryKLine$} from '@rx/streams/trade/kline';
-import dayjs from 'dayjs';
-import {useEffect, useRef} from 'react';
+import {lastTrade$} from '@rx/streams/trade/last-trade';
+import {Big} from 'big.js';
+import {useEffect, useMemo, useRef} from 'react';
 
-export function PriceChart({ready}: {ready: boolean}) {
+export function TermStructure({ready}: {ready: boolean}) {
   const {LG} = useLang();
   const container = useRef(null);
   const chart = useRef<any>();
   const [detail] = useStream(detail$);
-  const klineData = useObservable(kLine$, []);
+  const trade: any = useObservable(lastTrade$, {});
 
-  useEffect(() => {
-    const {symbol} = detail || {};
-    if (symbol) {
-      queryKLine$.next({
-        securityID: symbol,
-        text: '1D',
-      });
-      kline$.next(`dc.md.kline.1D.${symbol}`);
-    }
-  }, [detail]);
+  const data = useMemo(() => {
+    const {symbolLevel2Category} = detail;
+    return Object.keys(trade || {})
+      .filter((k) => k.includes(symbolLevel2Category))
+      .reduce((arr: any[], k: string) => {
+        if (!trade[k]?.TTM || !trade[k]?.Yield) {
+          return arr;
+        }
+        return [...arr, trade[k]];
+      }, [])
+      .sort((a, b) => (Number(a.TTM) > Number(b.TTM) ? 1 : -1))
+      .map((o: any) => [calcTTM(o.TTM), o.Yield]);
+  }, [detail, trade]);
 
   useEffect(() => {
     if (ready && window.echarts) {
       chart.current = window.echarts.init(container.current);
-      const date = [];
-      const data = [];
-      for (let i = 0; i < klineData?.length; i++) {
-        const item: any = klineData[i];
-        date.push(item.time * 1000);
-        data.push(item.close);
-      }
       const option = {
         grid: {
           left: 50,
@@ -44,7 +40,6 @@ export function PriceChart({ready}: {ready: boolean}) {
           bottom: 24,
         },
         tooltip: {
-          trigger: 'item',
           show: true,
           backgroundColor: 'rgba(255, 255, 255, 0.08)',
           borderColor: 'rgba(255, 255, 255, 0.08)',
@@ -53,10 +48,8 @@ export function PriceChart({ready}: {ready: boolean}) {
           },
           formatter: (params: any) => {
             if (params?.[0]) {
-              const {axisValue, value} = params[0];
-              return `<span style='color:white'>${value}</span> </br><span style='color:rgba(255, 255, 255, 0.6)'>${dayjs(
-                axisValue
-              ).format('YYYY-MM-DD HH:mm:ss')}</span>`;
+              const {value} = params[0];
+              return `<span style='color:white'>${Big(value[1]).times(100).toFixed(2)}%</span>`;
             }
             return '';
           },
@@ -74,15 +67,10 @@ export function PriceChart({ready}: {ready: boolean}) {
         },
         xAxis: {
           type: 'category',
-          boundaryGap: false,
-          data: date,
+          boundaryGap: ['20%', '20%'],
           axisLabel: {
             color: 'rgba(255, 255, 255, 0.4)',
             fontSize: 10,
-            showMaxLabel: false,
-            formatter: (value: any) => {
-              return dayjs(value).format('MM-DD');
-            },
           },
           axisLine: {
             show: true,
@@ -98,13 +86,15 @@ export function PriceChart({ready}: {ready: boolean}) {
         },
         yAxis: {
           type: 'value',
-          scale: true,
-          boundaryGap: ['20%', '20%'],
+          boundaryGap: [0, '100%'],
           axisLabel: {
             color: 'rgba(255, 255, 255, 0.4)',
             fontSize: 10,
-            showMaxLabel: false,
             showMinLabel: false,
+            showMaxLabel: false,
+            formatter: (value: any) => {
+              return Big(value).times(100).toFixed(2) + '%';
+            },
           },
           axisLine: {
             show: true,
@@ -125,12 +115,6 @@ export function PriceChart({ready}: {ready: boolean}) {
             itemStyle: {
               color: '#14F195',
             },
-            areaStyle: {
-              color: new window.echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {offset: 0, color: 'rgba(20, 241, 149, 0.5)'},
-                {offset: 1, color: 'rgba(20, 241, 149, 0.0)'},
-              ]),
-            },
             data,
           },
         ],
@@ -138,14 +122,26 @@ export function PriceChart({ready}: {ready: boolean}) {
       chart.current.setOption(option);
       chart.current.resize();
     }
-  }, [klineData, ready]);
+  }, [data, ready]);
+
   return (
-    <div className="flex-[60%] flex flex-col gap-16px">
-      <span className="font-size-18px lh-32px">{LG(lang.PriceChart)}</span>
+    <div className="flex-[40%] flex flex-col gap-16px">
+      <span className="font-size-18px lh-32px">{LG(lang.TermStructure)}</span>
       <div
         ref={container}
         className="h-390px w-full rounded-8px border-1px border-solid border-#FFFFFF14"
       ></div>
     </div>
   );
+}
+
+function calcTTM(days: any) {
+  if (!days) {
+    debugger;
+  }
+  days = Big(days);
+  if (days.gt(Big(365))) {
+    return numUtil.trimEnd0(days.div(365).toFixed(2, 0)) + 'Y';
+  }
+  return numUtil.trimEnd0(days.toFixed(0, 0)) + 'D';
 }

@@ -1,7 +1,7 @@
 import {loadJS} from './util';
 
 export function loadTV() {
-  return loadJS('/charting_library/charting_library.standalone.js', 'tv-charting');
+  return loadJS('/charting_library/charting_library.js', 'tv-charting');
 }
 
 export function loadEcharts() {

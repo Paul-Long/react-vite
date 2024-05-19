@@ -57,7 +57,7 @@ export function Infos() {
         </div>
         <div className="flex flex-row items-center gap-18px">
           <Button type="primary">{LG(lang.Trade)}</Button>
-          <Button type="aqua">{LG(lang.Earn)}</Button>
+          {/*<Button type="aqua">{LG(lang.Earn)}</Button>*/}
         </div>
       </div>
 
@@ -95,7 +95,7 @@ export function Infos() {
         <div className="flex flex-col items-center gap-16px ">
           <span className="text-gray-400">{LG(lang.OpenInterest)}</span>
           <span className="font-size-24px lh-36px">
-            {numUtil.trimEnd0(detail?.OpenInterest)} SOL
+            {numUtil.trimEnd0(detail?.OpenInterest ?? '')} SOL
           </span>
         </div>
         <div className="flex flex-col items-center gap-16px">
