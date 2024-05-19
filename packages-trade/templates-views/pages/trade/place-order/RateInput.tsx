@@ -16,7 +16,7 @@ export function RateInput({
     <div className="flex flex-row justify-between items-end p-16px gap-10px not-last:b-b-1px b-solid b-gray-40">
       <div className="flex-1 flex flex-col gap-8px">
         <div className="font-size-14px text-gray-600">
-          {direction === 'LONG' ? LG(lang.PayFixed) : LG(lang.PayFixed)}
+          {direction === 'LONG' ? LG(lang.ImpliedYield) : LG(lang.ImpliedYield)}
         </div>
         <div className="text-yellow-500 font-size-24px lh-36px">{fixedRate ?? '-'}</div>
       </div>
