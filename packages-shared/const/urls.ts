@@ -17,15 +17,21 @@ function genWsUrl() {
 }
 
 function getApiPrefix() {
-  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
-  if (hostname.startsWith('app-dev11')) {
+  if (env.isServer) {
+    return 'rate-x.io';
+  }
+  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location ? location.hostname : '';
+  if (hostname?.startsWith('app-dev11')) {
     return 'https://api11';
   }
   return 'https://api10';
 }
 
 function getWsPrefix() {
-  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
+  if (env.isServer) {
+    return 'rate-x.io';
+  }
+  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location ? location.hostname : '';
   if (hostname.startsWith('app-dev11')) {
     return 'wss://ws11';
   }
@@ -37,7 +43,7 @@ function calcHostname() {
     return 'rate-x.io';
   }
   // const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
-  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
+  const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location ? location.hostname : '';
   // sample: dev11 -> dev1, dev12 -> dev1
   if (/^(?:[a-z]*-)?[a-z]*[0-9]{2}\./i.test(hostname)) {
     return hostname
