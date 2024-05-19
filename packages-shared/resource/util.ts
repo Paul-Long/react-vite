@@ -3,6 +3,7 @@ export function loadJS(url: string, elementId: string) {
     const oldElement = document.getElementById(elementId);
     if (oldElement) {
       oldElement.addEventListener('load', () => resolve());
+      resolve();
       return;
     }
     const script = document.createElement('script');
