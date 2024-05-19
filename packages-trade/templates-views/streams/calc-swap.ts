@@ -65,8 +65,7 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
     }
     if (trade?.LastPrice && returnData.py) {
       returnData.impact =
-        Big(returnData.py).minus(trade.LastPrice).abs().div(trade.LastPrice).times(100).toFixed(4) +
-        '%';
+        Big(returnData.py).minus(trade.LastPrice).div(trade.LastPrice).times(100).toFixed(4) + '%';
     }
     console.log(returnData.py, trade.LastPrice);
     return returnData;
