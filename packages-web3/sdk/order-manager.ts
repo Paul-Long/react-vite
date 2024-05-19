@@ -2,6 +2,7 @@ import {AccountManager} from '@/sdk/account-manager';
 import {OrderType, PositionDirection} from '@/sdk/const';
 import {TickManager} from '@/sdk/tick-manager';
 import {
+  WSOLOraclePda,
   getMarginIndexByMarketIndex,
   getMarginMarketPda,
   getMarginMarketVaultPda,
@@ -445,7 +446,7 @@ export class OrderManager {
       })),
       // TODO wsol
       {
-        pubkey: new PublicKey('KjuADW3Ujt3iqkxDzq1uyJ3pkBAxhZBexqe5ThiSpWm'),
+        pubkey: WSOLOraclePda,
         isSigner: false,
         isWritable: true,
       },
