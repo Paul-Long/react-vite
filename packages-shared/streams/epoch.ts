@@ -44,7 +44,7 @@ function calcTTM(time: number, contracts: ConfigSymbol[]) {
       .div(60 * 60 * 24 * 1000);
     if (days.gt(Big(365))) {
       ttm[key] = {
-        ttm: numUtil.trimEnd0(days.div(365).toFixed(0, 0)),
+        ttm: numUtil.trimEnd0(days.div(365).toFixed(2, 0)),
         unit: 'years',
         days: days.toNumber(),
       };

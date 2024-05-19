@@ -46,7 +46,7 @@ export function useMarketOverview() {
         align: 'center',
         render: (record) => (!!record?.Yield ? Number(record.Yield * 100).toFixed(3) + '%' : '-'),
       },
-      {title: LG(lang.YTPrice), dataIndex: 'ClosePrice', align: 'center'},
+      {title: LG(lang.YTPrice), dataIndex: 'LastPrice', align: 'center'},
       {
         title: LG(lang.H24PriceChg),
         dataIndex: 'priceChg',
@@ -63,6 +63,8 @@ export function useMarketOverview() {
     ];
     return columns;
   }, []);
+
+  console.log(dataSource);
 
   function renderAction() {
     return (

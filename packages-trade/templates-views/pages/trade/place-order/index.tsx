@@ -43,7 +43,7 @@ export function PlaceOrder() {
         <RateInput direction={state.direction as any} fixedRate={info.priceImpact} />
       </div>
       <AssetsInfo info={info} marginType={state.marginType} />
-      <Button type="trade" disabled={loading} onClick={handleSubmit}>
+      <Button type={state.direction.toLowerCase() as any} disabled={loading} onClick={handleSubmit}>
         <div className="flex flex-row justify-center items-center flex-nowrap gap-10px font-size-16px lh-18px fw-semibold py-4px">
           {loading && <Loading size={18} />}
           {LG(lang.Trade)}
