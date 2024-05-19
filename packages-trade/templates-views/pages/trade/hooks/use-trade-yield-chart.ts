@@ -1,10 +1,10 @@
+import {chartType$, contract$, maturity$, resize$} from '@/pages/trade/streams/streams';
 import {useChart} from '@rx/hooks/use-chart';
-import {useObservable} from '@rx/hooks/use-observable.ts';
+import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
-import {kLine$} from '@rx/streams/trade/kline.ts';
-import {useEffect, useRef, useState} from 'react';
+import {kLine$} from '@rx/streams/trade/kline';
+import {useEffect, useRef} from 'react';
 import {debounceTime} from 'rxjs';
-import {contract$, maturity$, resize$} from '../streams/streams.ts';
 
 const ChartOptions = {
   leftPriceScale: {
@@ -43,8 +43,8 @@ export function useTradeYieldChart(options: any = {}) {
   const line = useRef<any>();
   const [contract] = useStream(contract$);
   const [maturity] = useStream(maturity$);
+  const [type] = useStream(chartType$);
   const klineData = useObservable(kLine$, []);
-  const [mode, setMode] = useState('YT');
   const {chart, loaded, resize, container} = useChart({...ChartOptions, ...options});
 
   useEffect(() => {
@@ -53,7 +53,9 @@ export function useTradeYieldChart(options: any = {}) {
 
   useEffect(() => {
     window?.addEventListener('resize', resize);
-    const subscription = resize$.pipe(debounceTime(500)).subscribe(() => resize());
+    const subscription = resize$.pipe(debounceTime(500)).subscribe(() => {
+      resize();
+    });
     return function () {
       window?.removeEventListener('resize', resize);
       subscription?.unsubscribe();
@@ -64,12 +66,10 @@ export function useTradeYieldChart(options: any = {}) {
     if (!loaded || !chart?.current) {
       return;
     }
-    const ytd = [];
     const yd = [];
     for (let i = 0; i < klineData?.length; i++) {
       const row: any = klineData[i];
       const {time, close: value} = row;
-      ytd.push({time, value: Number(value)});
       yd.push({time, value: Number(value)});
     }
     if (!line.current) {
@@ -86,9 +86,9 @@ export function useTradeYieldChart(options: any = {}) {
       });
     }
     line.current.applyOptions({
-      color: mode === 'YT' ? '#E8BC31' : '#27F2A9',
+      color: type === 'price' ? '#E8BC31' : '#27F2A9',
       priceFormat:
-        mode === 'YT'
+        type === 'price'
           ? {
               type: 'price',
               precision: 6,
@@ -101,14 +101,9 @@ export function useTradeYieldChart(options: any = {}) {
               },
             },
     });
-    line?.current?.setData(mode === 'YT' ? yd : ytd);
+    line?.current?.setData(yd);
     chart?.current.timeScale().fitContent();
-  }, [loaded, klineData, chart?.current, mode]);
+  }, [loaded, klineData, chart?.current]);
 
-  return {resize, container, mode, setMode};
+  return {resize, container, type};
 }
-
-export const mockData: Record<string, any> = {
-  mSOL: {},
-  JitoSOL: {},
-};

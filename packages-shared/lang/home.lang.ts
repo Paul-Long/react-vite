@@ -80,4 +80,7 @@ export const lang: any = {
   UnderlyingAsset: {
     en: 'Underlying Asset',
   },
+  Upcoming: {
+    en: 'Upcoming',
+  },
 };

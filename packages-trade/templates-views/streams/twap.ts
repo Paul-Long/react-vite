@@ -1,30 +1,29 @@
 import {RateClient} from '@rx/web3/sdk';
-import {rateXClient$} from '@rx/web3/streams/rate-x-client.ts';
+import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {
   BehaviorSubject,
   combineLatest,
+  debounceTime,
   shareReplay,
   startWith,
   switchMap,
-  throttleTime,
 } from 'rxjs';
 
-export const queryTwap$ = new BehaviorSubject(-1);
+export const marketIndex$ = new BehaviorSubject(-1);
 
-export const twap$ = combineLatest([rateXClient$, queryTwap$]).pipe(
-  throttleTime(100),
-  switchMap(([client]) => getTwap(client)),
+export const twap$ = combineLatest([rateXClient$, clientReady$, marketIndex$]).pipe(
+  debounceTime(100),
+  switchMap(([client, ready, marketIndex]) => getTwap(client, ready, marketIndex)),
   startWith(0),
   shareReplay()
 );
 
-async function getTwap(client: RateClient) {
-  if (!client) {
-    return {9: 0, 10: 0};
+async function getTwap(client: RateClient, ready: boolean, marketIndex: number) {
+  if (!client || !ready || marketIndex === undefined || marketIndex < 0) {
+    return {};
   }
 
-  return {
-    9: await client.getAmmTwap({marketIndex: 9}),
-    10: await client.getAmmTwap({marketIndex: 10}),
-  };
+  const twap = await client.getAmmTwap({marketIndex});
+  console.log('twap : ', twap);
+  return {[marketIndex]: twap};
 }

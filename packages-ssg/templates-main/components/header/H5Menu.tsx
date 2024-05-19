@@ -33,12 +33,23 @@ export function H5Menu(props: Props) {
         <div className="flex flex-col items-center gap-48px">
           {menus.map((m) =>
             !m.children ? (
-              <div
-                key={m.key}
-                className="block rounded-lg text-center text-base font-medium leading-7 text-white font-size-24px"
-              >
-                {m.title}
-              </div>
+              m.link ? (
+                <a
+                  href={m.link}
+                  target="_blank"
+                  key={m.key}
+                  className="block rounded-lg text-center text-base font-medium leading-7 text-white font-size-24px"
+                >
+                  {m.title}
+                </a>
+              ) : (
+                <div
+                  key={m.key}
+                  className="block rounded-lg text-center text-base font-medium leading-7 text-white font-size-24px"
+                >
+                  {m.title}
+                </div>
+              )
             ) : (
               <div key={m.key} className="flex flex-col gap24px">
                 <div

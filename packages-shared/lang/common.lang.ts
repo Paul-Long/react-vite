@@ -28,6 +28,12 @@ export const lang: any = {
   Liquidity: {
     en: 'Liquidity',
   },
+  Earn: {
+    en: 'Earn',
+  },
+  SynthStables: {
+    en: 'Synth Stables',
+  },
   LP: {
     en: 'LP',
   },
@@ -102,9 +108,6 @@ export const lang: any = {
   },
   Entry: {
     en: 'Entry',
-  },
-  Earn: {
-    en: 'Earn',
   },
   Amount: {
     en: 'Amount',
@@ -210,5 +213,8 @@ export const lang: any = {
   },
   Trade: {
     en: 'Trade',
+  },
+  ExpireIn: {
+    en: 'Expire In',
   },
 };

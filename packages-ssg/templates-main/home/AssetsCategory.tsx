@@ -1,5 +1,5 @@
 import {useLang} from '@rx/hooks/use-lang';
-import {lang} from '@rx/lang/home';
+import {lang} from '@rx/lang/home.lang';
 import {clsx} from 'clsx';
 
 export function AssetsCategory() {

@@ -11,7 +11,7 @@ import {
   getPerpMarketPda,
 } from '@/sdk/utils';
 import {RateXPlaceOrderParams} from '@/types/rate-x-client';
-import type {RatexContracts} from '@/types/ratex_contracts.ts';
+import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import {BN, Program} from '@coral-xyz/anchor';
 import {TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync} from '@solana/spl-token';
@@ -30,7 +30,7 @@ export class OrderManager {
     userOrdersPda: PublicKey,
     params: RateXPlaceOrderParams
   ): Promise<TransactionInstruction> {
-    const {marketIndex, orderType, direction, marginType} = params;
+    const {marketIndex, orderType, direction, marginType, margin} = params;
 
     const perp = await program.account.perpMarket.fetch(getPerpMarketPda(marketIndex));
     let priceLimit = PriceMath.sqrtPriceX64ToPrice(perp.pool.sqrtPrice, 9, 9).times(
@@ -77,6 +77,11 @@ export class OrderManager {
       baseAssetAmount,
       priceLimit,
       expireTs,
+      isolatedMarginAmount: new BN(
+        Big(margin ?? 0)
+          .times(1_000_000_000)
+          .toNumber()
+      ),
     };
 
     const remainingAccounts: any = this.getRemainingAccounts(marketIndex);
@@ -116,6 +121,7 @@ export class OrderManager {
       marketIndex: number;
     }
   ) {
+    const start = Date.now();
     const {marketIndex, direction} = params;
     const perpMarket = getPerpMarketPda(marketIndex);
     const perp = await program.account.perpMarket.fetch(perpMarket);
@@ -130,6 +136,8 @@ export class OrderManager {
         .toNumber()
     );
 
+    console.log('swap get price : ', Date.now() - start);
+
     // console.log('PriceLimit : ', priceLimit.toString());
     const tickArrays = await tm.getFillOrderTickArrays(
       program,
@@ -140,6 +148,7 @@ export class OrderManager {
       baseAssetAmount.lt(new BN(0))
     );
 
+    console.log('swap get tickArray : ', Date.now() - start);
     // console.log('**********************');
     // console.log('Direction : ', direction);
     // console.log('MarketIndex : ', marketIndex);
@@ -365,9 +374,20 @@ export class OrderManager {
     }
   ) {
     const {orderId, userPda, userOrdersPda, marketIndex} = params;
-    const marginMarket = getMarginIndexByMarketIndex(marketIndex);
-    const mintAccount: PublicKey = getMintAccountPda(getMarginIndexByMarketIndex(marketIndex));
+    const marginIndex = getMarginIndexByMarketIndex(marketIndex);
+    const mintAccount: PublicKey = getMintAccountPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
+
+    const order = await program.account.userOrders.fetch(userOrdersPda);
+
+    console.log('***************');
+    console.log('userPda : ', userPda.toBase58());
+    console.log('userOrdersPda : ', userOrdersPda.toBase58());
+    console.log('user order : ', order);
+    console.log('orderId : ', orderId);
+    console.log('marginIndex : ', marginIndex);
+    console.log('MarginMarketVaultPda : ', getMarginMarketVaultPda(marginIndex).toBase58());
+    console.log('***************');
 
     return await program.methods
       .cancelIsolatedOrder(orderId)
@@ -376,12 +396,13 @@ export class OrderManager {
         user: userPda,
         userOrders: userOrdersPda,
         keepers: am.keeperPda,
-        marginMarketVault: getMarginMarketVaultPda(marginMarket),
+        marginMarketVault: getMarginMarketVaultPda(marginIndex),
         driftSigner: am.signerPda,
         userTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
         authority,
       })
+      .remainingAccounts(this.getRemainingAllAccounts(marketIndex))
       .rpc();
   }
 
@@ -407,6 +428,37 @@ export class OrderManager {
         isSigner: false,
         isWritable: true,
       },
+    ];
+  }
+
+  getRemainingAllAccounts(marketIndex: number) {
+    return [
+      {
+        pubkey: getMarginMarketPda(getMarginIndexByMarketIndex(marketIndex)),
+        isSigner: false,
+        isWritable: true,
+      },
+      ...[0, 1, 2, 3, 4].map((i) => ({
+        pubkey: getPerpMarketPda(i),
+        isSigner: false,
+        isWritable: true,
+      })),
+      // TODO wsol
+      {
+        pubkey: new PublicKey('KjuADW3Ujt3iqkxDzq1uyJ3pkBAxhZBexqe5ThiSpWm'),
+        isSigner: false,
+        isWritable: true,
+      },
+      ...[0, 2].map((i) => ({
+        pubkey: getOraclePda(i),
+        isSigner: false,
+        isWritable: true,
+      })),
+      ...[0, 1, 2, 3, 4].map((i) => ({
+        pubkey: getObservationPda(i),
+        isSigner: false,
+        isWritable: true,
+      })),
     ];
   }
 

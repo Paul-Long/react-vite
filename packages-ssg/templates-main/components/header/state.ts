@@ -17,6 +17,7 @@ export function useMenus(props?: Props) {
 interface Menu {
   title: string;
   key: string;
+  link?: string;
   children?: Menu[];
 }
 
@@ -36,5 +37,6 @@ const genMenus = (LG: any): Menu[] => [
   {
     title: LG(lang.Docs),
     key: 'Docs',
+    link: 'https://docs.rate-x.io/ratex',
   },
 ];

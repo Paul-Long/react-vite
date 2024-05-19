@@ -18,4 +18,5 @@ interface ConfigSymbol {
   symbolLevel2Category: string;
   symbolName: string;
   term: string;
+  minimumMaintainanceCr: number;
 }

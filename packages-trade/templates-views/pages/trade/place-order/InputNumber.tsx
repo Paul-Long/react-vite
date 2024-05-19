@@ -42,6 +42,9 @@ const StyledInput = styled.input`
     margin: 0;
     -webkit-appearance: none;
   }
+  &::placeholder {
+    color: #ffffff33;
+  }
   &::after {
   }
 `;
@@ -54,10 +57,24 @@ interface Props {
   color?: string;
   value?: string | number;
   onChange?: (e: any) => void;
+  autoFocus?: boolean;
+  step?: number;
+  placeholder?: string;
+  onFocus?: (e: any) => void;
 }
 
 export function InputNumber(props: Props) {
-  const {size = 'lg', align = 'left', type = 'number', color = 'text-green-500', onChange} = props;
+  const {
+    size = 'lg',
+    align = 'left',
+    type = 'number',
+    color = 'text-green-500',
+    onChange,
+    autoFocus = false,
+    step = 1,
+    placeholder,
+    onFocus,
+  } = props;
   const wrap = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState(props.value);
@@ -69,8 +86,8 @@ export function InputNumber(props: Props) {
         v = v.replace('-', '');
         this.value = v;
       }
-      if (v.indexOf('.') !== -1 && v.split('.')[1].length > 1) {
-        v = parseFloat(v).toFixed(1);
+      if (v.indexOf('.') !== -1 && v.split('.')[1].length > step) {
+        v = parseFloat(v).toFixed(step);
         this.value = v;
       }
       updatePercentagePosition();
@@ -78,8 +95,13 @@ export function InputNumber(props: Props) {
     ref.current?.addEventListener('blur', function () {
       let v = this.value;
     });
-    updatePercentagePosition();
-  }, []);
+    if (autoFocus) {
+      ref.current?.focus();
+    }
+    setTimeout(() => {
+      updatePercentagePosition();
+    }, 200);
+  }, [step]);
 
   useEffect(() => {
     onChange?.(value);
@@ -90,6 +112,9 @@ export function InputNumber(props: Props) {
   }, []);
 
   const updatePercentagePosition = useCallback(() => {
+    if (!ref.current) {
+      return;
+    }
     if (align === 'right') {
       wrap.current?.style.setProperty('--left', `calc(100% - 10px)`);
       return;
@@ -128,8 +153,11 @@ export function InputNumber(props: Props) {
           [align === 'right' && 'text-right']
         )}
         type="number"
+        step={step}
+        placeholder={placeholder ?? ''}
         value={props.value}
         onChange={handleChange}
+        onFocus={onFocus}
       />
     </Wrap>
   );

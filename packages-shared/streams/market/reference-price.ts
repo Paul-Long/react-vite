@@ -14,7 +14,7 @@ export const referencePrice$ = combineLatest([price$, assets$, contractMap$]).pi
   shareReplay()
 );
 
-referencePrice$.subscribe((a) => console.log('data : ', a));
+referencePrice$.subscribe((a) => console.log('Reference Price : ', a));
 
 reference$.subscribe(price$);
 

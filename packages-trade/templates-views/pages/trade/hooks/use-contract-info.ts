@@ -1,9 +1,9 @@
-import {useObservable} from '@rx/hooks/use-observable.ts';
-import {ttmMap$} from '@rx/streams/epoch.ts';
-import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot.ts';
-import {lastTrade$} from '@rx/streams/trade/last-trade.ts';
+import {useContract} from '@/pages/trade/hooks/use-contract';
+import {useObservable} from '@rx/hooks/use-observable';
+import {ttmMap$} from '@rx/streams/epoch';
+import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
+import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {useEffect, useMemo} from 'react';
-import {useContract} from './use-contract.ts';
 
 export function useContractInfo() {
   const lastTrade = useObservable<any>(lastTrade$, {});

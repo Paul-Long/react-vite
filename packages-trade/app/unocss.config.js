@@ -21,6 +21,9 @@ export default defineConfig({
       blue: {
         500: '#5ECFFF',
       },
+      red: {
+        500: '#F8506F',
+      },
     },
   },
   presets: [

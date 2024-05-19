@@ -2,7 +2,7 @@ import {useMouseMask} from '@/home/hooks/use-mouse-mask';
 import {StyledYieldSwap} from '@/home/styles';
 import {HOME_IMAGES} from '@rx/const/images';
 import {useLang} from '@rx/hooks/use-lang';
-import {lang} from '@rx/lang/home';
+import {lang} from '@rx/lang/home.lang';
 
 export function YieldSwap() {
   const {LG} = useLang();

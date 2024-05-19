@@ -1,61 +1,21 @@
-import cn from 'classnames';
-import React, {useCallback} from 'react';
-import {css, CSSProperties, styled} from 'styled-components';
+import {clsx} from 'clsx';
+import {ReactNode} from 'react';
 
-const CheckboxContainer = styled.div`
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.9);
-`;
-
-const StyledCheckbox = styled.div<{$checked: boolean}>`
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 16px;
-  height: 16px;
-  box-sizing: border-box;
-  border-radius: 1px;
-  border: 1px solid var(--golden);
-  ${({$checked}) => {
-    if ($checked) {
-      return css`
-        background: var(--golden);
-      `;
-    }
-  }}
-`;
-
-interface CheckboxProps {
+interface Props {
+  value: boolean;
+  onChange?: (v: boolean) => void;
+  children?: ReactNode;
   className?: string;
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
-  children?: string | JSX.Element;
-  style?: CSSProperties;
 }
-
-export const Checkbox: React.FC<CheckboxProps> = ({
-  className,
-  checked,
-  onChange,
-  children,
-  style,
-}) => {
-  const handleClick = useCallback(() => {
-    onChange?.(!checked);
-  }, [checked]);
-
-  const checkboxClass = cn(className);
-
+export function Checkbox(props: Props) {
+  const {value, onChange, children, className = 'text-gray-600'} = props;
   return (
-    <CheckboxContainer className={checkboxClass} onClick={handleClick} style={style ?? {}}>
-      <StyledCheckbox $checked={!!checked}>
-        {checked && <i className={cn('iconfont font-size-14px mt-1px', {T1: checked})}>&#xe600;</i>}
-      </StyledCheckbox>
+    <div
+      className={clsx('flex flex-row items-center text-nowrap gap-8px cursor-pointer', className)}
+    >
+      {!value && <i className="iconfont">&#xe82c;</i>}
+      {value && <i className="iconfont text-green-500">&#xe7d7;</i>}
       {children}
-    </CheckboxContainer>
+    </div>
   );
-};
+}

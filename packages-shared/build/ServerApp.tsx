@@ -21,7 +21,10 @@ export function ServerApp(props: Props) {
           content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
         />
         <meta name="theme-color" content="#000000" />
-        <link rel="shortcut icon" href="https://static.rate-x.io/img/v1/f7052b/favicon.ico" />
+        <link
+          rel="shortcut icon"
+          href="https://static.rate-x.io/img/v1/76ad6d/logo_black_icon.svg"
+        />
         <title>RateX | Any Future Earnings Can Be Exchanged</title>
         <meta name="description" content="Any Future Earnings Can Be Exchanged" />
         <link rel="stylesheet" href="https://static.rate-x.io/css/global-fe5a7a.css"></link>

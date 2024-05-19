@@ -1,5 +1,5 @@
 import type {RateXOrder, RateXPosition} from '@/types/rate-x-client';
-import type {RatexContracts} from '@/types/ratex_contracts.ts';
+import type {RatexContracts} from '@/types/ratex_contracts';
 import {BN, Program} from '@coral-xyz/anchor';
 import {
   AccountInfo,
@@ -216,6 +216,15 @@ export class AccountManager {
         const userOrdersPda = this.createUserOrdersPda(authority, i);
         allUserPda.push(userPda);
         allUserOrdersPda.push(userOrdersPda);
+        // try {
+        //   const user = await program.account.user.fetch(userPda);
+        //   const order = await program.account.userOrders.fetch(userOrdersPda);
+        //   console.log('*********');
+        //   console.log(i, userPda.toBase58(), user);
+        //   console.log(i, userOrdersPda.toBase58(), order);
+        //   console.log('*********');
+        // } catch (e) {}
+
         pdaMap[i] = {
           userPda,
           userOrdersPda,
@@ -237,7 +246,7 @@ export class AccountManager {
             ...m,
             [userOrder.subAccountId]: userOrder.orders
               ?.filter((o: any) => !o.baseAssetAmount.eq(new BN(0)))
-              .filter((o: any) => o.expireTs.gt(Date.now())),
+              .filter((o: any) => o.expireTs.gt(Date.now() / 1000)),
           };
         }, {});
       return userAccounts
@@ -292,19 +301,46 @@ export class AccountManager {
     return null;
   }
 
-  async findLpUser(
+  async getLpAccounts(
     program: Program<RatexContracts>,
     authority: PublicKey,
-    statInfo: AccountInfo<any> | null
+    subAccountCount?: number
   ) {
-    let subAccountId = 0;
-    if (statInfo) {
+    let count = subAccountCount ?? 0;
+    if (subAccountCount === undefined) {
+      const userStatPda = this.createUserStatPda(authority);
+      const statInfo = await program.provider.connection.getAccountInfo(userStatPda);
+      if (!statInfo) {
+        return [];
+      }
       const stat = program.coder.accounts.decode('UserStats', statInfo.data);
-      subAccountId = stat.numberOfSubAccountsCreated ?? 0;
+      count = stat.numberOfSubAccountsCreated ?? 0;
     }
-    const accounts = (await this.getSubAccounts(program, authority, subAccountId)).filter(
-      (u) => !u.isTrader
-    );
+    const allPda: PublicKey[] = [];
+    for (let i = 0; i < count; i++) {
+      const userPda = this.createUserPda(authority, i);
+      allPda.push(userPda);
+    }
+    const accounts = await program.provider.connection.getMultipleAccountsInfo(allPda);
+    const users = [];
+    for (let i = 0; i < count; i++) {
+      const account: any = accounts[i];
+      const userPda = allPda[i];
+      if (!!account?.data) {
+        try {
+          const user = program.coder.accounts.decode('User', account.data);
+          if (!user?.isTrader) {
+            users.push({...user, userPda});
+          }
+        } catch (e) {}
+      }
+    }
+    console.log('LP Accounts : ', users, accounts);
+    return users;
+  }
+
+  async findLpUser(program: Program<RatexContracts>, authority: PublicKey) {
+    const accounts = await this.getLpAccounts(program, authority);
     const zero = new BN(0);
     return accounts.find((u: any) => {
       const positions = u.liquidityPositions || [];

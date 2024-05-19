@@ -98,9 +98,9 @@ export const ToastManager = () => {
     document?.body
   );
 };
-
+let count = 0;
 export const createToast = (content: ReactNode, type: ToastType) => {
-  const id = Date.now();
+  const id = Date.now() + count++;
   toasts.push({id, content, type});
   updateFunction?.();
   setTimeout(() => {

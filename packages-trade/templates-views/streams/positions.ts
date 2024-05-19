@@ -1,3 +1,4 @@
+import {calcLiqPrice} from '@/streams/utils';
 import {symbolMapById$} from '@rx/streams/config';
 import {priceMap$} from '@rx/streams/rate-price';
 import {positionUpdate$} from '@rx/streams/subscription/position';
@@ -10,6 +11,8 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  filter,
+  map,
   shareReplay,
   startWith,
   switchMap,
@@ -19,10 +22,14 @@ import {
 const source = timer(0, 60 * 1000);
 
 export const query$ = new BehaviorSubject(0);
+const loading$ = new BehaviorSubject(false);
+
 positionUpdate$.subscribe((data: any) => {
   if (data?.length > 0) {
     positionUpdate$.clear();
+    loading$.next(true);
     query$.next(0);
+    console.log(data);
     data?.forEach((p: any) => {
       Toast.success(`Fill Order ${p.SecurityID} [${p.LastQty}]`);
     });
@@ -31,6 +38,10 @@ positionUpdate$.subscribe((data: any) => {
 const getPositions$ = combineLatest([rateXClient$, clientReady$, query$, source]).pipe(
   debounceTime(200),
   switchMap(([client, ready]) => load(client, ready)),
+  map((res) => {
+    loading$.next(false);
+    return res;
+  }),
   startWith([])
 );
 
@@ -39,9 +50,11 @@ export const positions$ = combineLatest([
   priceMap$,
   lastTrade$,
   symbolMapById$,
+  loading$,
 ]).pipe(
   debounceTime(200),
-  switchMap(([positions, rateMap, trade, symbolMap]: any) =>
+  filter((res) => !res[4]),
+  switchMap(([positions, rateMap, trade, symbolMap, loading]: any) =>
     calcPositions(positions, rateMap, trade, symbolMap)
   ),
   startWith([]),
@@ -52,7 +65,8 @@ async function load(client: RateClient, ready: boolean) {
   if (!client || !ready) {
     return [];
   }
-  console.log('Position Load : ', client.wallet);
+  loading$.next(true);
+  console.log(new Date(), 'Position Load : ', client.wallet);
   return await client.getAllPositions();
 }
 
@@ -73,7 +87,7 @@ async function calcPositions(
   const crossCr = calcCr(crossPositions, tradeMap, symbolMap);
   return positions?.map((p) => {
     const {baseAssetAmount: x, quoteAssetAmount: y, lastRate} = p;
-    let st = y;
+    let st = Big(y);
     let pnl = Big(0);
     const rateN = rateMap[rateKeyMap[p.marketIndex]]?.ratePrice;
     const symbol = symbolMap?.[p.marketIndex] ?? {};
@@ -82,25 +96,37 @@ async function calcPositions(
       const rateNM = Big(rateN).div(lastRate);
       p.rateN = rateN.toFixed(9);
 
-      st = Big(y)
+      st = st
         .times(rateN)
         .div(lastRate)
         .add(Big(x).times(rateNM.minus(1)));
 
       if (trade?.LastPrice) {
         pnl = Big(x)
-          .times(Big(trade?.LastPrice).minus(Math.abs(st / x)))
+          .times(Big(trade?.LastPrice).minus(st.div(x).abs()))
           .add(st.add(x).times(rateNM.minus(1)));
       }
     }
+    const direction = x > 0 ? 'LONG' : 'SHORT';
     return {
       ...p,
-      st: y.toFixed(9),
-      quoteAssetAmount: st.toFixed(9),
-      pnl: pnl.toFixed(9),
       ...symbol,
       ...trade,
+      direction,
+      st: y,
+      pnl: pnl.toFixed(9),
+      quoteAssetAmount: st.toFixed(9),
+      entry: st.div(x).abs().toFixed(9),
       cr: p.isIsolated ? calcCr([p], tradeMap, symbolMap) : crossCr,
+      lipPrice: p.isIsolated
+        ? calcLiqPrice(
+            direction,
+            symbol.minimumMaintainanceCr ?? '1.05',
+            x,
+            st.toNumber(),
+            p.margin
+          )
+        : '-',
     };
   });
 }
@@ -115,6 +141,9 @@ function calcCr(positions: any[], tradeMap: any, symbolMap: any) {
     const p = positions[i];
     const symbol = symbolMap?.[p.marketIndex] ?? {};
     const trade: any = tradeMap?.[symbol?.symbol] ?? {};
+    if (!trade?.LastPrice) {
+      continue;
+    }
     if (!marginMap[p.userPda]) {
       marginMap[p.userPda] = Big(p.margin);
     }
@@ -140,6 +169,5 @@ function calcCr(positions: any[], tradeMap: any, symbolMap: any) {
     const value = marginMap[pda];
     return total.add(value);
   }, Big(0));
-  const cr = assets.add(margin).div(liability).toFixed(9);
-  return cr;
+  return assets.add(margin).div(liability).toFixed(9);
 }

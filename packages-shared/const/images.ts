@@ -1,38 +1,3 @@
-import bonk from './images/bonk.png';
-import down from './images/down.png';
-import eth from './images/ethereum-eth-logo.svg';
-import history from './images/history.png';
-import logo from './images/logo.png';
-import lrt from './images/lrt.svg';
-import nft from './images/nft.svg';
-import points from './images/points.svg';
-import matic from './images/polygon-matic-logo.svg';
-import rwa from './images/rwa.svg';
-import search from './images/search.png';
-import settings from './images/settings.png';
-import sol from './images/solana-sol-logo.svg';
-import stables from './images/stables.svg';
-import transfer from './images/transfer.svg';
-
-export const IMAGES = {
-  eth,
-  matic,
-  sol,
-  down,
-  logo,
-  history,
-  settings,
-  search,
-  transfer,
-  lrt,
-  stables,
-  rwa,
-  nft,
-  bonk,
-  points,
-  LOGO: '//static.rate-x.io/img/v1/09b10e/logo.png',
-};
-
 export const ASSETS_IMAGES: Record<string, string> = {
   SOL: 'https://static.rate-x.io/img/v1/99ca82/solana-sol-logo.svg',
   MSOL: 'https://static.rate-x.io/img/v1/d4c192/msol.svg',
@@ -41,7 +6,8 @@ export const ASSETS_IMAGES: Record<string, string> = {
 
 export const HOME_IMAGES = {
   HOME_BG: '//static.rate-x.io/img/v1/06cdd8/home-bg.jpg',
-  LOGO: '//static.rate-x.io/img/v1/065167/logo.svg',
+  LOGO_BLACK: '//static.rate-x.io/img/v1/e1e9e5/logo_black.svg',
+  LOGO: '//static.rate-x.io/img/v1/88b8f6/logo_white.svg',
   HEADER_ICON: '//static.rate-x.io/img/v1/4be4dd/home-banner.png',
   //
   MARGIN_YIELD_TRADING: '//static.rate-x.io/img/v1/a609ea/margin-yield-trading.svg',

@@ -43,9 +43,13 @@ function calcTTM(time: number, contracts: ConfigSymbol[]) {
       .minus(time)
       .div(60 * 60 * 24 * 1000);
     if (days.gt(Big(365))) {
-      ttm[key] = {ttm: numUtil.trimEnd0(days.div(365).toFixed(2)), unit: 'years', days: days.toNumber()};
+      ttm[key] = {
+        ttm: numUtil.trimEnd0(days.div(365).toFixed(0, 0)),
+        unit: 'years',
+        days: days.toNumber(),
+      };
     } else {
-      ttm[key] = {ttm: numUtil.trimEnd0(days.toFixed(2)), unit: 'days', days: days.toNumber()};
+      ttm[key] = {ttm: numUtil.trimEnd0(days.toFixed(0, 0)), unit: 'days', days: days.toNumber()};
     }
     return ttm;
   }, {});

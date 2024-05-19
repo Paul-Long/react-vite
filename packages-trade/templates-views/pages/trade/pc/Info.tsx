@@ -1,6 +1,8 @@
 import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
+import {lang} from '@rx/lang/common.lang';
 import {Big} from 'big.js';
+import {clsx} from 'clsx';
 import {useContractInfo} from '../hooks/use-contract-info';
 
 export function Info() {
@@ -16,7 +18,11 @@ export function Info() {
           <span className="font-size-14px lh-20px font-normal text-gray-600 text-nowrap">
             {o.title}
           </span>
-          <span className="font-size-14px lh-24px font-medium text-white text-nowrap">
+          <span
+            className={clsx('font-size-14px lh-24px font-medium text-nowrap', [
+              o.color || 'text-white',
+            ])}
+          >
             {o.value}
           </span>
         </div>
@@ -26,7 +32,7 @@ export function Info() {
 }
 
 const genInfo = (LG: (s: string) => string, data: any) => [
-  {title: 'TTM', value: data?.ttm},
+  {title: LG(lang.ExpireIn), value: data?.ttm},
   {
     title: 'Yield',
     value: data?.Yield
@@ -34,18 +40,23 @@ const genInfo = (LG: (s: string) => string, data: any) => [
           .times(100)
           .toFixed(2) + '%'
       : '-',
+    color: 'text-green-500',
   },
-  {title: 'Price', value: data?.LastPrice ?? '-'},
+  {title: 'Price', value: data?.LastPrice ?? '-', color: 'text-yellow-500'},
   {
     title: 'Cumulative Price',
-    value: data?.CumulativePrice
-      ? numUtil.trimEnd0(
-          Big(data?.MarkPrice ?? 0)
-            .plus(data.CumulativePrice)
-            .toFixed(8)
-        )
-      : '-',
+    value:
+      !!data?.CumulativePrice && !!data?.LastPrice
+        ? numUtil.trimEnd0(
+            Big(data?.LastPrice ?? 0)
+              .plus(data.CumulativePrice)
+              .toFixed(9)
+          )
+        : '-',
   },
-  {title: 'OpenInterest', value: data?.OpenInterest ?? '-'},
+  {
+    title: 'Open Interest',
+    value: data?.OpenInterest ? numUtil.trimEnd0(numUtil.floor(data?.OpenInterest ?? 0, 2)) : '-',
+  },
   {title: 'Ava.Liquidity', value: '-'},
 ];

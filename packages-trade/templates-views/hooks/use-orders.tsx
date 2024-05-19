@@ -46,8 +46,8 @@ export function useOrders() {
         fixed: 'left',
         width: '80px',
         shadowRight: true,
-        headerCellStyle: {background: '#000'},
-        bodyCellStyle: {background: '#000'},
+        headerCellStyle: {background: '#030B0F'},
+        bodyCellStyle: {background: '#030B0F'},
         render: (_, i) => (i ?? 0) + 1,
       },
       {
@@ -55,26 +55,20 @@ export function useOrders() {
         dataIndex: 'marginType',
         render: (record) => (record.isIsolated ? LG(lang.Isolated) : LG(lang.Cross)),
       },
-      {title: LG(clang.Contract), dataIndex: 'symbolName'},
       {
-        title: LG(clang.Amount),
-        dataIndex: 'baseAssetAmount',
+        title: LG(clang.Contract),
+        align: 'left',
+        dataIndex: 'contract',
+        render: renderContract(LG),
       },
-      {
-        title: LG(clang.Direction),
-        dataIndex: 'direction',
-        render: (row: any) => (row.baseAssetAmount > 0 ? LG(clang.Long) : LG(clang.Short)),
-      },
-      {title: LG(lang.Limit), dataIndex: 'liquidation'},
-      {title: LG(clang.Liq) + '.', dataIndex: 'liq'},
-      {title: LG(lang.Leverage), dataIndex: 'leverage'},
+      {title: 'YT/ST', dataIndex: 'ytst', align: 'right', render: renderYtSt(LG)},
       {
         title: LG(clang.Margin),
         dataIndex: 'action',
         fixed: 'right',
         shadowLeft: true,
-        headerCellStyle: {background: '#000'},
-        bodyCellStyle: {background: '#000'},
+        headerCellStyle: {background: '#030B0F'},
+        bodyCellStyle: {background: '#030B0F'},
         render: renderAction,
       },
     ];
@@ -129,4 +123,24 @@ export function useOrders() {
   );
 
   return {columns, dataSource};
+}
+
+function renderContract(LG: any) {
+  return (row: any) => (
+    <div className="flex flex-col">
+      <span>{row.symbolName ?? ''}</span>
+      <span className="text-green-500">
+        {row.baseAssetAmount > 0 ? LG(clang.Long) : LG(clang.Short)}
+      </span>
+    </div>
+  );
+}
+
+function renderYtSt(LG: any) {
+  return (row: any) => (
+    <div className="flex flex-col items-end w-full">
+      <span>{row.baseAssetAmount ?? '-'} YT</span>
+      <span>{row.quoteAssetAmount ?? '-'} ST</span>
+    </div>
+  );
 }

@@ -1,12 +1,12 @@
+import {PROGRAM_ID} from '@/sdk/account-manager';
+import {TICK_ARRAY_SIZE} from '@/sdk/const';
 import type {RatexContracts} from '@/types/ratex_contracts.ts';
+import {PriceMath} from '@/utils/price-math';
 import * as anchor from '@coral-xyz/anchor';
-import {BN, Program, Wallet} from '@coral-xyz/anchor';
-import {PublicKey, SystemProgram, Transaction, TransactionInstruction} from '@solana/web3.js';
+import {BN, Program} from '@coral-xyz/anchor';
+import {PublicKey, SystemProgram, TransactionInstruction} from '@solana/web3.js';
 import {Buffer} from 'buffer';
 import Decimal from 'decimal.js';
-import {PriceMath} from '../utils/price-math.ts';
-import {PROGRAM_ID} from './account-manager.ts';
-import {TICK_ARRAY_SIZE} from './const.ts';
 
 export class TickManager {
   priceLimit: BN;
@@ -50,7 +50,7 @@ export class TickManager {
         PROGRAM_ID
       );
       try {
-        const tickArrayAccount = await program.provider.connection.getAccountInfo(tickArray);
+        // const tickArrayAccount = await program.provider.connection.getAccountInfo(tickArray);
         console.log('found tick array', startTickIndex);
         tickArrays.push(tickArray);
       } catch (e) {
@@ -109,7 +109,6 @@ export class TickManager {
 
   async initializeTickArraysV2(
     program: Program<RatexContracts>,
-    wallet: Wallet,
     authority: PublicKey,
     perpMarket: PublicKey,
     startTickIndex: number,
@@ -118,52 +117,41 @@ export class TickManager {
     startTickIndex = Math.floor(startTickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
     endTickIndex = Math.floor(endTickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
     let tickArrays = [];
-    const combinedTransaction = new Transaction();
+    const instructions = [];
+    const tickArrayAccounts = [];
+    const tas = [];
     for (let i = startTickIndex; i <= endTickIndex; i += TICK_ARRAY_SIZE) {
-      const [ta, transaction] = await this.initializeTickArrayTransaction(
-        program,
-        authority,
-        perpMarket,
-        i
-      );
-      tickArrays.push(ta);
-      if (!!transaction) {
-        combinedTransaction.add(transaction);
+      const {tickArray, tickIndex} = this.genTickArray(perpMarket, startTickIndex);
+      tickArrayAccounts.push(tickArray);
+      tas.push([tickArray, tickIndex, i]);
+    }
+    const accounts = await program.provider.connection.getMultipleAccountsInfo(tickArrayAccounts);
+    for (let i = 0; i < tickArrayAccounts.length; i++) {
+      const account = accounts[i];
+      const [tickArray, tickIndex, startTickIndex] = tas[i];
+      if (!account) {
+        const instruction = await this.initializeTickArrayTransaction(
+          program,
+          authority,
+          perpMarket,
+          tickArray as PublicKey,
+          tickIndex as number
+        );
+        instructions.push(instruction);
       }
+      tickArrays.push(tickArray);
     }
-    combinedTransaction.recentBlockhash = (
-      await program.provider.connection.getRecentBlockhash()
-    ).blockhash;
-    combinedTransaction.feePayer = authority;
-    try {
-      const signedTransaction = await wallet.signTransaction(combinedTransaction);
-      const signature = await program.provider.connection.sendRawTransaction(
-        signedTransaction.serialize(),
-        {
-          skipPreflight: true,
-        }
-      );
-      await program.provider.connection.confirmTransaction(signature, 'confirmed');
-      console.log('Combined Transaction successful!', signature);
-      return tickArrays;
-    } catch (e) {
-      return [];
-    }
+    return [tickArrays, instructions];
   }
 
   async initializeTickArrayTransaction(
     program: Program<RatexContracts>,
     authority: PublicKey,
     perpMarket: PublicKey,
-    startTickIndex: number
-  ): Promise<[PublicKey, TransactionInstruction | null]> {
-    const {tickArray, tickIndex} = this.genTickArray(perpMarket, startTickIndex);
-
-    const accountInfo = await program.provider.connection.getAccountInfo(tickArray);
-    if (!!accountInfo) {
-      return [tickArray, null];
-    }
-    const transaction = await program.methods
+    tickArray: PublicKey,
+    tickIndex: number
+  ): Promise<TransactionInstruction | null> {
+    return await program.methods
       .initializeTickArray(tickIndex)
       .accounts({
         perpMarket,
@@ -172,7 +160,6 @@ export class TickManager {
         systemProgram: SystemProgram.programId,
       })
       .instruction();
-    return [tickArray, transaction];
   }
 
   genTickArray(perpMarket: PublicKey, startTickIndex: number) {

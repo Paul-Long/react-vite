@@ -2,7 +2,7 @@ import {useMouseMask} from '@/home/hooks/use-mouse-mask';
 import {HOME_IMAGES} from '@rx/const/images';
 import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
-import {lang} from '@rx/lang/home';
+import {lang} from '@rx/lang/home.lang';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
 import {MarqueeDivs} from './Marquee';

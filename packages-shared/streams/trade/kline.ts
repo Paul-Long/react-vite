@@ -30,6 +30,9 @@ async function load(query: any) {
 function mergeData(reqList: any, wsList: any) {
   let newList = [...(reqList || [])];
   const last = newList?.[newList?.length - 1];
+  if (wsList.some((w) => w.timeFormat === last?.timeFormat)) {
+    newList = newList.slice(0, newList.length - 1);
+  }
   if (!!last) {
     wsList = [...(wsList || [])].filter((o) => o.closeTime > last.closeTime);
   }

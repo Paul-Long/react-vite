@@ -12,7 +12,9 @@ export function Positions() {
   const [tab, setTab] = useState<string>('position');
   return (
     <div className="flex flex-col b-solid b-gray-40 b-t-1px box-border px-16px py-16px">
-      <CardTabs options={genTabs(LG)} value={tab} onChange={(t) => setTab(t)} />
+      <div className="w-300px">
+        <CardTabs options={genTabs(LG)} value={tab} onChange={(t) => setTab(t)} />
+      </div>
       <div className="flex overflow-hidden">
         {tab === 'position' && <Position mode={mode} />}
         {tab === 'orders' && <Orders mode={mode} />}

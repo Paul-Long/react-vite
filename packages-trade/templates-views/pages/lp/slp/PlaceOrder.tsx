@@ -5,7 +5,8 @@ import {useLang} from '@rx/hooks/use-lang';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
-import {Button} from '@rx/widgets';
+import {Button, Loading} from '@rx/widgets';
+import {Big} from 'big.js';
 import {useCallback, useState} from 'react';
 
 interface Props {
@@ -13,12 +14,11 @@ interface Props {
 }
 export function PlaceOrder(props: Props) {
   const {LG} = useLang();
-  const {state, handleChange, handleSubmit} = usePlaceOrder(props);
-  console.log(props);
+  const {state, loading, handleChange, handleSubmit} = usePlaceOrder(props);
   return (
     <div className="flex flex-row gap-24px">
       <div className="flex flex-col flex-1">
-        <Info />
+        <Info contract={props.contract} />
       </div>
       <div className="flex flex-col w-384px rounded-8px bg-gray-40 py-16px px-24px gap-20px">
         <div className="font-size-16px">{LG(lang.StandardRange)}</div>
@@ -34,8 +34,11 @@ export function PlaceOrder(props: Props) {
             0.03%
           </span>
         </div>
-        <Button type="trade" onClick={handleSubmit}>
-          {LG(lang.AddLiquidity)}
+        <Button type="trade" disabled={loading} onClick={handleSubmit}>
+          <div className="flex flex-row justify-center items-center flex-nowrap gap-10px font-size-16px lh-18px">
+            {loading && <Loading size={18} />}
+            {LG(lang.AddLiquidity)}
+          </div>
         </Button>
       </div>
     </div>
@@ -44,9 +47,10 @@ export function PlaceOrder(props: Props) {
 
 function usePlaceOrder(props: Props) {
   const [client] = useStream(rateXClient$);
+  const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
     amount: '',
-    range: '0.06-0.08',
+    range: '6-8',
   });
 
   const handleChange = useCallback(
@@ -64,17 +68,22 @@ function usePlaceOrder(props: Props) {
     }
     const {range, amount} = state;
     const [lowerRate, upperRate] = range.split('-');
+    if (!amount || !lowerRate || !upperRate) {
+      return;
+    }
     const params = {
-      lowerRate,
-      upperRate,
+      lowerRate: Big(lowerRate).div(100).toNumber(),
+      upperRate: Big(upperRate).div(100).toNumber(),
       amount,
       marketIndex: props?.contract?.id,
       maturity: props?.contract?.maturity,
     };
     console.log('order ', params);
+    setLoading(true);
     const tx = await client.addPerpLpShares(params);
+    setLoading(false);
     console.log('add lp tx : ', tx);
   }, [state, client, props]);
 
-  return {state, handleChange, handleSubmit};
+  return {state, loading, handleChange, handleSubmit};
 }

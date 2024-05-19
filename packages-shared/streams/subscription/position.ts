@@ -16,7 +16,3 @@ export const positionUpdate$ = new TopicSubject({
     return regex.test(topic2);
   },
 });
-
-positionUpdate$.subscribe((d) => {
-  console.log(PositionSubTypes.Subscribe, d);
-});

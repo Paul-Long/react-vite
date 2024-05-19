@@ -1,10 +1,11 @@
+import {IMAGES} from '@/pages/lp/const';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {contractMap$, maturityMap$} from '@rx/streams/config';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {ReactNode, useCallback, useEffect, useMemo, useState} from 'react';
 import {asset$, contract$, maturity$} from '../streams/streams';
 
-type Option = {label: string; value: string};
+type Option = {label: ReactNode; value: string};
 
 export function useContract() {
   const [asset, setAsset] = useStream(asset$);
@@ -28,7 +29,13 @@ export function useContract() {
       return;
     }
     const data = contractMap?.[asset];
-    const contractList = data?.map((d) => ({label: d.symbolCategory, value: d.symbolCategory}));
+    const Label = ({d}: {d: ConfigCategory}) => (
+      <div className="flex flex-row items-center gap-8px">
+        <img src={IMAGES[d.symbolCategory.toUpperCase()]} alt="" width={24} height={24} />
+        {d.symbolCategory}
+      </div>
+    );
+    const contractList = data?.map((d) => ({label: <Label d={d} />, value: d.symbolCategory}));
     const contract = data?.[0]?.symbolCategory;
     setContract(contract);
     setContracts(contractList);

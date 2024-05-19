@@ -3459,6 +3459,15 @@
             "type": "u16"
           },
           {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
             "name": "isolatedMarginAmount",
             "type": "u64"
           },
@@ -3467,7 +3476,7 @@
             "type": {
               "array": [
                 "u8",
-                12
+                16
               ]
             }
           }

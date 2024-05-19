@@ -132,6 +132,7 @@ export class RateClient {
     if (!this.authority) {
       return;
     }
+    const start = Date.now();
     const {marketIndex, marginType, margin} = params;
     const [userStatPda, transaction1, statInfo] = await this.am.initializeUserStatsTransaction(
       this.program,
@@ -146,6 +147,7 @@ export class RateClient {
       true,
       statInfo
     );
+    console.log('place order check user : ', Date.now() - start);
     let userPda = user?.userPda;
     if (!user) {
       if (!transaction1 && !!userStatPda) {
@@ -176,6 +178,7 @@ export class RateClient {
       userOrdersPda = uop;
       transaction3 = t3;
     }
+    console.log('place order check user orders : ', Date.now() - start);
     if (marginType === 'CROSS' && !transaction2 && !transaction3) {
       const zero = new BN(0);
       // const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
@@ -192,10 +195,12 @@ export class RateClient {
         }
       }
     }
+    console.log('place order check position and orders : ', Date.now() - start);
     const transaction4 = await this.fm.depositTransaction(this.program, this.authority, userPda, {
       marginIndex: getMarginIndexByMarketIndex(marketIndex) as number,
       amount: margin,
     });
+    console.log('place order deposit : ', Date.now() - start);
 
     const transaction5 = await this.om.placeOrderTransaction(
       this.program,
@@ -206,6 +211,8 @@ export class RateClient {
       params
     );
 
+    console.log('place order instruction : ', Date.now() - start);
+
     const combinedTransaction = new Transaction();
     !!transaction1 && combinedTransaction.add(transaction1);
     !!transaction2 && combinedTransaction.add(transaction2);
@@ -215,13 +222,14 @@ export class RateClient {
     combinedTransaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
     combinedTransaction.feePayer = this.authority;
 
+    console.log('place order submit : ', Date.now() - start);
     try {
       const signedTransaction = await this.wallet.signTransaction(combinedTransaction);
       const signature = await this.connection.sendRawTransaction(signedTransaction.serialize(), {
         skipPreflight: true,
-        preflightCommitment: 'confirmed',
+        preflightCommitment: 'processed',
       });
-      await this.connection.confirmTransaction(signature, 'confirmed');
+      // await this.connection.confirmTransaction(signature, 'confirmed');
       console.log('Combined Transaction successful!', new Date(), signature);
       return signature;
     } catch (error) {
@@ -369,17 +377,17 @@ export class RateClient {
     if (!this.authority) {
       return;
     }
-    const [_, transaction1, statInfo] = await this.am.initializeUserStatsTransaction(
+    const [userStatPda, transaction1, statInfo] = await this.am.initializeUserStatsTransaction(
       this.program,
       this.authority
     );
     let subAccountId = 0;
     let transaction2;
     let userPda;
-    let user = await this.am.findLpUser(this.program, this.authority, statInfo);
+    let user = await this.am.findLpUser(this.program, this.authority);
     if (!user) {
       if (statInfo?.data) {
-        const stat = await this.program.coder.accounts.decode('UserStat', statInfo.data);
+        const stat = await this.program.account.userStats.fetch(userStatPda as PublicKey);
         subAccountId = stat.numberOfSubAccountsCreated ?? 0;
       }
       const [pda, t] = await this.am.initializeUserTransaction(
@@ -395,9 +403,8 @@ export class RateClient {
       userPda = user.userPda;
     }
 
-    const transaction3 = await this.lp.addPerpLpShares(
+    const instructions: TransactionInstruction[] = await this.lp.addPerpLpShares(
       this.program,
-      this.wallet,
       this.authority,
       this.am,
       this.tm,
@@ -407,7 +414,9 @@ export class RateClient {
     const combinedTransaction = new Transaction();
     !!transaction1 && combinedTransaction.add(transaction1);
     !!transaction2 && combinedTransaction.add(transaction2);
-    combinedTransaction.add(transaction3);
+    instructions.forEach((ins) => {
+      combinedTransaction.add(ins);
+    });
     combinedTransaction.add(
       ComputeBudgetProgram.setComputeUnitLimit({
         units: 1_400_000,
@@ -493,7 +502,7 @@ export class RateClient {
 
   async getUserMintAccount(marginIndex: number) {
     if (!this.authority) {
-      return false;
+      return null;
     }
     return getAssociatedTokenAddressSync(getMintAccountPda(marginIndex), this.authority);
   }

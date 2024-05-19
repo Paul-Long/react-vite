@@ -1,38 +1,33 @@
+import {current$} from '@/pages/trade/streams/streams';
+import {calcInfo$, order$} from '@/streams/calc-swap';
 import {query$} from '@/streams/positions';
+import {marketIndex$, twap$} from '@/streams/twap';
 import {tradeApi} from '@rx/api/trade';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
-import {ttmMap$} from '@rx/streams/epoch';
 import {walletModalVisible$} from '@rx/streams/wallet';
 import {useConnect} from '@rx/web3/hooks/use-connect';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Toast} from '@rx/widgets';
 import {Big} from 'big.js';
-import {useCallback, useEffect, useRef, useState} from 'react';
-import {useContract} from '../hooks/use-contract';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 export function useForm() {
   const current = useRef<string>('amount');
-  const timer = useRef<any>(null);
-  const twapTimer = useRef<any>(null);
-
   const [client] = useStream(rateXClient$);
-  const [twap, setTwap] = useState();
-  const [info, setInfo] = useState<any>({});
-  const ttmMap = useObservable<Record<string, any>>(ttmMap$, {});
-
-  const {baseContract} = useContract();
+  const twap: any = useObservable(twap$, {});
+  const info = useObservable(calcInfo$, {});
+  const baseContract = useObservable(current$, {});
 
   const [loading, setLoading] = useState(false);
 
-  const [state, setState] = useState({
-    marginType: 'CROSS',
-    direction: 'SHORT',
-    amount: 1,
-    leverage: 1,
-    margin: 1,
-    slippage: 1,
-  });
+  const [state, setState] = useState(initData());
+
+  const amountN = useMemo(() => state.amount, [state]);
+  const marginN = useMemo(() => state.margin, [state]);
+  const leverageN = useMemo(() => state.leverage, [state]);
+  const marketIndex = useMemo(() => state.marketIndex, [state]);
+  const price = useMemo(() => info.py, [info]);
 
   const {connected} = useConnect();
 
@@ -41,31 +36,32 @@ export function useForm() {
       return;
     }
     current.current = 'amount';
-    getTwap().then();
-    genSwap(state);
+    setState((prevState) => ({...prevState, marketIndex: baseContract.id}));
+    marketIndex$.next(baseContract.id);
   }, [baseContract, client]);
 
   useEffect(() => {
-    if (!twap) {
-      return;
-    }
-    if (current.current === 'amount' && !!state.amount) {
-      const margin = Big(state.amount).times(twap).div(state.leverage).round(9, 3).toNumber();
-      setState((prevState) => {
+    if (current.current === 'amount' && !!amountN && !!price) {
+      const margin = Big(amountN).times(price).div(leverageN).round(9, 3).toNumber();
+      setState((prevState: any) => {
         return {...prevState, margin};
       });
     }
-    if (current.current === 'margin' && !!state.margin) {
-      const amount = Big(state.margin).times(state.leverage).div(twap).round(9, 0).toNumber();
-      setState((prevState) => {
+    if (current.current === 'margin' && !!marginN) {
+      if (!twap?.[marketIndex]) {
+        return;
+      }
+      const t = twap?.[marketIndex];
+      const amount = Big(marginN).times(leverageN).div(t).round(9, 0).toNumber();
+      setState((prevState: any) => {
         return {...prevState, amount};
       });
     }
-  }, [state.amount, state.margin, state.leverage, twap]);
+  }, [amountN, marginN, leverageN, marketIndex, price, twap]);
 
   const handleChange = useCallback(
     (key: string) => {
-      return (v: string | number) => {
+      return (v: string | number | boolean) => {
         setState((prevState) => {
           const newState: any = {...prevState, [key]: v};
           if (key === 'amount') {
@@ -76,16 +72,6 @@ export function useForm() {
             current.current = key;
             !v && (newState.amount = '');
           }
-          if (['amount', 'margin', 'leverage', 'marginType', 'direction'].includes(key)) {
-            genSwap(newState);
-            getTwap().then();
-            setInfo((prevState: any) => {
-              const fee = Big(newState?.amount || 0)
-                .times(0.005)
-                .toFixed(4);
-              return {...prevState, fee};
-            });
-          }
           return newState;
         });
       };
@@ -93,61 +79,9 @@ export function useForm() {
     [state, baseContract, client]
   );
 
-  const genSwap = useCallback(
-    (state: any) => {
-      if (state.amount <= 0 || !baseContract) {
-        return;
-      }
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-      timer.current = setTimeout(async () => {
-        const marketIndex = baseContract.id;
-        const key = [
-          baseContract.symbolLevel1Category,
-          baseContract.symbolLevel2Category,
-          baseContract.term,
-        ].join('_');
-
-        const res = await client.simulatePlaceOrder({
-          amount: state.amount,
-          direction: state.direction,
-          marketIndex: 0,
-          days: ttmMap?.[key]?.days,
-        });
-        setInfo((prevState: any) => {
-          const st = Big(res.py).times(state.amount).toNumber();
-          let lipPrice = '-';
-          if (state.marginType === 'ISOLATED') {
-            lipPrice = calcLiqPrice(state.direction as any, 1.05, state.amount, st, state.margin);
-          }
-          return {...prevState, ...(res ?? {}), lipPrice};
-        });
-        console.log('Simulate Place Order : result ', res);
-
-        clearTimeout(timer.current);
-        timer.current = null;
-      }, 100);
-    },
-    [baseContract, client, ttmMap]
-  );
-
-  const getTwap = useCallback(async () => {
-    if (!baseContract || !client) {
-      return;
-    }
-    if (twapTimer.current) {
-      return;
-    }
-    const t = await client.getAmmTwap({marketIndex: 0});
-    if (t) {
-      setTwap(t);
-      twapTimer.current = setTimeout(() => {
-        clearTimeout(twapTimer.current);
-        twapTimer.current = null;
-      }, 30 * 1000);
-    }
-  }, [client, twap]);
+  useEffect(() => {
+    order$.next(state);
+  }, [state]);
 
   const handleSubmit = useCallback(async () => {
     if (!connected) {
@@ -157,9 +91,12 @@ export function useForm() {
     if (!baseContract || loading) {
       return;
     }
-    setLoading(true);
     const start = Date.now();
     const {margin, marginType, direction, amount} = state;
+    if (!margin || !amount) {
+      return;
+    }
+    setLoading(true);
     const order = {
       marginType,
       direction,
@@ -182,25 +119,23 @@ export function useForm() {
       );
       query$.next(0);
     }
+    setState((prevState) => ({...prevState, amount: '', margin: ''}));
     setLoading(false);
   }, [connected, state, baseContract, client]);
 
-  return {state, info, handleChange, handleSubmit, loading};
+  return {state, info, current, handleChange, handleSubmit, loading};
 }
 
-function calcLiqPrice(
-  direction: 'LONG' | 'SHORT',
-  mcr: number,
-  yt: number,
-  st: number,
-  margin: number
-) {
-  if (direction === 'LONG') {
-    return Big(mcr * Math.abs(st) - margin)
-      .div(yt)
-      .toFixed(9);
-  }
-  return Big(Math.abs(st) + margin)
-    .div(mcr * Math.abs(yt))
-    .toFixed(9);
+function initData() {
+  return {
+    marginType: 'CROSS',
+    direction: 'SHORT',
+    amount: '',
+    leverage: 1,
+    margin: '',
+    slippage: 1,
+    marketIndex: 0,
+    orderType: 'market',
+    marginWaiver: true,
+  };
 }

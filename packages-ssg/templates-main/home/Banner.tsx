@@ -1,7 +1,7 @@
 import {StyledBanner, StyledLaunchApp} from '@/home/styles';
 import {HOME_IMAGES} from '@rx/const/images';
 import {useLang} from '@rx/hooks/use-lang';
-import {lang} from '@rx/lang/home';
+import {lang} from '@rx/lang/home.lang';
 
 export function Banner() {
   const {LG} = useLang();
@@ -24,8 +24,9 @@ export function Banner() {
           {/*  </div>*/}
           {/*</div>*/}
           <div className="flex justify-center  sm:justify-start">
-            <StyledLaunchApp className="inline-flex flex-row items-center justify-center font-semibold br8 w-200px font-size-24px line-height-28px cursor-pointer hover:opacity-80 active:opacity-80 sm:w-248px">
-              {LG(lang.LaunchApp)}
+            <StyledLaunchApp className="inline-flex flex-row text-nowrap items-center justify-center font-semibold br8 w-300px font-size-24px line-height-28px cursor-pointer hover:opacity-80 active:opacity-80 sm:w-300px">
+              {/*{LG(lang.Upcoming)} {LG(lang.LaunchApp)}*/}
+              Upcoming Launch
             </StyledLaunchApp>
           </div>
         </div>

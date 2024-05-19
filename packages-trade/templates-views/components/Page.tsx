@@ -98,7 +98,7 @@ export default ({children, showHeader = true, title, desc, scrollVisible = true}
         <div className="w-full min-h-100% overflow-hidden">
           <div className="flex w-1200px mx-auto">
             <img
-              className="rotate-animation hidden sm:block absolute left-10% top-[-240px] z-[-1]"
+              className="hidden sm:block absolute left-10% top-[-240px] z-[-1]"
               src="//static.rate-x.io/img/v1/2160b9/home-bg-1.png"
               alt=""
               width={1920}

@@ -1,6 +1,7 @@
 import {IMAGES} from '@/pages/lp/const';
 import {PlaceOrder} from '@/pages/lp/slp/PlaceOrder';
 import {Reference} from '@/pages/lp/slp/Reference';
+import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {lang} from '@rx/lang/lp.lang';
@@ -12,7 +13,6 @@ import {Button} from '@rx/widgets';
 import {clsx} from 'clsx';
 import {useEffect, useMemo, useState} from 'react';
 import {useNavigate, useSearchParams} from 'react-router-dom';
-import {useFixLink} from '@rx/hooks/use-fix-link';
 
 export default function () {
   const {LG} = useLang();
@@ -29,7 +29,10 @@ export default function () {
   return (
     <div className="flex flex-col w-1200px mx-auto">
       <div className="flex flex-row items-center mt-50px gap-24px">
-        <div className="flex justify-center items-center w-32px h-32px bg-gray-80 rounded-4px cursor-pointer" onClick={() => navigate(fixLink('/lp'))}>
+        <div
+          className="flex justify-center items-center w-32px h-32px bg-gray-80 rounded-4px cursor-pointer"
+          onClick={() => navigate(fixLink('/lp'))}
+        >
           <i className="iconfont font-size-24px lh-24px rotate-180">&#xe63c;</i>
         </div>
         <div className="flex flex-row items-center gap-8px">
@@ -92,6 +95,7 @@ function useData() {
         contract.term,
       ].join('_');
       data.maturity = ttmMap?.[key]?.days;
+      data.maturityStr = ttmMap?.[key].ttm + ttmMap?.[key].unit;
     }
     console.log('ttm map : ', ttmMap);
     return data;

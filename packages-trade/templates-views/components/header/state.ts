@@ -35,14 +35,14 @@ const genMenus = (LG: any, fixLink: (l: string) => string): Menu[] => [
     link: fixLink(SLUGS.Trade),
   },
   {
-    text: LG(lang.LP),
+    text: LG(lang.Liquidity),
     value: SLUGS.Liquidity,
     link: fixLink(SLUGS.Liquidity),
   },
   {
-    text: LG(lang.Strategies),
-    value: SLUGS.Strategy,
-    link: fixLink(SLUGS.Strategy),
+    text: LG(lang.SynthStables),
+    value: SLUGS.SynthStables,
+    link: fixLink(SLUGS.SynthStables),
   },
   {
     text: LG(lang.Account),

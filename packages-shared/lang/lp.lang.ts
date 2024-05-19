@@ -110,4 +110,10 @@ export const lang: any = {
   ULPPrice: {
     en: 'ULP Price',
   },
+  LowerRate: {
+    en: 'Lower Rate',
+  },
+  UpperRate: {
+    en: 'Upper Rate',
+  },
 };

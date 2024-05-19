@@ -25,10 +25,10 @@ export function Select(props: Props) {
 
   return (
     <div className="group relative shrink-0">
-      <div className="flex shrink-0 flex-row items-center font-size-24px lh-32px font-semibold gap-8px cursor-pointer flex-nowrap text-nowrap">
+      <div className="flex shrink-0 flex-row items-center font-size-14px lh-24px font-semibold gap-8px cursor-pointer flex-nowrap text-nowrap">
         {label}
-        <i className="block iconfont font-size-18px lh-18px text-gray-200 transform-rotate-180deg group-hover:transform-rotate-0 group-hover:mt-1px">
-          &#xe967;
+        <i className="block iconfont font-size-10px lh-10px text-white transform-rotate-90deg group-hover:rotate-[-90deg] group-hover:mt-1px">
+          &#xe63c;
         </i>
       </div>
       <div className="hidden group-hover:flex absolute left-0 top-20px pt-16px w-auto z-10 max-w-none overflow-hidden ">

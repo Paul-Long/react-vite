@@ -1,6 +1,6 @@
 import {HOME_IMAGES} from '@rx/const/images';
 import {useLang} from '@rx/hooks/use-lang';
-import {lang} from '@rx/lang/home';
+import {lang} from '@rx/lang/home.lang';
 
 export function Mechanism() {
   const {LG} = useLang();

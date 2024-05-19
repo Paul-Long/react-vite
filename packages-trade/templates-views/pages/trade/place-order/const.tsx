@@ -10,6 +10,11 @@ export const genDirection = (LG: any) => [
   {label: LG(lang.ShortYieldFixer), value: 'SHORT'},
 ];
 
+export const genChartType = (LG: any) => [
+  {label: <div className="text-nowrap px-12px">{LG(lang.YTPrice)}</div>, value: 'price'},
+  {label: <div className="text-nowrap px-12px">{LG(lang.ImpliedYield)}</div>, value: 'yield'},
+];
+
 export const genMode = (LG: any) => [
   {
     label: (

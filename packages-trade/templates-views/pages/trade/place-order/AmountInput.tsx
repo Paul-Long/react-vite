@@ -1,3 +1,4 @@
+import {IMAGES} from '@/pages/lp/const';
 import {useLang} from '@rx/hooks/use-lang';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/trade.lang';
@@ -7,6 +8,7 @@ import {InputNumber} from './InputNumber';
 interface Props {
   value?: string | number;
   onChange?: (v: string | number) => void;
+  onFocus?: (e: any) => void;
 }
 
 export function AmountInput(props: Props) {
@@ -19,10 +21,22 @@ export function AmountInput(props: Props) {
         {LG(lang.NotionalAmount)}
       </div>
       <div className="flex flex-row items-center justify-between">
-        <InputNumber value={props.value} onChange={props.onChange} />
-        <div className="text-gray-600">
-          y{contract}-{maturity}
+        <div className="relative flex flex-row items-center font-size-14px lh-24px fw-medium gap-8px">
+          <div className="absolute bottom-[-2px] left-15px flex justify-center items-center bg-#AFD615 border-1 border-solid border-#202424 rounded-12px font-size-12px text-#00000099 w-14px h-14px box-border">
+            <div className="scale-70 font-size-12px lh-12px fw-medium">Y</div>
+          </div>
+          <img src={IMAGES[contract?.toUpperCase()]} alt="" width={26} height={26} />
+          {contract}-{maturity}
         </div>
+        <InputNumber
+          value={props.value}
+          onChange={props.onChange}
+          placeholder="0.00"
+          onFocus={props.onFocus}
+          align="right"
+          step={9}
+          color="text-yellow-500"
+        />
       </div>
     </div>
   );

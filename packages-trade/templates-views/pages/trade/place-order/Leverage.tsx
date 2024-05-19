@@ -22,7 +22,9 @@ export function Leverage(props: Props) {
         <div className="font-size-14px text-gray-600">{LG(lang.LeverageSlider)}</div>
         <div className="font-size-12px text-green-600">{LG(lang.MaximumLeverage)} : 10x</div>
       </div>
-      <div className="text-green-500 font-size-24px lh-36px font-medium">{leverage}x</div>
+      <div className="text-green-500 font-size-24px lh-36px font-medium text-right">
+        {leverage}x
+      </div>
       <ProgressSlider value={leverage} min={1} max={10} unit="x" onChange={(v) => setLeverage(v)} />
     </div>
   );

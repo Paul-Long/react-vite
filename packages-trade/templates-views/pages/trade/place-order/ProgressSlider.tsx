@@ -21,10 +21,10 @@ const Wrap = styled.div<{$color: string}>`
   --base-color: ${({$color}) => $color};
   input[type='range'] {
     position: absolute;
-    top: 0;
+    top: -7px;
     left: -2px;
     right: -2px;
-    height: 2px;
+    height: 16px;
     border: none;
     cursor: pointer;
     -webkit-appearance: none;
@@ -123,10 +123,10 @@ export function ProgressSlider(props: Props) {
 
   return (
     <Wrap className="relative mb-24px" $color={color}>
-      <div className="relative">
+      <div className="relative pointer-events-none">
         <div className="w-100% h-2px bg-#1C2327"></div>
         <div
-          className={`absolute top-[-2px] h-6px z-10`}
+          className={`absolute top-[-2px] h-6px z-10 cursor-pointer`}
           style={{width: `${Math.min(progress, 100)}%`, background: color}}
         ></div>
       </div>

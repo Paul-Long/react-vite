@@ -1,4 +1,5 @@
 import {useScroll} from '@rx/hooks/use-scroll';
+import {clsx} from 'clsx';
 import {useCallback, useEffect, useState} from 'react';
 import {StyledRow, StyledTableWrap, StyledTd, StyledTh} from './styles';
 import type {Column, TableProps} from './types';
@@ -35,7 +36,7 @@ export function Table(props: TableProps) {
   }, []);
 
   return (
-    <div ref={ref} className="relative max-w-100% overflow-x-auto sv">
+    <div ref={ref} className={clsx('relative max-w-100% overflow-x-auto sv', props.className)}>
       <StyledTableWrap
         $rows={rows}
         $grid={columns.reduce((s: string[], c) => [...s, c.width ?? '1fr'], []).join(' ')}

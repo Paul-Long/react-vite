@@ -173,6 +173,12 @@ export const lang: any = {
   Transaction: {
     en: 'Transaction',
   },
+  TxTime: {
+    en: 'Tx Time',
+  },
+  TxHarsh: {
+    en: 'Tx Harsh',
+  },
   RecentTrades: {
     en: 'Recent Trades',
   },
@@ -226,5 +232,14 @@ export const lang: any = {
   },
   Orders: {
     en: 'Orders',
+  },
+  MarginWaiver: {
+    en: 'Margin Waiver',
+  },
+  YTPrice: {
+    en: 'YT Price',
+  },
+  ImpliedYield: {
+    en: 'Implied Yield',
   },
 };

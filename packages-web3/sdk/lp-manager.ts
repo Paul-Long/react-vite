@@ -3,7 +3,7 @@ import {TickManager} from '@/sdk/tick-manager';
 import {getPerpMarketPda} from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts.ts';
 import {PriceMath} from '@/utils/price-math';
-import {BN, Program, Wallet} from '@coral-xyz/anchor';
+import {BN, Program} from '@coral-xyz/anchor';
 import {TOKEN_PROGRAM_ID, getAccount} from '@solana/spl-token';
 import {PublicKey, SystemProgram, TransactionInstruction} from '@solana/web3.js';
 import {Big} from 'big.js';
@@ -17,7 +17,6 @@ export class LpManager {
 
   async addPerpLpShares(
     program: Program<RatexContracts>,
-    wallet: Wallet,
     authority: PublicKey,
     am: AccountManager,
     tm: TickManager,
@@ -29,7 +28,7 @@ export class LpManager {
       marketIndex: number;
       maturity: number;
     }
-  ): Promise<TransactionInstruction> {
+  ): Promise<TransactionInstruction[]> {
     const {amount = 50000, marketIndex, lowerRate, upperRate, maturity} = params;
     const perpMarket: PublicKey = getPerpMarketPda(marketIndex);
     const quoteAssetVault: PublicKey = am.createQuoteAssetVaultPda(marketIndex);
@@ -82,9 +81,8 @@ export class LpManager {
       [Buffer.from('position'), positionMint.toBuffer()],
       PROGRAM_ID
     )[0];
-    const tickArrays = await tm.initializeTickArraysV2(
+    const [tickArrays, instructions]: any = await tm.initializeTickArraysV2(
       program,
-      wallet,
       authority,
       perpMarket,
       tickLowerIndex,
@@ -103,7 +101,7 @@ export class LpManager {
     console.log('Amount : ', amount);
     console.log('****************');
 
-    return await program.methods
+    const instruction = await program.methods
       .addPerpLpShares(baseAmount, marketIndex, Math.round(maturity), lr, ur)
       .accounts({
         position,
@@ -126,6 +124,7 @@ export class LpManager {
         systemProgram: SystemProgram.programId,
       })
       .instruction();
+    return [...instructions, instruction];
   }
   async getPerpMarketInfo(program: Program<RatexContracts>, params: {marketIndex: number}) {
     const {marketIndex} = params;

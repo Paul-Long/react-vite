@@ -15,6 +15,7 @@ export interface Column {
 }
 
 export interface TableProps {
+  className?: string;
   columns: Column[];
   dataSource: any[];
   onRowSelect?: Function;
