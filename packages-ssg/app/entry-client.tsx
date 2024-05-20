@@ -12,22 +12,20 @@ createRoot(document.getElementById('root') as HTMLElement).render(
     <PageContextProvider pageContext={null as any}>
       <Suspense>
         <Routes>
-          <Route path="/" element={<Page />}>
-            {routers.map(({slug, loader}: any) => {
-              const Component = lazy(loader);
-              const routes: ReactNode[] = [];
-              if (slug === '/') {
-                routes.push(<Route key={slug} index element={<Component />}></Route>);
-              } else {
-                routes.push(<Route key={slug} path={slug} element={<Component />}></Route>);
-              }
-              Object.keys(localeRecord).forEach((locale: string) => {
-                const path = ['/' + locale, slug].join('');
-                routes.push(<Route key={path} path={path} element={<Component />}></Route>);
-              });
-              return routes;
-            })}
-          </Route>
+          {routers.map(({slug, loader}: any) => {
+            const Component = lazy(loader);
+            const routes: ReactNode[] = [];
+            if (slug === '/') {
+              routes.push(<Route key={slug} index element={<Component />}></Route>);
+            } else {
+              routes.push(<Route key={slug} path={slug} element={<Component />}></Route>);
+            }
+            Object.keys(localeRecord).forEach((locale: string) => {
+              const path = ['/' + locale, slug].join('');
+              routes.push(<Route key={path} path={path} element={<Component />}></Route>);
+            });
+            return routes;
+          })}
         </Routes>
       </Suspense>
     </PageContextProvider>

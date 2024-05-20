@@ -5,4 +5,4 @@ interface RouteType {
 
 export const main = () => import('./components/Page');
 
-export const routers: RouteType[] = [{slug: '/', loader: () => import('./home')}];
+export const routers: RouteType[] = [{slug: '/', loader: () => import('./home-v2')}];
