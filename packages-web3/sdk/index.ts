@@ -13,6 +13,7 @@ import {
 } from '@/types/rate-x-client';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import type {TokenFaucet} from '@/types/token_faucet';
+import {PriceMath} from '@/utils/price-math';
 import * as anchor from '@coral-xyz/anchor';
 import {AnchorProvider, BN, EventParser, Program, Wallet} from '@coral-xyz/anchor';
 import {getAssociatedTokenAddressSync} from '@solana/spl-token';
@@ -336,31 +337,36 @@ export class RateClient {
     let res: any = {
       baseAssetAmount: params.amount,
       quoteAssetAmount: 0,
+      sqrtPrice: 0,
     };
     if (result?.value?.returnData?.data) {
       const [data, type] = result?.value?.returnData.data;
       let buf = Buffer.from(data, type);
       const amountBaseSwap = buf.readBigUInt64LE(0);
       const amountQuoteSwap = buf.readBigUInt64LE(8);
+
+      const sqrtPrice = new anchor.BN(buf.slice(16).toString('hex'), 16, 'le');
       const baseAssetAmount = Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber();
-      console.log('amount base swap : ', amountBaseSwap);
-      console.log('amount quote swap : ', amountQuoteSwap);
       res = {
         baseAssetAmount: Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber(),
         quoteAssetAmount: Big(Number(amountQuoteSwap))
           .div(1_000_000_000)
           .div(baseAssetAmount)
           .toNumber(),
+        sqrtPrice: PriceMath.sqrtPriceX64ToPrice(sqrtPrice.toString(), 9, 9).toString(),
       };
+      console.log('amount base swap : ', amountBaseSwap);
+      console.log('amount quote swap : ', amountQuoteSwap);
+      console.log('sqrt price : ', res.sqrtPrice);
     }
-    const entryPrice = new Decimal(res.quoteAssetAmount).div(new Decimal(res.baseAssetAmount));
     const py = new Decimal(res.quoteAssetAmount);
     const daysInYear = new Decimal(365);
     const period = new Decimal(params.days);
-    const impliedSwapRate = Decimal.pow(1 / (1 - py.toNumber()), daysInYear.div(period).toNumber())
+    const sp = new Decimal(res.sqrtPrice);
+    const impliedSwapRate = Decimal.pow(1 / (1 - sp.toNumber()), daysInYear.div(period).toNumber())
       .minus(1)
       .toNumber();
-    return {py: py.toFixed(9), impliedSwapRate};
+    return {py: py.toFixed(9), sp: sp.toFixed(9, 0), impliedSwapRate};
   }
 
   async getPoolTickCurrentIndex() {
