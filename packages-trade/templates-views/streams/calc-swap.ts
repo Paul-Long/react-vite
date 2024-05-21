@@ -60,8 +60,8 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
     if (trade?.Yield) {
       returnData.yield = Big(trade.Yield).times(100).toFixed(2) + '%';
     }
-    if (res?.impliedSwapRate) {
-      returnData.priceImpact = Big(res.impliedSwapRate).times(100).toFixed(2) + '%';
+    if (res?.impliedEntryRate) {
+      returnData.priceImpact = Big(res.impliedEntryRate).times(100).toFixed(2) + '%';
     }
     if (trade?.LastPrice && returnData.py) {
       returnData.impact =

@@ -366,7 +366,10 @@ export class RateClient {
     const impliedSwapRate = Decimal.pow(1 / (1 - sp.toNumber()), daysInYear.div(period).toNumber())
       .minus(1)
       .toNumber();
-    return {py: py.toFixed(9), sp: sp.toFixed(9, 0), impliedSwapRate};
+    const impliedEntryRate = Decimal.pow(1 / (1 - py.toNumber()), daysInYear.div(period).toNumber())
+      .minus(1)
+      .toNumber();
+    return {py: py.toFixed(9), sp: sp.toFixed(9, 0), impliedSwapRate, impliedEntryRate};
   }
 
   async getPoolTickCurrentIndex() {
