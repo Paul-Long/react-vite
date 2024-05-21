@@ -49,7 +49,11 @@ function calcTTM(time: number, contracts: ConfigSymbol[]) {
         days: days.toNumber(),
       };
     } else {
-      ttm[key] = {ttm: numUtil.trimEnd0(days.toFixed(0, 0)), unit: 'days', days: days.toNumber()};
+      ttm[key] = {
+        ttm: numUtil.trimEnd0(days.toFixed(0, 0)),
+        unit: 'days',
+        days: days.round(2, 0).toNumber(),
+      };
     }
     return ttm;
   }, {});
