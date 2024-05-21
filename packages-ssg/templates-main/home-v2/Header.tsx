@@ -1,10 +1,11 @@
+import {CloseIcon} from '@rx/components/icons/CloseIcon';
+import {MenuIcon} from '@rx/components/icons/MenuIcon';
 import {HOME_IMAGES} from '@rx/const/images';
-import {useLang} from '@rx/hooks/use-lang';
 import {clsx} from 'clsx';
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 
 export function Header() {
-  const {LG} = useLang();
+  const [showMenu, setShowMenu] = useState(false);
   const handleClick = useCallback(
     (menu: any) => () => {
       if (menu.link) {
@@ -16,7 +17,7 @@ export function Header() {
     []
   );
   return (
-    <div className="flex flex-row items-center justify-between w-full sm:max-w-1728px sm:min-w-1341px h-72px min-h-72px sm:h-100px sm:min-h-100px mx-auto px-20px">
+    <div className="relative flex flex-row items-center justify-between w-full sm:max-w-1728px sm:min-w-1341px h-72px min-h-72px sm:h-100px sm:min-h-100px mx-auto pl-10px pr-16px">
       <div className="flex lg:flex-1">
         <img className="h-24px lg:h-32px w-auto" src={HOME_IMAGES.LOGO} alt="" />
       </div>
@@ -61,7 +62,7 @@ export function Header() {
           Upcoming Launch
         </div>
       </div>
-      <div className="flex sm:hidden">
+      <div className={clsx('flex sm:hidden gap-20px', [showMenu && 'hidden'])}>
         <div
           className={clsx(
             'bg-#8DCC2F text-#09090A py-10px px-12px font-size-16px lh-16px rounded-2px cursor-pointer',
@@ -69,6 +70,41 @@ export function Header() {
           )}
         >
           Upcoming Launch
+        </div>
+        <div className={clsx('inline-flex sm:hidden')} onClick={() => setShowMenu(true)}>
+          <MenuIcon />
+        </div>
+      </div>
+
+      <div
+        className={clsx('fixed top-0 left-0 right-0 bottom-0 z-9999 hidden bg-#09090A box-border', [
+          showMenu && 'flex flex-col',
+        ])}
+      >
+        <div className="flex flex-row justify-between items-center h-72px pl-10px pr-16px">
+          <div className="flex lg:flex-1">
+            <img className="h-24px lg:h-32px w-auto" src={HOME_IMAGES.LOGO} alt="" />
+          </div>
+          <div
+            className={clsx('inline-flex sm:hidden', [showMenu && 'hidden'])}
+            onClick={() => setShowMenu(false)}
+          >
+            <CloseIcon />
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          {menus.map((menu) => (
+            <div
+              className={clsx('cursor-pointer lh-40px', [
+                menu.title === 'Home' ? 'text-#8DCC2F' : 'text-#F6F7F3',
+              ])}
+              onClick={handleClick(menu)}
+              key={menu.title}
+            >
+              {menu.title}
+            </div>
+          ))}
         </div>
       </div>
     </div>
