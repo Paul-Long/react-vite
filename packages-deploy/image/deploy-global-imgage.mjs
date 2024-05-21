@@ -7,7 +7,8 @@ const cwd = env.imageUploadDir;
 
 const s3Client = createS3Client();
 const keyPrefix = 'static.rate-x.io/img/v1';
-const files = (await loadFiles(cwd)).filter(f => !['SOL'].some(s => f.includes(s)));
+// const files = (await loadFiles(cwd)).filter(f => ![''].some(s => f.includes(s)));
+const files = await loadFiles(cwd);
 for (const file of files) {
   const fullPath = path.resolve(cwd, file);
   const hash = await calcFileHash(fullPath);

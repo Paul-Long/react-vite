@@ -6,7 +6,7 @@
   "buildId": 101,
   "scripts": {
     "dev": "vite",
-    "build": "rm -rf ./dist && npm run build:ssg && npm run gen:html",
+    "build": "rm -rf ./dist && npm run build:ssg && npm run gen:html && cp -rf ../../public/home ./dist/client",
     "build:ssg": "node build.mjs",
     "gen:html": "node --trace-uncaught gen-html.mjs"
   },
