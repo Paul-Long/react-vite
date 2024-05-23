@@ -93,10 +93,10 @@ export function Header() {
           </div>
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-30px px-20px mt-28px">
           {menus.map((menu) => (
             <div
-              className={clsx('cursor-pointer lh-40px', [
+              className={clsx('cursor-pointer font-size-32px lh-32px', [
                 menu.title === 'Home' ? 'text-#8DCC2F' : 'text-#F6F7F3',
               ])}
               onClick={handleClick(menu)}
@@ -104,6 +104,20 @@ export function Header() {
             >
               {menu.title}
             </div>
+          ))}
+        </div>
+
+        <div className="flex flex-row items-center gap-30px mt-60px px-20px">
+          {medias.map((m) => (
+            <img
+              className={clsx('cursor-pointer', [m.title === 'discord' && 'opacity-30 scale-140'])}
+              key={m.title}
+              src={m.img}
+              alt={m.title}
+              width={28}
+              height={28}
+              onClick={() => !!m.link && window.open(m.link, '_blank', 'noopener')}
+            />
           ))}
         </div>
       </div>

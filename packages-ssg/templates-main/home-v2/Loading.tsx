@@ -20,7 +20,7 @@ const Wrap = styled.div<{$move: boolean}>`
   ${({$move}) => {
     if ($move) {
       return css`
-        animation: slideOutRight 1s forwards;
+        animation: slideOutRight 0.8s forwards;
       `;
     }
   }}
@@ -40,7 +40,7 @@ export function Loading({onComplete}: any) {
     setComplete(true);
     setTimeout(() => {
       onComplete?.();
-    }, 800);
+    }, 500);
   }, []);
 
   const handleSkip = useCallback(() => {
@@ -57,7 +57,7 @@ export function Loading({onComplete}: any) {
       className="fixed top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center mx-auto bg-white"
     >
       <div
-        className={clsx('absolute top-0 left-0 z-10 w-100px sm:w-400px h-full bg-#8DCC2F', [
+        className={clsx('absolute top-0 left-0 z-10 w-100px sm:w-100px h-full bg-#8DCC2F', [
           complete ? 'opacity-100' : 'opacity-0',
         ])}
       ></div>
@@ -82,6 +82,8 @@ function TimeLoading() {
       autoplay: true,
       animationData: data,
     });
+    anim.setSpeed(10);
+
     setTimeout(() => {
       if (element.current) {
         element.current.style.opacity = '0';
@@ -108,6 +110,7 @@ function IconLoading({onComplete}: any) {
     if (!env.isBrowser || !element.current) {
       return;
     }
+    const start = Date.now();
     element.current.style.opacity = '1';
     anim = window.lottie.loadAnimation({
       container: element.current, // the dom element that will contain the animation
@@ -116,11 +119,13 @@ function IconLoading({onComplete}: any) {
       autoplay: true,
       animationData: logoData,
     });
+    anim.setSpeed(5);
 
     anim.addEventListener('complete', function () {
       if (element.current) {
         element.current.style.opacity = '0';
       }
+      console.log('loading end : ', Date.now() - start);
       onComplete?.();
     });
     return () => {

@@ -21,9 +21,10 @@ export function Banner() {
         autoplay: true,
         animationData: data,
       });
+      anim.setSpeed(2);
       setTimeout(() => {
         setComplete(true);
-      }, 3000);
+      }, 2000);
     });
     return () => {
       if (anim) {
@@ -32,31 +33,31 @@ export function Banner() {
     };
   }, []);
   return (
-    <div className="flex flex-col items-start w-full px-12px sm:max-w-1341px sm:mx-auto">
+    <div className="flex flex-col items-start w-full px-12px sm:max-w-1341px sm:mx-auto gap-40px">
       <div
         ref={element}
         className="lottie flex justify-start w-326px max-w-full sm:w-640px  sm:h-207px mt-100px"
       ></div>
       <div
-        className={clsx(
-          'font-size-20px lh-20px text-#8DCC2F mt-40px transition-opacity duration-100',
-          [complete ? 'opacity-100' : 'opacity-0']
-        )}
+        className={clsx('flex flex-col gap-20px transition-opacity ease-in duration-300', [
+          complete ? 'opacity-100' : 'opacity-0',
+        ])}
       >
-        World’s 1st leveraged Synthetic Yield exchange!
-      </div>
-      <div
-        className={clsx(
-          'flex flex-row items-center flex-nowrap text-nowrap gap-12px mt-20px font-size-24px lh-24px transition-opacity duration-100',
-          [complete ? 'opacity-100' : 'opacity-0']
-        )}
-      >
-        Upcoming Launch
-        <img
-          className="w-32px h-32px"
-          src="https://static.rate-x.io/img/v1/2f71a0/left.svg"
-          alt=""
-        />
+        <div className={clsx('font-size-20px lh-20px text-#8DCC2F')}>
+          World’s 1st leveraged Synthetic Yield exchange!
+        </div>
+        <div
+          className={clsx(
+            'flex flex-row items-center flex-nowrap text-nowrap gap-12px mt-20px font-size-24px lh-32px'
+          )}
+        >
+          Upcoming Launch
+          <img
+            className="w-32px h-32px"
+            src="https://static.rate-x.io/img/v1/2f71a0/left.svg"
+            alt=""
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,13 +1,13 @@
 import {Banner} from '@/home-v2/Banner';
 import {Delay} from '@/home-v2/Depay';
-import {Features} from '@/home-v2/Features';
 import {Footer} from '@/home-v2/Footer';
 import {Header} from '@/home-v2/Header';
-import {Innovations} from '@/home-v2/Innovations';
 import {Loading} from '@/home-v2/Loading';
 import {Powered} from '@/home-v2/Powered';
 import {UnderlyingAsset} from '@/home-v2/UnderlyingAsset';
 import {YieldMarket} from '@/home-v2/YieldMarket';
+import {Features} from '@/home-v2/features/Features';
+import {Innovations} from '@/home-v2/innovations';
 import {useState} from 'react';
 import {styled} from 'styled-components';
 
@@ -19,16 +19,28 @@ declare global {
 
 const Wrap = styled.div`
   background: #09090a;
-  @font-face {
-    font-family: 'PPNeueMachina';
-    font-style: normal;
-    font-display: swap;
-    src: url('https://static.rate-x.io/font/v1/poppins/PPNeueMachina-InktrapLight.woff2')
-      format('woff2');
-  }
   font-family: PPNeueMachina, sans-serif, 'Helvetica Neue', Helvetica, PingFangSC, -apple-system,
     'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial;
-  animation: slideInDown 1s forwards;
+  animation: slideInDown 0.4s forwards;
+
+  .sv {
+    scrollbar-width: thin;
+    scrollbar-color: #09090a transparent;
+  }
+
+  .sv::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  .sv:hover::-webkit-scrollbar-thumb {
+    background-color: #09090a;
+  }
+
+  .sv::-webkit-scrollbar {
+    width: 4px;
+    background-color: transparent;
+  }
 
   @keyframes slideInDown {
     0% {
@@ -50,9 +62,9 @@ export default function () {
   return (
     <Wrap className="flex flex-col w-full h-full sm:min-w-1381px">
       <Header />
-      <Delay delay={1}>
+      <Delay delay={0.5}>
         <Banner />
-        <Delay delay={2}>
+        <Delay delay={2.5}>
           <Features />
           <YieldMarket />
           <UnderlyingAsset />
