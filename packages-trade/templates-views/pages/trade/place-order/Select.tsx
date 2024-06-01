@@ -32,7 +32,7 @@ export function Select(props: Props) {
         </i>
       </div>
       <div className="hidden group-hover:flex absolute left-0 top-20px pt-16px w-auto z-10 max-w-none overflow-hidden ">
-        <div className="p-16px font-size-16px text-gray-600 flex flex-col gap-16px rounded-8px bg-gray-80 backdrop-blur-24px shadow-lg ring-1 ring-gray-900/5">
+        <div className="px-16px py-8px font-size-16px text-gray-600 flex flex-col gap-16px rounded-8px bg-gray-80 backdrop-blur-24px shadow-lg ring-1 ring-gray-900/5">
           {options?.map((o) => (
             <div
               key={o.value}

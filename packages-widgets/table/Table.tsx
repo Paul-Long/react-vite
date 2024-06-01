@@ -6,7 +6,14 @@ import type {Column, TableProps} from './types';
 
 export function Table(props: TableProps) {
   const {ref, hasX, isLeft, isRight} = useScroll<HTMLDivElement>();
-  const {columns = [], dataSource = [], onRowSelect = () => {}, selectedIndex, rowKey} = props;
+  const {
+    columns = [],
+    dataSource = [],
+    onRowSelect = () => {},
+    selectedIndex,
+    rowKey,
+    border = false,
+  } = props;
   const len: number = columns.filter((c) => c.fixed !== 'right').length;
   const [rows, setRows] = useState(len === columns.length ? len - 1 : len);
 
@@ -49,6 +56,7 @@ export function Table(props: TableProps) {
               $align={column.align ?? 'left'}
               $shadowLeft={!!column.shadowLeft && hasX && !isRight}
               $shadowRight={!!column.shadowRight && hasX && !isLeft}
+              $border={border}
               style={column?.headerCellStyle ?? {}}
               key={column.dataIndex}
             >
@@ -66,6 +74,7 @@ export function Table(props: TableProps) {
                 $align={column.align ?? 'left'}
                 $shadowLeft={!!column.shadowLeft && hasX && !isRight}
                 $shadowRight={!!column.shadowRight && hasX && !isLeft}
+                $border={border}
                 style={column?.bodyCellStyle ?? {}}
                 key={`${index}-${column.dataIndex}`}
               >

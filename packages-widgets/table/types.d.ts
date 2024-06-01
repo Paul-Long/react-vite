@@ -21,4 +21,5 @@ export interface TableProps {
   onRowSelect?: Function;
   selectedIndex?: string | number;
   rowKey?: string | ((record: any) => string);
+  border?: boolean;
 }

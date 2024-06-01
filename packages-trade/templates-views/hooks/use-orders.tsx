@@ -43,11 +43,7 @@ export function useOrders() {
       {
         title: LG(clang.No) + '.',
         dataIndex: 'id',
-        fixed: 'left',
-        width: '80px',
-        shadowRight: true,
-        headerCellStyle: {background: '#030B0F'},
-        bodyCellStyle: {background: '#030B0F'},
+        align: 'left',
         render: (_, i) => (i ?? 0) + 1,
       },
       {
@@ -65,18 +61,10 @@ export function useOrders() {
       {
         title: LG(clang.Margin),
         dataIndex: 'action',
-        fixed: 'right',
-        shadowLeft: true,
-        headerCellStyle: {background: '#030B0F'},
-        bodyCellStyle: {background: '#030B0F'},
+        align: 'right',
         render: renderAction,
       },
     ];
-    columns.forEach((c, i) => {
-      if (i !== 0) {
-        c.align = 'center';
-      }
-    });
     setColumns(columns);
   }, [LG, client]);
 
@@ -93,14 +81,12 @@ export function useOrders() {
     if (row.isIsolated) {
       tx = await client?.cancelIsolatedOrder({
         userPda: row.userPda,
-        userOrdersPda: row.userOrdersPda,
         orderId: row.orderId,
         marketIndex: row.marketIndex,
       });
     } else {
       tx = await client?.cancelOrder({
         userPda: row.userPda,
-        userOrdersPda: row.userOrdersPda,
         orderId: row.orderId,
       });
     }

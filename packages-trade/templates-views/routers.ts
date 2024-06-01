@@ -14,5 +14,6 @@ export const routers: RouteType[] = [
   {slug: '/lp', loader: () => import('./pages/lp')},
   {slug: '/lp/slp', loader: () => import('./pages/lp/slp')},
   {slug: '/account', loader: () => import('./pages/account')},
-  {slug: '/tradingview', loader: () => import('./pages/tradingview')},
+  {slug: '/earn', loader: () => import('./pages/earn')},
+  {slug: '/synth-stables', loader: () => import('./pages/synth-stables')},
 ];

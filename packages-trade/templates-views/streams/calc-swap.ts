@@ -32,13 +32,14 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
 );
 
 export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pipe(
-  map(([res, params, contract, lastTrade]: any) => {
-    if (!res) {
+  map(([result, params, contract, lastTrade]: any) => {
+    if (!result) {
       return {};
     }
+    const {baseAssetAmount, quoteAssetAmount, entryPrice, sqrtPrice, impliedSqrtRate, impliedEntryRate} = result;
     let lipPrice = '-';
     if (params.marginType === 'ISOLATED') {
-      const st = Big(res?.py)
+      const st = Big(entryPrice)
         .times(params.amount || 0)
         .toNumber();
       lipPrice =
@@ -55,17 +56,18 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
     const fee = Big(params?.amount || 0)
       .times(0.0005)
       .toFixed(4);
+
     const trade = lastTrade?.[contract?.symbol];
-    const returnData: any = {...(res || {}), lipPrice, fee};
+    const returnData: any = {...(result || {}), lipPrice, fee};
     if (trade?.Yield) {
       returnData.yield = Big(trade.Yield).times(100).toFixed(2) + '%';
     }
-    if (res?.impliedEntryRate) {
-      returnData.priceImpact = Big(res.impliedEntryRate).times(100).toFixed(2, 0) + '%';
+    if (!!impliedEntryRate) {
+      returnData.priceImpact = Big(impliedEntryRate).times(100).toFixed(2, 0) + '%';
     }
-    if (trade?.LastPrice && returnData.py) {
+    if (trade?.LastPrice && !!sqrtPrice) {
       returnData.impact =
-        Big(returnData.sp).minus(trade.LastPrice).div(trade.LastPrice).times(100).toFixed(4) + '%';
+        Big(sqrtPrice).minus(trade.LastPrice).div(trade.LastPrice).times(100).toFixed(4) + '%';
     }
     return returnData;
   })

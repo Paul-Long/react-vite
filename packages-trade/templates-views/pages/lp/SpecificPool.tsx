@@ -1,10 +1,13 @@
 import {IMAGES} from '@/pages/lp/const';
+import {filter$} from '@/streams/lp/filter';
 import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
+import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
 import {contracts$} from '@rx/streams/config';
 import {clsx} from 'clsx';
+import {useMemo} from 'react';
 import {useNavigate} from 'react-router-dom';
 
 export function SpecificPool() {
@@ -26,7 +29,7 @@ export function SpecificPool() {
         {contracts.map((c) => (
           <div
             key={c.symbol}
-            className="contents group cursor-default"
+            className="contents group cursor-pointer"
             onClick={() => navigate(fixLink(`/lp/slp?symbol=${c.symbol}`))}
           >
             <div
@@ -84,6 +87,15 @@ export function SpecificPool() {
 }
 
 function useData() {
-  const contracts = useObservable(contracts$, []);
+  const [filter] = useStream(filter$);
+  const allContracts = useObservable(contracts$, []);
+
+  const contracts = useMemo(() => {
+    if (!filter || filter === 'ALL') {
+      return allContracts;
+    }
+    return allContracts.filter((c) => c.symbolLevel2Category === filter);
+  }, [filter, allContracts]);
+
   return {contracts};
 }

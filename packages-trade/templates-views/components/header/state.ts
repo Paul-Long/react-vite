@@ -40,6 +40,11 @@ const genMenus = (LG: any, fixLink: (l: string) => string): Menu[] => [
     link: fixLink(SLUGS.Liquidity),
   },
   {
+    text: LG(lang.Earn),
+    value: SLUGS.Earn,
+    link: fixLink(SLUGS.Earn),
+  },
+  {
     text: LG(lang.SynthStables),
     value: SLUGS.SynthStables,
     link: fixLink(SLUGS.SynthStables),

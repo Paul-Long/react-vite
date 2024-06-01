@@ -1,25 +1,35 @@
 import {ClosePosition} from '@/pages/trade/positions/ClosePosition';
 import {positions$, query$} from '@/streams/positions';
 import {DownIcon} from '@rx/components/icons/DownIcon';
-import {env} from '@rx/env';
 import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang as clang} from '@rx/lang/common.lang';
-import {lang} from '@rx/lang/trade.lang';
-import {depositModal$} from '@rx/streams/wallet';
+import {depositModal$, withdrawModal$} from '@rx/streams/wallet';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
+import {Tooltip} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 
-export function usePositions(mode: string) {
+export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
   const {LG} = useLang();
   const [client] = useStream(rateXClient$);
   const [columns, setColumns] = useState<Column[]>([]);
-  const dataSource = useObservable(positions$, []);
+  const postions = useObservable(positions$, []);
+
+  const dataSource = useMemo(() => {
+    const pos = postions.filter((p) => p.marginType === marginType);
+    if (marginType === 'CROSS' && pos?.length > 0) {
+      return [
+        {parent: true, asset: 'SOL', cr: pos[0].cr, margin: pos[0].margin, userPda: pos[0].userPda},
+        ...pos,
+      ];
+    }
+    return pos;
+  }, [postions, marginType]);
 
   useEffect(() => {
     query$.next(0);
@@ -27,21 +37,6 @@ export function usePositions(mode: string) {
 
   useEffect(() => {
     const columns: Column[] = [
-      {
-        title: LG(clang.No) + '.',
-        dataIndex: 'id',
-        fixed: env.isMobile ? false : 'left',
-        width: env.isMobile ? 'auto' : '60px',
-        shadowRight: true,
-        headerCellStyle: {background: '#030B0F'},
-        bodyCellStyle: {background: '#030B0F'},
-        render: (_, i) => (i ?? 0) + 1,
-      },
-      {
-        title: LG(lang.MarginType),
-        dataIndex: 'marginType',
-        render: (record) => (record.isIsolated ? LG(lang.Isolated) : LG(lang.Cross)),
-      },
       {
         title: LG(clang.Contract),
         align: 'left',
@@ -60,43 +55,34 @@ export function usePositions(mode: string) {
         title: LG(clang.CR) + '/' + LG(clang.Liq) + '.' + LG(clang.Price),
         dataIndex: 'liq',
         align: 'right',
-        render: renderCrLip,
+        render: renderCrLip(marginType),
       },
       {
         title: LG(clang.Margin),
         dataIndex: 'margin',
         align: 'right',
-        render: renderMargin(handleDeposit),
-      },
-      {
-        title: '-',
-        dataIndex: 'action',
-        render: renderAction,
-        fixed: 'right',
-        align: 'right',
-        shadowLeft: true,
-        shadowRight: false,
-        headerCellStyle: {background: '#030B0F'},
-        bodyCellStyle: {background: '#030B0F'},
+        render: renderMargin(handleDeposit, client),
       },
     ];
+    if (marginType === 'CROSS') {
+      columns.unshift({
+        title: LG(clang.MarginAsset),
+        align: 'left',
+        dataIndex: 'asset',
+        render: (row: any) => (row.parent ? row.asset : ''),
+      });
+    }
     setColumns(columns);
-  }, [LG, mode, client]);
+  }, [LG, client, marginType]);
 
   const handleDeposit = async (row: any) => {
-    depositModal$.next({visible: true, userPda: row.userPda, marketIndex: row.marketIndex});
+    depositModal$.next({
+      visible: true,
+      userPda: row.userPda,
+      marketIndex: row.marketIndex,
+      onFinish: () => query$.next(0),
+    });
   };
-
-  const renderAction = useCallback(
-    (row: any) => {
-      return (
-        <div className="df fdr aic gap8px">
-          <ClosePosition row={row} client={client} />
-        </div>
-      );
-    },
-    [client]
-  );
 
   useEffect(() => {
     console.log('My Positions : ', dataSource);
@@ -105,24 +91,39 @@ export function usePositions(mode: string) {
   return {columns, dataSource};
 }
 
+const handleWithdraw = async (row: any) => {
+  withdrawModal$.next({
+    visible: true,
+    userPda: row.userPda,
+    marketIndex: row.marketIndex,
+    onFinish: () => query$.next(0),
+  });
+};
+
 function renderContract(LG: any) {
-  return (row: any) => (
-    <div className="flex flex-col">
-      <span>{row.symbolName ?? ''}</span>
-      <span className="text-green-500">
-        {row.baseAssetAmount > 0 ? LG(clang.Long) : LG(clang.Short)}
-      </span>
-    </div>
-  );
+  return (row: any) =>
+    row.parent ? (
+      ''
+    ) : (
+      <div className="flex flex-col">
+        <span>{row.symbolName ?? ''}</span>
+        <span className={clsx(row.baseAssetAmount > 0 ? 'text-green-500' : 'text-red-500')}>
+          {row.baseAssetAmount > 0 ? LG(clang.Long) : LG(clang.Short)}
+        </span>
+      </div>
+    );
 }
 
 function renderYtSt(LG: any) {
-  return (row: any) => (
-    <div className="flex flex-col items-end w-full">
-      <span>{row.baseAssetAmount ?? '-'} YT</span>
-      <span>{row.quoteAssetAmount ?? '-'} ST</span>
-    </div>
-  );
+  return (row: any) =>
+    row.parent ? (
+      ''
+    ) : (
+      <div className="flex flex-col items-end w-full">
+        <span>{row.baseAssetAmount ?? '-'} YT</span>
+        <span>{row.quoteAssetAmount ?? '-'} ST</span>
+      </div>
+    );
 }
 
 function renderPNL(LG: any) {
@@ -135,17 +136,22 @@ function renderPNL(LG: any) {
   );
 }
 
-function renderCrLip(row: any) {
-  return (
-    <div className="flex flex-col items-end w-full">
-      <span>{!!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'}</span>
-      <span>{row.lipPrice}</span>
-    </div>
-  );
+function renderCrLip(marginType: 'CROSS' | 'ISOLATED') {
+  return (row: any) =>
+    !row.parent && marginType === 'CROSS' ? (
+      ''
+    ) : (
+      <div className="flex flex-col items-end w-full">
+        <span>{!!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'}</span>
+        <span>{row.lipPrice}</span>
+      </div>
+    );
 }
 
 function renderEntry(row: any) {
-  return (
+  return row.parent ? (
+    ''
+  ) : (
     <div className="flex flex-col items-end w-full">
       <span>{row.entry ?? '-'}</span>
       <span>{row.LastPrice ?? '-'}</span>
@@ -153,21 +159,40 @@ function renderEntry(row: any) {
   );
 }
 
-function renderMargin(handleDeposit: (r: any) => void) {
-  return (row: any) => (
-    <div className="flex flex-row justify-right gap-8px">
-      {numUtil.floor(row?.margin ?? 0, 4)} SOL
-      <div className="flex flex-row gap-4px">
-        <div
-          className="flex justify-center items-center bg-green-500 rounded-4px w-24px h-24px"
-          onClick={() => handleDeposit(row)}
-        >
-          <DownIcon />
-        </div>
-        <div className="flex justify-center items-center bg-gray-80 rounded-4px w-24px h-24px rotate-180">
-          <DownIcon color="white" />
+function renderMargin(handleDeposit: (r: any) => void, client: any) {
+  return (row: any) =>
+    row.parent || row.marginType === 'ISOLATED' ? (
+      <div className="flex flex-row items-start justify-right gap-8px">
+        {numUtil.floor(row?.margin ?? 0, 4)} SOL
+        <div className="flex flex-row items-center gap-8px">
+          <Tooltip text="Deposit">
+            <div
+              className="flex justify-center items-center bg-green-500 rounded-4px w-24px h-24px cursor-pointer"
+              onClick={() => handleDeposit(row)}
+            >
+              <DownIcon />
+            </div>
+          </Tooltip>
+          <Tooltip text="Withdraw">
+            <div
+              className={clsx(
+                'flex justify-center items-center bg-gray-80 rounded-4px w-24px h-24px rotate-180 cursor-pointer',
+                [row.parent && 'ml-3px']
+              )}
+              onClick={() => handleWithdraw(row)}
+            >
+              <DownIcon color="white" />
+            </div>
+          </Tooltip>
+          {row.marginType === 'ISOLATED' && (
+            <div className="w-1px h-24px box-border border-1px border-solid border-gray-40"></div>
+          )}
+          {row.marginType === 'ISOLATED' && <ClosePosition row={row} client={client} />}
         </div>
       </div>
-    </div>
-  );
+    ) : (
+      <div className="flex gap-8px">
+        <ClosePosition row={row} client={client} />
+      </div>
+    );
 }

@@ -28,13 +28,12 @@ export class OrderManager {
     authority: PublicKey,
     am: AccountManager,
     userPda: PublicKey,
-    userOrdersPda: PublicKey,
     params: RateXPlaceOrderParams
   ): Promise<TransactionInstruction> {
     const {marketIndex, orderType, direction, marginType, margin} = params;
 
     const perp = await program.account.perpMarket.fetch(getPerpMarketPda(marketIndex));
-    let priceLimit = PriceMath.sqrtPriceX64ToPrice(perp.pool.sqrtPrice, 9, 9).times(
+    let priceLimit: any = PriceMath.sqrtPriceX64ToPrice(perp.pool.sqrtPrice, 9, 9).times(
       new Decimal(direction === 'LONG' ? 1.1 : 0.9)
     );
 
@@ -61,7 +60,7 @@ export class OrderManager {
     // console.log('Lower PriceLimit index : ', lpIndex.toString());
     // console.log('Upper PriceLimit index : ', upIndex.toString());
 
-    priceLimit = PriceMath.priceToSqrtPriceX64(priceLimit, 9, 9);
+    priceLimit = new BN(PriceMath.priceToSqrtPriceX64(priceLimit, 9, 9).toString());
     const expireTs = new BN(Math.floor(Date.now() / 1000) + 10 * 60);
     const baseAssetAmount = new BN(
       Big(params.amount)
@@ -105,7 +104,6 @@ export class OrderManager {
       .accounts({
         state: am.statePda,
         user: userPda,
-        userOrders: userOrdersPda,
         authority,
       })
       .instruction();
@@ -126,7 +124,7 @@ export class OrderManager {
     const {marketIndex, direction} = params;
     const perpMarket = getPerpMarketPda(marketIndex);
     const perp = await program.account.perpMarket.fetch(perpMarket);
-    let priceLimit = PriceMath.tickIndexToPrice(perp.pool.tickCurrentIndex, 5, 5);
+    let priceLimit: any = PriceMath.tickIndexToPrice(perp.pool.tickCurrentIndex, 5, 5);
     priceLimit = priceLimit.mul(direction === 'LONG' ? 1.1 : 0.9);
     priceLimit = PriceMath.priceToSqrtPriceX64(priceLimit, 5, 5);
     const baseAssetAmount = new BN(
@@ -145,15 +143,14 @@ export class OrderManager {
       authority,
       perpMarket,
       perp.pool.tickCurrentIndex,
-      priceLimit,
+      new BN(priceLimit.toString()),
       baseAssetAmount.lt(new BN(0))
     );
 
-    console.log('swap get tickArray : ', Date.now() - start);
+    // console.log('swap get tickArray : ', Date.now() - start);
     // console.log('**********************');
     // console.log('Direction : ', direction);
     // console.log('MarketIndex : ', marketIndex);
-    // console.log('BaseAssetAmount : ', amount);
     // console.log('PerpMarket : ', perp);
     // console.log('tickCurrentIndex : ', perp.pool.tickCurrentIndex);
     // console.log('priceLimit x64 : ', priceLimit.toString());
@@ -169,7 +166,7 @@ export class OrderManager {
     // console.log('**********************');
 
     return await program.methods
-      .calculateSwap(baseAssetAmount, priceLimit)
+      .calculateSwap(baseAssetAmount, new BN(priceLimit.toString()))
       .accounts({
         whirlpool: perpMarket,
         tickArray0: tickArrays[0],
@@ -195,12 +192,11 @@ export class OrderManager {
     const {marketIndex, orderId, userPda} = params;
 
     const userStatPda = await am.initializeUserStats(program, authority);
-    const userOrdersPda = await am.initializeUserOrders(program, authority, userPda);
 
     const mintAccount: PublicKey = getMintAccountPda(getMarginIndexByMarketIndex(marketIndex));
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
 
-    const user = await program.account.userOrders.fetch(userOrdersPda);
+    const user = await program.account.user.fetch(userPda);
     const order = user.orders?.find((o) => {
       if (o.orderId == orderId && !o.baseAssetAmount.eq(new BN(0))) {
         return o;
@@ -213,7 +209,7 @@ export class OrderManager {
       return;
     }
 
-    const remainingAccounts: any = this.getRemainingAccounts(marketIndex);
+    const remainingAccounts: any = this.getRemainingAllAccounts(marketIndex);
     const perpMarket = getPerpMarketPda(marketIndex);
     const perp = await program.account.perpMarket.fetch(perpMarket);
     // TODO LONG > 0 or SHORT <0
@@ -273,7 +269,6 @@ export class OrderManager {
         state: am.statePda,
         driftSigner: am.signerPda,
         authority,
-        userOrders: userOrdersPda,
         whirlpool: perpMarket,
         marginMarketVault,
         tokenOwnerAccountA: am.createBaseAssetVaultPda(marketIndex),
@@ -309,7 +304,7 @@ export class OrderManager {
       },
       ...perpMarkets,
       {pubkey: getOraclePda(0), isSigner: false, isWritable: true},
-      {pubkey: getOraclePda(4), isSigner: false, isWritable: true},
+      {pubkey: getOraclePda(6), isSigner: false, isWritable: true},
     ];
 
     const positionValue = await program.methods
@@ -346,17 +341,15 @@ export class OrderManager {
     am: AccountManager,
     params: {
       userPda: PublicKey;
-      userOrdersPda: PublicKey;
       orderId: number;
     }
   ) {
-    const {userPda, userOrdersPda, orderId} = params;
+    const {userPda, orderId} = params;
     return await program.methods
       .cancelOrder(orderId)
       .accounts({
         state: am.statePda,
         user: userPda,
-        userOrders: userOrdersPda,
         keepers: am.keeperPda,
         authority,
       })
@@ -369,22 +362,17 @@ export class OrderManager {
     am: AccountManager,
     params: {
       userPda: PublicKey;
-      userOrdersPda: PublicKey;
       orderId: number;
       marketIndex: number;
     }
   ) {
-    const {orderId, userPda, userOrdersPda, marketIndex} = params;
+    const {orderId, userPda, marketIndex} = params;
     const marginIndex = getMarginIndexByMarketIndex(marketIndex);
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
 
-    const order = await program.account.userOrders.fetch(userOrdersPda);
-
     console.log('***************');
     console.log('userPda : ', userPda.toBase58());
-    console.log('userOrdersPda : ', userOrdersPda.toBase58());
-    console.log('user order : ', order);
     console.log('orderId : ', orderId);
     console.log('marginIndex : ', marginIndex);
     console.log('MarginMarketVaultPda : ', getMarginMarketVaultPda(marginIndex).toBase58());
@@ -395,7 +383,6 @@ export class OrderManager {
       .accounts({
         state: am.statePda,
         user: userPda,
-        userOrders: userOrdersPda,
         keepers: am.keeperPda,
         marginMarketVault: getMarginMarketVaultPda(marginIndex),
         driftSigner: am.signerPda,
@@ -439,7 +426,7 @@ export class OrderManager {
         isSigner: false,
         isWritable: true,
       },
-      ...[0, 1, 2, 3, 4].map((i) => ({
+      ...[6, 7, 8, 9, 11, 12, 13].map((i) => ({
         pubkey: getPerpMarketPda(i),
         isSigner: false,
         isWritable: true,
@@ -450,12 +437,12 @@ export class OrderManager {
         isSigner: false,
         isWritable: true,
       },
-      ...[0, 2].map((i) => ({
+      ...[0, 6].map((i) => ({
         pubkey: getOraclePda(i),
         isSigner: false,
         isWritable: true,
       })),
-      ...[0, 1, 2, 3, 4].map((i) => ({
+      ...[6, 7, 8, 9, 11, 12, 13].map((i) => ({
         pubkey: getObservationPda(i),
         isSigner: false,
         isWritable: true,

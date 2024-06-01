@@ -1,9 +1,13 @@
 import {AccountManager} from '@/sdk/account-manager';
 import {
+  WSOLOraclePda,
   getFaucetConfigPda,
   getMarginMarketPda,
   getMarginMarketVaultPda,
   getMintAccountPda,
+  getObservationPda,
+  getOraclePda,
+  getPerpMarketPda,
 } from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import type {TokenFaucet} from '@/types/token_faucet';
@@ -148,7 +152,30 @@ export class FundManager {
         userTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
-      .remainingAccounts(remainingAccounts)
+      .remainingAccounts([
+        ...remainingAccounts,
+        ...[0, 1, 2, 6, 7].map((i) => ({
+          pubkey: getPerpMarketPda(i),
+          isSigner: false,
+          isWritable: true,
+        })),
+        // TODO wsol
+        {
+          pubkey: WSOLOraclePda,
+          isSigner: false,
+          isWritable: true,
+        },
+        ...[0, 6].map((i) => ({
+          pubkey: getOraclePda(i),
+          isSigner: false,
+          isWritable: true,
+        })),
+        ...[0, 1, 2, 6, 7].map((i) => ({
+          pubkey: getObservationPda(i),
+          isSigner: false,
+          isWritable: true,
+        })),
+      ])
       .rpc();
   }
 

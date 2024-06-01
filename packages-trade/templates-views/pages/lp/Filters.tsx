@@ -1,4 +1,6 @@
+import {filter$} from '@/streams/lp/filter';
 import {useObservable} from '@rx/hooks/use-observable';
+import {useStream} from '@rx/hooks/use-stream';
 import {assets$, contractMap$} from '@rx/streams/config';
 import {Button, Tabs} from '@rx/widgets';
 import {useEffect, useState} from 'react';
@@ -8,7 +10,7 @@ export function Filters() {
   const contractMap = useObservable(contractMap$, {});
 
   const [asset, setAsset] = useState<string>('SOL');
-  const [select, setSelect] = useState<string>('ALL');
+  const [select, setSelect] = useStream(filter$);
 
   useEffect(() => {
     if (assets?.length > 0 && !asset) {
@@ -27,11 +29,17 @@ export function Filters() {
         ></Tabs>
       </div>
       <div className="flex flex-row items-center gap-8px mt-24px">
-        <Button type="default" selected={select === 'ALL'} onClick={() => setSelect('ALL')}>
+        <Button
+          size="sm"
+          type="default"
+          selected={select === 'ALL'}
+          onClick={() => setSelect('ALL')}
+        >
           ALL
         </Button>
         {contractMap?.[asset]?.map((c) => (
           <Button
+            size="sm"
             key={c.symbolCategory}
             type="default"
             selected={select === c.symbolCategory}

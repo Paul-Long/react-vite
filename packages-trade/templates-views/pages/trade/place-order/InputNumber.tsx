@@ -56,11 +56,12 @@ interface Props {
   type?: 'number' | 'percentage';
   color?: string;
   value?: string | number;
-  onChange?: (e: any) => void;
   autoFocus?: boolean;
   step?: number;
   placeholder?: string;
+  onChange?: (e: any) => void;
   onFocus?: (e: any) => void;
+  onBlur?: (e: any) => void;
 }
 
 export function InputNumber(props: Props) {
@@ -69,11 +70,12 @@ export function InputNumber(props: Props) {
     align = 'left',
     type = 'number',
     color = 'text-green-500',
-    onChange,
     autoFocus = false,
     step = 1,
     placeholder,
+    onChange,
     onFocus,
+    onBlur,
   } = props;
   const wrap = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLInputElement>(null);
@@ -158,6 +160,7 @@ export function InputNumber(props: Props) {
         value={props.value}
         onChange={handleChange}
         onFocus={onFocus}
+        onBlur={onBlur}
       />
     </Wrap>
   );

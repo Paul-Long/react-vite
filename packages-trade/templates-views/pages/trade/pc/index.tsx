@@ -4,6 +4,7 @@ import {Assets} from './Assets';
 import {ChartWrap} from './ChartWrap';
 import {SubAssetsSelect} from './ContractSelect';
 import {Info} from './Info';
+import {TradingViewChart} from './TradingViewChart';
 
 export function TradePC() {
   return (
@@ -15,7 +16,8 @@ export function TradePC() {
             <SubAssetsSelect />
             <Info />
           </div>
-          <ChartWrap />
+          {/* <ChartWrap /> */}
+          <TradingViewChart />
           <Positions />
         </div>
         <PlaceOrder />

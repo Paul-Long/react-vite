@@ -45,7 +45,7 @@ export class TopicSubject extends BehaviorSubject<any> {
     wsConnected$
       .pipe(
         filter((status) => status === 'Connected'),
-        takeUntil(this._unsubscribe$), // 当 _unsubscribe$ 发出时取消订阅
+        takeUntil(this._unsubscribe$), // _unsubscribe$ cancel subscription
         switchMap(() => {
           sendToWorker({type: this.Types.Subscribe, serverName: this._serverName, topic});
           return worker$.pipe(

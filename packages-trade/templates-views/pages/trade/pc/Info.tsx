@@ -58,5 +58,8 @@ const genInfo = (LG: (s: string) => string, data: any) => [
     title: 'Open Interest',
     value: data?.OpenInterest ? numUtil.trimEnd0(numUtil.floor(data?.OpenInterest ?? 0, 2)) : '-',
   },
-  {title: 'Ava.Liquidity', value: '-'},
+  {
+    title: 'Ava.Liquidity',
+    value: data?.AvaLiquidity ? numUtil.trimEnd0(numUtil.floor(data?.AvaLiquidity ?? 0, 2)) : '-',
+  },
 ];

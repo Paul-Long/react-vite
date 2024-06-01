@@ -71,13 +71,6 @@ export function useContract() {
     setMaturity(maturityList?.[0]?.term);
   }, [asset, contract, contractMap, maturityMap, params]);
 
-  useEffect(() => {
-    if (contract && maturity) {
-      // queryKLine$.next({securityID: [contract, maturity].join('-')});
-      // kline$.next(`dc.md.kline.1M.${[contract, maturity].join('-')}`);
-    }
-  }, [contract, maturity]);
-
   const getContract = useCallback(() => {
     if (!asset || !contract) {
       return;

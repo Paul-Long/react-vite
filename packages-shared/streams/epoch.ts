@@ -47,12 +47,14 @@ function calcTTM(time: number, contracts: ConfigSymbol[]) {
         ttm: numUtil.trimEnd0(days.div(365).toFixed(2, 0)),
         unit: 'years',
         days: days.toNumber(),
+        seconds: Big(maturity).minus(time).div(1000).round(0, 0).toNumber(),
       };
     } else {
       ttm[key] = {
         ttm: numUtil.trimEnd0(days.toFixed(0, 0)),
         unit: 'days',
         days: days.round(2, 0).toNumber(),
+        seconds: Big(maturity).minus(time).div(1000).round(0, 0).toNumber(),
       };
     }
     return ttm;

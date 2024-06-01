@@ -23,7 +23,7 @@ const Wrap = styled.div<{$color: string}>`
     position: absolute;
     top: 0;
     left: -2px;
-    right: -2px;
+    right: -4px;
     height: 2px;
     border: 2px solid transparent;
     cursor: pointer;

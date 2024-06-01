@@ -1,6 +1,8 @@
+import {filter$} from '@/streams/market/filter';
 import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
+import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/dashboard.lang';
 import {maturityMap$} from '@rx/streams/config';
 import {ttmMap$} from '@rx/streams/epoch';
@@ -8,12 +10,11 @@ import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
 import {useCallback, useMemo} from 'react';
-import {useNavigate} from 'react-router-dom';
 
 export function useMarketOverview() {
   const {LG} = useLang();
   const {fixLink} = useFixLink();
-  const navigate = useNavigate();
+  const [filter] = useStream(filter$);
   const maturityMap = useObservable(maturityMap$, {});
   const lastTrade: any = useObservable(lastTrade$, {});
   const ttmMap: any = useObservable(ttmMap$, {});
@@ -33,8 +34,14 @@ export function useMarketOverview() {
           impliedYield,
         };
       })
+      .filter((m) => {
+        if (!filter || filter === 'ALL') {
+          return true;
+        }
+        return m.symbolLevel2Category === filter;
+      })
       .sort((a, b) => (a.sort - b.sort > 0 ? 1 : -1));
-  }, [lastTrade, maturityMap, ttmMap]);
+  }, [lastTrade, maturityMap, ttmMap, filter]);
 
   const genColumns = useCallback(() => {
     const columns: Column[] = [

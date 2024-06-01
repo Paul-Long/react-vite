@@ -1,6 +1,6 @@
 import {PROGRAM_ID} from '@/sdk/account-manager';
 import {TICK_ARRAY_SIZE} from '@/sdk/const';
-import type {RatexContracts} from '@/types/ratex_contracts.ts';
+import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import * as anchor from '@coral-xyz/anchor';
 import {BN, Program} from '@coral-xyz/anchor';
@@ -121,7 +121,7 @@ export class TickManager {
     const tickArrayAccounts = [];
     const tas = [];
     for (let i = startTickIndex; i <= endTickIndex; i += TICK_ARRAY_SIZE) {
-      const {tickArray, tickIndex} = this.genTickArray(perpMarket, startTickIndex);
+      const {tickArray, tickIndex} = this.genTickArray(perpMarket, i);
       tickArrayAccounts.push(tickArray);
       tas.push([tickArray, tickIndex, i]);
     }

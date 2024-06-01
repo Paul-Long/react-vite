@@ -14,3 +14,4 @@ export {Table} from './table/Table';
 export {Tabs} from './tabs';
 export {Toast} from './toast/Toast';
 export {ToastManager} from './toast/ToastManager';
+export {Tooltip} from './tooltip';

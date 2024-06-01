@@ -1,20 +1,20 @@
 import {PublicKey} from '@solana/web3.js';
 
-export const WSOLOraclePda = new PublicKey('AMxYa2B4Edf7s4nAu9YCaJw8USS9y6cC7D3N6XvLTAty');
+export const WSOLOraclePda = new PublicKey('E8ZQeKpiMfuLRVMXKmH9nqSPfcQ9diGqPQtLoBYZotKY');
 
 export function getMarginMarketPda(marginIndex: number): any {
   return {
-    0: new PublicKey('Fdi1HRHCzUjq1wBh8aJvDDDkGdNqbSgyn5B9RumAYCnW'),
-    1: new PublicKey('CTrtouz5ENNbeEfb1qY1nxwGfvMPvXfaPGFmNZuwvRYK'),
-    2: new PublicKey('6QmKRDF3wPD4WezYLSmpRSAJLJ4zc6LLWvnY84fvSLhk'),
+    0: new PublicKey('3Dj4jJUtPriBtrFrY9doFm8Qso4vLxsLCH46dJks5fbb'),
+    1: new PublicKey('97FqGdjNLytne3rTjUKvcUmvEE7npH8SirVKX5sVpeqR'),
+    2: new PublicKey('DTtusuKpERj5uPvxr6eubwSRZegEsZu8KbcCjdYNxArN'),
   }[marginIndex];
 }
 
 export function getMarginMarketVaultPda(marginIndex: number): any {
   return {
-    0: new PublicKey('5LYpJ1qFmDMSYE4As4TN2kCssKeCgWaF1VrPkiq9CgqX'),
-    1: new PublicKey('FA6bNQhMMXnKGJpHmMJt9jCzG5eoaLf3H5bcE1JQs1Kh'),
-    2: new PublicKey('CG53HDgjP93DEff2o1dr84sZgqvrvtY2sgFsw2PjgSUp'),
+    0: new PublicKey('7gJKDFwYGQMHccNxbhjV1MSFmMe8j3fB1mp44XenTVpe'),
+    1: new PublicKey('DpCkxRUya5DBadskBH1jYpxNB4R2e8c3JVwj29nmFvAm'),
+    2: new PublicKey('BuLmSYyQPmXSueySXSFe66H2j2LkeSrM1m3tLVKLAyZR'),
   }[marginIndex];
 }
 
@@ -34,30 +34,50 @@ export function getFaucetConfigPda(marginIndex: number): any {
   }[marginIndex];
 }
 
+export const PerpMarketMap: Record<number, string> = {
+  0: 'BpppZgAhrpyzPCp9cCJ4FH8Vd2nfQ5uaFJnsx3V66p83',
+  1: 'Ac9aEmgLSYnZxJAzq8nDenqLEWDQRHKyqgSi73Yc5bRG',
+  2: 'DJiALhWP4cXyaD1he9aEF4WuT5423aoxjrQ3AEhw9P16',
+  6: '8JWA8NcaeMaqhi9ywJv1snZyrjs43aqxbjF9Ha1tc6uT',
+  7: 'H94Dqeep3LZeiVKBH57w2okNPoMNy2KLAABsRTmS6syv',
+  8: '9kAC1kNcViVvLSAfiFafa6tLAtRVAwXWQRxDm2ESfygF',
+  9: 'CEwH7S8F3ecCsBpBUgEDUyufQcR5Dkat8nyqAJSBU46P',
+  11: 'BqPdhts1L5YAGQjUjRxJdsU9GaFxJnh5k7GjRoPMJ3fD',
+  12: '6Si7ttgXTVtfvwDwwut4LgtdK8uYtbJ5BbiigZj4mhMR',
+  13: '4TNYtZRmV72hB5nAotwANbokabiF4Cv71ZKiMMDBjCh2',
+};
+
 export function getPerpMarketPda(marketIndex: number): any {
-  return {
-    0: new PublicKey('4sd7uVCbosEhxxGZkM6GDoAe29jq7B4PtZ8amWpnF2HX'),
-    1: new PublicKey('GtBooeBRte3GiEgf1nWQcX743rvuQdZr3vqxNHm69XCL'),
-    2: new PublicKey('G1MxPQ5NdQz6W5D2RyGoLnVf7Vtmn3ovnmhggejKMSSW'),
-    3: new PublicKey('DxzDk1bSYfFmCznsLkQaircsTUb3fy3rksqhsTBekBML'),
-  }[marketIndex];
+  return new PublicKey(PerpMarketMap[marketIndex]);
 }
 
 export function getOraclePda(marketIndex: number): any {
   return {
-    0: new PublicKey('2MdsGHaRre5raPKDL9Zuk5RMiDhKi8xAioCQ9zNnNvxG'),
-    1: new PublicKey('2MdsGHaRre5raPKDL9Zuk5RMiDhKi8xAioCQ9zNnNvxG'),
-    2: new PublicKey('FyMTvDJ9bsGFfm2C9FfG4dHygXWUpY5BT4RgpeNCYU3h'),
-    3: new PublicKey('FyMTvDJ9bsGFfm2C9FfG4dHygXWUpY5BT4RgpeNCYU3h'),
+    0: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
+    1: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
+    2: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
+    6: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
+    7: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
+    8: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
+    9: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
+    11: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
+    12: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
+    13: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
   }[marketIndex];
 }
 
 export function getObservationPda(marketIndex: number): any {
   return {
-    0: new PublicKey('HNiXqMtxuRnqUkofjWH4RupKgyECRAJ3T48SJiCXiiqp'),
-    1: new PublicKey('FCSLUXEes8MYwsWRXBhzKNErT9nn3FEHLUmnhZbByUBT'),
-    2: new PublicKey('G1xdtVeiWe59VFBJ1fKqZziQxB4NBnCUzKgxzy3oxkaa'),
-    3: new PublicKey('5B4ktNYfmLG3b1xri3aV4zs7tzr7JBcBKTwhXuzqQF5Y'),
+    0: new PublicKey('6rm7RuKduugFT3sEJ1fqRmegk7gmh9qX4r4dBJnrQ4tv'),
+    1: new PublicKey('2yhrgUZym3ruaq9ELfYuoXrc4xjoRgavjbv9pVAhaheW'),
+    2: new PublicKey('2iwq4d6rFSakn8gJjHSpp8SCGp16k3Q2sB6yMWhrZQ5b'),
+    6: new PublicKey('XB2BYGQSqJXeyCGSRKV6WFwqepr83jXXs4RyUkq6zkd'),
+    7: new PublicKey('CU1sGwjcc3V7JnGEDSWn5teEnrPEzstfRdHt6NPZUohW'),
+    8: new PublicKey('6bqorzLMBg7twmJEbu1AtSjR6eYTbKv5d7EqFTkxz4yH'),
+    9: new PublicKey('2qJQRBB7fMzrUQ4KQfGnjjrPosfYyW9zVffinbrU7JeZ'),
+    11: new PublicKey('FWVD9VApKbtjPvBBNkX56rSwoVtYjzMkr5Sn7uFu3ssy'),
+    12: new PublicKey('DDSmFMLWh5XNoXm3Phy6gA3YoicZL6tB3hco6AyDe9aE'),
+    13: new PublicKey('BkndJdhERYoTVvpexuzAVsME9tBawBW53jtKCJpmm3Es'),
   }[marketIndex];
 }
 
@@ -66,6 +86,27 @@ export function getMarginIndexByMarketIndex(marketIndex: number): number {
     0: 0,
     1: 0,
     2: 0,
-    3: 0,
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
+    11: 0,
+    12: 0,
+    13: 0,
+  }[marketIndex] as number;
+}
+
+export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
+  return {
+    0: 1,
+    1: 1,
+    2: 1,
+    6: 2,
+    7: 2,
+    8: 1,
+    9: 1,
+    11: 2,
+    12: 1,
+    13: 2,
   }[marketIndex] as number;
 }

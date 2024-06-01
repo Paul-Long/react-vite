@@ -22,6 +22,7 @@ function mergeData(reqData: Record<string, any>, wsData: Record<string, any>) {
   let data = {...reqData};
   if (!!wsData?.SecurityID) {
     data[wsData?.SecurityID] = {...wsData};
+    reqData[wsData?.SecurityID] = {...wsData};
   }
   return data;
 }

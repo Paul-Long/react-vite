@@ -242,4 +242,7 @@ export const lang: any = {
   ImpliedYield: {
     en: 'Implied Yield',
   },
+  YTAmount: {
+    en: 'YT Amount',
+  },
 };

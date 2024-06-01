@@ -1,7 +1,10 @@
 import {loadJS} from './util';
 
 export function loadTV() {
-  return loadJS('/charting_library/charting_library.js', 'tv-charting');
+  return loadJS(
+    'https://static.rate-x.io/3rd/tv/27.005/charting_library/charting_library.js',
+    'tv-charting'
+  );
 }
 
 export function loadEcharts() {

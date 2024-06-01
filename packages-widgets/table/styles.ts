@@ -26,10 +26,11 @@ const StyledCell = styled.div<{
   key?: Key;
   $shadowLeft?: boolean;
   $shadowRight?: boolean;
+  $border?: boolean;
 }>`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   white-space: nowrap;
   padding: 12px 20px;
 
@@ -37,6 +38,13 @@ const StyledCell = styled.div<{
     if ($selected) {
       return css`
         background: #ffffff14 !important;
+      `;
+    }
+  }}
+  ${({$border}) => {
+    if ($border) {
+      return css`
+        border-bottom: 1px solid #ffffff14;
       `;
     }
   }}

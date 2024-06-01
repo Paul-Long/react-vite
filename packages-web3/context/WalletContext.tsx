@@ -1,5 +1,6 @@
 import {RateClient} from '@/sdk';
 import {rateXClient$} from '@/streams/rate-x-client';
+import {BackpackWalletAdapter} from '@/wallets/BackpackWalletAdapter';
 import {useStream} from '@rx/hooks/use-stream';
 import {Adapter, WalletAdapterNetwork, WalletError} from '@solana/wallet-adapter-base';
 import {PhantomWalletAdapter} from '@solana/wallet-adapter-phantom';
@@ -10,6 +11,7 @@ import {
   useWallet,
 } from '@solana/wallet-adapter-react';
 import {SolflareWalletAdapter} from '@solana/wallet-adapter-solflare';
+import {clusterApiUrl} from '@solana/web3.js';
 import {FC, ReactNode, useCallback, useEffect, useMemo} from 'react';
 
 export const WalletContextProvider: FC<{children: ReactNode}> = ({children}) => {
@@ -17,14 +19,13 @@ export const WalletContextProvider: FC<{children: ReactNode}> = ({children}) => 
 
   const endpoint = useMemo(
     // () => 'https://devnet.helius-rpc.com/?api-key=21f80e34-a310-431d-b970-ecb7a7c16565',
-    () =>
-      'https://convincing-green-sea.solana-devnet.quiknode.pro/e155ea13e0808fe562d72760eaf1c69daf3498c2/',
-    // () => clusterApiUrl(network),
+    // () => 'https://convincing-green-sea.solana-devnet.quiknode.pro/e155ea13e0808fe562d72760eaf1c69daf3498c2/',
+    () => clusterApiUrl(network),
     [network]
   );
 
   const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
+    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new BackpackWalletAdapter()],
     [network]
   );
 
