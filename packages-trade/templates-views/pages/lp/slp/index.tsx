@@ -1,6 +1,9 @@
 import {IMAGES} from '@/pages/lp/const';
 import {PlaceOrder} from '@/pages/lp/slp/PlaceOrder';
 import {Reference} from '@/pages/lp/slp/Reference';
+import {LiveLPPosition} from '@/pages/lp/slp/positions/LiveLPPosition';
+import {ResidualLPPosition} from '@/pages/lp/slp/positions/ResidualLPPosition';
+import {marketIndex$} from '@/streams/lp/positions';
 import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
@@ -26,6 +29,12 @@ export default function () {
     referencePrice$.next('dc.aps.referenceprice');
   }, []);
 
+  useEffect(() => {
+    if (contract?.id !== undefined) {
+      marketIndex$.next(contract.id);
+    }
+  }, [contract]);
+
   return (
     <div className="flex flex-col w-1200px mx-auto">
       <div className="flex flex-row items-center mt-50px gap-24px">
@@ -44,6 +53,7 @@ export default function () {
         <Reference symbol="mSOL" />
         <div className="flex flex-row items-center mt-24px gap-8px">
           <Button
+            size="sm"
             className={clsx([select === 'Detail' && 'text-gray-600'])}
             type="default"
             onClick={() => setSelect('Detail')}
@@ -54,6 +64,7 @@ export default function () {
             </span>
           </Button>
           <Button
+            size="sm"
             type="default"
             onClick={() => setSelect('LiveLPPosition')}
             selected={select === 'LiveLPPosition'}
@@ -63,6 +74,7 @@ export default function () {
             </span>
           </Button>
           <Button
+            size="sm"
             className={clsx([select === 'ResidualLPPosition' && 'text-gray-600'])}
             type="default"
             onClick={() => setSelect('ResidualLPPosition')}
@@ -73,7 +85,9 @@ export default function () {
             </span>
           </Button>
         </div>
-        <PlaceOrder contract={contract as any} />
+        {select === 'Detail' && <PlaceOrder contract={contract as any} />}
+        {select === 'LiveLPPosition' && <LiveLPPosition contract={contract as any} />}
+        {select === 'ResidualLPPosition' && <ResidualLPPosition contract={contract as any} />}
       </div>
     </div>
   );
@@ -94,7 +108,7 @@ function useData() {
         contract.symbolLevel2Category,
         contract.term,
       ].join('_');
-      data.maturity = ttmMap?.[key]?.days;
+      data.maturity = ttmMap?.[key]?.seconds;
       data.maturityStr = ttmMap?.[key].ttm + ttmMap?.[key].unit;
     }
     return data;

@@ -31,14 +31,16 @@ export function ClosePosition({row, client}: any) {
   );
   return (
     <Button
+      size="sm"
       className="relative"
       disabled={row?.enableClose || loading}
       type="default"
+      style={{padding: '1px 12px', fontSize: 12, lineHeight: '20px'}}
       onClick={() => handleClose(row)}
     >
       {loading && (
         <div className="absolute top-2 mx-auto">
-          <Loading size={16} theme="dark" />
+          <Loading size={12} theme="dark" />
         </div>
       )}
       {LG(clang.Close)}

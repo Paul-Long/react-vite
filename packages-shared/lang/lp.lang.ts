@@ -44,6 +44,9 @@ export const lang: any = {
   LPValue: {
     en: 'LP Value',
   },
+  LPValueTotal: {
+    en: 'LP Value Total',
+  },
   TotalWithdrawable: {
     en: 'Total(Withdrawable)',
   },
@@ -116,4 +119,10 @@ export const lang: any = {
   UpperRate: {
     en: 'Upper Rate',
   },
+  YourPosition: {
+    en: 'Your Position'
+  },
+  RetainRatio: {
+    en: 'Retain Ratio'
+  }
 };

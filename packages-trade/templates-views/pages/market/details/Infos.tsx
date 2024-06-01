@@ -6,8 +6,9 @@ import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/dashboard.lang';
 import {referencePrice$} from '@rx/streams/market/reference-price';
+import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
 import {Button} from '@rx/widgets';
-import {useCallback, useMemo} from 'react';
+import {useCallback, useEffect, useMemo} from 'react';
 import {detail$} from '../streams';
 
 export function Infos() {
@@ -15,6 +16,12 @@ export function Infos() {
   const reference = useObservable(referencePrice$, []);
   const [detail, setDetail] = useStream(detail$);
   const {LG} = useLang();
+
+  useEffect(() => {
+    if (detail) {
+      lastTradeSnapshot$.next('dc.md.trade.' + detail.symbol);
+    }
+  }, [detail]);
 
   const refer = useMemo<any>(() => {
     return reference?.find((r) => r.token === detail?.symbolLevel2Category) ?? {};

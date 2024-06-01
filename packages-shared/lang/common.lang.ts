@@ -217,4 +217,16 @@ export const lang: any = {
   ExpireIn: {
     en: 'Expire In',
   },
+  MarginAsset: {
+    en: 'Margin Asset'
+  },
+  YieldSwapAccount: {
+    en: 'Yield Swap Account'
+  },
+  EarnAccount: {
+    en: 'Earn Account'
+  },
+  LiquidityAccount: {
+    en: 'Liquidity Account'
+  }
 };

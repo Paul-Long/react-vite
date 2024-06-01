@@ -1,7 +1,8 @@
 import {clsx} from 'clsx';
+import {ReactNode} from 'react';
 
 interface Option {
-  label: JSX.Element;
+  label: ReactNode;
   value: string;
 }
 

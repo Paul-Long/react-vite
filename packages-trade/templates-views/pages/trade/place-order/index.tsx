@@ -32,11 +32,12 @@ export function PlaceOrder() {
           onChange={handleChange('amount')}
           onFocus={() => (current.current = 'amount')}
         />
-        <Leverage value={state.leverage} onChange={handleChange('leverage')} />
+        <Leverage value={state.leverage} max={state.maxLeverage} onChange={handleChange('leverage')} />
         <DepositMargin
           value={state.margin}
           onChange={handleChange('margin')}
           onFocus={() => (current.current = 'margin')}
+          marginType={state.marginType}
           marginWaiver={state.marginWaiver}
           onMarginWaiverChange={handleChange('marginWaiver')}
         />

@@ -1,12 +1,14 @@
 import {current$} from '@/pages/trade/streams/streams';
 import {calcInfo$, order$} from '@/streams/calc-swap';
 import {query$} from '@/streams/positions';
+import {crossMargin$} from '@/streams/trade/cross-margin';
 import {marketIndex$, twap$} from '@/streams/twap';
 import {tradeApi} from '@rx/api/trade';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {walletModalVisible$} from '@rx/streams/wallet';
 import {useConnect} from '@rx/web3/hooks/use-connect';
+import {updateBalance$} from '@rx/web3/streams/balance';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Toast} from '@rx/widgets';
 import {Big} from 'big.js';
@@ -17,6 +19,7 @@ export function useForm() {
   const [client] = useStream(rateXClient$);
   const twap: any = useObservable(twap$, {});
   const info = useObservable(calcInfo$, {});
+  const crossMargin: any = useObservable(crossMargin$, {remainMargin: '0'});
   const baseContract = useObservable(current$, {});
 
   const [loading, setLoading] = useState(false);
@@ -24,10 +27,15 @@ export function useForm() {
   const [state, setState] = useState(initData());
 
   const amountN = useMemo(() => state.amount, [state]);
+  const direction = useMemo(() => state.direction, [state]);
   const marginN = useMemo(() => state.margin, [state]);
   const leverageN = useMemo(() => state.leverage, [state]);
   const marketIndex = useMemo(() => state.marketIndex, [state]);
-  const price = useMemo(() => info.py, [info]);
+  const maxLeverage = useMemo(() => state.maxLeverage, [state]);
+  const entryPrice = useMemo(() => info.entryPrice, [info]);
+  const sqrtPrice = useMemo(() => info.sqrtPrice, [info]);
+  const baseAssetAmount = useMemo(() => info.baseAssetAmount, [info]);
+  const quoteAssetAmount = useMemo(() => info.quoteAssetAmount, [info]);
 
   const {connected} = useConnect();
 
@@ -41,11 +49,69 @@ export function useForm() {
   }, [baseContract, client]);
 
   useEffect(() => {
-    if (current.current === 'amount' && !!amountN && !!price) {
-      const margin = Big(amountN).times(price).div(leverageN).round(9, 3).toNumber();
-      setState((prevState: any) => {
-        return {...prevState, margin};
-      });
+    const twapPrice = twap?.[marketIndex];
+    if (current.current === 'amount' && !!amountN && !!entryPrice) {
+      let margin = Big(amountN).times(entryPrice).div(leverageN).round(9, 3).toNumber();
+      if (twapPrice) {
+        const twapCr = Big(twapPrice)
+          .times(baseAssetAmount)
+          .add(margin)
+          .div(quoteAssetAmount)
+          .toString();
+        console.log('Twap CR : ', twapCr);
+      }
+      const nextState = {margin, leverage: leverageN, maxLeverage};
+      if (direction === 'LONG') {
+        const denominator = Big(quoteAssetAmount)
+          .times(1.05)
+          .times(1.01)
+          .minus(Big(twapPrice).times(baseAssetAmount));
+        const max = Big(quoteAssetAmount).div(denominator).round(1, 0).toNumber();
+        if (max < leverageN && max > 1.4) {
+          nextState.leverage = max;
+        }
+        if (max > 1.4) {
+          nextState.maxLeverage = Math.min(max, 10);
+        }
+        console.log('Long Max Leverage : ', max, maxLeverage, denominator.toString());
+      } else {
+        if (twapPrice < entryPrice) {
+          nextState.maxLeverage = 10;
+        } else {
+          const denominator = Big(twapPrice)
+            .times(baseAssetAmount)
+            .times(1.05)
+            .times(1.01)
+            .minus(quoteAssetAmount);
+          const max = Big(quoteAssetAmount).div(denominator).round(1, 0).toNumber();
+          if (max < leverageN && max > 1.4) {
+            nextState.leverage = max;
+          }
+          nextState.maxLeverage = Math.min(max, 10);
+          console.log('Short Max Leverage : ', max, maxLeverage, denominator.toString());
+        }
+      }
+      nextState.margin = Big(amountN)
+        .times(entryPrice)
+        .div(nextState.leverage)
+        .round(9, 3)
+        .toNumber();
+      setState((prevState: any) => ({...prevState, ...nextState}));
+      // let margin = Big(amountN).times(price).div(leverageN).round(9, 3).toNumber();
+      // if (direction === 'LONG') {
+      //   const yt = Big(amountN).times(lastPrice);
+      //   const st = Big(amountN).times(price);
+      //   console.log('LONG : ', Big(1.1).times(st).abs().minus(yt).toNumber());
+      //   margin = Math.max(Big(1.1).times(st).abs().minus(yt).toNumber(), margin);
+      // } else {
+      //   const yt = Big(amountN).times(price);
+      //   const st = Big(amountN).times(lastPrice);
+      //   console.log('SHORT : ', Big(1.1).times(yt).abs().minus(st).toNumber());
+      //   margin = Math.max(Big(1.1).times(yt).abs().minus(st).toNumber(), margin);
+      // }
+      // setState((prevState: any) => {
+      //   return {...prevState, margin};
+      // });
     }
     if (current.current === 'margin' && !!marginN) {
       if (!twap?.[marketIndex]) {
@@ -57,7 +123,17 @@ export function useForm() {
         return {...prevState, amount};
       });
     }
-  }, [amountN, marginN, leverageN, marketIndex, price, twap]);
+  }, [
+    amountN,
+    marginN,
+    leverageN,
+    marketIndex,
+    direction,
+    entryPrice,
+    sqrtPrice,
+    twap,
+    maxLeverage,
+  ]);
 
   const handleChange = useCallback(
     (key: string) => {
@@ -93,7 +169,27 @@ export function useForm() {
     }
     const start = Date.now();
     const {margin, marginType, direction, amount} = state;
-    if (!margin || !amount) {
+    let newMargin: string | number = margin;
+    if (state.marginWaiver && marginType === 'CROSS') {
+      newMargin =
+        crossMargin?.remainMargin > margin
+          ? 0
+          : Big(margin)
+              .minus(crossMargin?.remainMargin ?? '0')
+              .toNumber();
+    }
+    if (!state.marginWaiver && !margin) {
+      return;
+    }
+    if (marginType === 'CROSS' && !crossMargin?.remainMargin && !margin) {
+      return;
+    }
+
+    if (!state.marginWaiver && (!newMargin || Number(newMargin) < 0)) {
+      return;
+    }
+
+    if (!amount) {
       return;
     }
     setLoading(true);
@@ -103,7 +199,7 @@ export function useForm() {
       amount,
       marketIndex: baseContract.id,
       orderType: 'MARKET',
-      margin,
+      margin: newMargin,
     };
     console.log('Place Order Start : ', Date.now());
     const tx = await client.placeOrder2(order);
@@ -118,12 +214,13 @@ export function useForm() {
           .toFixed(1)}s`
       );
       query$.next(0);
+      updateBalance$.next(0);
     }
     setState((prevState) => ({...prevState, amount: '', margin: ''}));
     setLoading(false);
   }, [connected, state, baseContract, client]);
 
-  return {state, info, current, handleChange, handleSubmit, loading};
+  return {state, info, current, handleChange, handleSubmit, loading, crossMargin};
 }
 
 function initData() {
@@ -132,6 +229,7 @@ function initData() {
     direction: 'SHORT',
     amount: '',
     leverage: 1,
+    maxLeverage: 10,
     margin: '',
     slippage: 1,
     marketIndex: 0,

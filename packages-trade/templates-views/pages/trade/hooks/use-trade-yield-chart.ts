@@ -66,12 +66,13 @@ export function useTradeYieldChart(options: any = {}) {
     if (!loaded || !chart?.current) {
       return;
     }
-    const yd = [];
+    let yd = [];
     for (let i = 0; i < klineData?.length; i++) {
       const row: any = klineData[i];
       const {time, close: value} = row;
       yd.push({time, value: Number(value)});
     }
+    yd = yd.sort((a, b) => a.time > b.time ? 1: -1)
     if (!line.current) {
       line.current = chart?.current?.addLineSeries({
         color: '#E8BC31',

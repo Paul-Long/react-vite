@@ -17,11 +17,7 @@ export function useHistory() {
       {
         title: LG(clang.No) + '.',
         dataIndex: 'id',
-        fixed: 'left',
-        width: '80px',
-        shadowRight: true,
-        headerCellStyle: {background: '#030B0F'},
-        bodyCellStyle: {background: '#030B0F'},
+        align: 'left',
         render: (_, i) => (i ?? 0) + 1,
       },
       {
@@ -33,6 +29,12 @@ export function useHistory() {
       {
         title: 'YT/ST',
         dataIndex: 'LastQty',
+        align: 'right',
+        render: renderYtSt,
+      },
+      {
+        title: 'PnL/%',
+        dataIndex: 'RealizedPnl',
         align: 'right',
         render: renderYtSt,
       },
@@ -57,11 +59,7 @@ export function useHistory() {
       {
         title: LG(lang.TxHarsh),
         dataIndex: 'ExecID',
-        fixed: 'right',
         align: 'right',
-        shadowLeft: true,
-        headerCellStyle: {background: '#030B0F'},
-        bodyCellStyle: {background: '#030B0F'},
         render: (row: any) => (
           <a
             className="underline-solid underline"
@@ -112,6 +110,7 @@ function renderYield(row: any) {
   return (
     <div className="flex flex-col items-end w-full">
       <span>{row.Yield ? numUtil.trimEnd0(numUtil.floor(row.Yield, 2, -2)) + '%' : '-'}</span>
+      <span>{row.LastPx ? numUtil.trimEnd0(numUtil.floor(row.LastPx, 9)) : '-'}</span>
     </div>
   );
 }

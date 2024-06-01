@@ -4,9 +4,14 @@ import {FundManager} from '@/sdk/fund-manager';
 import {LpManager} from '@/sdk/lp-manager';
 import {OrderManager} from '@/sdk/order-manager';
 import {TickManager} from '@/sdk/tick-manager';
-import {getMarginIndexByMarketIndex, getMintAccountPda} from '@/sdk/utils';
-import {clientReady$} from '@/streams/rate-x-client';
 import {
+  getMarginIndexByMarketIndex,
+  getMarginIndexByMarketIndexV2,
+  getMintAccountPda,
+} from '@/sdk/utils';
+import {updateBalance$} from '@/streams/balance';
+import {clientReady$} from '@/streams/rate-x-client';
+import type {
   RateXClientConfig,
   RateXClosePositionParams,
   RateXPlaceOrderParams,
@@ -27,7 +32,6 @@ import {
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
-import Big from 'big.js';
 import Decimal from 'decimal.js';
 import * as idl from '../idl/ratex_contracts.json';
 import * as tokenFaucetIDL from '../idl/token_faucet.json';
@@ -113,6 +117,13 @@ export class RateClient {
     return this.am.getAllPosition(this.program, this.authority);
   }
 
+  async getCrossPositions() {
+    if (!this.authority) {
+      return [];
+    }
+    return this.am.getCrossPosition(this.program, this.authority);
+  }
+
   async getAllOrders() {
     if (!this.authority) {
       return [];
@@ -145,7 +156,6 @@ export class RateClient {
       this.program,
       this.authority,
       marginType === 'ISOLATED',
-      true,
       statInfo
     );
     console.log('place order check user : ', Date.now() - start);
@@ -159,28 +169,13 @@ export class RateClient {
         this.program,
         this.authority,
         marginType === 'ISOLATED',
-        true,
         subAccountId
       );
       userPda = pda;
       transaction2 = t;
-    } else {
-      subAccountId = user.subAccountId;
-    }
-    let transaction3;
-    let userOrdersPda = user?.userOrdersPda;
-    if (!user?.userOrdersPdaExist) {
-      const [uop, t3] = await this.am.initializeUserOrdersTransaction(
-        this.program,
-        this.authority,
-        userPda,
-        subAccountId
-      );
-      userOrdersPda = uop;
-      transaction3 = t3;
     }
     console.log('place order check user orders : ', Date.now() - start);
-    if (marginType === 'CROSS' && !transaction2 && !transaction3) {
+    if (marginType === 'CROSS' && !transaction2) {
       const zero = new BN(0);
       // const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
       const position = user?.perpPositions?.find((p: any) => p.marketIndex === marketIndex);
@@ -208,7 +203,6 @@ export class RateClient {
       this.authority,
       this.am,
       userPda,
-      userOrdersPda,
       params
     );
 
@@ -217,7 +211,6 @@ export class RateClient {
     const combinedTransaction = new Transaction();
     !!transaction1 && combinedTransaction.add(transaction1);
     !!transaction2 && combinedTransaction.add(transaction2);
-    !!transaction3 && combinedTransaction.add(transaction3);
     !!transaction4 && combinedTransaction.add(transaction4);
     combinedTransaction.add(transaction5);
     combinedTransaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
@@ -245,8 +238,7 @@ export class RateClient {
     }
     const {userPda: userPdaAddress, userOrdersPda: userOrdersPdaAddress} = params;
     const userPda = new PublicKey(userPdaAddress);
-    const userOrdersPda = new PublicKey(userOrdersPdaAddress);
-    const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
+    const user: any = await this.am.getAccountInfo(this.program, userPda);
     if (user.isIsolated && user.orders?.length > 0) {
       return;
     }
@@ -255,13 +247,10 @@ export class RateClient {
       this.authority,
       this.am,
       userPda,
-      userOrdersPda,
       params
     );
     const combinedTransaction = new Transaction();
     combinedTransaction.add(transaction);
-    combinedTransaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
-    combinedTransaction.feePayer = this.authority;
     return await this.sendTransaction(combinedTransaction);
   }
 
@@ -284,13 +273,12 @@ export class RateClient {
     return tx;
   }
 
-  async cancelOrder(params: {userPda: string; userOrdersPda: string; orderId: number}) {
+  async cancelOrder(params: {userPda: string; orderId: number}) {
     if (!this.authority) {
       return;
     }
     const tx = await this.om.cancelOrder(this.program, this.authority, this.am, {
       userPda: new PublicKey(params.userPda),
-      userOrdersPda: new PublicKey(params.userOrdersPda),
       orderId: params.orderId,
     });
     console.log('Cancel Order : ', tx);
@@ -299,17 +287,15 @@ export class RateClient {
 
   async cancelIsolatedOrder(params: {
     userPda: string;
-    userOrdersPda: string;
     orderId: number;
     marketIndex: number;
   }) {
     if (!this.authority) {
       return;
     }
-    const {userPda, userOrdersPda, orderId, marketIndex} = params;
+    const {userPda, orderId, marketIndex} = params;
     const tx = await this.om.cancelIsolatedOrder(this.program, this.authority, this.am, {
       userPda: new PublicKey(userPda),
-      userOrdersPda: new PublicKey(params.userOrdersPda),
       orderId,
       marketIndex,
     });
@@ -334,42 +320,87 @@ export class RateClient {
       params
     );
     const result: any = await this.sendViewTransaction([instruction]);
-    let res: any = {
-      baseAssetAmount: params.amount,
-      quoteAssetAmount: 0,
-      sqrtPrice: 0,
-    };
+    // let res: any = {
+    //   baseAssetAmount: params.amount,
+    //   quoteAssetAmount: 0,
+    //   sqrtPrice: 0,
+    // };
     if (result?.value?.returnData?.data) {
       const [data, type] = result?.value?.returnData.data;
       let buf = Buffer.from(data, type);
       const amountBaseSwap = buf.readBigUInt64LE(0);
       const amountQuoteSwap = buf.readBigUInt64LE(8);
+      const sPrice = new anchor.BN(buf.slice(16).toString('hex'), 16, 'le');
 
-      const sqrtPrice = new anchor.BN(buf.slice(16).toString('hex'), 16, 'le');
-      const baseAssetAmount = Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber();
-      res = {
-        baseAssetAmount: Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber(),
-        quoteAssetAmount: Big(Number(amountQuoteSwap))
-          .div(1_000_000_000)
-          .div(baseAssetAmount)
-          .toNumber(),
-        sqrtPrice: PriceMath.sqrtPriceX64ToPrice(sqrtPrice.toString(), 9, 9).toString(),
+      const baseAssetAmount = new Decimal(Number(amountBaseSwap)).div(1_000_000_000);
+      const quoteAssetAmount = new Decimal(Number(amountQuoteSwap)).div(1_000_000_000);
+      const entryPrice = baseAssetAmount.eq(0)
+        ? new Decimal(0)
+        : quoteAssetAmount.div(baseAssetAmount);
+      const sqrtPrice = new Decimal(PriceMath.sqrtPriceX64ToPrice(sPrice, 9, 9).toString());
+
+      const daysInYear = new Decimal(365);
+      const period = new Decimal(params.days);
+
+      const impliedSqrtRate = Decimal.pow(
+        1 / (1 - sqrtPrice.toNumber()),
+        daysInYear.div(period).toNumber()
+      ).minus(1);
+      const impliedEntryRate = Decimal.pow(
+        1 / (1 - entryPrice.toNumber()),
+        daysInYear.div(period).toNumber()
+      ).minus(1);
+
+      console.log('****************');
+      console.log('baseAssetAmount : ', baseAssetAmount.toString());
+      console.log('quoteAssetAmount : ', quoteAssetAmount.toString());
+      console.log('entryPrice : ', entryPrice.toString());
+      console.log('sqrtPrice : ', sqrtPrice.toString());
+      console.log('impliedSqrtRate : ', impliedSqrtRate.toString());
+      console.log('impliedEntryRate : ', impliedEntryRate.toString());
+      console.log('****************');
+
+      return {
+        baseAssetAmount: baseAssetAmount.toString(),
+        quoteAssetAmount: quoteAssetAmount.toString(),
+        entryPrice: entryPrice.toString(),
+        sqrtPrice: sqrtPrice.toString(),
+        impliedSqrtRate: impliedSqrtRate.toString(),
+        impliedEntryRate: impliedEntryRate.toString(),
       };
-      console.log('amount base swap : ', amountBaseSwap);
-      console.log('amount quote swap : ', amountQuoteSwap);
-      console.log('sqrt price : ', res.sqrtPrice);
+
+      // res = {
+      //   baseAssetAmount: Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber(),
+      //   quoteAssetAmount: Big(Number(amountQuoteSwap))
+      //     .div(1_000_000_000)
+      //     .div(baseAssetAmount)
+      //     .toNumber(),
+      //   sqrtPrice: PriceMath.sqrtPriceX64ToPrice(sqrtPrice, 9, 9).toString(),
+      // };
+      // console.log('amount base swap : ', amountBaseSwap);
+      // console.log('amount quote swap : ', amountQuoteSwap);
+      // console.log('sqrt price : ', res.sqrtPrice);
     }
-    const py = new Decimal(res.quoteAssetAmount);
-    const daysInYear = new Decimal(365);
-    const period = new Decimal(params.days);
-    const sp = new Decimal(res.sqrtPrice);
-    const impliedSwapRate = Decimal.pow(1 / (1 - sp.toNumber()), daysInYear.div(period).toNumber())
-      .minus(1)
-      .toNumber();
-    const impliedEntryRate = Decimal.pow(1 / (1 - py.toNumber()), daysInYear.div(period).toNumber())
-      .minus(1)
-      .toNumber();
-    return {py: py.toFixed(9), sp: sp.toFixed(9, 0), impliedSwapRate, impliedEntryRate};
+
+    return {
+      baseAssetAmount: params.amount,
+      quoteAssetAmount: 0,
+      entryPrice: 0,
+      sqrtPrice: 0,
+      impliedSqrtRate: 0,
+      impliedEntryRate: 0,
+    };
+    // const py = new Decimal(res.quoteAssetAmount);
+    // const daysInYear = new Decimal(365);
+    // const period = new Decimal(params.days);
+    // const sp = new Decimal(res.sqrtPrice);
+    // const impliedSwapRate = Decimal.pow(1 / (1 - sp.toNumber()), daysInYear.div(period).toNumber())
+    //   .minus(1)
+    //   .toNumber();
+    // const impliedEntryRate = Decimal.pow(1 / (1 - py.toNumber()), daysInYear.div(period).toNumber())
+    //   .minus(1)
+    //   .toNumber();
+    // return {py: py.toFixed(9), sp: sp.toFixed(9, 0), impliedSwapRate, impliedEntryRate};
   }
 
   async getPoolTickCurrentIndex() {
@@ -393,17 +424,19 @@ export class RateClient {
     let subAccountId = 0;
     let transaction2;
     let userPda;
-    let user = await this.am.findLpUser(this.program, this.authority);
+    let user = await this.am.findLpUser(this.program, this.authority, {
+      marketIndex: params.marketIndex,
+      upperRate: params.upperRate,
+      lowerRate: params.lowerRate,
+    });
     if (!user) {
       if (statInfo?.data) {
         const stat = await this.program.account.userStats.fetch(userStatPda as PublicKey);
         subAccountId = stat.numberOfSubAccountsCreated ?? 0;
       }
-      const [pda, t] = await this.am.initializeUserTransaction(
+      const [pda, t] = await this.am.initializeLpInstruction(
         this.program,
         this.authority,
-        true,
-        false,
         subAccountId
       );
       userPda = pda;
@@ -431,14 +464,59 @@ export class RateClient {
         units: 1_400_000,
       })
     );
-    combinedTransaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
-    combinedTransaction.feePayer = this.authority;
     const tx = await this.sendTransaction(combinedTransaction);
     if (tx) {
       await this.queryEvent(tx, 'addPerpLpShares');
     }
-    console.log('addPerpLpShares : ', tx);
     return tx;
+  }
+
+  async removePerpLpShares(params: {
+    marketIndex: number;
+    lowerRate: number;
+    upperRate: number;
+    maturity: number;
+    rmLiquidityPercent: number;
+    baseAssetAmount: number;
+    userPda: string;
+  }) {
+    if (!this.authority) {
+      return;
+    }
+    const {userPda, ...other} = params;
+    const instructions: TransactionInstruction[] = await this.lp.removePerpLpShares(
+      this.program,
+      this.authority,
+      this.am,
+      this.tm,
+      new PublicKey(userPda),
+      other
+    );
+    const combinedTransaction = new Transaction();
+    instructions.forEach((ins) => {
+      combinedTransaction.add(ins);
+    });
+    combinedTransaction.add(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 1_400_000,
+      })
+    );
+    const tx = await this.sendTransaction(combinedTransaction);
+    if (tx) {
+      await this.queryEvent(tx, 'removePerpLpShares');
+    }
+    return tx;
+  }
+
+  async getLpPositions(marketIndex: number) {
+    try {
+      if (!this.authority) {
+        return [];
+      }
+      return await this.am.getLpPositions(this.program, this.authority, marketIndex);
+    } catch (e) {
+      return [];
+    }
   }
 
   async addKeeper(address: string) {
@@ -473,15 +551,27 @@ export class RateClient {
     const userPda = new PublicKey(userPdaAddress);
     const tx = await this.fm.deposit(this.program, this.authority, userPda, newParams);
     console.log('Deposit Tx: ', tx);
+    updateBalance$.next(0);
     return tx;
   }
 
-  async withdraw(userPda: PublicKey, params: {marginIndex: number; amount: number}) {
+  async withdraw(
+    userPda: PublicKey,
+    params: {marketIndex?: number; marginIndex?: number; amount: number}
+  ) {
     if (!this.authority) {
       return false;
     }
-    const tx = await this.fm.withdraw(this.program, this.authority, this.am, userPda, params);
+    const newParams: {marginIndex: number; amount: number} = {
+      amount: params.amount,
+      marginIndex: params.marginIndex as any,
+    };
+    if (params.marketIndex !== undefined) {
+      newParams.marginIndex = getMarginIndexByMarketIndex(params.marketIndex);
+    }
+    const tx = await this.fm.withdraw(this.program, this.authority, this.am, userPda, newParams);
     console.log('Withdraw Tx : ', tx);
+    updateBalance$.next(0);
     return tx;
   }
 
@@ -500,8 +590,9 @@ export class RateClient {
     }
     const tx = await this.program.methods
       .updateOracle(
-        new BN(Big(marketRate).times(1_000_000_000).toNumber()),
-        new BN(Big(rate).times(1_000_000_000).toNumber())
+        new BN(new Decimal(marketRate).times(1_000_000_000).toNumber()),
+        new BN(new Decimal(rate).times(1_000_000_000).toNumber()),
+        new BN(new Decimal(rate).times(1_000_000_000).toNumber())
       )
       .accounts({oracle: ORACLE_PDA})
       .rpc();
@@ -509,19 +600,21 @@ export class RateClient {
     return tx;
   }
 
+  async getUserMintAccountByMarketIndex(marketIndex: number) {
+    if (!this.authority) {
+      return null;
+    }
+    return getAssociatedTokenAddressSync(
+      getMintAccountPda(getMarginIndexByMarketIndexV2(marketIndex)),
+      this.authority
+    );
+  }
+
   async getUserMintAccount(marginIndex: number) {
     if (!this.authority) {
       return null;
     }
     return getAssociatedTokenAddressSync(getMintAccountPda(marginIndex), this.authority);
-  }
-
-  async getAccountInfo(account: PublicKey) {
-    try {
-      return await this.connection.getAccountInfo(account);
-    } catch (e) {
-      return null;
-    }
   }
 
   async getTokenAccountBalance(account: PublicKey) {
@@ -555,14 +648,7 @@ export class RateClient {
         break;
       }
       const user = accounts[i];
-      const transaction1 = await this.am.deleteUserOrders(
-        this.program,
-        this.authority,
-        user.userPda,
-        user.userOrdersPda
-      );
       const transaction2 = await this.am.deleteUser(this.program, this.authority, user.userPda);
-      !!transaction1 && combinedTransaction.add(transaction1);
       !!transaction2 && combinedTransaction.add(transaction2);
     }
     await this.sendTransaction(combinedTransaction);

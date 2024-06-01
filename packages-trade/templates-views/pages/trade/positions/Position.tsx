@@ -2,9 +2,9 @@ import {usePositions} from '@/hooks/use-positions';
 import {Table} from '@rx/widgets';
 
 interface Props {
-  mode: string;
+  marginType: 'CROSS' | 'ISOLATED';
 }
 export function Position(props: Props) {
-  const {columns, dataSource} = usePositions(props.mode);
-  return <Table columns={columns} dataSource={dataSource as any[]} />;
+  const {columns, dataSource} = usePositions(props.marginType);
+  return <Table className="w-full" border={true} columns={columns} dataSource={dataSource as any[]} />;
 }

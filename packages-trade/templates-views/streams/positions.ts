@@ -51,7 +51,7 @@ export const positions$ = combineLatest([
   symbolMapById$,
   loading$,
 ]).pipe(
-  debounceTime(200),
+  debounceTime(1000),
   filter((res) => !res[4]),
   switchMap(([positions, rateMap, trade, symbolMap, loading]: any) =>
     calcPositions(positions, rateMap, trade, symbolMap)
@@ -69,13 +69,6 @@ async function load(client: RateClient, ready: boolean) {
   return await client.getAllPositions();
 }
 
-const rateKeyMap: any = {
-  0: 'mSOL',
-  1: 'mSOL',
-  4: 'mSOL',
-  2: 'JitoSOL',
-  3: 'JitoSOL',
-};
 async function calcPositions(
   positions: any[],
   rateMap: any,
@@ -88,8 +81,8 @@ async function calcPositions(
     const {baseAssetAmount: x, quoteAssetAmount: y, lastRate} = p;
     let st = Big(y);
     let pnl = Big(0);
-    const rateN = rateMap[rateKeyMap[p.marketIndex]]?.ratePrice;
     const symbol = symbolMap?.[p.marketIndex] ?? {};
+    const rateN = rateMap[symbol?.symbolLevel2Category]?.ratePrice;
     const trade: any = tradeMap?.[symbol?.symbol] ?? {};
     if (rateN && lastRate > 0) {
       const rateNM = Big(rateN).div(lastRate);
@@ -130,7 +123,7 @@ async function calcPositions(
   });
 }
 
-function calcCr(positions: any[], tradeMap: any, symbolMap: any) {
+export function calcAssetLiability(positions: any[], tradeMap: any, symbolMap: any) {
   let assetYT = Big(0);
   let assetST = Big(0);
   let liabilityYT = Big(0);
@@ -161,12 +154,17 @@ function calcCr(positions: any[], tradeMap: any, symbolMap: any) {
   }
   const assets = assetYT.add(assetST);
   const liability = liabilityYT.add(liabilityST);
-  if (liability.eq(Big(0))) {
-    return '';
-  }
   const margin = Object.keys(marginMap).reduce((total, pda) => {
     const value = marginMap[pda];
     return total.add(value);
   }, Big(0));
+  return {assets, liability, margin};
+}
+
+function calcCr(positions: any[], tradeMap: any, symbolMap: any) {
+  const {assets, liability, margin} = calcAssetLiability(positions, tradeMap, symbolMap);
+  if (liability.eq(Big(0))) {
+    return '';
+  }
   return assets.add(margin).div(liability).toFixed(9);
 }

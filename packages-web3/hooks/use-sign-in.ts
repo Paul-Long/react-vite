@@ -18,6 +18,7 @@ export function useSignIn(params: Params) {
 
   const onSignIn = useCallback(async () => {
     try {
+      await wallet.connect();
       if (!wallet.signIn) {
         Toast.error('Wallet does not support Sign In With Solana!');
         return;

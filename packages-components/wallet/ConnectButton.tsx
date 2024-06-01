@@ -40,7 +40,7 @@ export function ConnectButton() {
       <Dropdown
         contentStyle={{background: '#0A253D'}}
         content={
-          <Button style={{width: '100%'}} type="default" onClick={handleLogout}>
+          <Button size='sm' style={{width: '100%'}} type="default" onClick={handleLogout}>
             {LG(clang.Disconnect)}
           </Button>
         }
@@ -54,7 +54,7 @@ export function ConnectButton() {
     );
   }
   return (
-    <Button className="min-w160px font-size-18px" type="primary" onClick={onSignIn}>
+    <Button size='sm' className="min-w160px font-size-18px" type="primary" onClick={onSignIn}>
       {LG(clang.Connect)}
     </Button>
   );

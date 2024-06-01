@@ -1,0 +1,126 @@
+ProgramID
+- RatexContracts: 8EbMSp52FXmrAV64s85xzyCXGUDVxmmMaA5VK1uHT8To
+- TokenFaucet: HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi
+
+Deployer address(admin)
+- 7sXNTgbgrqVinuWCu44NYXvC4vwMW1LuiMxZhnPtp12B
+- mSOL token account: 6D8wNChmAwYXddcBbvKcrG5wvctf6e7qQoYX1BcVYUav
+- jitoSOL token account: 8ZN8Jrz5xg4G6zMmFzbsRPWWSB8KMJhZsuekrP7o1rvy
+
+TokenFaucet Account
+- mintAccount1，wSOL: q4vG2ikT3sXwzQNoQx7hzg27LgxxUMbzHsN3UZQicpn
+- faucetConfigPda1: 71RwmyCgw7qWdWFxuvciStffppaDpwcKUXRCUyW8Qzyn
+- mintAccount2，mSOL: 6w58sdgsLcxa9UD43GHKVxtfXMe7su5r7UqMJcPwZpp8
+- faucetConfigPda2: HALSfZXvKUFEAVA74CQxNG8umP18hJCMu3EHS9XgKybr
+- mintAccount3，jitoSOL: 6ATaSXxpiiFCGfQMv3hKYmnVYEaBLYmXstuJjqCXXXJg
+- faucetConfigPda3: 2rgQosahMCugsB21H8wfpDKvFy4wCQtFCpfTgfwagnUu
+
+MarginMarket
+wSOL: q4vG2ikT3sXwzQNoQx7hzg27LgxxUMbzHsN3UZQicpn, margin_index: 0
+- statePda: 6ufdf92mubuNftaRaPKSw4iVmj74YcGNWKA2V9Me7t8e
+- driftSignerPda: 749JsBMYSN66v7dvfWy2n8V19XdA3JBq54SJj7HvYg8C
+- keeperPda: 4LkehUKStRaamqrPxdPoruen8oec4safC5ioZCtkFVoy
+- oraclePda: E8ZQeKpiMfuLRVMXKmH9nqSPfcQ9diGqPQtLoBYZotKY
+- marginMarketPda: 3Dj4jJUtPriBtrFrY9doFm8Qso4vLxsLCH46dJks5fbb
+- marginMarketVaultPda: 7gJKDFwYGQMHccNxbhjV1MSFmMe8j3fB1mp44XenTVpe
+- insuranceFundVaultPda: 7LwNLo3EN2gUKrg48VNw4TDwbCQLLxF6bvzzx2sbRMik
+- userStatsPda: HTrncvd5Q6JvwUoXGw6d8qM3yREej5yKnYDrdsPNYK36
+- userPda: EeuKEusi44qFEqLu4Fb4DGjRodvY577jTEu3F7BheH8R
+
+mSOL: 6w58sdgsLcxa9UD43GHKVxtfXMe7su5r7UqMJcPwZpp8, margin_index: 1
+- statePda: 6ufdf92mubuNftaRaPKSw4iVmj74YcGNWKA2V9Me7t8e
+- driftSignerPda: 749JsBMYSN66v7dvfWy2n8V19XdA3JBq54SJj7HvYg8C
+- keeperPda: 4LkehUKStRaamqrPxdPoruen8oec4safC5ioZCtkFVoy
+- oraclePda: 5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC
+- marginMarketPda: 97FqGdjNLytne3rTjUKvcUmvEE7npH8SirVKX5sVpeqR
+- marginMarketVaultPda: DpCkxRUya5DBadskBH1jYpxNB4R2e8c3JVwj29nmFvAm
+- insuranceFundVaultPda: 6kdF1v8GMhAegsxwLCGbVpoPDizpEnthijxg1jCVo6Zk
+- userStatsPda: HTrncvd5Q6JvwUoXGw6d8qM3yREej5yKnYDrdsPNYK36
+- userPda: EeuKEusi44qFEqLu4Fb4DGjRodvY577jTEu3F7BheH8R
+
+jitoSOL: 6ATaSXxpiiFCGfQMv3hKYmnVYEaBLYmXstuJjqCXXXJg, margin_index: 2
+- statePda: 6ufdf92mubuNftaRaPKSw4iVmj74YcGNWKA2V9Me7t8e
+- driftSignerPda: 749JsBMYSN66v7dvfWy2n8V19XdA3JBq54SJj7HvYg8C
+- keeperPda: 4LkehUKStRaamqrPxdPoruen8oec4safC5ioZCtkFVoy
+- oraclePda: pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm
+- marginMarketPda: DTtusuKpERj5uPvxr6eubwSRZegEsZu8KbcCjdYNxArN
+- marginMarketVaultPda: BuLmSYyQPmXSueySXSFe66H2j2LkeSrM1m3tLVKLAyZR
+- insuranceFundVaultPda: 2xBVAsHwTsvcHDsrghGVw2WKFEEuHovgqmifgakZ8bRc
+- userStatsPda: HTrncvd5Q6JvwUoXGw6d8qM3yREej5yKnYDrdsPNYK36
+- userPda: EeuKEusi44qFEqLu4Fb4DGjRodvY577jTEu3F7BheH8R
+
+PerpMarket
+MSOL2412, market_index: 0, lp sub account id: 1
+- configPda: GxCEh5QKJ7gDxr6LGDYL1F7abWd1MxfqzAEgJCCZB2Sf
+- feeTierPda: 7G8pNd6jkjvT3sZvfr3xjcshEdBrUp1fTndRwrWqsBTA
+- tokenMintA: A1wk3undYRWoHYVnui91mESvrEeF14wZ8Q1gsHnTQ5oo
+- tokenMintB: CC21RCr8bs5RxCPdsRpp5GBGYr5uGStzcMmQZVBksgQU
+- observationStatePubkey: 6rm7RuKduugFT3sEJ1fqRmegk7gmh9qX4r4dBJnrQ4tv
+- perpMarketPda: BpppZgAhrpyzPCp9cCJ4FH8Vd2nfQ5uaFJnsx3V66p83
+- quoteAssetVault: BAhZmB7x3RpLFVoDs8qMM7CPn1RYWdepbtrUueCYGVit
+- baseAssetVault: ELtBU43UDEPneimev9kiKi9KArNrSG8rgaBNvjeZqyyk
+- tokenVaultAPda: 96yv73ZCGzpxTCgEn9p7kX4hzSxgg16gTUFnvHDxoXj8
+- tokenVaultBPda: 2VTbzk1HJMJUAxuvs5qrPAgVHsQZqXzJ8tmw9UVxpsZL
+- tickArrayLower: DxKgbTCWj8j3Kmyef7Sd9yTFAKAxpiboAJaFBsJ1eAFz
+- tickArrayUpper: GgkHVeqNCbFaKz2eimCyU5TJBnBAbP7rvZZz1C28HJLK
+- userLpPda: GFZ6Ei467zXzPN2JacjPVCiXjSW35gkmGW2zMzXasUVy
+
+MSOL2506, market_index: 1, lp sub account id: 2
+- configPda: GxCEh5QKJ7gDxr6LGDYL1F7abWd1MxfqzAEgJCCZB2Sf
+- feeTierPda: 7G8pNd6jkjvT3sZvfr3xjcshEdBrUp1fTndRwrWqsBTA
+- tokenMintA: 36Ce7GqPnZDx8cgJEjWFY5uJU9dgx14nTgW7GiQwnTAS
+- tokenMintB: 5s5gatGn7GZcMaA7bbQeA6bEgoM9TxNRaCNoSq1UPYLk
+- observationStatePubkey: 2yhrgUZym3ruaq9ELfYuoXrc4xjoRgavjbv9pVAhaheW
+- perpMarketPda: Ac9aEmgLSYnZxJAzq8nDenqLEWDQRHKyqgSi73Yc5bRG
+- quoteAssetVault: Cfs7cnduwkqyTAVDfR7osuSHVCLCpdxsAM4ha6SojgYA
+- baseAssetVault: FErD48QF54GEvD192PX8UXfTmvYtZPYzVuWKEf3mcDtk
+- tokenVaultAPda: 9QcaMXyQVrY6eLEBhLS6oiwSUnpSFbdAdrdPKduEJzBx
+- tokenVaultBPda: HE2pyieEhYD9wUADCR3SiLABjd5FKFkeUcSgwzEfwUoC
+- tickArrayLower: ARVUZiNvAg9YC9rJnAJU4XneMJzizWdrvEyhD77C4tY
+- tickArrayUpper: DF5aUq1maybkAsRf8birt99PgjuiLK3zzSSZrmVnPfbE
+- userLpPda: NYWYWTGSaai8B9karHtHPRbLL85asQntZpA6a48P22r
+
+MSOL2505, market_index: 2, lp sub account id: 3
+- configPda: GxCEh5QKJ7gDxr6LGDYL1F7abWd1MxfqzAEgJCCZB2Sf
+- feeTierPda: 7G8pNd6jkjvT3sZvfr3xjcshEdBrUp1fTndRwrWqsBTA
+- tokenMintA: 6paudMVfv21qzGrXHnnDVvZ4NfBiNNM7PTxBcVefKZzq
+- tokenMintB: Ge5vx13YDpst1bjynztGCo9d4vyMP3QHKP4xSAUASswP
+- observationStatePubkey: 2iwq4d6rFSakn8gJjHSpp8SCGp16k3Q2sB6yMWhrZQ5b
+- perpMarketPda: DJiALhWP4cXyaD1he9aEF4WuT5423aoxjrQ3AEhw9P16
+- quoteAssetVault: 9PiDaSMbFxekWgn4GW2PPau5dU14grAHbgTzGmA6TMn4
+- baseAssetVault: 9p8RRMEAuEorPNhqgCGZVK5SHWLVczqbhC3AGhLmRta2
+- tokenVaultAPda: B6KT9fTsCqi63NGzdRecEise6mrBfQH6DbAujf5Egd4L
+- tokenVaultBPda: CN54v93cy8zExE9zWf6acqgX5ywWWRYnbogC2JusS2nc
+- tickArrayLower: CBHotPT3TXsnPxKNxk1NdJZeALfWrYEvLejjiQCNLR1Q
+- tickArrayUpper: 7sW6T7N8vWnd3TYNYLH1BqryGSRkhq9fNPg25u2KQWYY
+- userLpPda: Ayy1bhqCxZEprm4VYJK92quWzwa88bfaRP4QfRznTyHu
+
+JITOSOL2412, market_index: 6, lp sub account id: 6
+- configPda: GxCEh5QKJ7gDxr6LGDYL1F7abWd1MxfqzAEgJCCZB2Sf
+- feeTierPda: 7G8pNd6jkjvT3sZvfr3xjcshEdBrUp1fTndRwrWqsBTA
+- tokenMintA: 2qTfqmz8ssvCKWu7yqmJnfBAvfGVSYTQy3vSKbaJPT29
+- tokenMintB: 52Ynr1d6c1RpTFHb5B6P4f2RjpwQZD7jVopGBXkL5sVA
+- observationStatePubkey: XB2BYGQSqJXeyCGSRKV6WFwqepr83jXXs4RyUkq6zkd
+- perpMarketPda: 8JWA8NcaeMaqhi9ywJv1snZyrjs43aqxbjF9Ha1tc6uT
+- quoteAssetVault: 58zZh1gQH3TqAvERydX5dxwzx5Guw7Uye6U1xG4WyKXP
+- baseAssetVault: txVNhqSMZZU1LD9cB2zFoTWERdnrzBWRtxDCD3ttqEB
+- tokenVaultAPda: FJBSa43Z2YMbhUifFiEMH25TtSrbSp9PQoUSeCVC5zvX
+- tokenVaultBPda: DeDt1weDUGJqaNriPum89Atg9bxXroMXcAY4goreJ1E2
+- tickArrayLower: 9RBBcuTyPKr2Fx2AysTehoqQ3xETw6r8SvcTTtdQbcok
+- tickArrayUpper: FUFPS3MfrXkv8oYfHwLqtQRUQu3sGgvGSBAzeiErhK9Y
+- userLpPda: 3D8VNz93EC5kmve2XMMecgu98MBHCkp6NRcoHVq7XHyd
+
+JITOSOL2506, market_index: 7, lp sub account id: 7
+- configPda: GxCEh5QKJ7gDxr6LGDYL1F7abWd1MxfqzAEgJCCZB2Sf
+- feeTierPda: 7G8pNd6jkjvT3sZvfr3xjcshEdBrUp1fTndRwrWqsBTA
+- tokenMintA: CaRNhmJrCdCGcZdx4zeKBrtEq1No6QqGyogKXV11jzX2
+- tokenMintB: FtLKaUF2iLPj8fDseViNMpuigVBuMtspP9ftheh5SkNP
+- observationStatePubkey: CU1sGwjcc3V7JnGEDSWn5teEnrPEzstfRdHt6NPZUohW
+- perpMarketPda: H94Dqeep3LZeiVKBH57w2okNPoMNy2KLAABsRTmS6syv
+- quoteAssetVault: 3dySoQcLZYqdJdRNXfaQoUHMQij3KprHVGQMvTPXxgXJ
+- baseAssetVault: Bc5uR52T73mU5zf1wbvTQrGgFve8Yj9KTBG6DHTBk7hc
+- tokenVaultAPda: J8B7PhjGqpwNLuLGG7d4FgV2CBfe3LDKjnpjbNSAWp3A
+- tokenVaultBPda: FXLmF7LeBjA2hBLZLWqdjWzZ1oY1qYVmWhEUedRcppmm
+- tickArrayLower: 8qXtVFiEMntjKHpUgFeCKaiNDcT3HXQUPHRgDLrDv7tR
+- tickArrayUpper: EV5sYfthSNZZXgdmYkWMqLGXfn8BF5gRchFaeszCSZhf
+- userLpPda: 4NWEL4twNcSE3QQb4KUsbExuwGr3QiJ3DTTBDF6TyjZ1

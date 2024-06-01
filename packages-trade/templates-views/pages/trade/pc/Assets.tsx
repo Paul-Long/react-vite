@@ -12,7 +12,7 @@ const TrapezoidStyled = styled.div`
   top: calc(50% - 19px);
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  border-right: 18px solid #ffffff14;
+  border-right: 14px solid #ffffff14;
   transition: all 0.5s ease;
 `;
 
@@ -56,7 +56,7 @@ export function Assets() {
       >
         <i
           className={clsx(
-            'absolute top-10px right-[-14px] iconfont font-size-10px lh-10px text-white',
+            'absolute top-10px right-[-12px] iconfont font-size-10px lh-10px text-white',
             [show ? 'transform-rotate-180deg' : '']
           )}
         >

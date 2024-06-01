@@ -2,6 +2,7 @@ import {IMAGES} from '@/pages/lp/const';
 import {useLang} from '@rx/hooks/use-lang';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/trade.lang';
+import {Tooltip} from '@rx/widgets';
 import {contract$, maturity$} from '../streams/streams';
 import {InputNumber} from './InputNumber';
 
@@ -18,7 +19,9 @@ export function AmountInput(props: Props) {
   return (
     <div className="flex flex-col p-16px gap-8px not-last:b-b-1px b-solid b-gray-40">
       <div className="flex flex-row items-center justify-between text-gray-600">
-        {LG(lang.NotionalAmount)}
+        <Tooltip text={`input margin amount can't exceed # due to your slippage settings.`}>
+          <span className="underline underline-dotted cursor-help">{LG(lang.YTAmount)}</span>
+        </Tooltip>
       </div>
       <div className="flex flex-row items-center justify-between">
         <div className="relative flex flex-row items-center font-size-14px lh-24px fw-medium gap-8px">

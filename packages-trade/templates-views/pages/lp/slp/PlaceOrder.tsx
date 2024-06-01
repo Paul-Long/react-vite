@@ -1,12 +1,15 @@
 import {WalletBalance} from '@/pages/lp/WalletBalance';
 import {Info} from '@/pages/lp/slp/Info';
 import {Range} from '@/pages/lp/slp/Range';
+import {query$} from '@/streams/lp/positions';
 import {useLang} from '@rx/hooks/use-lang';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
+import {updateBalance$} from '@rx/web3/streams/balance';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button, Loading} from '@rx/widgets';
 import {Big} from 'big.js';
+import clsx from 'clsx';
 import {useCallback, useState} from 'react';
 
 interface Props {
@@ -15,17 +18,40 @@ interface Props {
 export function PlaceOrder(props: Props) {
   const {LG} = useLang();
   const {state, loading, handleChange, handleSubmit} = usePlaceOrder(props);
+
   return (
     <div className="flex flex-row gap-24px">
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 gap-24px">
         <Info contract={props.contract} />
+        <div
+          className={clsx(
+            'flex flex-col items-center justify-center w-full min-h-390px h-390px',
+            'rounded-8px bg-gray-40'
+          )}
+        >
+          <img
+            src="https://static.rate-x.io/img/v1/9efba5/lp-position-empty.png"
+            alt=""
+            width="108px"
+            height="108px"
+          />
+          <div className="font-size-18px">Make a deposit to view data</div>
+          <div className="w-full max-w-400px font-size-14px lh-21px text-gray-400 text-center">
+            You can track your deposit performance as soon as you deposit into the vault.
+          </div>
+        </div>
       </div>
       <div className="flex flex-col w-384px rounded-8px bg-gray-40 py-16px px-24px gap-20px">
         <div className="font-size-16px">{LG(lang.StandardRange)}</div>
         <Range value={state.range} onChange={handleChange('range')} />
         <div className="flex flex-col">
           <div className="w-full h-1px bg-gray-40 mb-8px" />
-          <WalletBalance value={state.amount} onChange={handleChange('amount')} />
+          <WalletBalance
+            value={state.amount}
+            onChange={handleChange('amount')}
+            marketIndex={props?.contract?.id}
+            currency={props?.contract?.symbolLevel2Category}
+          />
           <div className="w-full h-1px bg-gray-40 mt-16px" />
         </div>
         <div className="flex flex-row items-center justify-between">
@@ -80,9 +106,12 @@ function usePlaceOrder(props: Props) {
     };
     console.log('order ', params);
     setLoading(true);
-    const tx = await client.addPerpLpShares(params);
+    try {
+      await client.addPerpLpShares(params);
+    } catch (e) {}
+    updateBalance$.next(0);
     setLoading(false);
-    console.log('add lp tx : ', tx);
+    setTimeout(() => query$.next(0), 500);
   }, [state, client, props]);
 
   return {state, loading, handleChange, handleSubmit};

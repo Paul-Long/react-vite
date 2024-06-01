@@ -1,7 +1,6 @@
 import {useContract} from '@/pages/trade/hooks/use-contract';
 import {useObservable} from '@rx/hooks/use-observable';
 import {ttmMap$} from '@rx/streams/epoch';
-import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {useEffect, useMemo} from 'react';
 
@@ -22,7 +21,7 @@ export function useContractInfo() {
 
   useEffect(() => {
     if (contract && maturity) {
-      lastTradeSnapshot$.next('dc.md.trade.' + [contract, maturity].join('-'));
+      // lastTradeSnapshot$.next('dc.md.trade.' + [contract, maturity].join('-'));
     }
   }, [contract, maturity]);
 

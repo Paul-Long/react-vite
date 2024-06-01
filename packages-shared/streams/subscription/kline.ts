@@ -6,7 +6,7 @@ export const kline$ = new TopicSubject({
   serverName: 'MDSvr',
   Types: KlineSubTypes,
   initValue: [],
-  formatter: formatData,
+  // formatter: formatData,
 });
 
 // kline$.subscribe((o) => {
