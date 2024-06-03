@@ -19,6 +19,7 @@ export class Widget extends WidgetBase {
       library_path: 'https://static.rate-x.io/3rd/tv/27.005/charting_library/',
       custom_css_url: './custom-20240531.css',
       disabled_features: [
+        'volume_force_overlay',
         'use_localstorage_for_settings',
         'header_widget',
         'header_symbol_search',

@@ -10,8 +10,10 @@ import {useObservable} from '@rx/hooks/use-observable';
 import {lang} from '@rx/lang/lp.lang';
 import {contracts$} from '@rx/streams/config';
 import {ttmMap$} from '@rx/streams/epoch';
+import {queryRatePrice$} from '@rx/streams/market/rate-price';
 import {queryReferencePrice$} from '@rx/streams/market/reference-price';
 import {referencePrice$} from '@rx/streams/subscription/reference-price';
+import {queryLastTrade$} from '@rx/streams/trade/last-trade';
 import {Button} from '@rx/widgets';
 import {clsx} from 'clsx';
 import {useEffect, useMemo, useState} from 'react';
@@ -25,8 +27,10 @@ export default function () {
   const {contract} = useData();
 
   useEffect(() => {
+    queryRatePrice$.next(0);
     queryReferencePrice$.next(0);
     referencePrice$.next('dc.aps.referenceprice');
+    queryLastTrade$.next(0);
   }, []);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export default function () {
         </div>
       </div>
       <div className="w-full pl-56px flex flex-col gap-24px pt-24px">
-        <Reference symbol="mSOL" />
+        <Reference symbol={contract.symbolLevel2Category} />
         <div className="flex flex-row items-center mt-24px gap-8px">
           <Button
             size="sm"

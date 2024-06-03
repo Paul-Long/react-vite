@@ -79,7 +79,7 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
     depositModal$.next({
       visible: true,
       userPda: row.userPda,
-      marketIndex: row.marketIndex,
+      marginIndex: 0,
       onFinish: () => query$.next(0),
     });
   };
@@ -96,6 +96,7 @@ const handleWithdraw = async (row: any) => {
     visible: true,
     userPda: row.userPda,
     marketIndex: row.marketIndex,
+    marginIndex: 0,
     onFinish: () => query$.next(0),
   });
 };

@@ -8,6 +8,7 @@ import {positionUpdate$} from '@rx/streams/subscription/position';
 import {ratePrice$} from '@rx/streams/subscription/rate-price';
 import {queryLastTrade$} from '@rx/streams/trade/last-trade';
 import {useConnect} from '@rx/web3/hooks/use-connect';
+import {marketIndex$} from '@rx/web3/streams/balance';
 import {useEffect} from 'react';
 import {TradePC} from './pc';
 
@@ -20,6 +21,7 @@ export default function () {
     ratePrice$.next('topic dc.aps.dprice');
     lastTradeSnapshot$.next('dc.md.trade.*');
     queryReferencePrice$.next(0);
+    marketIndex$.next(-1);
   }, []);
   useEffect(() => {
     if (!!address) {

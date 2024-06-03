@@ -50,9 +50,13 @@ export class TickManager {
         PROGRAM_ID
       );
       try {
-        // const tickArrayAccount = await program.provider.connection.getAccountInfo(tickArray);
+        const tickArrayAccount = await program.provider.connection.getAccountInfo(tickArray);
         console.log('found tick array', startTickIndex);
-        tickArrays.push(tickArray);
+        if (tickArrayAccount) {
+          tickArrays.push(tickArray);
+        } else {
+          tickArrays.push(tickArrays[tickArrays.length - 1]);
+        }
       } catch (e) {
         console.log('get tick array error', e, tickArray, startTickIndex);
         break;
@@ -112,11 +116,12 @@ export class TickManager {
     authority: PublicKey,
     perpMarket: PublicKey,
     startTickIndex: number,
-    endTickIndex: number
+    endTickIndex: number,
+    isRemove: boolean = false
   ) {
     startTickIndex = Math.floor(startTickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
     endTickIndex = Math.floor(endTickIndex / TICK_ARRAY_SIZE) * TICK_ARRAY_SIZE;
-    let tickArrays = [];
+    let tickArrays: PublicKey[] = [];
     const instructions = [];
     const tickArrayAccounts = [];
     const tas = [];
@@ -129,7 +134,7 @@ export class TickManager {
     for (let i = 0; i < tickArrayAccounts.length; i++) {
       const account = accounts[i];
       const [tickArray, tickIndex, startTickIndex] = tas[i];
-      if (!account) {
+      if (!account && !isRemove) {
         const instruction = await this.initializeTickArrayTransaction(
           program,
           authority,
@@ -139,7 +144,15 @@ export class TickManager {
         );
         instructions.push(instruction);
       }
-      tickArrays.push(tickArray);
+      if (isRemove) {
+        if (tickArrays.length > 0 && !account) {
+          tickArrays.push(tickArrays[tickArrays.length - 1]);
+        } else {
+          tickArrays.push(tickArray as PublicKey);
+        }
+      } else {
+        tickArrays.push(tickArray as PublicKey);
+      }
     }
     return [tickArrays, instructions];
   }

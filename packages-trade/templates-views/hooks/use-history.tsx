@@ -36,7 +36,6 @@ export function useHistory() {
         title: 'PnL/%',
         dataIndex: 'RealizedPnl',
         align: 'right',
-        render: renderYtSt,
       },
       {
         title: [LG(lang.EntryYield), LG(clang.Price)].join('/'),

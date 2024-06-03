@@ -4,6 +4,7 @@ import {priceMap$} from '@rx/streams/rate-price';
 import {positionUpdate$} from '@rx/streams/subscription/position';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';
+import { updateBalance$ } from '@rx/web3/streams/balance';
 import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Toast} from '@rx/widgets';
 import {Big} from 'big.js';
@@ -29,6 +30,7 @@ positionUpdate$.subscribe((data: any) => {
     positionUpdate$.clear();
     loading$.next(true);
     query$.next(0);
+    updateBalance$.next(0);
     data?.forEach((p: any) => {
       Toast.success(`Fill Order ${p.SecurityID} [${p.LastQty}]`);
     });

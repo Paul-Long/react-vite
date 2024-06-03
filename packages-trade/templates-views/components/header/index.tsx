@@ -1,6 +1,7 @@
 import {H5Menu} from '@/components/header/H5Menu';
 import {Menu} from '@/components/header/Menu';
 import {ConnectButton} from '@rx/components/wallet';
+import {Mint} from '@rx/components/wallet/Mint';
 import {HOME_IMAGES} from '@rx/const/images';
 import {clsx} from 'clsx';
 import {useEffect, useState} from 'react';
@@ -36,7 +37,10 @@ export function Header(props: Props) {
             <i className="iconfont font-size-22px text-white">&#xe607;</i>
           </button>
           <Menu />
-          <ConnectButton />
+          <div className="flex flex-row items-center gap-16px">
+            <Mint />
+            <ConnectButton />
+          </div>
         </nav>
       </header>
       <H5Menu show={show} onChange={(s) => setShow(s)} />

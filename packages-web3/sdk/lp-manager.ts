@@ -189,7 +189,7 @@ export class LpManager {
     const tokenMintB: PublicKey = tb.mint;
 
     let priceLimitDecimal = PriceMath.tickIndexToPrice(pool.tickCurrentIndex, 5, 5);
-    priceLimitDecimal = priceLimitDecimal.mul(baseAssetAmount > 0 ? 1.1 : 0.9);
+    priceLimitDecimal = priceLimitDecimal.mul(baseAssetAmount > 0 ? 1.01 : 0.99);
     const priceLimit = PriceMath.priceToSqrtPriceX64(priceLimitDecimal, 5, 5);
     const baseAssetamount = new BN(Big(baseAssetAmount).times(1_000_000_000).toNumber());
     const [tickArray0, tickArray1, tickArray2] = await tm.getFillOrderTickArrays(
@@ -216,18 +216,14 @@ export class LpManager {
       authority,
       perpMarket,
       tickLowerIndex,
-      tickUpperIndex
+      tickUpperIndex,
+      true
     );
     const tickArrayLower = tickArrays[0];
     const tickArrayUpper = tickArrays[tickArrays.length - 1];
 
     const instruction = await program.methods
-      .removePerpLpShares(
-        marginIndex,
-        marketIndex,
-        new BN(Big(rmLiquidityPercent).times(1_000_000_0).toString()),
-        priceLimit
-      )
+      .removePerpLpShares(new BN(Big(rmLiquidityPercent).times(1_000_000_0).toString()), priceLimit)
       .accounts({
         state: am.statePda,
         driftSigner: am.signerPda,
@@ -255,7 +251,7 @@ export class LpManager {
       })
       .instruction();
 
-    return [...instructions, instruction];
+    return [instruction];
   }
 
   async getPerpMarketInfo(program: Program<RatexContracts>, params: {marketIndex: number}) {

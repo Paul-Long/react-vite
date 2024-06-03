@@ -32,6 +32,7 @@ import {
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
+import {Big} from 'big.js';
 import Decimal from 'decimal.js';
 import * as idl from '../idl/ratex_contracts.json';
 import * as tokenFaucetIDL from '../idl/token_faucet.json';
@@ -285,11 +286,7 @@ export class RateClient {
     return tx;
   }
 
-  async cancelIsolatedOrder(params: {
-    userPda: string;
-    orderId: number;
-    marketIndex: number;
-  }) {
+  async cancelIsolatedOrder(params: {userPda: string; orderId: number; marketIndex: number}) {
     if (!this.authority) {
       return;
     }
@@ -307,6 +304,7 @@ export class RateClient {
     amount: number;
     marketIndex: number;
     direction: 'LONG' | 'SHORT';
+    input: 'amount' | 'margin';
     days: number;
   }) {
     if (!this.authority) {
@@ -320,11 +318,6 @@ export class RateClient {
       params
     );
     const result: any = await this.sendViewTransaction([instruction]);
-    // let res: any = {
-    //   baseAssetAmount: params.amount,
-    //   quoteAssetAmount: 0,
-    //   sqrtPrice: 0,
-    // };
     if (result?.value?.returnData?.data) {
       const [data, type] = result?.value?.returnData.data;
       let buf = Buffer.from(data, type);
@@ -466,7 +459,7 @@ export class RateClient {
     );
     const tx = await this.sendTransaction(combinedTransaction);
     if (tx) {
-      await this.queryEvent(tx, 'addPerpLpShares');
+      // await this.queryEvent(tx, 'addPerpLpShares');
     }
     return tx;
   }
@@ -506,6 +499,54 @@ export class RateClient {
       await this.queryEvent(tx, 'removePerpLpShares');
     }
     return tx;
+  }
+
+  async removePerpLpSharesView(params: {
+    marketIndex: number;
+    lowerRate: number;
+    upperRate: number;
+    maturity: number;
+    rmLiquidityPercent: number;
+    baseAssetAmount: number;
+    userPda: string;
+  }) {
+    if (!this.authority) {
+      return;
+    }
+    const {userPda, ...other} = params;
+    const instructions: TransactionInstruction[] = await this.lp.removePerpLpShares(
+      this.program,
+      this.authority,
+      this.am,
+      this.tm,
+      new PublicKey(userPda),
+      other
+    );
+    const res = await this.sendViewTransaction(instructions);
+    const {LPRecord, SwapEvent} = await this.parseLpRemoveLogs(res?.value?.logs as string[]);
+    let result: Record<string, any> = {};
+    if (LPRecord) {
+      const lp = Object.keys(LPRecord).reduce((obj, k) => {
+        if (obj[k] instanceof BN) {
+          obj[k] = Big(obj[k].toString()).div(1_000_000_000).toString();
+        }
+        return obj;
+      }, LPRecord);
+      result = {...result, ...lp};
+    }
+    if (SwapEvent) {
+      const swapEvent = Object.keys(SwapEvent).reduce((obj, k) => {
+        if (obj[k] instanceof BN) {
+          obj[k] = Big(obj[k].toString()).div(1_000_000_000).toString();
+        }
+        return obj;
+      }, SwapEvent);
+      result = {...result, ...swapEvent};
+      if (swapEvent.amountA && swapEvent.amountB) {
+        result.entryPrice = Big(swapEvent.amountB).div(swapEvent.amountA).round(9, 0).toString();
+      }
+    }
+    return result;
   }
 
   async getLpPositions(marketIndex: number) {
@@ -584,6 +625,31 @@ export class RateClient {
     return tx;
   }
 
+  async mintAll(amount: number) {
+    if (!this.authority) {
+      return false;
+    }
+    const wInst = await this.fm.mintToUserInstruction(this.tokenFaucetProgram, this.authority, {
+      marginIndex: 0,
+      amount,
+    });
+    const mInst = await this.fm.mintToUserInstruction(this.tokenFaucetProgram, this.authority, {
+      marginIndex: 1,
+      amount,
+    });
+    const jInst = await this.fm.mintToUserInstruction(this.tokenFaucetProgram, this.authority, {
+      marginIndex: 2,
+      amount,
+    });
+    const combinedTransaction = new Transaction();
+    !!wInst && combinedTransaction.add(wInst);
+    !!mInst && combinedTransaction.add(mInst);
+    !!jInst && combinedTransaction.add(jInst);
+    const tx = await this.sendTransaction(combinedTransaction);
+    console.log('Mint All Currency : ', tx);
+    return tx;
+  }
+
   async updateOracle({marketRate, rate}: {marketRate: number; rate: number}) {
     if (!marketRate || !rate) {
       return '';
@@ -655,6 +721,30 @@ export class RateClient {
   }
   async getPerpMarketInfo(params: {marketIndex: number}) {
     return await this.lp.getPerpMarketInfo(this.program, params);
+  }
+
+  async parseLpRemoveLogs(
+    logMessages?: string[]
+  ): Promise<{LPRecord: Record<string, any>; SwapEvent: Record<string, any>}> {
+    let LPRecord = {},
+      SwapEvent = {};
+    if (!logMessages) {
+      return {LPRecord, SwapEvent};
+    }
+    const evts = this.parser?.parseLogs(logMessages);
+    while (evts) {
+      const evt: any = evts.next();
+      if (evt?.value?.name === 'LPRecord') {
+        LPRecord = evt.value.data;
+      }
+      if (evt?.value?.name === 'SwapEvent') {
+        SwapEvent = evt.value.data;
+      }
+      if (evt.done) {
+        break;
+      }
+    }
+    return {LPRecord, SwapEvent};
   }
 
   async queryEvent(txid: string, label: string) {

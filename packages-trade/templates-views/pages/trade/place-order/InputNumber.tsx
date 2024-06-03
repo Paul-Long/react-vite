@@ -118,7 +118,7 @@ export function InputNumber(props: Props) {
       return;
     }
     if (align === 'right') {
-      wrap.current?.style.setProperty('--left', `calc(100% - 10px)`);
+      wrap.current?.style.setProperty('--left', `calc(100% - 12px)`);
       return;
     }
     const inputWidth = ref.current?.offsetWidth ?? 0;
@@ -139,7 +139,7 @@ export function InputNumber(props: Props) {
       $isPercentage={type === 'percentage'}
       $size={size}
       className={clsx('flex-1 flex relative', props?.className ?? '', [
-        type === 'percentage' && 'pr-12px',
+        type === 'percentage' && 'pr-14px',
       ])}
       ref={wrap}
     >

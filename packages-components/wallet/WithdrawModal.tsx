@@ -1,8 +1,8 @@
 import {useLang} from '@rx/hooks/use-lang';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/common.lang';
-import type {DepositParams} from '@rx/streams/wallet';
-import {depositModal$} from '@rx/streams/wallet';
+import type {WithdrawParams} from '@rx/streams/wallet';
+import {withdrawModal$} from '@rx/streams/wallet';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button, Modal, Toast} from '@rx/widgets';
 import {useCallback, useRef} from 'react';
@@ -16,31 +16,27 @@ const StyleInput = styled.input`
   }
 `;
 
-export function DepositModal() {
+export function WithdrawModal() {
   const {LG} = useLang();
   const inputRef = useRef<HTMLInputElement>(null);
   const [client] = useStream(rateXClient$);
-  const [state, setState] = useStream<DepositParams>(depositModal$);
+  const [state, setState] = useStream<WithdrawParams>(withdrawModal$);
 
   const handleConfirm = useCallback(async () => {
     const amount = inputRef.current?.value;
     if (!amount || Number(amount) <= 0 || !client || !state.userPda) {
       return;
     }
-    const tx = await client?.deposit(state.userPda, {
-      marketIndex: state.marketIndex,
-      marginIndex: state.marginIndex,
-      amount,
-    });
+    const tx = await client?.withdraw(state.userPda, {marginIndex: 0, amount});
     if (tx) {
-      Toast.success('Deposit success');
+      Toast.success('Withdraw success');
       state?.onFinish?.();
       setState({visible: false});
     }
   }, [client, state]);
   return (
     <Modal
-      title={LG(lang.Deposit)}
+      title={LG(lang.Withdraw)}
       visible={state.visible}
       size="small"
       onClose={() => setState({visible: false})}

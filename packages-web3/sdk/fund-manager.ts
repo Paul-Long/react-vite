@@ -154,7 +154,7 @@ export class FundManager {
       })
       .remainingAccounts([
         ...remainingAccounts,
-        ...[0, 1, 2, 6, 7].map((i) => ({
+        ...[0, 1].map((i) => ({
           pubkey: getPerpMarketPda(i),
           isSigner: false,
           isWritable: true,
@@ -165,12 +165,12 @@ export class FundManager {
           isSigner: false,
           isWritable: true,
         },
-        ...[0, 6].map((i) => ({
+        ...[0, 1].map((i) => ({
           pubkey: getOraclePda(i),
           isSigner: false,
           isWritable: true,
         })),
-        ...[0, 1, 2, 6, 7].map((i) => ({
+        ...[0, 1].map((i) => ({
           pubkey: getObservationPda(i),
           isSigner: false,
           isWritable: true,
@@ -220,6 +220,48 @@ export class FundManager {
       })
       .signers([])
       .rpc({commitment: 'confirmed'});
+  }
+
+  async mintToUserInstruction(
+    program: Program<TokenFaucet>,
+    authority: PublicKey,
+    params: {
+      marginIndex: number;
+      amount: number;
+    }
+  ): Promise<TransactionInstruction | null> {
+    const {amount, marginIndex} = params;
+
+    const mintAccount: PublicKey = getMintAccountPda(marginIndex);
+    const faucetConfig: PublicKey = getFaucetConfigPda(marginIndex);
+    const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
+    const baseAmount = new BN(Big(amount).times(1_000_000_000).round().toNumber());
+
+    const fc = await program.provider.connection.getAccountInfo(faucetConfig);
+    const fi = await program.account.faucetConfig.fetch(faucetConfig);
+
+    console.log('****************');
+    console.log('Faucet Admin : ', fi.admin.toBase58(), fi.mintAuthority.toBase58());
+    console.log('Faucet program : ', fc?.owner?.toBase58(), program.programId.toBase58());
+    console.log('Faucet Config : ', faucetConfig.toBase58());
+    console.log('Faucet Mint : ', fi?.mint?.toBase58(), mintAccount.toBase58());
+    console.log('User Token Account : ', userTokenAccount.toBase58());
+    console.log('Amount : ', amount);
+    console.log('****************');
+
+    return await program.methods
+      .mintToUser(baseAmount)
+      .accounts({
+        user: authority,
+        faucetConfig,
+        mintAccount,
+        userTokenAccount,
+        mintAuthority: fi.mintAuthority,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .instruction();
   }
 
   async getAllBalance(program: Program<TokenFaucet>, authority: PublicKey) {

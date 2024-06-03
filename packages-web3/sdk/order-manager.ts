@@ -118,6 +118,7 @@ export class OrderManager {
       amount: number;
       direction: 'LONG' | 'SHORT';
       marketIndex: number;
+      input: 'amount' | 'margin';
     }
   ) {
     const start = Date.now();
@@ -129,7 +130,7 @@ export class OrderManager {
     priceLimit = PriceMath.priceToSqrtPriceX64(priceLimit, 5, 5);
     const baseAssetAmount = new BN(
       Big(params.amount)
-        .times(direction === 'LONG' ? 1 : -1)
+        // .times(direction === 'LONG' ? 1 : -1)
         .times(1_000_000_000)
         .round(0)
         .toNumber()
@@ -165,8 +166,16 @@ export class OrderManager {
     // }
     // console.log('**********************');
 
+    // atob true -> short  false -> long
+    // amount true -> input  false -> output
+
     return await program.methods
-      .calculateSwap(baseAssetAmount, new BN(priceLimit.toString()))
+      .calculateSwap(
+        baseAssetAmount,
+        true,
+        params.input === 'amount',
+        new BN(priceLimit.toString())
+      )
       .accounts({
         whirlpool: perpMarket,
         tickArray0: tickArrays[0],
@@ -426,7 +435,7 @@ export class OrderManager {
         isSigner: false,
         isWritable: true,
       },
-      ...[6, 7, 8, 9, 11, 12, 13].map((i) => ({
+      ...[0, 1].map((i) => ({
         pubkey: getPerpMarketPda(i),
         isSigner: false,
         isWritable: true,
@@ -437,12 +446,12 @@ export class OrderManager {
         isSigner: false,
         isWritable: true,
       },
-      ...[0, 6].map((i) => ({
+      ...[0, 1].map((i) => ({
         pubkey: getOraclePda(i),
         isSigner: false,
         isWritable: true,
       })),
-      ...[6, 7, 8, 9, 11, 12, 13].map((i) => ({
+      ...[0, 1].map((i) => ({
         pubkey: getObservationPda(i),
         isSigner: false,
         isWritable: true,

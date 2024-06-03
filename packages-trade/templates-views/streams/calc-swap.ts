@@ -15,16 +15,17 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
     if (!client || !ready || !order || !current) {
       return of(null);
     }
-    const {amount, direction, marketIndex, margin, marginType} = order;
+    const {amount, direction, marketIndex, margin, marginType, currentKey = 'amount'} = order;
     const {days, minimumMaintainanceCr} = current;
-    if (amount <= 0) {
+    if (currentKey === 'amount' && amount <= 0 && currentKey === 'margin' && margin <= 0) {
       return of(null);
     }
     swapLoading$.next(true);
     return calcSwap(client, {
-      amount,
+      amount: currentKey === 'amount' ? amount : margin,
       direction,
       marketIndex,
+      input: currentKey,
       days,
     } as any);
   }),
@@ -36,7 +37,14 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
     if (!result) {
       return {};
     }
-    const {baseAssetAmount, quoteAssetAmount, entryPrice, sqrtPrice, impliedSqrtRate, impliedEntryRate} = result;
+    const {
+      baseAssetAmount,
+      quoteAssetAmount,
+      entryPrice,
+      sqrtPrice,
+      impliedSqrtRate,
+      impliedEntryRate,
+    } = result;
     let lipPrice = '-';
     if (params.marginType === 'ISOLATED') {
       const st = Big(entryPrice)
@@ -53,9 +61,9 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
             )
           : '-';
     }
-    const fee = Big(params?.amount || 0)
-      .times(0.0005)
-      .toFixed(4);
+    const fee = Big(quoteAssetAmount || 0)
+      .times(0.0001)
+      .toFixed(9);
 
     const trade = lastTrade?.[contract?.symbol];
     const returnData: any = {...(result || {}), lipPrice, fee};
@@ -79,6 +87,7 @@ async function calcSwap(
     amount: number;
     direction: 'LONG' | 'SHORT';
     marketIndex: number;
+    input: 'amount' | 'margin';
     days: number;
   }
 ) {
