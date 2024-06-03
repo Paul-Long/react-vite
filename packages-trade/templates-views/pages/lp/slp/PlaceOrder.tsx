@@ -1,4 +1,5 @@
 import {WalletBalance} from '@/pages/lp/WalletBalance';
+import {Chart} from '@/pages/lp/slp/Chart';
 import {Info} from '@/pages/lp/slp/Info';
 import {Range} from '@/pages/lp/slp/Range';
 import {query$} from '@/streams/lp/positions';
@@ -20,7 +21,7 @@ export function PlaceOrder(props: Props) {
   const {state, loading, handleChange, handleSubmit} = usePlaceOrder(props);
 
   return (
-    <div className="flex flex-row gap-24px">
+    <div className="flex flex-row items-start gap-24px">
       <div className="flex flex-col flex-1 gap-24px">
         <Info contract={props.contract} />
         <div
@@ -29,16 +30,7 @@ export function PlaceOrder(props: Props) {
             'rounded-8px bg-gray-40'
           )}
         >
-          <img
-            src="https://static.rate-x.io/img/v1/9efba5/lp-position-empty.png"
-            alt=""
-            width="108px"
-            height="108px"
-          />
-          <div className="font-size-18px">Make a deposit to view data</div>
-          <div className="w-full max-w-400px font-size-14px lh-21px text-gray-400 text-center">
-            You can track your deposit performance as soon as you deposit into the vault.
-          </div>
+          <Chart contract={props.contract} />
         </div>
       </div>
       <div className="flex flex-col w-384px rounded-8px bg-gray-40 py-16px px-24px gap-20px">

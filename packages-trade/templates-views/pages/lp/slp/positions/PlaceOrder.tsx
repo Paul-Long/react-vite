@@ -1,5 +1,7 @@
+import {RemoveInfo} from '@/pages/lp/slp/positions/RemoveInfo';
 import {InputNumber} from '@/pages/trade/place-order/InputNumber';
 import {query$} from '@/streams/lp/positions';
+import {removeAllQuery$, removeQuery$} from '@/streams/lp/remove';
 import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
@@ -13,10 +15,10 @@ import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button} from '@rx/widgets';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {IMAGES} from '../../const';
 
-export function PlaceOrder({data}: any) {
+export function PlaceOrder({data, contract}: any) {
   const {LG} = useLang();
   const {value, action, symbol, handleAction, handleChange, handleConfirm} = useAction(data);
 
@@ -88,12 +90,22 @@ export function PlaceOrder({data}: any) {
           >
             <div className="flex flex-row items-center gap-8px">
               <img
-                src={IMAGES[symbol?.symbolLevel2Category?.toUpperCase()]}
+                src={
+                  IMAGES[
+                    action === 'Deposit'
+                      ? symbol?.symbolLevel2Category?.toUpperCase()
+                      : symbol?.symbolLevel1Category?.toUpperCase()
+                  ]
+                }
                 alt=""
                 width="24px"
                 height="24px"
               />
-              <span>{symbol?.symbol}</span>
+              <span>
+                {action === 'Deposit'
+                  ? symbol?.symbolLevel2Category?.toUpperCase()
+                  : symbol?.symbolLevel1Category?.toUpperCase()}
+              </span>
             </div>
             <InputNumber
               align="right"
@@ -106,10 +118,19 @@ export function PlaceOrder({data}: any) {
             />
           </div>
         </div>
+        {action === 'Withdraw' && (
+          <RemoveInfo data={data} percent={value} contract={contract}>
+            <Button className="" type="primary" onClick={handleConfirm}>
+              <div className="font-size-16px lh-16px fw-bold">{LG(clang[action])}</div>
+            </Button>
+          </RemoveInfo>
+        )}
 
-        <Button className="mt-24px" type="primary" onClick={handleConfirm}>
-          <div className="font-size-16px lh-16px fw-bold">{LG(clang[action])}</div>
-        </Button>
+        {action === 'Deposit' && (
+          <Button className="mt-24px" type="primary" onClick={handleConfirm}>
+            <div className="font-size-16px lh-16px fw-bold">{LG(clang[action])}</div>
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -140,9 +161,60 @@ function useAction(data: any) {
     setAction(v);
   }, []);
 
-  const handleChange = useCallback((v: string) => {
-    setValue(v);
-  }, []);
+  const handleChange = useCallback(
+    (v: string) => {
+      if (action === 'Withdraw') {
+        if (!!v && Number(v) > 100) {
+          v = '100';
+        }
+      }
+      setValue(v);
+    },
+    [action]
+  );
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    const {ammPosition, marketIndex, baseAssetAmount, userPda} = data;
+    const {upperRate, lowerRate} = ammPosition || {};
+    if (!ttm || !symbol || !client || action === 'Deposit') {
+      return;
+    }
+    const params = {
+      marketIndex,
+      upperRate,
+      lowerRate,
+      rmLiquidityPercent: 100,
+      maturity: ttm.seconds,
+      baseAssetAmount: Big(baseAssetAmount).times(-1).toNumber(),
+      userPda,
+    };
+    removeAllQuery$.next(params);
+  }, [client, value, data, symbol, action, ttm]);
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    const {ammPosition, marketIndex, baseAssetAmount, userPda} = data;
+    const {upperRate, lowerRate} = ammPosition || {};
+    if (!value || !ttm || !symbol || !client || action === 'Deposit') {
+      return;
+    }
+    const params = {
+      marketIndex,
+      upperRate,
+      lowerRate,
+      rmLiquidityPercent: Big(value).toNumber(),
+      maturity: ttm.seconds,
+      baseAssetAmount: Big(baseAssetAmount).times(-1).toNumber(),
+      userPda,
+    };
+    console.log('remove lp params : ', params);
+    removeQuery$.next(params);
+  }, [client, value, data, symbol, action, ttm]);
 
   const handleConfirm = useCallback(async () => {
     const {ammPosition, marketIndex, baseAssetAmount, userPda} = data;

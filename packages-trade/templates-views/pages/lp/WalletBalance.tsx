@@ -19,7 +19,6 @@ export function WalletBalance(props: Props) {
   const {marketIndex} = props;
   const {LG} = useLang();
   const focus = useRef(false);
-  const change = useRef();
   const balance = useObservable(balance$, 0);
   const [percent, setPercent] = useState(0);
 
@@ -52,7 +51,7 @@ export function WalletBalance(props: Props) {
       }
       props.onChange?.(v);
       if (focus.current) {
-        setPercent(Number(balance) > 0 ? Big(v).times(100).div(balance).toNumber() : 0);
+        setPercent(Number(balance) > 0 && !!v ? Big(v).times(100).div(balance).toNumber() : 0);
       }
     },
     [balance]

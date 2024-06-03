@@ -68,7 +68,7 @@ export function Table(props: TableProps) {
           <StyledRow key={index} onClick={() => onRowSelect(data)}>
             {columns.map((column, columnIndex) => (
               <StyledTd
-                className="td relative"
+                className={clsx('td relative', [!!onRowSelect && 'cursor-pointer'])}
                 $selected={selectedIndex === genRowKey(data)}
                 $fixed={column.fixed}
                 $align={column.align ?? 'left'}

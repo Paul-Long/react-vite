@@ -65,7 +65,7 @@ export function LiveLPPosition({contract}: Props) {
           !!select && positions.length > 0 ? 'block' : 'hidden',
         ])}
       >
-        <PlaceOrder data={data}></PlaceOrder>
+        <PlaceOrder data={data} contract={contract}></PlaceOrder>
       </div>
     </div>
   );
@@ -99,11 +99,11 @@ function Position({data, contract, active, onClick}: any) {
       </div>
       <div className="flex flex-col gap-8px">
         <div className="text-gray-600">{LG(lang.APR)}</div>
-        <div className="font-size-18px lh-27px">{'-'}</div>
+        <div className="font-size-18px lh-27px text-green-500">{data.apr}%</div>
       </div>
       <div className="flex flex-col gap-8px">
         <div className="text-gray-600">{LG(lang.EarnedFees)}</div>
-        <div className="font-size-18px lh-27px">{'-'}</div>
+        <div className="font-size-18px lh-27px">{data?.earnFee ?? '-'}</div>
       </div>
     </div>
   );

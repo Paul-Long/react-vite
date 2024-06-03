@@ -709,14 +709,6 @@ export type RatexContracts = {
       ],
       "args": [
         {
-          "name": "marginIndex",
-          "type": "u16"
-        },
-        {
-          "name": "marketIndex",
-          "type": "u16"
-        },
-        {
           "name": "rmLiquidityPercent",
           "type": "u64"
         },
@@ -1082,21 +1074,6 @@ export type RatexContracts = {
           "name": "tokenVaultB",
           "isMut": true,
           "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
         }
       ],
       "args": [
@@ -1261,6 +1238,22 @@ export type RatexContracts = {
         {
           "name": "outMarketIndex",
           "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarket",
+      "accounts": [
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "numberOfActiveLpAccounts",
+          "type": "u64"
         }
       ]
     },
@@ -1472,8 +1465,16 @@ export type RatexContracts = {
       ],
       "args": [
         {
-          "name": "baseAssetAmount",
-          "type": "i64"
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "aToB",
+          "type": "bool"
+        },
+        {
+          "name": "amountSpecifiedIsInput",
+          "type": "bool"
         },
         {
           "name": "sqrtPriceLimit",
@@ -1551,7 +1552,7 @@ export type RatexContracts = {
       "accounts": [],
       "args": [
         {
-          "name": "ttm",
+          "name": "maturity",
           "type": "u64"
         },
         {
@@ -1925,7 +1926,7 @@ export type RatexContracts = {
         },
         {
           "name": "ov",
-          "type": "u64"
+          "type": "i64"
         },
         {
           "name": "totalLpValue",
@@ -2066,7 +2067,7 @@ export type RatexContracts = {
       "accounts": [
         {
           "name": "admin",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -2100,8 +2101,23 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "marginMarketMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "userTokenAccount",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -7330,14 +7346,6 @@ export const IDL: RatexContracts = {
       ],
       "args": [
         {
-          "name": "marginIndex",
-          "type": "u16"
-        },
-        {
-          "name": "marketIndex",
-          "type": "u16"
-        },
-        {
           "name": "rmLiquidityPercent",
           "type": "u64"
         },
@@ -7703,21 +7711,6 @@ export const IDL: RatexContracts = {
           "name": "tokenVaultB",
           "isMut": true,
           "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
         }
       ],
       "args": [
@@ -7882,6 +7875,22 @@ export const IDL: RatexContracts = {
         {
           "name": "outMarketIndex",
           "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarket",
+      "accounts": [
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "numberOfActiveLpAccounts",
+          "type": "u64"
         }
       ]
     },
@@ -8093,8 +8102,16 @@ export const IDL: RatexContracts = {
       ],
       "args": [
         {
-          "name": "baseAssetAmount",
-          "type": "i64"
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "aToB",
+          "type": "bool"
+        },
+        {
+          "name": "amountSpecifiedIsInput",
+          "type": "bool"
         },
         {
           "name": "sqrtPriceLimit",
@@ -8172,7 +8189,7 @@ export const IDL: RatexContracts = {
       "accounts": [],
       "args": [
         {
-          "name": "ttm",
+          "name": "maturity",
           "type": "u64"
         },
         {
@@ -8546,7 +8563,7 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "ov",
-          "type": "u64"
+          "type": "i64"
         },
         {
           "name": "totalLpValue",
@@ -8687,7 +8704,7 @@ export const IDL: RatexContracts = {
       "accounts": [
         {
           "name": "admin",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -8721,8 +8738,23 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "marginMarketMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "userTokenAccount",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
           "isSigner": false
         }
       ],

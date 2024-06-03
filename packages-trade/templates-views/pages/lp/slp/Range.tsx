@@ -53,7 +53,7 @@ export function Range(props: Props) {
           </div>
         ))}
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col px-12px">
         <div className="flex flex-row justify-between font-size-14px lh-22px text-gray-600">
           <div>{LG(lang.LowerRate)}</div>
           <div>{LG(lang.UpperRate)}</div>

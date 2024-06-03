@@ -106,8 +106,12 @@ export class DataFeed implements IDatafeedChartApi, IExternalDatafeed {
             };
           })
           .sort((a: any, b: any) => (a.time - b.time > 0 ? 1 : -1));
-        _this.to = klineData[klineData.length - 1].time;
-        onResult(klineData, {noData: false});
+        if (klineData.length > 0) {
+          _this.to = klineData[klineData.length - 1].time;
+          onResult(klineData, {noData: false});
+        } else {
+          onResult([], {noData: true});
+        }
       });
     } else {
       onResult([], {noData: true});
@@ -122,6 +126,9 @@ export class DataFeed implements IDatafeedChartApi, IExternalDatafeed {
     onResetCacheNeededCallback: () => void
   ): void {
     const _this = this;
+    if (!_this.to) {
+      return;
+    }
     console.log(`Subscribing to ${symbolInfo.name}`);
     onResetCacheNeededCallback();
     this.subscription?.unsubscribe();

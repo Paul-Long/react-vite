@@ -36,6 +36,7 @@ export function useForm() {
   const sqrtPrice = useMemo(() => info.sqrtPrice, [info]);
   const baseAssetAmount = useMemo(() => info.baseAssetAmount, [info]);
   const quoteAssetAmount = useMemo(() => info.quoteAssetAmount, [info]);
+  const fee = useMemo(() => info.fee, [info]);
 
   const {connected} = useConnect();
 
@@ -50,9 +51,15 @@ export function useForm() {
 
   useEffect(() => {
     const twapPrice = twap?.[marketIndex];
-    if (current.current === 'amount' && !!amountN && !!entryPrice) {
-      let margin = Big(amountN).times(entryPrice).div(leverageN).round(9, 3).toNumber();
-      if (twapPrice) {
+    let amount = amountN;
+    if (current.current === 'amount' && !!amountN && !!entryPrice && twapPrice !== undefined) {
+      const nextState: Record<string, any> = {};
+      // if (baseAssetAmount > 0 && baseAssetAmount < amountN) {
+      //   amount = baseAssetAmount;
+      //   nextState.amount = baseAssetAmount;
+      // }
+      let margin = Big(amount).times(entryPrice).div(leverageN).round(9, 3).toNumber();
+      if (twapPrice && quoteAssetAmount > 0) {
         const twapCr = Big(twapPrice)
           .times(baseAssetAmount)
           .add(margin)
@@ -60,7 +67,9 @@ export function useForm() {
           .toString();
         console.log('Twap CR : ', twapCr);
       }
-      const nextState = {margin, leverage: leverageN, maxLeverage};
+      nextState.margin = margin;
+      nextState.leverage = leverageN;
+      nextState.maxLeverage = maxLeverage;
       if (direction === 'LONG') {
         const denominator = Big(quoteAssetAmount)
           .times(1.05)
@@ -91,37 +100,23 @@ export function useForm() {
           console.log('Short Max Leverage : ', max, maxLeverage, denominator.toString());
         }
       }
-      nextState.margin = Big(amountN)
+      nextState.margin = Big(amount)
         .times(entryPrice)
         .div(nextState.leverage)
         .round(9, 3)
         .toNumber();
       setState((prevState: any) => ({...prevState, ...nextState}));
-      // let margin = Big(amountN).times(price).div(leverageN).round(9, 3).toNumber();
-      // if (direction === 'LONG') {
-      //   const yt = Big(amountN).times(lastPrice);
-      //   const st = Big(amountN).times(price);
-      //   console.log('LONG : ', Big(1.1).times(st).abs().minus(yt).toNumber());
-      //   margin = Math.max(Big(1.1).times(st).abs().minus(yt).toNumber(), margin);
-      // } else {
-      //   const yt = Big(amountN).times(price);
-      //   const st = Big(amountN).times(lastPrice);
-      //   console.log('SHORT : ', Big(1.1).times(yt).abs().minus(st).toNumber());
-      //   margin = Math.max(Big(1.1).times(yt).abs().minus(st).toNumber(), margin);
-      // }
-      // setState((prevState: any) => {
-      //   return {...prevState, margin};
-      // });
     }
     if (current.current === 'margin' && !!marginN) {
-      if (!twap?.[marketIndex]) {
-        return;
+      if (!!baseAssetAmount) {
+        setState((prevState: any) => {
+          return {
+            ...prevState,
+            amount: baseAssetAmount,
+            margin: Math.min(Number(marginN), Number(baseAssetAmount)),
+          };
+        });
       }
-      const t = twap?.[marketIndex];
-      const amount = Big(marginN).times(leverageN).div(t).round(9, 0).toNumber();
-      setState((prevState: any) => {
-        return {...prevState, amount};
-      });
     }
   }, [
     amountN,
@@ -156,7 +151,7 @@ export function useForm() {
   );
 
   useEffect(() => {
-    order$.next(state);
+    order$.next({...state, currentKey: current.current});
   }, [state]);
 
   const handleSubmit = useCallback(async () => {
@@ -170,11 +165,12 @@ export function useForm() {
     const start = Date.now();
     const {margin, marginType, direction, amount} = state;
     let newMargin: string | number = margin;
+    newMargin = Big(newMargin).add(fee).toString();
     if (state.marginWaiver && marginType === 'CROSS') {
       newMargin =
-        crossMargin?.remainMargin > margin
+        crossMargin?.remainMargin > newMargin
           ? 0
-          : Big(margin)
+          : Big(newMargin)
               .minus(crossMargin?.remainMargin ?? '0')
               .toNumber();
     }
@@ -214,11 +210,11 @@ export function useForm() {
           .toFixed(1)}s`
       );
       query$.next(0);
-      updateBalance$.next(0);
     }
+    updateBalance$.next(0);
     setState((prevState) => ({...prevState, amount: '', margin: ''}));
     setLoading(false);
-  }, [connected, state, baseContract, client]);
+  }, [connected, state, baseContract, client, fee]);
 
   return {state, info, current, handleChange, handleSubmit, loading, crossMargin};
 }

@@ -2,6 +2,7 @@ import {symbolMapById$} from '@rx/streams/config';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';
 import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
+import {Big} from 'big.js';
 import {
   BehaviorSubject,
   combineLatest,
@@ -40,7 +41,8 @@ async function calcPositions(positions: any[]) {
     const {marketIndex, userPda} = p;
     const {upperRate, lowerRate} = p.ammPosition || {};
     const key = [userPda, marketIndex, lowerRate, upperRate].join('-');
-    return {...p, key};
+    const apr = Big(Math.random() * (9.2 - 8.3) + 8.3).toFixed(1);
+    return {...p, key, apr};
   });
 }
 

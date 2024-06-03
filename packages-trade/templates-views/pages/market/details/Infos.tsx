@@ -73,7 +73,7 @@ export function Infos() {
           </div>
         </div>
         <div className="flex flex-row items-center gap-18px">
-          <Button type="primary" onClick={gotoTrade}>
+          <Button size="sm" type="primary" onClick={gotoTrade}>
             {LG(lang.Trade)}
           </Button>
           {/*<Button type="aqua">{LG(lang.Earn)}</Button>*/}
@@ -89,7 +89,9 @@ export function Infos() {
         </div>
         <div className="flex flex-col items-center gap-16px">
           <span className="text-gray-400">{LG(lang.Maturity)}</span>
-          <span className="font-size-24px lh-36px">3/28/2025</span>
+          <span className="font-size-24px lh-36px">
+            {detail?.dueDate?.slice(0, 11)?.replace(/-/g, '/')}
+          </span>
         </div>
         <div className="flex flex-col items-center gap-16px">
           <span className="text-gray-400">{LG(lang.ExpireIn)}</span>
@@ -99,16 +101,16 @@ export function Infos() {
           <span className="text-gray-400">{LG(lang.ImpliedYield)}</span>
           <span className="font-size-24px lh-36px text-green-500">{detail?.impliedYield}</span>
         </div>
-        <div className="flex flex-col gap-16px">
-          <span className="text-gray-400 text-right">{LG(lang.MarginRate)}</span>
-          <span className="font-size-24px lh-36px text-green-500 text-right">+7%</span>
-        </div>
+        {/*<div className="flex flex-col gap-16px">*/}
+        {/*  <span className="text-gray-400 text-right">{LG(lang.MarginRate)}</span>*/}
+        {/*  <span className="font-size-24px lh-36px text-green-500 text-right">+7%</span>*/}
+        {/*</div>*/}
       </div>
       <div className="grid grid-cols-5 font-semibold">
         <div className="flex flex-col">
           <div className="inline-flex flex-col gap-16px">
-            <span className="text-gray-400">YJitoSOL-2503 price</span>
-            <span className="font-size-24px lh-36px text-yellow">$0.068</span>
+            <span className="text-gray-400">{detail?.symbolName} price</span>
+            <span className="font-size-24px lh-36px text-yellow">{detail?.LastPrice ?? '-'}</span>
           </div>
         </div>
         <div className="flex flex-col items-center gap-16px ">
@@ -119,7 +121,9 @@ export function Infos() {
         </div>
         <div className="flex flex-col items-center gap-16px">
           <span className="text-gray-400">{LG(lang.AvaLiquidity)}</span>
-          <span className="font-size-24px lh-36px">{detail?.AvaLiquidity} SOL</span>
+          <span className="font-size-24px lh-36px">
+            {numUtil.floor(detail?.AvaLiquidity || 0, 2)} SOL
+          </span>
         </div>
       </div>
     </div>
