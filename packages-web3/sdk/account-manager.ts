@@ -14,7 +14,7 @@ import {
 import {Big} from 'big.js';
 import {Buffer} from 'buffer';
 
-export const PROGRAM_ID = new PublicKey('8EbMSp52FXmrAV64s85xzyCXGUDVxmmMaA5VK1uHT8To');
+export const PROGRAM_ID = new PublicKey('AZzXAH1LaeHcJ3R8nZjvLiEPz77nnkRyFHSJ7yA9Qhrd');
 
 export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
 
@@ -464,8 +464,8 @@ export class AccountManager {
                 return pos;
               }, a[k]);
               user[k].price = sqrtPrice.toString();
-              user[k].tokenA = Big(tokenA.toString()).div(1_000_000_000).toNumber();
-              user[k].tokenB = Big(tokenB.toString()).div(1_000_000_000).toNumber();
+              user[k].tokenA = Big(tokenA.toString()).div(1_000_000_000).toString();
+              user[k].tokenB = Big(tokenB.toString()).div(1_000_000_000).toString();
             }
             user[k] = this.formatAccountInfo(a, k);
             return user;
@@ -474,13 +474,16 @@ export class AccountManager {
         );
         lpAc.baseAssetAmount = Big(lpAc.reserveBaseAmount)
           .plus(lpAc.ammPosition.tokenA ?? 0)
-          .toNumber();
+          .toString();
         lpAc.quoteAssetAmount = Big(lpAc.reserveQuoteAmount)
           .plus(lpAc.ammPosition.tokenB ?? 0)
-          .toNumber();
+          .toString();
         lpAc.total = Big(lpAc.baseAssetAmount)
           .times(sqrtPrice.toString())
           .add(lpAc.quoteAssetAmount)
+          .toString();
+        lpAc.earnFee = Big(lpAc.ammPosition.feeOwedA || 0)
+          .add(lpAc.ammPosition.feeOwedB || 0)
           .toString();
         return lpAc;
       })
