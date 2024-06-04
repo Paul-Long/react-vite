@@ -109,7 +109,7 @@ export function useForm() {
     }
     if (current.current === 'margin' && !!marginN) {
       if (!!baseAssetAmount) {
-        const amount = Big(baseAssetAmount).round(6, 0).toString();
+        const amount = Big(baseAssetAmount).round(9, 0).toString();
         setState((prevState: any) => {
           return {
             ...prevState,
