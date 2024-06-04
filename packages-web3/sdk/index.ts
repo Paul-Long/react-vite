@@ -1,4 +1,4 @@
-import {AccountManager, PROGRAM_ID, TOKEN_FAUCET} from '@/sdk/account-manager';
+import {AccountManager} from '@/sdk/account-manager';
 import {ORACLE_PDA} from '@/sdk/const';
 import {FundManager} from '@/sdk/fund-manager';
 import {LpManager} from '@/sdk/lp-manager';
@@ -8,6 +8,8 @@ import {
   getMarginIndexByMarketIndex,
   getMarginIndexByMarketIndexV2,
   getMintAccountPda,
+  PROGRAM_ID,
+  TOKEN_FAUCET
 } from '@/sdk/utils';
 import {updateBalance$} from '@/streams/balance';
 import {clientReady$} from '@/streams/rate-x-client';
@@ -204,7 +206,7 @@ export class RateClient {
       this.authority,
       this.am,
       userPda,
-      params
+      {...params, isClose: false}
     );
 
     console.log('place order instruction : ', Date.now() - start);
@@ -248,7 +250,7 @@ export class RateClient {
       this.authority,
       this.am,
       userPda,
-      params
+      {...params, isClose: true}
     );
     const combinedTransaction = new Transaction();
     combinedTransaction.add(transaction);
@@ -318,6 +320,7 @@ export class RateClient {
       params
     );
     const result: any = await this.sendViewTransaction([instruction]);
+    console.log(this.parsePlaceOrderView(result?.value?.logs ?? []));
     if (result?.value?.returnData?.data) {
       const [data, type] = result?.value?.returnData.data;
       let buf = Buffer.from(data, type);
@@ -721,6 +724,20 @@ export class RateClient {
   }
   async getPerpMarketInfo(params: {marketIndex: number}) {
     return await this.lp.getPerpMarketInfo(this.program, params);
+  }
+
+  async parsePlaceOrderView(logs?: string[]) {
+    if (!logs) {
+      return;
+    }
+    const evts = this.parser?.parseLogs(logs);
+    while (evts) {
+      const evt: any = evts.next();
+      console.log(evt);
+      if (evt.done) {
+        break;
+      }
+    }
   }
 
   async parseLpRemoveLogs(

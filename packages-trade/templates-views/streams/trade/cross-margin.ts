@@ -18,10 +18,10 @@ import {calcAssetLiability} from '../positions';
 
 const source = timer(0, 60 * 1000);
 
-export const query$ = new BehaviorSubject(0);
+export const waiverQuery$ = new BehaviorSubject(0);
 const loading$ = new BehaviorSubject(false);
 
-const getPositions$ = combineLatest([rateXClient$, clientReady$, query$, source]).pipe(
+const getPositions$ = combineLatest([rateXClient$, clientReady$, waiverQuery$, source]).pipe(
   debounceTime(200),
   switchMap(([client, ready]) => load(client, ready)),
   map((res) => {
@@ -62,9 +62,8 @@ async function calcPositions(
 ): Promise<{remainMargin: string}> {
   const {assets, liability, margin} = calcAssetLiability(positions, tradeMap, symbolMap);
   const requireMargin = Big(1.1).times(liability).minus(assets).abs();
-  console.log('cross margin ', margin.toString(), requireMargin.toString(), liability.toString(), assets.toString())
   const remainMargin = margin.minus(requireMargin);
   return {
-    remainMargin: remainMargin.lt(0) ? '0' : remainMargin.toString(),
+    remainMargin: remainMargin.lt(0) ? '0' : remainMargin.round(6, 0).toString(),
   };
 }

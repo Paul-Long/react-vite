@@ -4,13 +4,14 @@ import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';
 import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Big} from 'big.js';
-import {BehaviorSubject, combineLatest, debounceTime, exhaustMap, map, of, shareReplay} from 'rxjs';
+import {BehaviorSubject, combineLatest, exhaustMap, map, of, shareReplay, throttleTime} from 'rxjs';
 
 export const order$ = new BehaviorSubject<any>(null);
 
+let timer: any = null;
 export const swapLoading$ = new BehaviorSubject(false);
 export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$]).pipe(
-  debounceTime(300),
+  throttleTime(300),
   exhaustMap(([order, current, client, ready]) => {
     if (!client || !ready || !order || !current) {
       return of(null);
@@ -19,6 +20,9 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
     const {days, minimumMaintainanceCr} = current;
     if (currentKey === 'amount' && amount <= 0 && currentKey === 'margin' && margin <= 0) {
       return of(null);
+    }
+    if (timer) {
+      clearTimeout(timer);
     }
     swapLoading$.next(true);
     return calcSwap(client, {
@@ -61,8 +65,9 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
             )
           : '-';
     }
-    const fee = Big(quoteAssetAmount || 0)
-      .times(0.0001)
+    const fee = Big(!params.margin ? 0 : params.margin)
+      .times(params.leverage)
+      .times(0.001)
       .toFixed(9);
 
     const trade = lastTrade?.[contract?.symbol];
@@ -77,6 +82,20 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
       returnData.impact =
         Big(sqrtPrice).minus(trade.LastPrice).div(trade.LastPrice).times(100).toFixed(4) + '%';
     }
+    if (params.currentKey === 'amount' && params.amount) {
+      returnData.maxAmount = Big(baseAssetAmount).lt(params.amount)
+        ? baseAssetAmount
+        : params.amount;
+    }
+    if (params.currentKey === 'margin' && params.margin) {
+      returnData.maxMargin = Big(quoteAssetAmount).lt(params.margin)
+        ? quoteAssetAmount
+        : params.margin;
+    }
+    timer = setTimeout(() => {
+      swapLoading$.next(false);
+      timer = null;
+    }, 100);
     return returnData;
   })
 );
@@ -97,6 +116,5 @@ async function calcSwap(
     res = await client.simulatePlaceOrder(params);
     console.log('swap time : ', Date.now() - start);
   } catch (e) {}
-  swapLoading$.next(false);
   return res;
 }

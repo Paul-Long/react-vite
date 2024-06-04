@@ -1,5 +1,5 @@
-import {PROGRAM_ID} from '@/sdk/account-manager';
 import {TICK_ARRAY_SIZE} from '@/sdk/const';
+import {PROGRAM_ID} from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import * as anchor from '@coral-xyz/anchor';

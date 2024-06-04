@@ -1,5 +1,6 @@
 import {ClosePosition} from '@/pages/trade/positions/ClosePosition';
 import {positions$, query$} from '@/streams/positions';
+import {waiverQuery$} from '@/streams/trade/cross-margin';
 import {DownIcon} from '@rx/components/icons/DownIcon';
 import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
@@ -25,7 +26,7 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
     if (marginType === 'CROSS' && pos?.length > 0) {
       return [
         {parent: true, asset: 'SOL', cr: pos[0].cr, margin: pos[0].margin, userPda: pos[0].userPda},
-        ...pos,
+        ...pos.filter((p) => p.baseAssetAmount != 0),
       ];
     }
     return pos;
@@ -80,7 +81,10 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
       visible: true,
       userPda: row.userPda,
       marginIndex: 0,
-      onFinish: () => query$.next(0),
+      onFinish: () => {
+        waiverQuery$.next(0);
+        query$.next(0);
+      },
     });
   };
 
@@ -97,7 +101,10 @@ const handleWithdraw = async (row: any) => {
     userPda: row.userPda,
     marketIndex: row.marketIndex,
     marginIndex: 0,
-    onFinish: () => query$.next(0),
+    onFinish: () => {
+      query$.next(0);
+      waiverQuery$.next(0);
+    },
   });
 };
 
@@ -164,7 +171,7 @@ function renderMargin(handleDeposit: (r: any) => void, client: any) {
   return (row: any) =>
     row.parent || row.marginType === 'ISOLATED' ? (
       <div className="flex flex-row items-start justify-right gap-8px">
-        {numUtil.floor(row?.margin ?? 0, 4)} SOL
+        {numUtil.floor(row?.margin ?? 0, 6)} SOL
         <div className="flex flex-row items-center gap-8px">
           <Tooltip text="Deposit">
             <div

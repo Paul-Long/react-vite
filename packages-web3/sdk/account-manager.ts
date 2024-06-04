@@ -1,4 +1,4 @@
-import {PerpMarketMap, getPerpMarketPda} from '@/sdk/utils';
+import {PROGRAM_ID, PerpMarketMap, getPerpMarketPda} from '@/sdk/utils';
 import type {RateXOrder, RateXPosition} from '@/types/rate-x-client';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import {PoolUtil} from '@/utils/pool-utils';
@@ -13,10 +13,6 @@ import {
 } from '@solana/web3.js';
 import {Big} from 'big.js';
 import {Buffer} from 'buffer';
-
-export const PROGRAM_ID = new PublicKey('AZzXAH1LaeHcJ3R8nZjvLiEPz77nnkRyFHSJ7yA9Qhrd');
-
-export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
 
 export class AccountManager {
   statePda: PublicKey;
@@ -152,13 +148,6 @@ export class AccountManager {
       for (let i = 0; i < count; i++) {
         const userPda = this.createUserPda(authority, i);
         allUserPda.push(userPda);
-        // try {
-        //   const user = await program.account.user.fetch(userPda);
-        //   console.log('*********');
-        //   console.log(i, userPda.toBase58(), user);
-        //   console.log('*********');
-        // } catch (e) {}
-
         pdaMap[i] = {
           userPda,
           userPdaAddress: userPda.toBase58(),
@@ -253,6 +242,17 @@ export class AccountManager {
               })?.length > 0,
           };
         });
+      if (positions.length === 0 && !u.isIsolated && marginBalance > 0) {
+        positions.push({
+          isIsolated: false,
+          marginType: 'CROSS',
+          margin: marginBalance,
+          userPda: u.userPdaAddress,
+          baseAssetAmount: 0,
+          quoteAssetAmount: 0,
+          enableClose: false,
+        });
+      }
       return [...ps, ...positions];
     }, []);
   }
@@ -282,6 +282,17 @@ export class AccountManager {
               quoteAssetAmount: Big(quoteAssetAmount.toNumber()).div(1_000_000_000).toNumber(),
             };
           });
+        if (positions.length === 0 && !acc.isIsolated && margin > 0) {
+          positions.push({
+            isIsolated: false,
+            marginType: 'CROSS',
+            margin: margin,
+            userPda: acc.userPdaAddress,
+            baseAssetAmount: 0,
+            quoteAssetAmount: 0,
+            enableClose: false,
+          });
+        }
         return [...allPositions, ...positions];
       }, []);
   }
@@ -300,6 +311,7 @@ export class AccountManager {
           priceLimit,
         } = p;
         return {
+          isClose: p.isClose,
           userPda: u.userPdaAddress,
           userOrdersPda: u.userOrdersPdaAddress,
           isIsolated: u.isIsolated,

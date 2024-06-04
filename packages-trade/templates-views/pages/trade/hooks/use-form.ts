@@ -1,7 +1,7 @@
 import {current$} from '@/pages/trade/streams/streams';
-import {calcInfo$, order$} from '@/streams/calc-swap';
+import {calcInfo$, order$, swapLoading$} from '@/streams/calc-swap';
 import {query$} from '@/streams/positions';
-import {crossMargin$} from '@/streams/trade/cross-margin';
+import {crossMargin$, waiverQuery$} from '@/streams/trade/cross-margin';
 import {marketIndex$, twap$} from '@/streams/twap';
 import {tradeApi} from '@rx/api/trade';
 import {useObservable} from '@rx/hooks/use-observable';
@@ -21,6 +21,7 @@ export function useForm() {
   const info = useObservable(calcInfo$, {});
   const crossMargin: any = useObservable(crossMargin$, {remainMargin: '0'});
   const baseContract = useObservable(current$, {});
+  const [swapLoading] = useStream(swapLoading$);
 
   const [loading, setLoading] = useState(false);
 
@@ -36,6 +37,8 @@ export function useForm() {
   const sqrtPrice = useMemo(() => info.sqrtPrice, [info]);
   const baseAssetAmount = useMemo(() => info.baseAssetAmount, [info]);
   const quoteAssetAmount = useMemo(() => info.quoteAssetAmount, [info]);
+  const maxAmount = useMemo(() => info?.maxAmount, [info]);
+  const maxMargin = useMemo(() => info?.maxMargin, [info]);
   const fee = useMemo(() => info.fee, [info]);
 
   const {connected} = useConnect();
@@ -54,10 +57,6 @@ export function useForm() {
     let amount = amountN;
     if (current.current === 'amount' && !!amountN && !!entryPrice && twapPrice !== undefined) {
       const nextState: Record<string, any> = {};
-      // if (baseAssetAmount > 0 && baseAssetAmount < amountN) {
-      //   amount = baseAssetAmount;
-      //   nextState.amount = baseAssetAmount;
-      // }
       let margin = Big(amount).times(entryPrice).div(leverageN).round(9, 3).toNumber();
       if (twapPrice && quoteAssetAmount > 0) {
         const twapCr = Big(twapPrice)
@@ -109,10 +108,11 @@ export function useForm() {
     }
     if (current.current === 'margin' && !!marginN) {
       if (!!baseAssetAmount) {
+        const amount = Big(baseAssetAmount).times(leverageN).round(6, 0).toString();
         setState((prevState: any) => {
           return {
             ...prevState,
-            amount: baseAssetAmount,
+            amount,
             margin: Math.min(Number(marginN), Number(baseAssetAmount)),
           };
         });
@@ -129,6 +129,19 @@ export function useForm() {
     twap,
     maxLeverage,
   ]);
+
+  useEffect(() => {
+    console.log('reset input value : ', amountN, marginN, maxAmount, maxMargin, swapLoading);
+    if (swapLoading) {
+      return;
+    }
+    if (current.current === 'amount' && amountN > maxAmount) {
+      // setState((prevState) => ({...prevState, amount: maxAmount}));
+    }
+    if (current.current === 'margin' && marginN > maxMargin) {
+      // setState((prevState) => ({...prevState, margin: maxMargin}));
+    }
+  }, [amountN, marginN, maxAmount, maxMargin, swapLoading]);
 
   const handleChange = useCallback(
     (key: string) => {
@@ -209,6 +222,9 @@ export function useForm() {
           .div(1000)
           .toFixed(1)}s`
       );
+      if (order.marginType === 'CROSS') {
+        waiverQuery$.next(0);
+      }
       query$.next(0);
     }
     updateBalance$.next(0);

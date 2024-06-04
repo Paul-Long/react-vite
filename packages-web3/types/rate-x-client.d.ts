@@ -36,6 +36,7 @@ interface RateXPlaceOrderParams {
   marketIndex: number;
   orderType: OrderType;
   direction: DirectionType;
+  isClose: boolean;
   margin?: number;
 }
 

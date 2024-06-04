@@ -1,13 +1,12 @@
 import {AccountManager} from '@/sdk/account-manager';
 import {
-  WSOLOraclePda,
+  getAllObservations,
+  getAllOracles,
+  getAllPerpMarkets,
   getFaucetConfigPda,
   getMarginMarketPda,
   getMarginMarketVaultPda,
   getMintAccountPda,
-  getObservationPda,
-  getOraclePda,
-  getPerpMarketPda,
 } from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import type {TokenFaucet} from '@/types/token_faucet';
@@ -19,8 +18,6 @@ import {
 } from '@solana/spl-token';
 import {PublicKey, SystemProgram, TransactionInstruction} from '@solana/web3.js';
 import {Big} from 'big.js';
-
-const MintAuthority = new PublicKey('9aTcv5rmbnYussBW61ok3caDyNZJCv2xpQF6t9b31wuj');
 
 export class FundManager {
   constructor() {}
@@ -154,27 +151,9 @@ export class FundManager {
       })
       .remainingAccounts([
         ...remainingAccounts,
-        ...[0, 1].map((i) => ({
-          pubkey: getPerpMarketPda(i),
-          isSigner: false,
-          isWritable: true,
-        })),
-        // TODO wsol
-        {
-          pubkey: WSOLOraclePda,
-          isSigner: false,
-          isWritable: true,
-        },
-        ...[0, 1].map((i) => ({
-          pubkey: getOraclePda(i),
-          isSigner: false,
-          isWritable: true,
-        })),
-        ...[0, 1].map((i) => ({
-          pubkey: getObservationPda(i),
-          isSigner: false,
-          isWritable: true,
-        })),
+        ...getAllPerpMarkets(),
+        ...getAllOracles(),
+        ...getAllObservations(),
       ])
       .rpc();
   }

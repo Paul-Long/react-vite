@@ -70,3 +70,33 @@ export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
     1: 2,
   }[marketIndex] as number;
 }
+
+export function getAllPerpMarkets() {
+  return [0, 1].map((i) => ({
+    pubkey: getPerpMarketPda(i),
+    isSigner: false,
+    isWritable: true,
+  }));
+}
+export function getAllOracles() {
+  return [
+    {
+      pubkey: WSOLOraclePda,
+      isSigner: false,
+      isWritable: true,
+    },
+    ...[0, 1].map((i) => ({
+      pubkey: getOraclePda(i),
+      isSigner: false,
+      isWritable: true,
+    })),
+  ];
+}
+
+export function getAllObservations() {
+  return [0, 1].map((i) => ({
+    pubkey: getObservationPda(i),
+    isSigner: false,
+    isWritable: true,
+  }));
+}

@@ -3,12 +3,14 @@ import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
+import {useConnect} from '@rx/web3/hooks/use-connect';
 import {abbreviateString} from '@rx/web3/utils/string';
 import type {Column} from '@rx/widgets/table/types';
 import {useEffect, useState} from 'react';
 
 export function useHistory() {
   const {LG} = useLang();
+  const {address} = useConnect();
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [columns, setColumns] = useState<Column[]>([]);
 
@@ -44,6 +46,16 @@ export function useHistory() {
         render: renderYield,
       },
       {
+        title: LG(lang.OrderType),
+        dataIndex: 'OCType',
+        render: (row) => (
+          <div className="flex flex-col">
+            <span>Market Order</span>
+            <span>{row.OCType == '0' ? 'Open Position' : 'Close Position'}</span>
+          </div>
+        ),
+      },
+      {
         title: LG(lang.TradingFee),
         dataIndex: 'Fee',
         align: 'right',
@@ -75,10 +87,10 @@ export function useHistory() {
 
   useEffect(() => {
     (async () => {
-      const res = await tradeApi.loadOrderHistory();
+      const res = await tradeApi.loadOrderHistory({address: address as string});
       setDataSource(res?.data ?? []);
     })();
-  }, []);
+  }, [address]);
 
   return {columns, dataSource};
 }

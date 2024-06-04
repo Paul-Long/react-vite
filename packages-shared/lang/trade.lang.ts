@@ -245,4 +245,7 @@ export const lang: any = {
   YTAmount: {
     en: 'YT Amount',
   },
+  OrderType: {
+    en: 'Order Type',
+  },
 };
