@@ -187,7 +187,11 @@ export class AccountManager {
     const zero = new BN(0);
     let user;
     if (!isIsolated) {
-      user = accounts?.find((u: any) => u.isIsolated === isIsolated);
+      user = accounts?.find(
+        (u: any) =>
+          u.isIsolated === isIsolated &&
+          (u?.perpPositions || []).some((p: RateXPosition) => (p.baseAssetAmount as BN).eq(zero))
+      );
     } else {
       user = accounts?.find((u) => {
         if (u.isIsolated !== isIsolated) {

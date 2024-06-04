@@ -9,7 +9,7 @@ import {
   getMarginIndexByMarketIndexV2,
   getMintAccountPda,
   PROGRAM_ID,
-  TOKEN_FAUCET
+  TOKEN_FAUCET,
 } from '@/sdk/utils';
 import {updateBalance$} from '@/streams/balance';
 import {clientReady$} from '@/streams/rate-x-client';
@@ -549,6 +549,7 @@ export class RateClient {
         result.entryPrice = Big(swapEvent.amountB).div(swapEvent.amountA).round(9, 0).toString();
       }
     }
+    console.log('remove result : ', result);
     return result;
   }
 
@@ -757,6 +758,7 @@ export class RateClient {
       if (evt?.value?.name === 'SwapEvent') {
         SwapEvent = evt.value.data;
       }
+      console.log('events ', evt);
       if (evt.done) {
         break;
       }

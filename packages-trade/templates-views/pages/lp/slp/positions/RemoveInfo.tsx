@@ -43,26 +43,25 @@ export function RemoveInfo(props: Props) {
       return {ratio: '-', yt: '-', st: '-'};
     }
     if (data && !Big(data.reserveBaseAmount).eq(0)) {
-      const ratio = Big(data.baseAssetAmount)
-        .div(data.reserveBaseAmount)
-        .times(100)
-        .abs()
-        .round(2, 0)
-        .toString();
+      const ratio = Big(data.baseAssetAmount).div(data.reserveBaseAmount).abs().round(2, 0);
 
-      if (all?.amountA) {
+      if (info?.amountA) {
         const yt = Big(data.baseAssetAmount).add(
-          !all.atob ? all?.amountA : 0 - (all?.amountA || 0)
+          !info.atob ? info?.amountA : 0 - (info?.amountA || 0)
         );
         const rr = yt.div(data.baseAssetAmount).round(6, 3);
         const st = Big(data.reserveQuoteAmount).times(ratio).times(rr).round(6, 3);
-        return {ratio: ratio + '%', yt: yt.toString(), st: st.toString()};
+        return {
+          ratio: ratio.times(100).toString() + '%',
+          yt: yt.round(4, 3).toString(),
+          st: st.round(4, 3).toString(),
+        };
       }
 
-      return {ratio: ratio + '%', yt: '-', st: '-'};
+      return {ratio: ratio.times(100).toString() + '%', yt: '-', st: '-'};
     }
     return {ratio: '-', yt: '-', st: '-'};
-  }, [data, all]);
+  }, [data, info]);
 
   return (
     <div className="flex flex-col gap-12px mt-16px">
@@ -96,7 +95,7 @@ export function RemoveInfo(props: Props) {
         <div
           className={clsx('font-medium flex flex-row items-center relative text-gray-600 gap-4px')}
         >
-          <span className="text-white">{info?.entryPrice ?? '-'}</span>
+          <span className="text-white">{Number(ytClose) != 0 ? info?.entryPrice ?? '-' : '-'}</span>
           ST
         </div>
       </div>

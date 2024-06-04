@@ -68,9 +68,6 @@ export const calcInfo$ = combineLatest([swap$, current$, lastTrade$]).pipe(
     if (params.currentKey === 'margin') {
       keys.push(params.margin);
     }
-    if (!!resultCache[keys.join('_')]) {
-      return resultCache[keys.join('_')];
-    }
     if (!result) {
       return {};
     }
@@ -98,6 +95,7 @@ export const calcInfo$ = combineLatest([swap$, current$, lastTrade$]).pipe(
             )
           : '-';
     }
+    console.log('order : ', params);
     const fee = Big(!params.margin ? 0 : params.margin)
       .times(params.leverage)
       .times(0.001)
