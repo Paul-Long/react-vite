@@ -136,13 +136,15 @@ function renderYtSt(LG: any) {
 
 function renderPNL(LG: any) {
   return (row: any) => (
-    <div className="flex flex-col items-end w-full">
+    <div className="flex flex-col justify-start items-end w-full h-full">
       <div className={clsx([row.pnl > 0 && 'text-green-500'], [row.pnl < 0 && 'text-red-500'])}>
         {row?.pnl}
       </div>
-      <div className={clsx([row.pnl > 0 && 'text-green-500'], [row.pnl < 0 && 'text-red-500'])}>
-        {!!row?.pnl && !!row?.margin ? Big(row?.pnl).div(row.margin).toFixed(2) + '%' : '-'}
-      </div>
+      {row.marginType !== 'CROSS' && (
+        <div className={clsx([row.pnl > 0 && 'text-green-500'], [row.pnl < 0 && 'text-red-500'])}>
+          {!!row?.pnl && !!row?.margin ? Big(row?.pnl).div(row.margin).toFixed(2) + '%' : '-'}
+        </div>
+      )}
     </div>
   );
 }
