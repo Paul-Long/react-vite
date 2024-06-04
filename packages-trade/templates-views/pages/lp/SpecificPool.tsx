@@ -18,12 +18,13 @@ export function SpecificPool() {
   return (
     <div className="flex flex-col mt-38px">
       <div className="font-size-16px lh-20px fw-semibold">{LG(lang.SpecificLiquidityPool)}</div>
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-6">
         <div className="contents font-size-14px lh-20px text-gray-600 py-10px">
           <div className="py-10px pl-18px">{LG(lang.Pool)}</div>
           <div className="py-10px text-center">{LG(lang.APR)}</div>
-          <div className="py-10px text-center">{LG(lang.RLPToken)}</div>
-          <div className="py-10px text-right">{LG(lang.RLPTokenValue)}</div>
+          <div className="py-10px text-center">{LG(lang.Maturity)}</div>
+          <div className="py-10px text-right">{LG(lang.ExpireIn)}</div>
+          <div className="py-10px pr-32px text-right">{LG(lang.ActiveRadio)}</div>
           <div className="py-10px pr-32px text-right">{LG(lang.TVL)}</div>
         </div>
         {contracts.map((c) => (
@@ -46,8 +47,8 @@ export function SpecificPool() {
               <div className="flex flex-col">
                 <span className="font-size-14px lh-20px">{c.symbol}</span>
                 <div className="flex flex-row items-center gap-4px">
-                  <span className="text-gray-400">Wallet: </span>
-                  <span className="text-gray-600">$500.00</span>
+                  {/*<span className="text-gray-400">Wallet: </span>*/}
+                  {/*<span className="text-gray-600">$500.00</span>*/}
                 </div>
               </div>
             </div>
@@ -57,6 +58,13 @@ export function SpecificPool() {
               )}
             >
               8.43%
+            </div>
+            <div
+              className={clsx(
+                'flex justify-center items-center py-20px text-center group-hover:bg-gray-80'
+              )}
+            >
+              RLP-mSOL
             </div>
             <div
               className={clsx(

@@ -108,12 +108,11 @@ export function useForm() {
     }
     if (current.current === 'margin' && !!marginN) {
       if (!!baseAssetAmount) {
-        const amount = Big(baseAssetAmount).times(leverageN).round(6, 0).toString();
+        const amount = Big(baseAssetAmount).round(6, 0).toString();
         setState((prevState: any) => {
           return {
             ...prevState,
             amount,
-            margin: Math.min(Number(marginN), Number(baseAssetAmount)),
           };
         });
       }

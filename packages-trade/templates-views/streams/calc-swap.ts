@@ -29,7 +29,7 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
     }
     const {amount, direction, marketIndex, margin, marginType, currentKey = 'amount'} = order;
     const {days, minimumMaintainanceCr} = current;
-    if (currentKey === 'amount' && amount <= 0 && currentKey === 'margin' && margin <= 0) {
+    if ((currentKey === 'amount' && !amount) || (currentKey === 'margin' && !margin)) {
       return of(null);
     }
     if (timer) {
@@ -46,7 +46,7 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
     return calcSwap(
       client,
       {
-        amount: currentKey === 'amount' ? amount : margin,
+        amount: currentKey === 'amount' ? amount : Big(margin).times(order.leverage).toString(),
         direction,
         marketIndex,
         input: currentKey,
@@ -61,6 +61,9 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
 export const calcInfo$ = combineLatest([swap$, current$, lastTrade$]).pipe(
   map(([swapResult, contract, lastTrade]: any) => {
     const {result, order: params} = swapResult || {};
+    if (!params?.currentKey) {
+      return of(null);
+    }
     const keys = [params.currentKey, params.direction, params.marketIndex];
     if (params.currentKey === 'amount') {
       keys.push(params.amount);
