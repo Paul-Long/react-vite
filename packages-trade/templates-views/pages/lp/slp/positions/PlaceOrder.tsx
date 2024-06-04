@@ -120,14 +120,14 @@ export function PlaceOrder({data, contract}: any) {
         </div>
         {action === 'Withdraw' && (
           <RemoveInfo data={data} percent={value} contract={contract}>
-            <Button className="" type="primary" onClick={handleConfirm}>
+            <Button size="md" className="" type="primary" onClick={handleConfirm}>
               <div className="font-size-16px lh-16px fw-bold">{LG(clang[action])}</div>
             </Button>
           </RemoveInfo>
         )}
 
         {action === 'Deposit' && (
-          <Button className="mt-24px" type="primary" onClick={handleConfirm}>
+          <Button size="md" className="mt-24px" type="primary" onClick={handleConfirm}>
             <div className="font-size-16px lh-16px fw-bold">{LG(clang[action])}</div>
           </Button>
         )}

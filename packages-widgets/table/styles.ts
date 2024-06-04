@@ -30,7 +30,7 @@ const StyledCell = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: center;
   white-space: nowrap;
   padding: 12px 20px;
 

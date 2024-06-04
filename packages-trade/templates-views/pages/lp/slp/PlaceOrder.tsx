@@ -52,7 +52,7 @@ export function PlaceOrder(props: Props) {
             0.03%
           </span>
         </div>
-        <Button type="trade" disabled={loading} onClick={handleSubmit}>
+        <Button size="md" type="trade" disabled={loading} onClick={handleSubmit}>
           <div className="flex flex-row justify-center items-center flex-nowrap gap-10px font-size-16px lh-18px">
             {loading && <Loading size={18} />}
             {LG(lang.AddLiquidity)}
