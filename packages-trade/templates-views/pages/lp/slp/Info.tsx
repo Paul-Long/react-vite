@@ -19,7 +19,13 @@ export function Info(props: Props) {
     if (!trade || !contract) {
       return '-';
     }
-    return Big(trade.LastPrice).times(contract.kValue).times(100).round(2, 3).toString() + '%';
+    return (
+      Big(trade.LastPrice ?? '0')
+        .times(contract.kValue)
+        .times(100)
+        .round(2, 3)
+        .toString() + '%'
+    );
   }, [trade, contract]);
   return (
     <div className="grid grid-cols-3 p-24px gap-32px rounded-8px bg-gray-40">

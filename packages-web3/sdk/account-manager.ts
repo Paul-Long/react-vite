@@ -414,7 +414,7 @@ export class AccountManager {
         try {
           const user = program.coder.accounts.decode('Lp', account.data);
           const perp: string = user?.ammPosition?.whirlpool?.toBase58();
-          users.push({...user, userPda, marketIndex: marketIndexMap[perp]});
+          users.push({...user, userPda, marketIndex: marketIndexMap[perp], whirlpool: perp});
         } catch (e) {
           console.error(e);
         }
@@ -438,6 +438,90 @@ export class AccountManager {
         Big(params.lowerRate).times(1_000_000_000).eq(Big(lowerRate.toString()))
       );
     });
+  }
+
+  async getAllLPPositions(program: Program<RatexContracts>, authority: PublicKey) {
+    const marketIndexes = Object.keys(PerpMarketMap).map(Number);
+    const perps = await program.provider.connection.getMultipleAccountsInfo(
+      marketIndexes.map((index: number) => new PublicKey(PerpMarketMap[index]))
+    );
+    const perpMarkets: Record<string, any> = {};
+    for (let i = 0; i < marketIndexes.length; i++) {
+      const marketIndex = marketIndexes[i];
+      const data = perps[i];
+      if (!data) {
+        continue;
+      }
+      const perpMarket = program.coder.accounts.decode('PerpMarket', data.data);
+      const perpMarketPda = PerpMarketMap[marketIndex];
+      const sqrtPrice = perpMarket.pool.sqrtPrice;
+      perpMarkets[perpMarketPda] = {marketIndex, perpMarket, sqrtPrice};
+    }
+    const accounts = await this.getLpAccounts(program, authority);
+    console.log('123 : ', perpMarkets, accounts);
+    return accounts
+      .map((a) => {
+        const whirlpool = a?.ammPosition?.whirlpool;
+        if (!whirlpool) {
+          return false;
+        }
+        const perp = perpMarkets[whirlpool.toBase58()];
+        if (!perp) {
+          return false;
+        }
+        const {sqrtPrice, marketIndex} = perp;
+        const lpAc = Object.keys(a).reduce(
+          (user: Record<string, any>, k: string) => {
+            if (k === 'ammPosition') {
+              const amm = user[k];
+              const lowerSqrtPrice = PriceMath.tickIndexToSqrtPriceX64(amm.tickLowerIndex);
+              const upperSqrtPrice = PriceMath.tickIndexToSqrtPriceX64(amm.tickUpperIndex);
+              const {tokenA, tokenB} = PoolUtil.getTokenAmountsFromLiquidity(
+                amm.liquidity,
+                sqrtPrice,
+                lowerSqrtPrice,
+                upperSqrtPrice,
+                false
+              );
+              user[k] = Object.keys(a[k]).reduce((pos, k1) => {
+                if (k1 === 'rewardInfos') {
+                  pos[k1] = pos[k1].map((ri: any) => {
+                    return Object.keys(ri).reduce((ps, k2) => {
+                      ps[k2] = this.formatAccountInfo(ps, k2);
+                      return ps;
+                    }, ri);
+                  });
+                  return pos;
+                }
+
+                pos[k1] = this.formatAccountInfo(pos, k1);
+                return pos;
+              }, a[k]);
+              user[k].price = PriceMath.sqrtPriceX64ToPrice(sqrtPrice, 9, 9).toString();
+              user[k].tokenA = Big(tokenA.toString()).div(1_000_000_000).toString();
+              user[k].tokenB = Big(tokenB.toString()).div(1_000_000_000).toString();
+            }
+            user[k] = this.formatAccountInfo(a, k);
+            return user;
+          },
+          {...a, marketIndex}
+        );
+        lpAc.baseAssetAmount = Big(lpAc.reserveBaseAmount)
+          .plus(lpAc.ammPosition.tokenA ?? 0)
+          .toString();
+        lpAc.quoteAssetAmount = Big(lpAc.reserveQuoteAmount)
+          .plus(lpAc.ammPosition.tokenB ?? 0)
+          .toString();
+        lpAc.total = Big(lpAc.baseAssetAmount)
+          .times(sqrtPrice.toString())
+          .add(lpAc.quoteAssetAmount)
+          .toString();
+        lpAc.earnFee = Big(lpAc.ammPosition.feeOwedA || 0)
+          .add(lpAc.ammPosition.feeOwedB || 0)
+          .toString();
+        return lpAc;
+      })
+      .filter(Boolean);
   }
 
   async getLpPositions(

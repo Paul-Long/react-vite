@@ -163,7 +163,7 @@ export class OrderManager {
     const ai = await program.account.tickArray.fetch(tickArrays[2]);
     const priceLimitIndex = PriceMath.sqrtPriceX64ToTickIndex(priceLimit);
     console.log(`TickArray ${2} :  `, tickArrays[2].toBase58(), ai, perp.pool.tickCurrentIndex);
-    if (params.direction === 'SHORT' && ai.startTickIndex + 880 > priceLimitIndex) {
+    if (params.direction === 'SHORT' && ai.startTickIndex > priceLimitIndex) {
       priceLimit = PriceMath.tickIndexToSqrtPriceX64(ai.startTickIndex);
     }
     // console.log('**********************');

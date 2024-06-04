@@ -553,6 +553,17 @@ export class RateClient {
     return result;
   }
 
+  async getAllLpPositions() {
+    try {
+      if (!this.authority) {
+        return [];
+      }
+      return await this.am.getAllLPPositions(this.program, this.authority);
+    } catch (e) {
+      return [];
+    }
+  }
+
   async getLpPositions(marketIndex: number) {
     try {
       if (!this.authority) {
