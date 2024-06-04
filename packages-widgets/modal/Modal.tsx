@@ -38,7 +38,6 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContainer = styled.div<{$show: boolean; $size: 'small' | 'medium' | 'large'}>`
-  background: black;
   color: white;
   min-width: ${({$size}) => ($size === 'small' ? '300px' : $size === 'large' ? '600px' : '450px')};
   border-radius: 8px;
@@ -115,23 +114,26 @@ export const Modal: FC<ModalProps> = memo(
 
     return ReactDOM.createPortal(
       <ModalOverlay onClick={handleClickMask}>
-        <ModalContainer
-          $size={size}
-          $show={visible}
-          ref={modalRef}
-          tabIndex={-1}
-          style={contentStyle}
-        >
-          <ModalHeader $show={(!!title).toString()}>
-            {title && <h2 className="fw-bold font-size-18px">{title}</h2>}
-            {closeBtn && (
-              <CloseButton onClick={onClose as any}>
-                <i className="iconfont font-size-18px">&#xe637;</i>
-              </CloseButton>
-            )}
-          </ModalHeader>
-          {children}
-        </ModalContainer>
+        <div className="bg-black">
+          <ModalContainer
+            className="bg-green-80"
+            $size={size}
+            $show={visible}
+            ref={modalRef}
+            tabIndex={-1}
+            style={contentStyle}
+          >
+            <ModalHeader $show={(!!title).toString()}>
+              {title && <h2 className="fw-bold font-size-18px">{title}</h2>}
+              {closeBtn && (
+                <CloseButton onClick={onClose as any}>
+                  <i className="iconfont font-size-18px">&#xe637;</i>
+                </CloseButton>
+              )}
+            </ModalHeader>
+            {children}
+          </ModalContainer>
+        </div>
       </ModalOverlay>,
       document?.body
     );
