@@ -17,7 +17,6 @@ interface Props {
 export function OrderConfirm(props: Props) {
   const {loading, order, visible, calcInfo, contract, onClose, onConfirm} = props;
   const {LG} = useLang();
-  console.log(order, calcInfo);
   return (
     <Modal visible={visible} onClose={onClose} title={LG(lang.ConfirmOrder)}>
       <div className="flex flex-col">
