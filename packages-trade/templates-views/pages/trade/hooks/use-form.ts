@@ -131,14 +131,22 @@ export function useForm() {
   ]);
 
   useEffect(() => {
-    console.log('reset input value : ', amountN, marginN, maxAmount, maxMargin, swapLoading);
+    console.log(
+      'reset input value : ',
+      amountN > maxAmount,
+      amountN,
+      marginN,
+      maxAmount,
+      maxMargin,
+      swapLoading
+    );
     if (swapLoading) {
       return;
     }
-    if (current.current === 'amount' && amountN > maxAmount) {
+    if (current.current === 'amount' && !!maxAmount && !!amountN && Big(amountN).gt(maxAmount)) {
       // setState((prevState) => ({...prevState, amount: maxAmount}));
     }
-    if (current.current === 'margin' && marginN > maxMargin) {
+    if (current.current === 'margin' && !!marginN && !!maxMargin && Big(marginN).gt(maxMargin)) {
       // setState((prevState) => ({...prevState, margin: maxMargin}));
     }
   }, [amountN, marginN, maxAmount, maxMargin, swapLoading]);
