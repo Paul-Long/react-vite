@@ -42,7 +42,7 @@ export function RemoveInfo(props: Props) {
     if (data?.ammPosition?.tokenA > 0 && data?.ammPosition?.tokenA > 0 - data?.reserveBaseAmount) {
       return {ratio: '-', yt: '-', st: '-'};
     }
-    if (data) {
+    if (data && !Big(data.reserveBaseAmount).eq(0)) {
       const ratio = Big(data.baseAssetAmount)
         .div(data.reserveBaseAmount)
         .times(100)

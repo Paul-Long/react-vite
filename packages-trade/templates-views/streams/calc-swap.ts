@@ -4,14 +4,25 @@ import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';
 import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Big} from 'big.js';
-import {BehaviorSubject, combineLatest, exhaustMap, map, of, shareReplay, throttleTime} from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  exhaustMap,
+  map,
+  of,
+  shareReplay,
+  tap,
+} from 'rxjs';
 
 export const order$ = new BehaviorSubject<any>(null);
 
 let timer: any = null;
+let resultCache: Record<string, any> = {};
 export const swapLoading$ = new BehaviorSubject(false);
 export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$]).pipe(
-  throttleTime(300),
+  debounceTime(400),
+  tap(() => of(null)),
   exhaustMap(([order, current, client, ready]) => {
     if (!client || !ready || !order || !current) {
       return of(null);
@@ -25,19 +36,41 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
       clearTimeout(timer);
     }
     swapLoading$.next(true);
-    return calcSwap(client, {
+    console.log('swap params : ', {
       amount: currentKey === 'amount' ? amount : margin,
       direction,
       marketIndex,
       input: currentKey,
       days,
-    } as any);
+    });
+    return calcSwap(
+      client,
+      {
+        amount: currentKey === 'amount' ? amount : margin,
+        direction,
+        marketIndex,
+        input: currentKey,
+        days,
+      } as any,
+      order
+    );
   }),
   shareReplay()
 );
 
-export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pipe(
-  map(([result, params, contract, lastTrade]: any) => {
+export const calcInfo$ = combineLatest([swap$, current$, lastTrade$]).pipe(
+  map(([swapResult, contract, lastTrade]: any) => {
+    const {result, order: params} = swapResult || {};
+    const keys = [params.currentKey, params.direction, params.marketIndex];
+    if (params.currentKey === 'amount') {
+      keys.push(params.amount);
+    }
+    if (params.currentKey === 'margin') {
+      keys.push(params.margin);
+    }
+    if (!!resultCache[keys.join('_')]) {
+      return resultCache[keys.join('_')];
+    }
     if (!result) {
       return {};
     }
@@ -82,20 +115,21 @@ export const calcInfo$ = combineLatest([swap$, order$, current$, lastTrade$]).pi
       returnData.impact =
         Big(sqrtPrice).minus(trade.LastPrice).div(trade.LastPrice).times(100).toFixed(4) + '%';
     }
-    if (params.currentKey === 'amount' && params.amount) {
-      returnData.maxAmount = Big(baseAssetAmount).lt(params.amount)
-        ? baseAssetAmount
-        : params.amount;
+    if (params.currentKey === 'amount' && params.amount && Big(baseAssetAmount).lt(params.amount)) {
+      returnData.maxAmount = baseAssetAmount;
     }
-    if (params.currentKey === 'margin' && params.margin) {
-      returnData.maxMargin = Big(quoteAssetAmount).lt(params.margin)
-        ? quoteAssetAmount
-        : params.margin;
+    if (
+      params.currentKey === 'margin' &&
+      params.margin &&
+      Big(quoteAssetAmount).lt(params.margin)
+    ) {
+      returnData.maxMargin = quoteAssetAmount;
     }
     timer = setTimeout(() => {
       swapLoading$.next(false);
       timer = null;
     }, 100);
+    resultCache[keys.join('_')] = returnData;
     return returnData;
   })
 );
@@ -108,7 +142,8 @@ async function calcSwap(
     marketIndex: number;
     input: 'amount' | 'margin';
     days: number;
-  }
+  },
+  order: any
 ) {
   let res: any = null;
   try {
@@ -116,5 +151,5 @@ async function calcSwap(
     res = await client.simulatePlaceOrder(params);
     console.log('swap time : ', Date.now() - start);
   } catch (e) {}
-  return res;
+  return {result: res, order};
 }
