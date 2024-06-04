@@ -470,6 +470,7 @@ export class AccountManager {
           return false;
         }
         const {sqrtPrice, marketIndex} = perp;
+        const price = PriceMath.sqrtPriceX64ToPrice(sqrtPrice, 9, 9).toString();
         const lpAc = Object.keys(a).reduce(
           (user: Record<string, any>, k: string) => {
             if (k === 'ammPosition') {
@@ -497,7 +498,7 @@ export class AccountManager {
                 pos[k1] = this.formatAccountInfo(pos, k1);
                 return pos;
               }, a[k]);
-              user[k].price = PriceMath.sqrtPriceX64ToPrice(sqrtPrice, 9, 9).toString();
+              user[k].price = price;
               user[k].tokenA = Big(tokenA.toString()).div(1_000_000_000).toString();
               user[k].tokenB = Big(tokenB.toString()).div(1_000_000_000).toString();
             }
@@ -512,10 +513,7 @@ export class AccountManager {
         lpAc.quoteAssetAmount = Big(lpAc.reserveQuoteAmount)
           .plus(lpAc.ammPosition.tokenB ?? 0)
           .toString();
-        lpAc.total = Big(lpAc.baseAssetAmount)
-          .times(sqrtPrice.toString())
-          .add(lpAc.quoteAssetAmount)
-          .toString();
+        lpAc.total = Big(lpAc.baseAssetAmount).times(price).add(lpAc.quoteAssetAmount).toString();
         lpAc.earnFee = Big(lpAc.ammPosition.feeOwedA || 0)
           .add(lpAc.ammPosition.feeOwedB || 0)
           .toString();
