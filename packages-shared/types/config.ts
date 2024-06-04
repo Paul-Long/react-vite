@@ -16,6 +16,7 @@ interface ConfigSymbol {
   symbol: number;
   symbolLevel1Category: string;
   symbolLevel2Category: string;
+  kValue: string;
   symbolName: string;
   term: string;
   minimumMaintainanceCr: number;

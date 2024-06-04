@@ -26,6 +26,7 @@ export function useForm() {
   const [loading, setLoading] = useState(false);
 
   const [state, setState] = useState(initData());
+  const [visible, setVisible] = useState(false);
 
   const amountN = useMemo(() => state.amount, [state]);
   const direction = useMemo(() => state.direction, [state]);
@@ -176,72 +177,92 @@ export function useForm() {
     order$.next({...state, currentKey: current.current});
   }, [state]);
 
-  const handleSubmit = useCallback(async () => {
-    if (!connected) {
-      walletModalVisible$.next(true);
-      return;
-    }
-    if (!baseContract || loading) {
-      return;
-    }
-    const start = Date.now();
-    const {margin, marginType, direction, amount} = state;
-    let newMargin: string | number = margin;
-    newMargin = Big(newMargin).add(fee).toString();
-    if (state.marginWaiver && marginType === 'CROSS') {
-      newMargin =
-        crossMargin?.remainMargin > newMargin
-          ? 0
-          : Big(newMargin)
-              .minus(crossMargin?.remainMargin ?? '0')
-              .toNumber();
-    }
-    if (!state.marginWaiver && !margin) {
-      return;
-    }
-    if (marginType === 'CROSS' && !crossMargin?.remainMargin && !margin) {
-      return;
-    }
-
-    if (!state.marginWaiver && (!newMargin || Number(newMargin) < 0)) {
-      return;
-    }
-
-    if (!amount) {
-      return;
-    }
-    setLoading(true);
-    const order = {
-      marginType,
-      direction,
-      amount,
-      marketIndex: baseContract.id,
-      orderType: 'MARKET',
-      margin: newMargin,
-    };
-    console.log('Place Order Start : ', Date.now());
-    const tx = await client.placeOrder2(order);
-    if (tx === false) {
-      Toast.warn('Order placement failed, please check current positions and orders.');
-    }
-    if (tx) {
-      await tradeApi.processSignature(tx);
-      Toast.success(
-        `Place Order success ${Big(Date.now() - start)
-          .div(1000)
-          .toFixed(1)}s`
-      );
-      if (order.marginType === 'CROSS') {
-        waiverQuery$.next(0);
+  const handleSubmit = useCallback(
+    async (checked: boolean = false) => {
+      if (!connected) {
+        walletModalVisible$.next(true);
+        return;
       }
-      query$.next(0);
-    }
-    updateBalance$.next(0);
-    setState((prevState) => ({...prevState, amount: '', margin: ''}));
-    setLoading(false);
-  }, [connected, state, baseContract, client, fee]);
+      if (!baseContract || loading) {
+        return;
+      }
 
-  return {state, info, current, handleChange, handleSubmit, loading, crossMargin};
+      if (checked) {
+        setVisible(true);
+        return;
+      }
+      const start = Date.now();
+      const {margin, marginType, direction, amount} = state;
+      let newMargin: string | number = margin;
+      newMargin = Big(newMargin).add(fee).toString();
+      if (state.marginWaiver && marginType === 'CROSS') {
+        newMargin =
+          crossMargin?.remainMargin > newMargin
+            ? 0
+            : Big(newMargin)
+                .minus(crossMargin?.remainMargin ?? '0')
+                .toNumber();
+      }
+      if (!state.marginWaiver && !margin) {
+        return;
+      }
+      if (marginType === 'CROSS' && !crossMargin?.remainMargin && !margin) {
+        return;
+      }
+
+      if (!state.marginWaiver && (!newMargin || Number(newMargin) < 0)) {
+        return;
+      }
+
+      if (!amount) {
+        return;
+      }
+      setLoading(true);
+      const order = {
+        marginType,
+        direction,
+        amount,
+        marketIndex: baseContract.id,
+        orderType: 'MARKET',
+        margin: newMargin,
+      };
+      console.log('Place Order Start : ', Date.now());
+      const tx = await client.placeOrder2(order);
+      if (tx === false) {
+        Toast.warn('Order placement failed, please check current positions and orders.');
+      }
+      if (tx) {
+        await tradeApi.processSignature(tx);
+        Toast.success(
+          `Place Order success ${Big(Date.now() - start)
+            .div(1000)
+            .toFixed(1)}s`
+        );
+        if (order.marginType === 'CROSS') {
+          waiverQuery$.next(0);
+        }
+        query$.next(0);
+      }
+      updateBalance$.next(0);
+      setState((prevState) => ({...prevState, amount: '', margin: ''}));
+      setLoading(false);
+      setVisible(false);
+    },
+    [connected, state, baseContract, client, fee]
+  );
+
+  return {
+    baseContract,
+    state,
+    info,
+    visible,
+    current,
+    handleChange,
+    handleSubmit,
+    loading,
+    crossMargin,
+    setVisible,
+  };
 }
 
 function initData() {

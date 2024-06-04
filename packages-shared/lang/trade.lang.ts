@@ -248,4 +248,10 @@ export const lang: any = {
   OrderType: {
     en: 'Order Type',
   },
+  EstimatedYTAmount: {
+    en: 'Estimated YT Amount',
+  },
+  ConfirmOrder: {
+    en: 'Confirm Order',
+  },
 };

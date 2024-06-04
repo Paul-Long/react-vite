@@ -14,7 +14,7 @@ export function LPPositions() {
   return (
     <div className="flex flex-col p-24px gap-24px">
       {positions.map((p) => (
-        <Position data={p} contract={{}}></Position>
+        <Position key={p.userPda} data={p} contract={{}}></Position>
       ))}
     </div>
   );

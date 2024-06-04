@@ -14,6 +14,7 @@ export default defineConfig({
         600: '#ffffff99',
       },
       green: {
+        80: '#41FFAF14',
         400: '#b7ffe114',
         500: '#14F195',
         600: '#14F19599',

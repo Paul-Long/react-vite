@@ -140,6 +140,9 @@ function renderPNL(LG: any) {
       <div className={clsx([row.pnl > 0 && 'text-green-500'], [row.pnl < 0 && 'text-red-500'])}>
         {row?.pnl}
       </div>
+      <div className={clsx([row.pnl > 0 && 'text-green-500'], [row.pnl < 0 && 'text-red-500'])}>
+        {!!row?.pnl && !!row?.margin ? Big(row?.pnl).div(row.margin).toFixed(2) + '%' : '-'}
+      </div>
     </div>
   );
 }
