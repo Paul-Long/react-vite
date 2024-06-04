@@ -1,3 +1,4 @@
+import {LPPositions} from '@/pages/account/positions/LPPositions';
 import {Positions} from '@/pages/trade/positions';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/common.lang';
@@ -23,12 +24,13 @@ export function PositionsWrap() {
         onChange={(v) => setValue(v)}
       ></Tabs>
       {value === Tab.YieldSwapAccount && <Positions></Positions>}
+      {value === Tab.LiquidityAccount && <LPPositions></LPPositions>}
     </div>
   );
 }
 
 const getTabs = (LG: Function) => [
   {text: LG(lang.YieldSwapAccount), value: Tab.YieldSwapAccount},
-  {text: LG(lang.EarnAccount), value: Tab.EarnAccount},
   {text: LG(lang.LiquidityAccount), value: Tab.LiquidityAccount},
+  {text: LG(lang.EarnAccount), value: Tab.EarnAccount},
 ];

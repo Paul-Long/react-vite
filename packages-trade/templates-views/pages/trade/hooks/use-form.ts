@@ -144,9 +144,11 @@ export function useForm() {
       return;
     }
     if (current.current === 'amount' && !!maxAmount && !!amountN && Big(amountN).gt(maxAmount)) {
+      console.log('change amount by max value : ', amountN, maxAmount);
       // setState((prevState) => ({...prevState, amount: maxAmount}));
     }
     if (current.current === 'margin' && !!marginN && !!maxMargin && Big(marginN).gt(maxMargin)) {
+      console.log('change margin by max value : ', marginN, maxMargin);
       // setState((prevState) => ({...prevState, margin: maxMargin}));
     }
   }, [amountN, marginN, maxAmount, maxMargin, swapLoading]);
