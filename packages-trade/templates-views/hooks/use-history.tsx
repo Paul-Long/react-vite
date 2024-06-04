@@ -6,6 +6,7 @@ import {lang} from '@rx/lang/trade.lang';
 import {useConnect} from '@rx/web3/hooks/use-connect';
 import {abbreviateString} from '@rx/web3/utils/string';
 import type {Column} from '@rx/widgets/table/types';
+import {clsx} from 'clsx';
 import {useEffect, useState} from 'react';
 
 export function useHistory() {
@@ -38,6 +39,7 @@ export function useHistory() {
         title: 'PnL/%',
         dataIndex: 'RealizedPnl',
         align: 'right',
+        render: renderPnl,
       },
       {
         title: [LG(lang.EntryYield), LG(clang.Price)].join('/'),
@@ -99,7 +101,14 @@ function renderContract(LG: any) {
   return (row: any) => (
     <div className="flex flex-col">
       <span>{row.Symbol ?? ''}</span>
-      <span className="text-green-500">{row.Side === '1' ? LG(clang.Long) : LG(clang.Short)}</span>
+      <span
+        className={clsx(
+          [row.Side === '1' && 'text-green-500'],
+          [row.Side === '2' && 'text-red-500']
+        )}
+      >
+        {row.Side === '1' ? LG(clang.Long) : LG(clang.Short)}
+      </span>
     </div>
   );
 }
@@ -122,6 +131,21 @@ function renderYield(row: any) {
     <div className="flex flex-col items-end w-full">
       <span>{row.Yield ? numUtil.trimEnd0(numUtil.floor(row.Yield, 2, -2)) + '%' : '-'}</span>
       <span>{row.LastPx ? numUtil.trimEnd0(numUtil.floor(row.LastPx, 9)) : '-'}</span>
+    </div>
+  );
+}
+
+function renderPnl(row: any) {
+  return (
+    <div className="flex flex-col items-end w-full">
+      <span
+        className={clsx(
+          [row.RealizedPnl > 0 && 'text-green-500'],
+          [row.RealizedPnl < 0 && 'text-red-500']
+        )}
+      >
+        {row.RealizedPnl ? numUtil.trimEnd0(numUtil.floor(row.RealizedPnl, 6, 0)) : '-'}
+      </span>
     </div>
   );
 }
