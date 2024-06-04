@@ -2,7 +2,9 @@ import {AccountManager} from '@/sdk/account-manager';
 import {OrderType, PositionDirection} from '@/sdk/const';
 import {TickManager} from '@/sdk/tick-manager';
 import {
-  WSOLOraclePda,
+  getAllObservations,
+  getAllOracles,
+  getAllPerpMarkets,
   getMarginIndexByMarketIndex,
   getMarginMarketPda,
   getMarginMarketVaultPda,
@@ -77,6 +79,7 @@ export class OrderManager {
       baseAssetAmount,
       priceLimit,
       expireTs,
+      isClose: params.isClose,
       isolatedMarginAmount: new BN(
         Big(margin ?? 0)
           .times(1_000_000_000)
@@ -156,14 +159,13 @@ export class OrderManager {
     // console.log('tickCurrentIndex : ', perp.pool.tickCurrentIndex);
     // console.log('priceLimit x64 : ', priceLimit.toString());
     // console.log('priceLimit index : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit).toString());
-    // console.log(
-    //   'priceLimit to price : ',
-    //   PriceMath.sqrtPriceX64ToPrice(priceLimit, 5, 5).toString()
-    // );
-    // for (let i = 0; i < 3; i++) {
-    //   const ai = await program.account.tickArray.fetch(tickArrays[i]);
-    //   console.log(`TickArray ${i} :  `, tickArrays[i].toBase58(), ai, perp.pool.tickCurrentIndex);
-    // }
+    console.log('priceLimit to price : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit).toString());
+    const ai = await program.account.tickArray.fetch(tickArrays[2]);
+    const priceLimitIndex = PriceMath.sqrtPriceX64ToTickIndex(priceLimit);
+    console.log(`TickArray ${2} :  `, tickArrays[2].toBase58(), ai, perp.pool.tickCurrentIndex);
+    if (params.direction === 'SHORT' && ai.startTickIndex + 880 > priceLimitIndex) {
+      priceLimit = PriceMath.tickIndexToSqrtPriceX64(ai.startTickIndex);
+    }
     // console.log('**********************');
 
     // atob true -> short  false -> long
@@ -172,8 +174,9 @@ export class OrderManager {
     return await program.methods
       .calculateSwap(
         baseAssetAmount,
-        true,
-        params.input === 'amount',
+        params.direction === 'SHORT',
+        (params.input === 'amount' && params.direction === 'SHORT') ||
+          (params.input === 'margin' && params.direction === 'LONG'),
         new BN(priceLimit.toString())
       )
       .accounts({
@@ -435,27 +438,9 @@ export class OrderManager {
         isSigner: false,
         isWritable: true,
       },
-      ...[0, 1].map((i) => ({
-        pubkey: getPerpMarketPda(i),
-        isSigner: false,
-        isWritable: true,
-      })),
-      // TODO wsol
-      {
-        pubkey: WSOLOraclePda,
-        isSigner: false,
-        isWritable: true,
-      },
-      ...[0, 1].map((i) => ({
-        pubkey: getOraclePda(i),
-        isSigner: false,
-        isWritable: true,
-      })),
-      ...[0, 1].map((i) => ({
-        pubkey: getObservationPda(i),
-        isSigner: false,
-        isWritable: true,
-      })),
+      ...getAllPerpMarkets(),
+      ...getAllOracles(),
+      ...getAllObservations(),
     ];
   }
 

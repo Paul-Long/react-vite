@@ -13,7 +13,7 @@ export const tradeApi = {
     };
     return post(API_URL, {params});
   },
-  loadOrderHistory() {
+  loadOrderHistory({address}: {address: string}) {
     const params = {
       serverName: 'AdminSvr',
       method: 'queryExecOrder',
@@ -21,6 +21,7 @@ export const tradeApi = {
         cid: guid.build(),
         pageNum: 0,
         pageSize: 200,
+        user_id: address,
       },
     };
     return post(API_URL, {params});

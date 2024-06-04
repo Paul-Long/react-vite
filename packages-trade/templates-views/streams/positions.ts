@@ -1,10 +1,11 @@
+import {waiverQuery$} from '@/streams/trade/cross-margin';
 import {calcLiqPrice} from '@/streams/utils';
 import {symbolMapById$} from '@rx/streams/config';
 import {priceMap$} from '@rx/streams/rate-price';
 import {positionUpdate$} from '@rx/streams/subscription/position';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';
-import { updateBalance$ } from '@rx/web3/streams/balance';
+import {updateBalance$} from '@rx/web3/streams/balance';
 import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Toast} from '@rx/widgets';
 import {Big} from 'big.js';
@@ -30,6 +31,7 @@ positionUpdate$.subscribe((data: any) => {
     positionUpdate$.clear();
     loading$.next(true);
     query$.next(0);
+    waiverQuery$.next(0);
     updateBalance$.next(0);
     data?.forEach((p: any) => {
       Toast.success(`Fill Order ${p.SecurityID} [${p.LastQty}]`);
@@ -110,7 +112,7 @@ async function calcPositions(
       st: y,
       pnl: pnl.toFixed(9),
       quoteAssetAmount: st.toFixed(9),
-      entry: st.div(x).abs().toFixed(9),
+      entry: x != 0 ? st.div(x).abs().toFixed(9) : 0,
       cr: p.isIsolated ? calcCr([p], tradeMap, symbolMap) : crossCr,
       lipPrice: p.isIsolated
         ? calcLiqPrice(
@@ -135,11 +137,11 @@ export function calcAssetLiability(positions: any[], tradeMap: any, symbolMap: a
     const p = positions[i];
     const symbol = symbolMap?.[p.marketIndex] ?? {};
     const trade: any = tradeMap?.[symbol?.symbol] ?? {};
-    if (!trade?.LastPrice) {
-      continue;
-    }
     if (!marginMap[p.userPda]) {
       marginMap[p.userPda] = Big(p.margin);
+    }
+    if (!trade?.LastPrice) {
+      continue;
     }
 
     if (p.baseAssetAmount > 0) {

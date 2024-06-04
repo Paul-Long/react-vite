@@ -3668,6 +3668,10 @@
           {
             "name": "isolatedMarginAmount",
             "type": "u64"
+          },
+          {
+            "name": "isClose",
+            "type": "bool"
           }
         ]
       }
@@ -3754,11 +3758,15 @@
             "type": "u16"
           },
           {
+            "name": "isClose",
+            "type": "bool"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                12
+                11
               ]
             }
           }
@@ -4662,7 +4670,7 @@
           "index": false
         },
         {
-          "name": "isClose",
+          "name": "orderIsClose",
           "type": "bool",
           "index": false
         }
