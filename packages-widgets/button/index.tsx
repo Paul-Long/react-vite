@@ -15,7 +15,7 @@ export function Button(props: ModifiedButtonAttributes) {
     type = 'primary',
     className = '',
     selected = false,
-    size = 'md',
+    size = 'sm',
     ...otherProps
   } = props;
   return (
@@ -34,7 +34,7 @@ export function Button(props: ModifiedButtonAttributes) {
           type === 'default' && 'bg-gray-80 text-white b-1px b-solid',
           [selected ? 'bg-#092C24 text-black b-green-500' : 'b-gray-80'],
         ],
-        className,
+        className
       )}
       {...otherProps}
     >

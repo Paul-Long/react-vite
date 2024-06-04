@@ -27,7 +27,11 @@ export function Header(props: Props) {
       >
         <nav className="mx-auto flex max-w-100% items-center justify-between px-24px gap-64px sm:h-60px">
           <div className="flex">
-            <img className="h-24px w-auto" src={HOME_IMAGES.LOGO} alt="" />
+            <img
+              className="min-w-94px min-h-24px h-24px w-auto"
+              src={HOME_IMAGES.LOGO}
+              alt="RateX"
+            />
           </div>
           <button
             type="button"
