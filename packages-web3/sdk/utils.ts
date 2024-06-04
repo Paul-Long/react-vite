@@ -2,6 +2,10 @@ import {PublicKey} from '@solana/web3.js';
 
 export const WSOLOraclePda = new PublicKey('2uxV3R8LKtGnXgbJKYte8Mog56atXd16SRp4Xbpmrt8b');
 
+export const PROGRAM_ID = new PublicKey('AZzXAH1LaeHcJ3R8nZjvLiEPz77nnkRyFHSJ7yA9Qhrd');
+
+export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
+
 export function getMarginMarketPda(marginIndex: number): any {
   return {
     0: new PublicKey('HJ2FnParWWy2NKjhfmsRQhpLsKyNwsafTyUvj89Nybrb'),
