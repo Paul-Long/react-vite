@@ -148,7 +148,7 @@ export class OrderManager {
       perpMarket,
       perp.pool.tickCurrentIndex,
       new BN(priceLimit.toString()),
-      direction === 'LONG'
+      direction === 'SHORT'
     );
 
     // console.log('swap get tickArray : ', Date.now() - start);
