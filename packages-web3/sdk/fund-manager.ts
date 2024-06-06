@@ -73,7 +73,7 @@ export class FundManager {
     }
   ): Promise<TransactionInstruction | null> {
     const {amount, marginIndex} = params;
-    if (!amount) {
+    if (!amount || Big(amount).lte(0)) {
       return null;
     }
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
@@ -86,14 +86,14 @@ export class FundManager {
     // const ac = await program.provider.connection.getAccountInfo(marginMarketPda);
     // const ai = await program.account.marginMarket.fetch(marginMarketPda);
 
-    // console.log('****************');
+    console.log('Deposit ****************');
     // console.log('Margin Market Pda owner : ', ac?.owner?.toBase58(), program.programId.toBase58());
     // console.log('Margin Market mint : ', ai?.mint?.toBase58(), mintAccount.toBase58());
     // console.log('Market Index : ', ai?.marketIndex, marginIndex);
     // console.log('User Token Account : ', userTokenAccount.toBase58());
     // console.log('User Pda : ', userPda.toBase58());
-    // console.log('Amount : ', amount);
-    // console.log('****************');
+    console.log('Amount : ', amount);
+    console.log('****************');
 
     return await program.methods
       .deposit(marginIndex, baseAmount)

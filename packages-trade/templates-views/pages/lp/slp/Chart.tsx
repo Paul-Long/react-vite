@@ -11,8 +11,6 @@ export function Chart({contract}: any) {
   const trade = useMemo(() => last?.[contract?.symbol], [contract, last]);
   const [ready, setReady] = useState(false);
 
-  console.log(trade);
-
   useEffect(() => {
     loadEcharts().then(() => {
       setReady(true);

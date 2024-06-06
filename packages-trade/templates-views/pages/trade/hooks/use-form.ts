@@ -187,34 +187,33 @@ export function useForm() {
         return;
       }
 
-      if (checked) {
-        setVisible(true);
-        return;
-      }
       const start = Date.now();
       const {margin, marginType, direction, amount} = state;
+      const remainMargin = Big(crossMargin?.remainMargin ?? 0);
       let newMargin: string | number = margin;
       newMargin = Big(newMargin).add(fee).toString();
+
       if (state.marginWaiver && marginType === 'CROSS') {
-        newMargin =
-          crossMargin?.remainMargin > newMargin
-            ? 0
-            : Big(newMargin)
-                .minus(crossMargin?.remainMargin ?? '0')
-                .toNumber();
+        if (remainMargin.gt(newMargin)) {
+          newMargin = 0;
+        } else {
+          newMargin = Big(newMargin).minus(remainMargin).toString();
+        }
       }
-      if (!state.marginWaiver && !margin) {
-        return;
-      }
-      if (marginType === 'CROSS' && !crossMargin?.remainMargin && !margin) {
-        return;
-      }
-
-      if (!state.marginWaiver && (!newMargin || Number(newMargin) < 0)) {
-        return;
-      }
-
       if (!amount) {
+        return;
+      }
+      if (marginType === 'CROSS') {
+        if (!state.marginWaiver && Big(newMargin).lte(0)) {
+          return;
+        }
+      } else {
+        if (Big(newMargin).lte(0)) {
+          return;
+        }
+      }
+      if (checked) {
+        setVisible(true);
         return;
       }
       setLoading(true);
@@ -267,8 +266,8 @@ export function useForm() {
 
 function initData() {
   return {
-    marginType: 'CROSS',
-    direction: 'SHORT',
+    marginType: 'ISOLATED',
+    direction: 'LONG',
     amount: '',
     leverage: 1,
     maxLeverage: 10,
