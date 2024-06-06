@@ -254,6 +254,81 @@ export class LpManager {
     return [instruction];
   }
 
+  async updateFeesAndRewards(
+    program: Program<RatexContracts>,
+    authority: PublicKey,
+    tm: TickManager,
+    lp: PublicKey,
+    params: {marketIndex: number; lowerRate: number; upperRate: number; maturity: number}
+  ) {
+    const {marketIndex, lowerRate, upperRate, maturity} = params;
+    const perpMarket = getPerpMarketPda(marketIndex);
+    const {pool} = await program.account.perpMarket.fetch(perpMarket);
+
+    const lowerYTPrice = calculateYTPrice(lowerRate.toString(), maturity);
+    const sqrtLowerYTPrice = PriceMath.priceToSqrtPriceX64(lowerYTPrice, 9, 9);
+    const rawLowerTickIndex = PriceMath.sqrtPriceX64ToTickIndex(sqrtLowerYTPrice);
+    const tickLowerIndex = calculateTickIndex(rawLowerTickIndex, pool.tickSpacing, true);
+
+    const upperYTPrice = calculateYTPrice(upperRate.toString(), maturity);
+    const sqrtUpperYTPrice = PriceMath.priceToSqrtPriceX64(upperYTPrice, 9, 9);
+    const rawUpperTickIndex = PriceMath.sqrtPriceX64ToTickIndex(sqrtUpperYTPrice);
+    const tickUpperIndex = calculateTickIndex(rawUpperTickIndex, pool.tickSpacing, false);
+
+    const [tickArrays, instructions]: any = await tm.initializeTickArraysV2(
+      program,
+      authority,
+      perpMarket,
+      tickLowerIndex,
+      tickUpperIndex,
+      true
+    );
+
+    const tickArrayLower = tickArrays[0];
+    const tickArrayUpper = tickArrays[tickArrays.length - 1];
+
+    const instruction = await program.methods
+      .updateFeesAndRewards()
+      .accounts({
+        whirlpool: perpMarket,
+        positionAuthority: authority,
+        lp,
+        tickArrayLower,
+        tickArrayUpper,
+      })
+      .instruction();
+  }
+
+  async collectFees(
+    program: Program<RatexContracts>,
+    authority: PublicKey,
+    am: AccountManager,
+    lp: PublicKey,
+    params: {marketIndex: number}
+  ) {
+    const {marketIndex} = params;
+    const perpMarket = getPerpMarketPda(marketIndex);
+    const {pool} = await program.account.perpMarket.fetch(perpMarket);
+
+    const quoteAssetVault: PublicKey = am.createQuoteAssetVaultPda(marketIndex);
+
+    const tokenVaultB: PublicKey = pool.tokenVaultB;
+
+    const instruction = await program.methods
+      .collectFees()
+      .accounts({
+        whirlpool: perpMarket,
+        state: am.statePda,
+        driftSigner: am.statePda,
+        positionAuthority: authority,
+        lp,
+        tokenOwnerAccountB: quoteAssetVault,
+        tokenVaultB,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .instruction();
+  }
+
   async getPerpMarketInfo(program: Program<RatexContracts>, params: {marketIndex: number}) {
     const {marketIndex} = params;
     const perpMarketPda = getPerpMarketPda(marketIndex);

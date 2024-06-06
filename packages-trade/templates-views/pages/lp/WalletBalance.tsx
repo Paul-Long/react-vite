@@ -24,7 +24,6 @@ export function WalletBalance(props: Props) {
 
   useEffect(() => {
     if (typeof marketIndex !== 'undefined') {
-      console.log(marketIndex);
       marketIndex$.next(marketIndex);
     }
   }, [marketIndex]);

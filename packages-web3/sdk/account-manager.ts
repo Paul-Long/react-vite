@@ -458,7 +458,6 @@ export class AccountManager {
       perpMarkets[perpMarketPda] = {marketIndex, perpMarket, sqrtPrice};
     }
     const accounts = await this.getLpAccounts(program, authority);
-    console.log('123 : ', perpMarkets, accounts);
     return accounts
       .map((a) => {
         const whirlpool = a?.ammPosition?.whirlpool;

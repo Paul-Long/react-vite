@@ -109,7 +109,6 @@ function useData() {
     }
     return contracts.map((c) => {
       const trade = last?.[c.symbol];
-      console.log(c, trade);
       let activeRatio = '-';
       if (!!trade?.LastPrice) {
         activeRatio =
