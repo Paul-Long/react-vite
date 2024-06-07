@@ -1,4 +1,5 @@
-import {PROGRAM_ID, PerpMarketMap, getPerpMarketPda} from '@/sdk/utils';
+import {PDA} from '@/sdk/PDA';
+import {PerpMarketMap} from '@/sdk/utils';
 import type {RateXOrder, RateXPosition} from '@/types/rate-x-client';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import {PoolUtil} from '@/utils/pool-utils';
@@ -12,7 +13,6 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import {Big} from 'big.js';
-import {Buffer} from 'buffer';
 
 export class AccountManager {
   statePda: PublicKey;
@@ -20,13 +20,13 @@ export class AccountManager {
   keeperPda: PublicKey;
 
   constructor() {
-    this.statePda = this.createStatePda();
-    this.signerPda = this.createDriftSigner();
-    this.keeperPda = this.createKeeperPda();
+    this.statePda = PDA.createStatePda();
+    this.signerPda = PDA.createDriftSigner();
+    this.keeperPda = PDA.createKeeperPda();
   }
 
   async initializeUserStats(program: Program<RatexContracts>, authority: PublicKey) {
-    const userStatPda = this.createUserStatPda(authority);
+    const userStatPda = PDA.createUserStatPda(authority);
     if (!!(await this.getUserAccount(program, userStatPda))) {
       return userStatPda;
     }
@@ -53,7 +53,7 @@ export class AccountManager {
     program: Program<RatexContracts>,
     authority: PublicKey
   ): Promise<[PublicKey, TransactionInstruction | null, AccountInfo<any> | null]> {
-    const userStatPda = this.createUserStatPda(authority);
+    const userStatPda = PDA.createUserStatPda(authority);
     const statInfo = await this.getUserAccount(program, userStatPda);
     if (!!statInfo) {
       return [userStatPda, null, statInfo];
@@ -80,8 +80,8 @@ export class AccountManager {
     isIsolated: boolean = true,
     subAccountId: number = 0
   ): Promise<[PublicKey, TransactionInstruction | null]> {
-    const userStatPda = this.createUserStatPda(authority);
-    const userPda = this.createUserPda(authority, subAccountId);
+    const userStatPda = PDA.createUserStatPda(authority);
+    const userPda = PDA.createUserPda(authority, subAccountId);
     if (!!(await this.getUserAccount(program, userPda))) {
       return [userPda, null];
     }
@@ -107,8 +107,8 @@ export class AccountManager {
     authority: PublicKey,
     subAccountId: number
   ): Promise<[PublicKey, TransactionInstruction | null]> {
-    const userStatPda = this.createUserStatPda(authority);
-    const userPda = this.createLpUserPda(authority, subAccountId);
+    const userStatPda = PDA.createUserStatPda(authority);
+    const userPda = PDA.createLpUserPda(authority, subAccountId);
     if (!!(await this.getUserAccount(program, userPda))) {
       return [userPda, null];
     }
@@ -135,7 +135,7 @@ export class AccountManager {
     try {
       let count = subAccountCount ?? 0;
       if (subAccountCount === undefined) {
-        const userStatPda = this.createUserStatPda(authority);
+        const userStatPda = PDA.createUserStatPda(authority);
         const statInfo = await program.provider.connection.getAccountInfo(userStatPda);
         if (!statInfo) {
           return [];
@@ -146,7 +146,7 @@ export class AccountManager {
       const allUserPda = [];
       const pdaMap: any = {};
       for (let i = 0; i < count; i++) {
-        const userPda = this.createUserPda(authority, i);
+        const userPda = PDA.createUserPda(authority, i);
         allUserPda.push(userPda);
         pdaMap[i] = {
           userPda,
@@ -371,7 +371,7 @@ export class AccountManager {
         .deleteUser()
         .accounts({
           user: userPda,
-          userStats: this.createUserStatPda(authority),
+          userStats: PDA.createUserStatPda(authority),
           state: this.statePda,
           authority,
         })
@@ -389,7 +389,7 @@ export class AccountManager {
   ) {
     let count = subAccountCount ?? 0;
     if (subAccountCount === undefined) {
-      const userStatPda = this.createUserStatPda(authority);
+      const userStatPda = PDA.createUserStatPda(authority);
       const statInfo = await program.provider.connection.getAccountInfo(userStatPda);
       if (!statInfo) {
         return [];
@@ -402,7 +402,7 @@ export class AccountManager {
     }, {});
     const allPda: PublicKey[] = [];
     for (let i = 0; i < count; i++) {
-      const userPda = this.createLpUserPda(authority, i);
+      const userPda = PDA.createLpUserPda(authority, i);
       allPda.push(userPda);
     }
     const accounts = await program.provider.connection.getMultipleAccountsInfo(allPda);
@@ -467,7 +467,7 @@ export class AccountManager {
     authority: PublicKey,
     marketIndex: number
   ) {
-    const perpMarketPda = getPerpMarketPda(marketIndex);
+    const perpMarketPda = PDA.createPerpMarketPda(marketIndex);
     const perp = perpMarketPda.toBase58();
     const pool = await program.account.perpMarket.fetch(perpMarketPda, 'processed');
     const accounts = await this.getLpAccounts(program, authority);
@@ -540,64 +540,5 @@ export class AccountManager {
       return obj[key].toBase58();
     }
     return obj[key];
-  }
-
-  createStatePda() {
-    return PublicKey.findProgramAddressSync([Buffer.from('drift_state')], PROGRAM_ID)[0];
-  }
-
-  createDriftSigner() {
-    return PublicKey.findProgramAddressSync([Buffer.from('drift_signer')], PROGRAM_ID)[0];
-  }
-
-  createKeeperPda() {
-    return PublicKey.findProgramAddressSync([Buffer.from('drift_keeper')], PROGRAM_ID)[0];
-  }
-
-  createLpUserPda(authority: PublicKey, subAccountId: number = 0) {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('lp'), authority.toBuffer(), new BN(subAccountId).toArrayLike(Buffer, 'le', 2)],
-      PROGRAM_ID
-    )[0];
-  }
-
-  createUserPda(authority: PublicKey, subAccountId: number = 0) {
-    return PublicKey.findProgramAddressSync(
-      [
-        Buffer.from('user'),
-        authority?.toBuffer(),
-        new BN(subAccountId).toArrayLike(Buffer, 'le', 2),
-      ],
-      PROGRAM_ID
-    )[0];
-  }
-
-  createUserStatPda(authority: PublicKey) {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('user_stats'), authority?.toBuffer()],
-      PROGRAM_ID
-    )[0];
-  }
-  createUserOrdersPda(authority: PublicKey, subAccountId: number) {
-    return PublicKey.findProgramAddressSync(
-      [
-        Buffer.from('user_orders'),
-        authority.toBuffer(),
-        new BN(subAccountId).toArrayLike(Buffer, 'le', 2),
-      ],
-      PROGRAM_ID
-    )[0];
-  }
-  createQuoteAssetVaultPda(marketIndex: number) {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('quote_asset_vault'), new BN(marketIndex).toArrayLike(Buffer, 'le', 2)],
-      PROGRAM_ID
-    )[0];
-  }
-  createBaseAssetVaultPda(marketIndex: number) {
-    return PublicKey.findProgramAddressSync(
-      [Buffer.from('base_asset_vault'), new BN(marketIndex).toArrayLike(Buffer, 'le', 2)],
-      PROGRAM_ID
-    )[0];
   }
 }

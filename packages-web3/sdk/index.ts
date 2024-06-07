@@ -321,7 +321,6 @@ export class RateClient {
       params
     );
     const result: any = await this.sendViewTransaction([instruction]);
-    console.log(this.parsePlaceOrderView(result?.value?.logs ?? []));
     if (result?.value?.returnData?.data) {
       const [data, type] = result?.value?.returnData.data;
       let buf = Buffer.from(data, type);
@@ -365,18 +364,6 @@ export class RateClient {
         impliedSqrtRate: impliedSqrtRate.toString(),
         impliedEntryRate: impliedEntryRate.toString(),
       };
-
-      // res = {
-      //   baseAssetAmount: Big(Number(amountBaseSwap)).div(1_000_000_000).toNumber(),
-      //   quoteAssetAmount: Big(Number(amountQuoteSwap))
-      //     .div(1_000_000_000)
-      //     .div(baseAssetAmount)
-      //     .toNumber(),
-      //   sqrtPrice: PriceMath.sqrtPriceX64ToPrice(sqrtPrice, 9, 9).toString(),
-      // };
-      // console.log('amount base swap : ', amountBaseSwap);
-      // console.log('amount quote swap : ', amountQuoteSwap);
-      // console.log('sqrt price : ', res.sqrtPrice);
     }
 
     return {
@@ -387,21 +374,6 @@ export class RateClient {
       impliedSqrtRate: 0,
       impliedEntryRate: 0,
     };
-    // const py = new Decimal(res.quoteAssetAmount);
-    // const daysInYear = new Decimal(365);
-    // const period = new Decimal(params.days);
-    // const sp = new Decimal(res.sqrtPrice);
-    // const impliedSwapRate = Decimal.pow(1 / (1 - sp.toNumber()), daysInYear.div(period).toNumber())
-    //   .minus(1)
-    //   .toNumber();
-    // const impliedEntryRate = Decimal.pow(1 / (1 - py.toNumber()), daysInYear.div(period).toNumber())
-    //   .minus(1)
-    //   .toNumber();
-    // return {py: py.toFixed(9), sp: sp.toFixed(9, 0), impliedSwapRate, impliedEntryRate};
-  }
-
-  async getPoolTickCurrentIndex() {
-    return 0;
   }
 
   async addPerpLpShares(params: {
@@ -635,14 +607,19 @@ export class RateClient {
       instructions.push(updateInstruction);
       instructions.push(collectInstruction);
     }
-    const tx = await this.sendViewTransaction(instructions);
-    const result = await this.parseLpEarnFeeLogs(tx?.value?.logs || []);
-    return positions.map((p) => {
-      if (result[p.userPda]) {
-        return {...p, earnFee: result[p.userPda]};
-      }
-      return p;
-    });
+    try {
+      const tx = await this.sendViewTransaction(instructions);
+      const result = await this.parseLpEarnFeeLogs(tx?.value?.logs || []);
+      return positions.map((p) => {
+        if (result[p.userPda]) {
+          return {...p, earnFee: result[p.userPda]};
+        }
+        return p;
+      });
+    } catch (e) {
+      console.error(e);
+      return positions;
+    }
   }
 
   async addKeeper(address: string) {
@@ -778,7 +755,7 @@ export class RateClient {
   }
 
   async getAmmTwap(params: {marketIndex: number}) {
-    const instruction = await this.om.getAmmTwap(this.program, params);
+    const instruction = await this.om.getAmmTwap(this.program, this.am, params);
     const result = await this.sendViewTransaction([instruction]);
     if (result?.value?.returnData?.data) {
       const [data, type] = result?.value?.returnData.data;
@@ -805,7 +782,7 @@ export class RateClient {
     await this.sendTransaction(combinedTransaction);
   }
   async getPerpMarketInfo(params: {marketIndex: number}) {
-    return await this.lp.getPerpMarketInfo(this.program, params);
+    return await this.lp.getPerpMarketInfo(this.program, this.am, params);
   }
 
   async parsePlaceOrderView(logs?: string[]) {

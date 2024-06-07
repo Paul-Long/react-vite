@@ -1,23 +1,21 @@
 import {AccountManager} from '@/sdk/account-manager';
 import {OrderType, PositionDirection} from '@/sdk/const';
+import {PDA} from '@/sdk/PDA';
 import {TickManager} from '@/sdk/tick-manager';
 import {
   getAllObservations,
   getAllOracles,
   getAllPerpMarkets,
   getMarginIndexByMarketIndex,
-  getMarginMarketPda,
-  getMarginMarketVaultPda,
+  getMarginIndexByMarketIndexV2,
   getMintAccountPda,
   getObservationPda,
-  getOraclePda,
-  getPerpMarketPda,
 } from '@/sdk/utils';
 import {RateXPlaceOrderParams} from '@/types/rate-x-client';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import {BN, Program} from '@coral-xyz/anchor';
-import {TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync} from '@solana/spl-token';
+import {getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID} from '@solana/spl-token';
 import {ComputeBudgetProgram, PublicKey, TransactionInstruction} from '@solana/web3.js';
 import {Big} from 'big.js';
 import Decimal from 'decimal.js';
@@ -34,7 +32,7 @@ export class OrderManager {
   ): Promise<TransactionInstruction> {
     const {marketIndex, orderType, direction, marginType, margin} = params;
 
-    const perp = await program.account.perpMarket.fetch(getPerpMarketPda(marketIndex));
+    const perp = await program.account.perpMarket.fetch(PDA.createPerpMarketPda(marketIndex));
     let priceLimit: any = PriceMath.sqrtPriceX64ToPrice(perp.pool.sqrtPrice, 9, 9).times(
       new Decimal(direction === 'LONG' ? 1.1 : 0.9)
     );
@@ -126,7 +124,7 @@ export class OrderManager {
   ) {
     const start = Date.now();
     const {marketIndex, direction} = params;
-    const perpMarket = getPerpMarketPda(marketIndex);
+    const perpMarket = PDA.createPerpMarketPda(marketIndex);
     const perp = await program.account.perpMarket.fetch(perpMarket);
     let priceLimit: any = PriceMath.tickIndexToPrice(perp.pool.tickCurrentIndex, 5, 5);
     priceLimit = priceLimit.mul(direction === 'LONG' ? 1.1 : 0.9);
@@ -222,7 +220,7 @@ export class OrderManager {
     }
 
     const remainingAccounts: any = this.getRemainingAllAccounts(marketIndex);
-    const perpMarket = getPerpMarketPda(marketIndex);
+    const perpMarket = PDA.createPerpMarketPda(marketIndex);
     const perp = await program.account.perpMarket.fetch(perpMarket);
     // TODO LONG > 0 or SHORT <0
     const baseAssetAmount = order.baseAssetAmount;
@@ -256,7 +254,7 @@ export class OrderManager {
       return;
     }
     const mm = await program.account.marginMarket.fetch(
-      getMarginMarketPda(getMarginIndexByMarketIndex(marketIndex))
+      PDA.createMarginMarketPda(getMarginIndexByMarketIndex(marketIndex))
     );
     const marginMarketVault = PublicKey.findProgramAddressSync(
       [
@@ -283,8 +281,8 @@ export class OrderManager {
         authority,
         whirlpool: perpMarket,
         marginMarketVault,
-        tokenOwnerAccountA: am.createBaseAssetVaultPda(marketIndex),
-        tokenOwnerAccountB: am.createQuoteAssetVaultPda(marketIndex),
+        tokenOwnerAccountA: PDA.createBaseAssetVaultPda(marketIndex),
+        tokenOwnerAccountB: PDA.createQuoteAssetVaultPda(marketIndex),
         tokenVaultA,
         tokenVaultB,
         userTokenAccount,
@@ -296,52 +294,15 @@ export class OrderManager {
       .rpc();
   }
 
-  async getPositionValue(program: Program<RatexContracts>, userPda: PublicKey) {
-    const user = await program.account.user.fetch(userPda);
-    const perpMarkets = user?.perpPositions
-      ?.reduce((indexs: number[], p: any) => {
-        if (indexs.includes(p.marketIndex)) {
-          return indexs;
-        }
-        return [...indexs, p.marketIndex];
-      }, [])
-      .sort()
-      .map((m) => ({pubkey: getPerpMarketPda(m), isSigner: false, isWritable: true}));
-
-    const remainingAccounts = [
-      {
-        pubkey: getMarginMarketPda(0),
-        isSigner: false,
-        isWritable: true,
-      },
-      ...perpMarkets,
-      {pubkey: getOraclePda(0), isSigner: false, isWritable: true},
-      {pubkey: getOraclePda(6), isSigner: false, isWritable: true},
-    ];
-
-    const positionValue = await program.methods
-      .calculatePositionValue()
-      .accounts({user: userPda})
-      .remainingAccounts(remainingAccounts)
-      .view();
-
-    const marginValue = await program.methods
-      .calculateMarginValue()
-      .accounts({user: userPda})
-      .remainingAccounts(remainingAccounts)
-      .view();
-
-    console.log('Calculate Position Value : ', positionValue);
-    console.log('Calculate Margin Value : ', marginValue);
-
-    return {positionValue, marginValue};
-  }
-
-  async getAmmTwap(program: Program<RatexContracts>, params: {marketIndex: number}) {
+  async getAmmTwap(
+    program: Program<RatexContracts>,
+    am: AccountManager,
+    params: {marketIndex: number}
+  ) {
     return await program.methods
       .getAmmTwap(900)
       .accounts({
-        perpMarket: getPerpMarketPda(params.marketIndex),
+        perpMarket: PDA.createPerpMarketPda(params.marketIndex),
         observation: getObservationPda(params.marketIndex),
       })
       .instruction();
@@ -387,7 +348,7 @@ export class OrderManager {
     console.log('userPda : ', userPda.toBase58());
     console.log('orderId : ', orderId);
     console.log('marginIndex : ', marginIndex);
-    console.log('MarginMarketVaultPda : ', getMarginMarketVaultPda(marginIndex).toBase58());
+    console.log('MarginMarketVaultPda : ', PDA.createMarginMarketVaultPda(marginIndex).toBase58());
     console.log('***************');
 
     return await program.methods
@@ -396,7 +357,7 @@ export class OrderManager {
         state: am.statePda,
         user: userPda,
         keepers: am.keeperPda,
-        marginMarketVault: getMarginMarketVaultPda(marginIndex),
+        marginMarketVault: PDA.createMarginMarketVaultPda(marginIndex),
         driftSigner: am.signerPda,
         userTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -409,17 +370,17 @@ export class OrderManager {
   getRemainingAccounts(marketIndex: number) {
     return [
       {
-        pubkey: getMarginMarketPda(getMarginIndexByMarketIndex(marketIndex)),
+        pubkey: PDA.createMarginMarketPda(getMarginIndexByMarketIndex(marketIndex)),
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: getPerpMarketPda(marketIndex),
+        pubkey: PDA.createPerpMarketPda(marketIndex),
         isSigner: false,
         isWritable: true,
       },
       {
-        pubkey: getOraclePda(marketIndex),
+        pubkey: PDA.createOraclePda(getMarginIndexByMarketIndexV2(marketIndex)),
         isSigner: false,
         isWritable: true,
       },
@@ -434,7 +395,7 @@ export class OrderManager {
   getRemainingAllAccounts(marketIndex: number) {
     return [
       {
-        pubkey: getMarginMarketPda(getMarginIndexByMarketIndex(marketIndex)),
+        pubkey: PDA.createMarginMarketPda(getMarginIndexByMarketIndex(marketIndex)),
         isSigner: false,
         isWritable: true,
       },

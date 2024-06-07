@@ -1,18 +1,11 @@
 import {AccountManager} from '@/sdk/account-manager';
+import {PDA} from '@/sdk/PDA';
 import {TickManager} from '@/sdk/tick-manager';
-import {
-  getMarginIndexByMarketIndexV2,
-  getMarginMarketPda,
-  getMarginMarketVaultPda,
-  getMintAccountPda,
-  getObservationPda,
-  getOraclePda,
-  getPerpMarketPda,
-} from '@/sdk/utils';
+import {getMarginIndexByMarketIndexV2, getMintAccountPda, getObservationPda} from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import {BN, Program} from '@coral-xyz/anchor';
-import {TOKEN_PROGRAM_ID, getAccount, getAssociatedTokenAddressSync} from '@solana/spl-token';
+import {getAccount, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID} from '@solana/spl-token';
 import {PublicKey, SystemProgram, TransactionInstruction} from '@solana/web3.js';
 import {Big} from 'big.js';
 import Decimal from 'decimal.js';
@@ -38,14 +31,14 @@ export class LpManager {
   ): Promise<TransactionInstruction[]> {
     const {amount = 50000, marketIndex, lowerRate, upperRate, maturity} = params;
     const marginIndex = getMarginIndexByMarketIndexV2(marketIndex);
-    const marginMarket = getMarginMarketPda(marginIndex);
-    const marginMarketVault = getMarginMarketVaultPda(marginIndex);
-    const oracle = getOraclePda(marketIndex);
+    const marginMarket = PDA.createMarginMarketPda(marginIndex);
+    const marginMarketVault = PDA.createMarginMarketVaultPda(marginIndex);
+    const oracle = PDA.createOraclePda(getMarginIndexByMarketIndexV2(marketIndex));
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
-    const perpMarket: PublicKey = getPerpMarketPda(marketIndex);
-    const quoteAssetVault: PublicKey = am.createQuoteAssetVaultPda(marketIndex);
-    const baseAssetVault: PublicKey = am.createBaseAssetVaultPda(marketIndex);
+    const perpMarket: PublicKey = PDA.createPerpMarketPda(marketIndex);
+    const quoteAssetVault: PublicKey = PDA.createQuoteAssetVaultPda(marketIndex);
+    const baseAssetVault: PublicKey = PDA.createBaseAssetVaultPda(marketIndex);
 
     const lr = new BN(Big(lowerRate).times(1_000_000_000).toString());
     const ur = new BN(Big(upperRate).times(1_000_000_000).toString());
@@ -169,16 +162,16 @@ export class LpManager {
   ) {
     const {marketIndex, baseAssetAmount, lowerRate, upperRate, maturity, rmLiquidityPercent} =
       params;
-    const perpMarket = getPerpMarketPda(marketIndex);
+    const perpMarket = PDA.createPerpMarketPda(marketIndex);
     const {pool} = await program.account.perpMarket.fetch(perpMarket);
     const marginIndex = getMarginIndexByMarketIndexV2(marketIndex);
-    const marginMarket = getMarginMarketPda(marginIndex);
-    const marginMarketVault = getMarginMarketVaultPda(marginIndex);
-    const oracle = getOraclePda(marketIndex);
+    const marginMarket = PDA.createMarginMarketPda(marginIndex);
+    const marginMarketVault = PDA.createMarginMarketVaultPda(marginIndex);
+    const oracle = PDA.createOraclePda(getMarginIndexByMarketIndexV2(marketIndex));
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
-    const quoteAssetVault: PublicKey = am.createQuoteAssetVaultPda(marketIndex);
-    const baseAssetVault: PublicKey = am.createBaseAssetVaultPda(marketIndex);
+    const quoteAssetVault: PublicKey = PDA.createQuoteAssetVaultPda(marketIndex);
+    const baseAssetVault: PublicKey = PDA.createBaseAssetVaultPda(marketIndex);
 
     const tb = await getAccount(program.provider.connection, quoteAssetVault);
     const ta = await getAccount(program.provider.connection, baseAssetVault);
@@ -189,7 +182,7 @@ export class LpManager {
     const tokenMintB: PublicKey = tb.mint;
 
     let priceLimitDecimal = PriceMath.tickIndexToPrice(pool.tickCurrentIndex, 5, 5);
-    priceLimitDecimal = priceLimitDecimal.mul(baseAssetAmount > 0 ? 1.01 : 0.99);
+    priceLimitDecimal = priceLimitDecimal.mul(baseAssetAmount > 0 ? 1.1 : 0.9);
     const priceLimit = PriceMath.priceToSqrtPriceX64(priceLimitDecimal, 5, 5);
     const baseAssetamount = new BN(Big(baseAssetAmount).times(1_000_000_000).toNumber());
     const [tickArray0, tickArray1, tickArray2] = await tm.getFillOrderTickArrays(
@@ -263,7 +256,7 @@ export class LpManager {
     params: {marketIndex: number; lowerRate: number; upperRate: number; maturity: number}
   ) {
     const {marketIndex, lowerRate, upperRate, maturity} = params;
-    const perpMarket = getPerpMarketPda(marketIndex);
+    const perpMarket = PDA.createPerpMarketPda(marketIndex);
     const {pool} = perpMarketInfo;
 
     const lowerYTPrice = calculateYTPrice(lowerRate.toString(), maturity);
@@ -329,12 +322,12 @@ export class LpManager {
   ) {
     const {marketIndex} = params;
     const {pool} = perpMarket;
-    const quoteAssetVault: PublicKey = am.createQuoteAssetVaultPda(marketIndex);
+    const quoteAssetVault: PublicKey = PDA.createQuoteAssetVaultPda(marketIndex);
     const tokenVaultB: PublicKey = pool.tokenVaultB;
     return await program.methods
       .collectFees()
       .accounts({
-        whirlpool: getPerpMarketPda(marketIndex),
+        whirlpool: PDA.createPerpMarketPda(marketIndex),
         state: am.statePda,
         driftSigner: am.signerPda,
         positionAuthority: authority,
@@ -346,9 +339,13 @@ export class LpManager {
       .instruction();
   }
 
-  async getPerpMarketInfo(program: Program<RatexContracts>, params: {marketIndex: number}) {
+  async getPerpMarketInfo(
+    program: Program<RatexContracts>,
+    am: AccountManager,
+    params: {marketIndex: number}
+  ) {
     const {marketIndex} = params;
-    const perpMarketPda = getPerpMarketPda(marketIndex);
+    const perpMarketPda = PDA.createPerpMarketPda(marketIndex);
     const perp = await program.account.perpMarket.fetch(perpMarketPda);
     const {pool} = perp;
     const {tokenVaultA, tokenVaultB} = pool;
