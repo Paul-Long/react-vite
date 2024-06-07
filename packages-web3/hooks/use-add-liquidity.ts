@@ -11,13 +11,6 @@ export function useAddLiquidity(params: Params) {
   const [client] = useStream(rateXClient$);
   const {connected, connect} = useConnect();
 
-  const queryIndex = useCallback(async () => {
-    if (!connected) {
-      return;
-    }
-    return await client?.getPoolTickCurrentIndex();
-  }, [connected]);
-
   const submit = useCallback(
     async (
       tickLowerIndex: number,
@@ -40,7 +33,7 @@ export function useAddLiquidity(params: Params) {
   );
 
   return {
-    queryIndex,
+    queryIndex: 0,
     submit,
   };
 }

@@ -3,6 +3,7 @@ import {PlaceOrder} from '@/pages/lp/slp/PlaceOrder';
 import {Reference} from '@/pages/lp/slp/Reference';
 import {LiveLPPosition} from '@/pages/lp/slp/positions/LiveLPPosition';
 import {ResidualLPPosition} from '@/pages/lp/slp/positions/ResidualLPPosition';
+import {apy$} from '@/streams/lp/apy';
 import {marketIndex$} from '@/streams/lp/positions';
 import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
@@ -99,6 +100,7 @@ export default function () {
 
 function useData() {
   const contracts = useObservable(contracts$, []);
+  const apyList = useObservable(apy$, []);
   const ttmMap: any = useObservable(ttmMap$, {});
   const [search] = useSearchParams();
 
@@ -116,7 +118,25 @@ function useData() {
       data.maturityStr = ttmMap?.[key].ttm + ttmMap?.[key].unit;
     }
     return data;
-  }, [search, contracts, ttmMap]);
-  console.log(contract);
-  return {contract};
+  }, [search, contracts, ttmMap, apyList]);
+
+  const apyData = useMemo(() => {
+    return apyList?.filter((a: any) => a.symbol === contract?.symbol);
+  }, [contract, apyList]);
+
+  const aprOptions = useMemo(() => {
+    return apyData?.map((item: Record<string, any>) => {
+      return {label: item.term, value: item.apr};
+    });
+  }, [apyData]);
+
+  const volumeOptions = useMemo(() => {
+    return apyData?.map((item: Record<string, any>) => {
+      return {label: item.term, value: item.stVolume};
+    });
+  }, [apyData]);
+
+  console.log(aprOptions, volumeOptions, apyList);
+
+  return {contract, aprOptions, volumeOptions};
 }

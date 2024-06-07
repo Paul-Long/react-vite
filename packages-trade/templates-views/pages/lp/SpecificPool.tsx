@@ -1,4 +1,5 @@
 import {IMAGES} from '@/pages/lp/const';
+import {apy$} from '@/streams/lp/apy';
 import {filter$} from '@/streams/lp/filter';
 import {numUtil} from '@rx/helper/num';
 import {useFixLink} from '@rx/hooks/use-fix-link';
@@ -61,7 +62,7 @@ export function SpecificPool() {
                 'text-green-500 py-20px flex justify-center items-center font-size-16px lh-20px fw-semibold group-hover:bg-gray-80'
               )}
             >
-              8.43%
+              {c.apr ?? '-'}
             </div>
             <div
               className={clsx(
@@ -96,6 +97,7 @@ export function SpecificPool() {
 
 function useData() {
   const [filter] = useStream(filter$);
+  const apyList = useObservable(apy$, []);
   const ttmMap: any = useObservable(ttmMap$, {});
   const last = useObservable<Record<string, any>>(lastTrade$, {});
   const allContracts = useObservable(contracts$, []);
@@ -120,16 +122,25 @@ function useData() {
       }
 
       const key = [c.symbolLevel1Category, c.symbolLevel2Category, c.term].join('_');
-      return {
+      const apy = apyList?.find((a: any) => a.symbol === c.symbol && a.term === '7D');
+      const tmp = {
         ...c,
         ...(trade || {}),
+        apy,
         activeRatio,
         due: c.dueDate?.slice(0, 11),
         maturity: ttmMap?.[key]?.seconds,
         maturityStr: ttmMap?.[key].ttm + ttmMap?.[key].unit,
       };
+      if (apy) {
+        tmp.apr =
+          Big(apy?.apr ?? 0)
+            .times(100)
+            .toFixed(4) + '%';
+      }
+      return tmp;
     });
-  }, [filter, allContracts, last, ttmMap]);
+  }, [filter, allContracts, last, ttmMap, apyList]);
 
   return {contracts};
 }

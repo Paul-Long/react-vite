@@ -1,11 +1,10 @@
+import {PDA} from '@/sdk/PDA';
 import {AccountManager} from '@/sdk/account-manager';
 import {
   getAllObservations,
   getAllOracles,
   getAllPerpMarkets,
   getFaucetConfigPda,
-  getMarginMarketPda,
-  getMarginMarketVaultPda,
   getMintAccountPda,
 } from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts';
@@ -32,8 +31,8 @@ export class FundManager {
   ) {
     const {amount, marginIndex} = params;
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
-    const marginMarketPda: PublicKey = getMarginMarketPda(marginIndex);
-    const marginMarketVaultPda: PublicKey = getMarginMarketVaultPda(marginIndex);
+    const marginMarketPda: PublicKey = PDA.createMarginMarketPda(marginIndex);
+    const marginMarketVaultPda: PublicKey = PDA.createMarginMarketVaultPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
     const remainingAccounts = this.getRemainingAccounts(marginMarketPda);
     const baseAmount = new BN(Big(amount).times(1_000_000_000).round().toNumber());
@@ -77,8 +76,8 @@ export class FundManager {
       return null;
     }
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
-    const marginMarketPda: PublicKey = getMarginMarketPda(marginIndex);
-    const marginMarketVaultPda: PublicKey = getMarginMarketVaultPda(marginIndex);
+    const marginMarketPda: PublicKey = PDA.createMarginMarketPda(marginIndex);
+    const marginMarketVaultPda: PublicKey = PDA.createMarginMarketVaultPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
     const remainingAccounts = this.getRemainingAccounts(marginMarketPda);
     const baseAmount = new BN(Big(amount).times(1_000_000_000).round().toNumber());
@@ -121,8 +120,8 @@ export class FundManager {
     const {amount, marginIndex} = params;
 
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
-    const marginMarketPda: PublicKey = getMarginMarketPda(marginIndex);
-    const marginMarketVaultPda: PublicKey = getMarginMarketVaultPda(marginIndex);
+    const marginMarketPda: PublicKey = PDA.createMarginMarketPda(marginIndex);
+    const marginMarketVaultPda: PublicKey = PDA.createMarginMarketVaultPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
     const remainingAccounts = this.getRemainingAccounts(marginMarketPda);
     const baseAmount = new BN(Big(amount).times(1_000_000_000).round().toNumber());
