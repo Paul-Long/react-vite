@@ -1,3 +1,4 @@
+import {PDA} from '@/sdk/PDA';
 import {PublicKey} from '@solana/web3.js';
 
 export const WSOLOraclePda = new PublicKey('E8ZQeKpiMfuLRVMXKmH9nqSPfcQ9diGqPQtLoBYZotKY');
@@ -5,22 +6,6 @@ export const WSOLOraclePda = new PublicKey('E8ZQeKpiMfuLRVMXKmH9nqSPfcQ9diGqPQtL
 export const PROGRAM_ID = new PublicKey('8EbMSp52FXmrAV64s85xzyCXGUDVxmmMaA5VK1uHT8To');
 
 export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
-
-export function getMarginMarketPda(marginIndex: number): any {
-  return {
-    0: new PublicKey('3Dj4jJUtPriBtrFrY9doFm8Qso4vLxsLCH46dJks5fbb'),
-    1: new PublicKey('97FqGdjNLytne3rTjUKvcUmvEE7npH8SirVKX5sVpeqR'),
-    2: new PublicKey('DTtusuKpERj5uPvxr6eubwSRZegEsZu8KbcCjdYNxArN'),
-  }[marginIndex];
-}
-
-export function getMarginMarketVaultPda(marginIndex: number): any {
-  return {
-    0: new PublicKey('7gJKDFwYGQMHccNxbhjV1MSFmMe8j3fB1mp44XenTVpe'),
-    1: new PublicKey('DpCkxRUya5DBadskBH1jYpxNB4R2e8c3JVwj29nmFvAm'),
-    2: new PublicKey('BuLmSYyQPmXSueySXSFe66H2j2LkeSrM1m3tLVKLAyZR'),
-  }[marginIndex];
-}
 
 export function getMintAccountPda(marginIndex: number): any {
   return {
@@ -38,37 +23,10 @@ export function getFaucetConfigPda(marginIndex: number): any {
   }[marginIndex];
 }
 
-export const PerpMarketMap: Record<number, string> = {
-  0: 'BpppZgAhrpyzPCp9cCJ4FH8Vd2nfQ5uaFJnsx3V66p83',
-  1: 'Ac9aEmgLSYnZxJAzq8nDenqLEWDQRHKyqgSi73Yc5bRG',
-  2: 'DJiALhWP4cXyaD1he9aEF4WuT5423aoxjrQ3AEhw9P16',
-  6: '8JWA8NcaeMaqhi9ywJv1snZyrjs43aqxbjF9Ha1tc6uT',
-  7: 'H94Dqeep3LZeiVKBH57w2okNPoMNy2KLAABsRTmS6syv',
-  8: '9kAC1kNcViVvLSAfiFafa6tLAtRVAwXWQRxDm2ESfygF',
-  9: 'CEwH7S8F3ecCsBpBUgEDUyufQcR5Dkat8nyqAJSBU46P',
-  11: 'BqPdhts1L5YAGQjUjRxJdsU9GaFxJnh5k7GjRoPMJ3fD',
-  12: '6Si7ttgXTVtfvwDwwut4LgtdK8uYtbJ5BbiigZj4mhMR',
-  13: '4TNYtZRmV72hB5nAotwANbokabiF4Cv71ZKiMMDBjCh2',
-};
-
-export function getPerpMarketPda(marketIndex: number): any {
-  return new PublicKey(PerpMarketMap[marketIndex]);
-}
-
-export function getOraclePda(marketIndex: number): any {
-  return {
-    0: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
-    1: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
-    2: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
-    6: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
-    7: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
-    8: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
-    9: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
-    11: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
-    12: new PublicKey('5tuJWgp3RR2ZUJ3J25xJ5Yi44JpNR6HHBLnaAdXszemC'),
-    13: new PublicKey('pTPPLhKnEvLsvqUHJv2Ze3bmFukZGcnQzWWUQQnJpqm'),
-  }[marketIndex];
-}
+export const PerpMarketMap: Record<number, string> = [9, 12, 13].reduce(
+  (record, mi) => ({...record, [mi]: PDA.createPerpMarketPda(mi)}),
+  {}
+);
 
 export function getObservationPda(marketIndex: number): any {
   return {
@@ -86,18 +44,7 @@ export function getObservationPda(marketIndex: number): any {
 }
 
 export function getMarginIndexByMarketIndex(marketIndex: number): number {
-  return {
-    0: 0,
-    1: 0,
-    2: 0,
-    6: 0,
-    7: 0,
-    8: 0,
-    9: 0,
-    11: 0,
-    12: 0,
-    13: 0,
-  }[marketIndex] as number;
+  return 0;
 }
 
 export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
@@ -117,20 +64,15 @@ export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
 
 export function getAllPerpMarkets() {
   return [9, 12, 13].map((i) => ({
-    pubkey: getPerpMarketPda(i),
+    pubkey: PDA.createPerpMarketPda(i),
     isSigner: false,
     isWritable: true,
   }));
 }
 export function getAllOracles() {
   return [
-    {
-      pubkey: WSOLOraclePda,
-      isSigner: false,
-      isWritable: true,
-    },
-    ...[0, 6].map((i) => ({
-      pubkey: getOraclePda(i),
+    ...[0, 1, 2].map((i) => ({
+      pubkey: PDA.createOraclePda(i),
       isSigner: false,
       isWritable: true,
     })),
