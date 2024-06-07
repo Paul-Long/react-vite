@@ -117,5 +117,6 @@ function useData() {
     }
     return data;
   }, [search, contracts, ttmMap]);
+  console.log(contract);
   return {contract};
 }
