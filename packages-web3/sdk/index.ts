@@ -8,6 +8,7 @@ import {
   getMarginIndexByMarketIndex,
   getMarginIndexByMarketIndexV2,
   getMintAccountPda,
+  PerpMarketMap,
   PROGRAM_ID,
   TOKEN_FAUCET,
 } from '@/sdk/utils';
@@ -553,26 +554,95 @@ export class RateClient {
     return result;
   }
 
-  async getAllLpPositions() {
+  async getAllLpPositions(ttmMap: Record<number, number>) {
     try {
       if (!this.authority) {
         return [];
       }
-      return await this.am.getAllLPPositions(this.program, this.authority);
+      const perpMarkets = await this.genPerpMarketsInfo();
+      const positions = await this.am.getAllLPPositions(this.program, this.authority, perpMarkets);
+      return this.calcLpPositionFees(positions, ttmMap, perpMarkets);
     } catch (e) {
       return [];
     }
   }
 
-  async getLpPositions(marketIndex: number) {
+  async getLpPositions(marketIndex: number, ttmMap: Record<number, any>) {
     try {
       if (!this.authority) {
         return [];
       }
-      return await this.am.getLpPositions(this.program, this.authority, marketIndex);
+      const perpMarkets = await this.genPerpMarketsInfo();
+      const positions = await this.am.getLpPositions(this.program, this.authority, marketIndex);
+      return this.calcLpPositionFees(positions, ttmMap, perpMarkets);
     } catch (e) {
       return [];
     }
+  }
+
+  async genPerpMarketsInfo() {
+    const marketIndexes = Object.keys(PerpMarketMap).map(Number);
+    const perps = await this.program.provider.connection.getMultipleAccountsInfo(
+      marketIndexes.map((index: number) => new PublicKey(PerpMarketMap[index]))
+    );
+    const perpMarkets: Record<string, any> = {};
+    for (let i = 0; i < marketIndexes.length; i++) {
+      const marketIndex = marketIndexes[i];
+      const data = perps[i];
+      if (!data) {
+        continue;
+      }
+      const perpMarket = this.program.coder.accounts.decode('PerpMarket', data.data);
+      const perpMarketPda = PerpMarketMap[marketIndex];
+      const sqrtPrice = perpMarket.pool.sqrtPrice;
+      perpMarkets[perpMarketPda] = {marketIndex, perpMarket, sqrtPrice, pool: perpMarket.pool};
+    }
+    return perpMarkets;
+  }
+
+  async calcLpPositionFees(
+    positions: any[],
+    ttmMap: Record<number, any>,
+    perpMarkets: Record<string, any>
+  ) {
+    if (!this.authority) {
+      return positions;
+    }
+    const instructions = [];
+    for (let i = 0; i < positions.length; i++) {
+      const pos = positions[i];
+      const {ammPosition, marketIndex, userPda, whirlpool} = pos;
+      const {upperRate, lowerRate} = ammPosition;
+      if (!ttmMap[marketIndex]) {
+        continue;
+      }
+      const updateInstruction = await this.lp.updateFeesAndRewards(
+        this.program,
+        this.authority,
+        this.tm,
+        new PublicKey(userPda),
+        perpMarkets[whirlpool],
+        {upperRate, lowerRate, marketIndex, maturity: ttmMap[marketIndex]}
+      );
+      const collectInstruction = await this.lp.collectFees(
+        this.program,
+        this.authority,
+        this.am,
+        new PublicKey(userPda),
+        perpMarkets[whirlpool],
+        {marketIndex}
+      );
+      instructions.push(updateInstruction);
+      instructions.push(collectInstruction);
+    }
+    const tx = await this.sendViewTransaction(instructions);
+    const result = await this.parseLpEarnFeeLogs(tx?.value?.logs || []);
+    return positions.map((p) => {
+      if (result[p.userPda]) {
+        return {...p, earnFee: result[p.userPda]};
+      }
+      return p;
+    });
   }
 
   async addKeeper(address: string) {
@@ -750,6 +820,31 @@ export class RateClient {
         break;
       }
     }
+  }
+
+  async parseLpEarnFeeLogs(logMessages?: string[]) {
+    let result: Record<string, string> = {};
+    if (!logMessages) {
+      return result;
+    }
+    const evts = this.parser?.parseLogs(logMessages);
+    while (evts) {
+      const evt: any = evts.next();
+      if (evt?.value?.name === 'CollectFeesRecord') {
+        if (evt?.value?.data) {
+          const {feeA, feeB, user, perpMarket} = evt?.value?.data;
+          result[user.toBase58()] = Big(feeA?.toString())
+            .add(feeB?.toString())
+            .div(1_000_000_000)
+            .toString();
+        }
+      }
+      console.log('events ', evt);
+      if (evt.done) {
+        break;
+      }
+    }
+    return result;
   }
 
   async parseLpRemoveLogs(

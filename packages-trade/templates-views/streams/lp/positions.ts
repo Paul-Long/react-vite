@@ -1,5 +1,4 @@
 import {symbolMapById$} from '@rx/streams/config';
-import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';
 import {clientReady$, rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Big} from 'big.js';
@@ -18,9 +17,17 @@ export const query$ = new BehaviorSubject(0);
 export const marketIndex$ = new BehaviorSubject<number | null>(null);
 const loading$ = new BehaviorSubject(false);
 
-const getPositions$ = combineLatest([rateXClient$, clientReady$, marketIndex$, query$]).pipe(
+const getPositions$ = combineLatest([
+  rateXClient$,
+  clientReady$,
+  marketIndex$,
+  symbolMapById$,
+  query$,
+]).pipe(
   debounceTime(200),
-  switchMap(([client, ready, marketIndex]) => load(client, ready, marketIndex)),
+  switchMap(([client, ready, marketIndex, symbolMap]) =>
+    load(client, ready, marketIndex, symbolMap)
+  ),
   map((res) => {
     loading$.next(false);
     return res;
@@ -28,10 +35,10 @@ const getPositions$ = combineLatest([rateXClient$, clientReady$, marketIndex$, q
   startWith([])
 );
 
-export const positions$ = combineLatest([getPositions$, lastTrade$, symbolMapById$, loading$]).pipe(
+export const positions$ = combineLatest([getPositions$, loading$]).pipe(
   debounceTime(200),
   filter((res) => !res[res.length - 1]),
-  switchMap(([positions, trade, symbolMap]: any) => calcPositions(positions)),
+  switchMap(([positions]: any) => calcPositions(positions)),
   startWith([]),
   shareReplay()
 );
@@ -46,11 +53,20 @@ export async function calcPositions(positions: any[]) {
   });
 }
 
-async function load(client: RateClient, ready: boolean, marketIndex: number | null) {
+async function load(
+  client: RateClient,
+  ready: boolean,
+  marketIndex: number | null,
+  symbolMap: Record<string, any>
+) {
   if (!client || !ready || marketIndex === null) {
+    return [];
+  }
+  const symbol = symbolMap?.[marketIndex];
+  if (!symbol) {
     return [];
   }
   loading$.next(true);
   console.log(new Date(), 'LP Position Load : ');
-  return await client.getLpPositions(marketIndex);
+  return await client.getLpPositions(marketIndex, {[marketIndex]: symbol.seconds});
 }

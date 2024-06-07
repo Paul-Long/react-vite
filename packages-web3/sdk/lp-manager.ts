@@ -259,11 +259,12 @@ export class LpManager {
     authority: PublicKey,
     tm: TickManager,
     lp: PublicKey,
+    perpMarketInfo: any,
     params: {marketIndex: number; lowerRate: number; upperRate: number; maturity: number}
   ) {
     const {marketIndex, lowerRate, upperRate, maturity} = params;
     const perpMarket = getPerpMarketPda(marketIndex);
-    const {pool} = await program.account.perpMarket.fetch(perpMarket);
+    const {pool} = perpMarketInfo;
 
     const lowerYTPrice = calculateYTPrice(lowerRate.toString(), maturity);
     const sqrtLowerYTPrice = PriceMath.priceToSqrtPriceX64(lowerYTPrice, 9, 9);
@@ -287,7 +288,26 @@ export class LpManager {
     const tickArrayLower = tickArrays[0];
     const tickArrayUpper = tickArrays[tickArrays.length - 1];
 
-    const instruction = await program.methods
+    // try {
+    //   console.log('updateFeesAndRewards *****************');
+    //   console.log('tickLowerIndex : ', tickLowerIndex);
+    //   console.log('tickUpperIndex : ', tickUpperIndex);
+    //   console.log(
+    //     'tickArrayLower : ',
+    //     tickArrayLower.toBase58(),
+    //     await program.account.tickArray.fetch(tickArrayLower)
+    //   );
+    //   console.log(
+    //     'tickArrayUpper : ',
+    //     tickArrayUpper.toBase58(),
+    //     await program.account.tickArray.fetch(tickArrayUpper)
+    //   );
+    //   console.log('updateFeesAndRewards *****************');
+    // } catch (e) {
+    //   console.error(e);
+    // }
+
+    return await program.methods
       .updateFeesAndRewards()
       .accounts({
         whirlpool: perpMarket,
@@ -304,22 +324,19 @@ export class LpManager {
     authority: PublicKey,
     am: AccountManager,
     lp: PublicKey,
+    perpMarket: any,
     params: {marketIndex: number}
   ) {
     const {marketIndex} = params;
-    const perpMarket = getPerpMarketPda(marketIndex);
-    const {pool} = await program.account.perpMarket.fetch(perpMarket);
-
+    const {pool} = perpMarket;
     const quoteAssetVault: PublicKey = am.createQuoteAssetVaultPda(marketIndex);
-
     const tokenVaultB: PublicKey = pool.tokenVaultB;
-
-    const instruction = await program.methods
+    return await program.methods
       .collectFees()
       .accounts({
-        whirlpool: perpMarket,
+        whirlpool: getPerpMarketPda(marketIndex),
         state: am.statePda,
-        driftSigner: am.statePda,
+        driftSigner: am.signerPda,
         positionAuthority: authority,
         lp,
         tokenOwnerAccountB: quoteAssetVault,

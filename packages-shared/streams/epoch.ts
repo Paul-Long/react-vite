@@ -14,8 +14,6 @@ export const ttmMap$ = combineLatest([epochStartTime$, contracts$]).pipe(
   shareReplay()
 );
 
-ttmMap$.subscribe((ttm) => console.log('TTM : ', ttm));
-
 export async function loadEpochStartTime() {
   const {data} = await epochApi.startTime();
   console.log('Epoch Start Time : ', data.ttm);
