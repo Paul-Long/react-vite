@@ -657,21 +657,6 @@
           "isSigner": false
         },
         {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "marginMarket",
           "isMut": true,
           "isSigner": false
@@ -788,21 +773,6 @@
         },
         {
           "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
           "isMut": true,
           "isSigner": false
         }
@@ -946,21 +916,6 @@
         },
         {
           "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
           "isMut": true,
           "isSigner": false
         }
@@ -1446,21 +1401,6 @@
           "name": "whirlpool",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
         }
       ],
       "args": [
@@ -1857,6 +1797,192 @@
       ]
     },
     {
+      "name": "updatePerpMarketActiveRatioCoef",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "activeRatioCoef",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketActiveRatioCap",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "activeRatioCap",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketOrderStepSize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "orderStepSize",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketMinOrderSize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "minOrderSize",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketStartTs",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "startTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketExpireTs",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "expireTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "epochUpdateRemove",
       "accounts": [
         {
@@ -2027,7 +2153,9 @@
       "args": [
         {
           "name": "impliedRate",
-          "type": "u64"
+          "type": {
+            "option": "u64"
+          }
         }
       ]
     },
@@ -2962,6 +3090,10 @@
             }
           },
           {
+            "name": "p",
+            "type": "u8"
+          },
+          {
             "name": "activeRatioCoef",
             "type": "u64"
           },
@@ -2998,7 +3130,7 @@
             "type": "i64"
           },
           {
-            "name": "impliedRate",
+            "name": "p1",
             "type": "u64"
           },
           {
@@ -3012,6 +3144,12 @@
           {
             "name": "lpAccountsProcessed",
             "type": "u64"
+          },
+          {
+            "name": "impliedRate",
+            "type": {
+              "option": "u64"
+            }
           },
           {
             "name": "padding",
@@ -4686,7 +4824,9 @@
         },
         {
           "name": "impliedRate",
-          "type": "u64",
+          "type": {
+            "option": "u64"
+          },
           "index": false
         }
       ]
@@ -6644,6 +6784,11 @@
       "code": 6317,
       "name": "LpIsInactive",
       "msg": "LpIsInactive"
+    },
+    {
+      "code": 6318,
+      "name": "InvalidPerpMarket",
+      "msg": "InvalidPerpMarket"
     }
   ]
 }
