@@ -397,8 +397,8 @@ export class AccountManager {
       const stat = program.coder.accounts.decode('UserStats', statInfo.data);
       count = stat.numberOfSubAccountsCreated ?? 0;
     }
-    const marketIndexMap: any = Object.keys(PerpMarketMap).reduce((obj, index) => {
-      return {...obj, [PerpMarketMap[index as any]]: Number(index)};
+    const marketIndexMap: any = Object.keys(PerpMarketMap()).reduce((obj, index) => {
+      return {...obj, [PerpMarketMap()[index as any]]: Number(index)};
     }, {});
     const allPda: PublicKey[] = [];
     for (let i = 0; i < count; i++) {
