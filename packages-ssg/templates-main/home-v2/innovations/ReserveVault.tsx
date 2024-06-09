@@ -12,7 +12,8 @@ export function ReserveVault(props: {inline?: boolean; show: string; onShow: (v:
         />
         <div className="font-size-20px lh-20px mt-28px">Reserve Vault</div>
         <div className="font-size-15px lh-15px text-#09090A4C mt-6px">
-          Secure the payment of yield token and standard yield-bearing token
+          Acting as the yield source, it retains the yield of deposited underlying assets and
+          ensures the yield distribution to YT holders.
         </div>
         <div
           className="font-size-15px lh-15px text-#09090A mt-12px cursor-pointer"
@@ -43,7 +44,8 @@ export function ReserveVault(props: {inline?: boolean; show: string; onShow: (v:
             />
             <div className="font-size-36px lh-36px mt-20px sm:mt-28px">Reserve Vault</div>
             <div className="text-#09090A4C">
-              Secure the payment of yield token and standard yield-bearing token
+              Acting as the yield source, it retains the yield of deposited underlying assets and
+              ensures the yield distribution to YT holders.
             </div>
             <div className="flex flex-col font-size-15px lh-15px gap-12px mt-30px">
               <div>

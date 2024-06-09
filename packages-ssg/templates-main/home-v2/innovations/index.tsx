@@ -25,9 +25,9 @@ function Left() {
         Our Trading Mechanism Innovations
       </div>
       <div className="font-szie-15px lh-15px text-wrap text-#09090A4C mt-20px">
-        We utilize advanced trading mechanisms like time-decay AMMs and reserve vaults to ensure
-        optimal liquidity and efficient risk management. These innovations provide stability and
-        reliability in yield trading.
+        To empower the most secure and efficient yield trading experience, we've designed innovative
+        mechanisms like Time-Decay AMM, Reserve Vaults, and Multi-Layered Liquidity Pools. These
+        features deliver a unique experience and full control over yield trading.
       </div>
     </div>
   );

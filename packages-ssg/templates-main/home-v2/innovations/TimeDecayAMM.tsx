@@ -18,7 +18,9 @@ export function TimeDecayAMM(props: {inline?: boolean; show: string; onShow: (v:
           />
           <div className="font-size-20px lh-20px mt-28px">Time-Decay AMM</div>
           <div className="font-size-15px lh-15px text-#09090A4C mt-6px">
-            Synthesized yield token with diminishing potential IL as it approaches expiration
+            The auto-rebalancing feature handles the time-decay characteristic of YT within
+            concentrated liquidity pools, optimizing capital efficiency for LPs and minimizing price
+            slippage for traders.
           </div>
           <div
             className="font-size-15px lh-15px text-#09090A mt-12px cursor-pointer"
@@ -50,7 +52,9 @@ export function TimeDecayAMM(props: {inline?: boolean; show: string; onShow: (v:
             />
             <div className="font-size-36px sm:lh-36px mt-20px sm:mt-28px">Time-Decay AMM</div>
             <div className="text-#09090A4C">
-              Synthesized yield token with diminishing potential IL as it approaches expiration
+              The auto-rebalancing feature handles the time-decay characteristic of YT within
+              concentrated liquidity pools, optimizing capital efficiency for LPs and minimizing
+              price slippage for traders.
             </div>
             <div className="flex flex-col font-size-15px lh-15px gap-12px mt-30px">
               <div>
