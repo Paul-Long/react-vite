@@ -1,4 +1,5 @@
 import {lang} from '@rx/lang/trade.lang';
+import {Tooltip} from '@rx/widgets';
 
 export const genMargin = (LG: any) => [
   {label: LG(lang.CrossMargin), value: 'CROSS'},
@@ -6,8 +7,22 @@ export const genMargin = (LG: any) => [
 ];
 
 export const genDirection = (LG: any) => [
-  {label: LG(lang.LongYieldFloater), value: 'LONG'},
-  {label: LG(lang.ShortYieldFixer), value: 'SHORT'},
+  {
+    label: (
+      <Tooltip className="text-nowrap" text="Long YT, Profit from rising yield">
+        {LG(lang.LongYieldFloater)}
+      </Tooltip>
+    ),
+    value: 'LONG',
+  },
+  {
+    label: (
+      <Tooltip className="text-nowrap" text="Short YT, Profit from falling yield">
+        {LG(lang.ShortYieldFixer)}
+      </Tooltip>
+    ),
+    value: 'SHORT',
+  },
 ];
 
 export const genChartType = (LG: any) => [

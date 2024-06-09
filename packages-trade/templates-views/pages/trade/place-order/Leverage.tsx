@@ -17,7 +17,7 @@ export function Leverage(props: Props) {
     <div className="flex flex-col p-16px gap-8px not-last:b-b-1px b-solid b-gray-40">
       <div className="flex flex-row justify-between items-center">
         <div className="font-size-14px text-gray-600">{LG(lang.LeverageSlider)}</div>
-        <Tooltip text={`${LG(lang.MaximumLeverage)} : ${max}x`}>
+        <Tooltip className="text-nowrap" text={`${LG(lang.MaximumLeverage)} : ${max}x`}>
           <div className="font-size-12px text-green-600 underline underline-dotted cursor-help">
             {LG(lang.MaximumLeverage)} : {max}x
           </div>
