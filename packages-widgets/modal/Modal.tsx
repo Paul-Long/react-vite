@@ -1,9 +1,9 @@
-import React, {CSSProperties, FC, memo, useCallback, useEffect, useRef} from 'react';
+import React, {CSSProperties, FC, memo, ReactNode, useCallback, useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom';
 import {keyframes, styled} from 'styled-components';
 
 interface ModalProps {
-  title?: string;
+  title?: ReactNode;
   visible?: boolean;
   onClose?: Function;
   closeBtn?: boolean;
@@ -54,12 +54,15 @@ const ModalHeader = styled.div<{$show: string}>`
   display: flex;
   justify-content: ${({$show}) => ($show === 'true' ? 'space-between' : 'flex-end')};
   align-items: center;
-  margin-bottom: 16px;
+  padding-bottom: 16px;
 `;
 
 const CloseButton = styled.button`
   background: none;
-  border: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ffffff14;
+  border-radius: 40px;
   color: white;
   cursor: pointer;
 `;
@@ -124,7 +127,7 @@ export const Modal: FC<ModalProps> = memo(
             style={contentStyle}
           >
             <ModalHeader $show={(!!title).toString()}>
-              {title && <h2 className="fw-bold font-size-18px">{title}</h2>}
+              {title && <h2 className="fw-bold font-size-20px lh-30px">{title}</h2>}
               {closeBtn && (
                 <CloseButton onClick={onClose as any}>
                   <i className="iconfont font-size-18px">&#xe637;</i>

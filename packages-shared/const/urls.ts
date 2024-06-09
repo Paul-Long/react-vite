@@ -24,6 +24,9 @@ function getApiPrefix() {
   if (hostname?.startsWith('app-dev11')) {
     return 'https://api11';
   }
+  if (hostname?.startsWith('app-dev12')) {
+    return 'https://api12';
+  }
   return 'https://api10';
 }
 
@@ -34,6 +37,9 @@ function getWsPrefix() {
   const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location ? location.hostname : '';
   if (hostname.startsWith('app-dev11')) {
     return 'wss://ws11';
+  }
+  if (hostname.startsWith('app-dev12')) {
+    return 'wss://ws12';
   }
   return 'wss://ws10';
 }

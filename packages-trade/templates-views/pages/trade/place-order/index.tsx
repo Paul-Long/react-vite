@@ -14,10 +14,12 @@ import {genDirection, genMargin} from './const';
 export function PlaceOrder() {
   const {LG} = useLang();
   const {
+    input,
+    focus,
     state,
-    info,
-    current,
+    info2,
     loading,
+    swapLoading,
     visible,
     handleSubmit,
     handleChange,
@@ -41,8 +43,11 @@ export function PlaceOrder() {
         <div className="flex flex-col b-1px b-solid b-gray-40">
           <AmountInput
             value={state.amount}
-            onChange={handleChange('amount')}
-            onFocus={() => (current.current = 'amount')}
+            onChange={(v) => {
+              input.current = 'amount';
+              handleChange('amount')(v);
+            }}
+            onFocus={() => (focus.current = 'amount')}
           />
           <Leverage
             value={state.leverage}
@@ -51,23 +56,26 @@ export function PlaceOrder() {
           />
           <DepositMargin
             value={state.margin}
-            onChange={handleChange('margin')}
-            onFocus={() => (current.current = 'margin')}
+            onChange={(v) => {
+              input.current = 'margin';
+              handleChange('margin')(v);
+            }}
+            onFocus={() => (focus.current = 'margin')}
             marginType={state.marginType}
             marginWaiver={state.marginWaiver}
             onMarginWaiverChange={handleChange('marginWaiver')}
           />
-          <RateInput direction={state.direction as any} fixedRate={info.priceImpact} />
+          <RateInput direction={state.direction as any} fixedRate={info2.priceImpact} />
         </div>
-        <AssetsInfo info={info} marginType={state.marginType} />
+        <AssetsInfo info={info2} marginType={state.marginType} />
         <Button
           size="md"
           type={state.direction.toLowerCase() as any}
-          disabled={loading}
+          disabled={loading || swapLoading}
           onClick={() => handleSubmit(true)}
         >
           <div className="flex flex-row justify-center items-center flex-nowrap gap-10px font-size-16px lh-18px fw-semibold py-4px">
-            {loading && <Loading size={18} />}
+            {(loading || swapLoading) && <Loading size={18} />}
             {LG(lang.Trade)}
           </div>
         </Button>
@@ -79,7 +87,7 @@ export function PlaceOrder() {
         order={state}
         onConfirm={() => handleSubmit(false)}
         onClose={() => setVisible(false)}
-        calcInfo={info}
+        calcInfo={info2}
       />
     </>
   );

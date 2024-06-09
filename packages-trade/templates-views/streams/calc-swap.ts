@@ -16,33 +16,27 @@ import {
 } from 'rxjs';
 
 export const order$ = new BehaviorSubject<any>(null);
+export const swapLoading$ = new BehaviorSubject(false);
 
 let timer: any = null;
-let resultCache: Record<string, any> = {};
-export const swapLoading$ = new BehaviorSubject(false);
+
 export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$]).pipe(
-  debounceTime(400),
+  debounceTime(300),
   tap(() => of(null)),
   exhaustMap(([order, current, client, ready]) => {
     if (!client || !ready || !order || !current) {
       return of(null);
     }
     const {amount, direction, marketIndex, margin, marginType, currentKey = 'amount'} = order;
-    const {days, minimumMaintainanceCr} = current;
+    const {days} = current;
     if ((currentKey === 'amount' && !amount) || (currentKey === 'margin' && !margin)) {
       return of(null);
     }
     if (timer) {
       clearTimeout(timer);
+      timer = null;
     }
     swapLoading$.next(true);
-    console.log('swap params : ', {
-      amount: currentKey === 'amount' ? amount : margin,
-      direction,
-      marketIndex,
-      input: currentKey,
-      days,
-    });
     return calcSwap(
       client,
       {
@@ -63,13 +57,6 @@ export const calcInfo$ = combineLatest([swap$, current$, lastTrade$]).pipe(
     const {result, order: params} = swapResult || {};
     if (!params?.currentKey) {
       return of(null);
-    }
-    const keys = [params.currentKey, params.direction, params.marketIndex];
-    if (params.currentKey === 'amount') {
-      keys.push(params.amount);
-    }
-    if (params.currentKey === 'margin') {
-      keys.push(params.margin);
     }
     if (!result) {
       return {};
@@ -98,7 +85,6 @@ export const calcInfo$ = combineLatest([swap$, current$, lastTrade$]).pipe(
             )
           : '-';
     }
-    console.log('order : ', params);
     const fee = Big(!params.margin ? 0 : params.margin)
       .times(params.leverage)
       .times(0.001)
@@ -126,11 +112,13 @@ export const calcInfo$ = combineLatest([swap$, current$, lastTrade$]).pipe(
     ) {
       returnData.maxMargin = quoteAssetAmount;
     }
+    if (!timer) {
+      clearTimeout(timer);
+    }
     timer = setTimeout(() => {
       swapLoading$.next(false);
       timer = null;
-    }, 100);
-    resultCache[keys.join('_')] = returnData;
+    }, 300);
     return returnData;
   })
 );

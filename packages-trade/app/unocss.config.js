@@ -8,6 +8,7 @@ export default defineConfig({
     colors: {
       gray: {
         40: '#ffffff0a',
+        60: '#FFFFFF99',
         80: '#ffffff14',
         200: '#FFFFFF33',
         400: '#ffffff66',
