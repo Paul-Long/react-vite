@@ -23,10 +23,11 @@ export function getFaucetConfigPda(marginIndex: number): any {
   }[marginIndex];
 }
 
-export const PerpMarketMap: Record<number, string> = [0, 1, 2, 3, 4, 5, 6, 7].reduce(
-  (record, mi) => ({...record, [mi]: PDA.createPerpMarketPda(mi)}),
-  {}
-);
+export const PerpMarketMap = (): Record<number, string> =>
+  [0, 1, 2, 3, 4, 5, 6, 7].reduce(
+    (record, mi) => ({...record, [mi]: PDA.createPerpMarketPda(mi)}),
+    {}
+  );
 
 export function getObservationPda(marketIndex: number): any {
   return {
