@@ -30,7 +30,10 @@ export function DepositMargin(props: Props) {
   return (
     <div className="flex flex-col p-16px gap-8px not-last:b-b-1px b-solid b-gray-40">
       <div className="flex flex-row items-center justify-between text-gray-600">
-        <Tooltip text={`input margin amount can't exceed # due to your slippage settings.`}>
+        <Tooltip
+          className="min-w-200px"
+          text={`input margin amount can't exceed # due to your slippage settings.`}
+        >
           <span className="underline underline-dotted cursor-help">{LG(lang.DepositMargin)}</span>
         </Tooltip>
         <div className="flex flex-row items-center gap-4px text-white">
@@ -60,7 +63,12 @@ export function DepositMargin(props: Props) {
           value={props.marginWaiver}
           onChange={() => props.onMarginWaiverChange(!props.marginWaiver)}
         >
-          {LG(lang.MarginWaiver)}
+          <Tooltip
+            className="min-w-320px text-wrap"
+            text="margin waiver lets you open positions without paying the margin up to the allowance amount. However, this will increase your leverage and lower your collateral ratio (CR)."
+          >
+            <div className="underline underline-dotted cursor-help">{LG(lang.MarginWaiver)}</div>
+          </Tooltip>
         </Checkbox>
         <div>{crossMargin?.remainMargin ?? '0'}</div>
       </div>

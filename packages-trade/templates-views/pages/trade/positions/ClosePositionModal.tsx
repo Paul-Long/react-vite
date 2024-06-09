@@ -25,7 +25,7 @@ export function ClosePositionModal() {
       clearTimeout(timer.current);
     }
     timer.current = setTimeout(() => {
-      const {baseAssetAmount, direction, marketIndex} = data;
+      const {baseAssetAmount, direction, marketIndex} = data || {};
     }, 300);
   }, [data, client]);
 

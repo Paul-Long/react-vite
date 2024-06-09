@@ -19,7 +19,10 @@ export function AmountInput(props: Props) {
   return (
     <div className="flex flex-col p-16px gap-8px not-last:b-b-1px b-solid b-gray-40">
       <div className="flex flex-row items-center justify-between text-gray-600">
-        <Tooltip text={`input yt amount can't exceed # due to your slippage settings.`}>
+        <Tooltip
+          className="min-w-200px"
+          text={`input yt amount can't exceed # due to your slippage settings.`}
+        >
           <span className="underline underline-dotted cursor-help">{LG(lang.YTAmount)}</span>
         </Tooltip>
       </div>

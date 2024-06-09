@@ -53,7 +53,7 @@ export function useForm() {
     if (input.current !== 'amount' || focus.current !== 'amount') {
       return;
     }
-    const key = [input.current, direction, amountN].join('_');
+    const key = [marketIndex, input.current, direction, amountN].join('_');
     if (key !== info?.key) {
       return;
     }
@@ -82,13 +82,18 @@ export function useForm() {
     if (Object.keys(nextState).length > 0) {
       setState((prevState) => ({...prevState, ...nextState}));
     }
-  }, [amountN, marginN, leverageN, direction, info, maxLeverage]);
+  }, [amountN, marginN, leverageN, direction, info, maxLeverage, marketIndex]);
 
   useEffect(() => {
     if (input.current !== 'margin' || focus.current !== 'margin' || !marginN) {
       return;
     }
-    const key = [input.current, direction, Big(marginN).times(leverageN).toString()].join('_');
+    const key = [
+      marketIndex,
+      input.current,
+      direction,
+      Big(marginN).times(leverageN).toString(),
+    ].join('_');
     if (key !== info?.key) {
       return;
     }
@@ -129,7 +134,7 @@ export function useForm() {
         setState((prevState) => ({...prevState, margin}));
       }
     }
-  }, [marginN, leverageN, info]);
+  }, [marginN, leverageN, info, marketIndex]);
 
   const info2 = useMemo<Record<string, any>>(() => {
     const data: Record<string, any> = {};
@@ -160,6 +165,9 @@ export function useForm() {
 
   const calcMaxLeverage = useCallback(
     (direction: string, info: Record<string, any>) => {
+      if (!twapPrice) {
+        return 10;
+      }
       if (direction === 'LONG') {
         const denominator = Big(info.quoteAssetAmount)
           .times(1.05)
@@ -213,11 +221,11 @@ export function useForm() {
     }
     let key: string = '';
     if (input.current === 'amount') {
-      key = [input.current, state.direction, state.amount].join('_');
+      key = [state.marketIndex, input.current, state.direction, state.amount].join('_');
     }
     if (input.current === 'margin') {
       const margin = Big(state.margin).times(state.leverage).toString();
-      key = [input.current, state.direction, margin].join('_');
+      key = [state.marketIndex, input.current, state.direction, margin].join('_');
     }
     if (info?.key !== key) {
       order$.next({...state, currentKey: input.current});
