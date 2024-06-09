@@ -556,9 +556,9 @@ export class RateClient {
   }
 
   async genPerpMarketsInfo() {
-    const marketIndexes = Object.keys(PerpMarketMap).map(Number);
+    const marketIndexes = Object.keys(PerpMarketMap()).map(Number);
     const perps = await this.program.provider.connection.getMultipleAccountsInfo(
-      marketIndexes.map((index: number) => new PublicKey(PerpMarketMap[index]))
+      marketIndexes.map((index: number) => new PublicKey(PerpMarketMap()[index]))
     );
     const perpMarkets: Record<string, any> = {};
     for (let i = 0; i < marketIndexes.length; i++) {
@@ -568,7 +568,7 @@ export class RateClient {
         continue;
       }
       const perpMarket = this.program.coder.accounts.decode('PerpMarket', data.data);
-      const perpMarketPda = PerpMarketMap[marketIndex];
+      const perpMarketPda = PerpMarketMap()[marketIndex];
       const sqrtPrice = perpMarket.pool.sqrtPrice;
       perpMarkets[perpMarketPda] = {marketIndex, perpMarket, sqrtPrice, pool: perpMarket.pool};
     }

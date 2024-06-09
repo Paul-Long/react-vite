@@ -657,21 +657,6 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "marginMarket",
           "isMut": true,
           "isSigner": false
@@ -788,21 +773,6 @@ export type RatexContracts = {
         },
         {
           "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
           "isMut": true,
           "isSigner": false
         }
@@ -946,21 +916,6 @@ export type RatexContracts = {
         },
         {
           "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
           "isMut": true,
           "isSigner": false
         }
@@ -1446,21 +1401,6 @@ export type RatexContracts = {
           "name": "whirlpool",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
         }
       ],
       "args": [
@@ -1857,6 +1797,192 @@ export type RatexContracts = {
       ]
     },
     {
+      "name": "updatePerpMarketActiveRatioCoef",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "activeRatioCoef",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketActiveRatioCap",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "activeRatioCap",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketOrderStepSize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "orderStepSize",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketMinOrderSize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "minOrderSize",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketStartTs",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "startTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketExpireTs",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "expireTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "epochUpdateRemove",
       "accounts": [
         {
@@ -2027,7 +2153,9 @@ export type RatexContracts = {
       "args": [
         {
           "name": "impliedRate",
-          "type": "u64"
+          "type": {
+            "option": "u64"
+          }
         }
       ]
     },
@@ -2962,6 +3090,10 @@ export type RatexContracts = {
             }
           },
           {
+            "name": "p",
+            "type": "u8"
+          },
+          {
             "name": "activeRatioCoef",
             "type": "u64"
           },
@@ -2998,7 +3130,7 @@ export type RatexContracts = {
             "type": "i64"
           },
           {
-            "name": "impliedRate",
+            "name": "p1",
             "type": "u64"
           },
           {
@@ -3012,6 +3144,12 @@ export type RatexContracts = {
           {
             "name": "lpAccountsProcessed",
             "type": "u64"
+          },
+          {
+            "name": "impliedRate",
+            "type": {
+              "option": "u64"
+            }
           },
           {
             "name": "padding",
@@ -3668,6 +3806,10 @@ export type RatexContracts = {
           {
             "name": "isolatedMarginAmount",
             "type": "u64"
+          },
+          {
+            "name": "isClose",
+            "type": "bool"
           }
         ]
       }
@@ -3754,11 +3896,15 @@ export type RatexContracts = {
             "type": "u16"
           },
           {
+            "name": "isClose",
+            "type": "bool"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                12
+                11
               ]
             }
           }
@@ -4660,6 +4806,11 @@ export type RatexContracts = {
           "name": "realizedPnl",
           "type": "i64",
           "index": false
+        },
+        {
+          "name": "orderIsClose",
+          "type": "bool",
+          "index": false
         }
       ]
     },
@@ -4673,7 +4824,9 @@ export type RatexContracts = {
         },
         {
           "name": "impliedRate",
-          "type": "u64",
+          "type": {
+            "option": "u64"
+          },
           "index": false
         }
       ]
@@ -6631,6 +6784,11 @@ export type RatexContracts = {
       "code": 6317,
       "name": "LpIsInactive",
       "msg": "LpIsInactive"
+    },
+    {
+      "code": 6318,
+      "name": "InvalidPerpMarket",
+      "msg": "InvalidPerpMarket"
     }
   ]
 };
@@ -7294,21 +7452,6 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "marginMarket",
           "isMut": true,
           "isSigner": false
@@ -7425,21 +7568,6 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
           "isMut": true,
           "isSigner": false
         }
@@ -7583,21 +7711,6 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "tokenVaultB",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
           "isMut": true,
           "isSigner": false
         }
@@ -8083,21 +8196,6 @@ export const IDL: RatexContracts = {
           "name": "whirlpool",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "tickArray0",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray1",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tickArray2",
-          "isMut": true,
-          "isSigner": false
         }
       ],
       "args": [
@@ -8494,6 +8592,192 @@ export const IDL: RatexContracts = {
       ]
     },
     {
+      "name": "updatePerpMarketActiveRatioCoef",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "activeRatioCoef",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketActiveRatioCap",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "activeRatioCap",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketOrderStepSize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "orderStepSize",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketMinOrderSize",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "minOrderSize",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketStartTs",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "startTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketExpireTs",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "expireTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
       "name": "epochUpdateRemove",
       "accounts": [
         {
@@ -8664,7 +8948,9 @@ export const IDL: RatexContracts = {
       "args": [
         {
           "name": "impliedRate",
-          "type": "u64"
+          "type": {
+            "option": "u64"
+          }
         }
       ]
     },
@@ -9599,6 +9885,10 @@ export const IDL: RatexContracts = {
             }
           },
           {
+            "name": "p",
+            "type": "u8"
+          },
+          {
             "name": "activeRatioCoef",
             "type": "u64"
           },
@@ -9635,7 +9925,7 @@ export const IDL: RatexContracts = {
             "type": "i64"
           },
           {
-            "name": "impliedRate",
+            "name": "p1",
             "type": "u64"
           },
           {
@@ -9649,6 +9939,12 @@ export const IDL: RatexContracts = {
           {
             "name": "lpAccountsProcessed",
             "type": "u64"
+          },
+          {
+            "name": "impliedRate",
+            "type": {
+              "option": "u64"
+            }
           },
           {
             "name": "padding",
@@ -10305,6 +10601,10 @@ export const IDL: RatexContracts = {
           {
             "name": "isolatedMarginAmount",
             "type": "u64"
+          },
+          {
+            "name": "isClose",
+            "type": "bool"
           }
         ]
       }
@@ -10391,11 +10691,15 @@ export const IDL: RatexContracts = {
             "type": "u16"
           },
           {
+            "name": "isClose",
+            "type": "bool"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                12
+                11
               ]
             }
           }
@@ -11297,6 +11601,11 @@ export const IDL: RatexContracts = {
           "name": "realizedPnl",
           "type": "i64",
           "index": false
+        },
+        {
+          "name": "orderIsClose",
+          "type": "bool",
+          "index": false
         }
       ]
     },
@@ -11310,7 +11619,9 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "impliedRate",
-          "type": "u64",
+          "type": {
+            "option": "u64"
+          },
           "index": false
         }
       ]
@@ -13268,6 +13579,11 @@ export const IDL: RatexContracts = {
       "code": 6317,
       "name": "LpIsInactive",
       "msg": "LpIsInactive"
+    },
+    {
+      "code": 6318,
+      "name": "InvalidPerpMarket",
+      "msg": "InvalidPerpMarket"
     }
   ]
 };
