@@ -158,9 +158,14 @@ export class OrderManager {
     // console.log('priceLimit x64 : ', priceLimit.toString());
     // console.log('priceLimit index : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit).toString());
     console.log('priceLimit to price : ', PriceMath.sqrtPriceX64ToTickIndex(priceLimit).toString());
-    const ai = await program.account.tickArray.fetch(tickArrays[2]);
+    const ai = await program.account.tickArray.fetch(tickArrays[tickArrays.length - 1]);
     const priceLimitIndex = PriceMath.sqrtPriceX64ToTickIndex(priceLimit);
-    console.log(`TickArray ${2} :  `, tickArrays[2].toBase58(), ai, perp.pool.tickCurrentIndex);
+    console.log(
+      `TickArray ${tickArrays.length - 1} :  `,
+      tickArrays[tickArrays.length - 1].toBase58(),
+      ai,
+      perp.pool.tickCurrentIndex
+    );
     if (params.direction === 'SHORT' && ai.startTickIndex > priceLimitIndex) {
       priceLimit = PriceMath.tickIndexToSqrtPriceX64(ai.startTickIndex);
     }
@@ -179,10 +184,14 @@ export class OrderManager {
       )
       .accounts({
         whirlpool: perpMarket,
-        tickArray0: tickArrays[0],
-        tickArray1: tickArrays[1],
-        tickArray2: tickArrays[2],
       })
+      .remainingAccounts([
+        ...tickArrays.map((t) => ({
+          pubkey: t,
+          isSigner: false,
+          isWritable: true,
+        })),
+      ])
       .instruction();
   }
 
@@ -271,7 +280,14 @@ export class OrderManager {
     return await program.methods
       .fillPerpOrder(orderId)
       .preInstructions([modifyComputeUnits])
-      .remainingAccounts(remainingAccounts)
+      .remainingAccounts([
+        ...remainingAccounts,
+        ...tickArrays.map((t) => ({
+          pubkey: t,
+          isSigner: false,
+          isWritable: true,
+        })),
+      ])
       .accounts({
         user: userPda,
         userStats: userStatPda,
@@ -286,9 +302,6 @@ export class OrderManager {
         tokenVaultA,
         tokenVaultB,
         userTokenAccount,
-        tickArray0: tickArrays[0],
-        tickArray1: tickArrays[1],
-        tickArray2: tickArrays[2],
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .rpc();

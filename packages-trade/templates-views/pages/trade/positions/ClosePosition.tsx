@@ -1,3 +1,4 @@
+import {closePosition$} from '@/streams/trade/close-position';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang as clang} from '@rx/lang/common.lang';
 import {Button, Loading} from '@rx/widgets';
@@ -26,6 +27,13 @@ export function ClosePosition({row, client}: any) {
         console.error(e);
       }
       setLoading(false);
+    },
+    [client]
+  );
+
+  const handleConfirm = useCallback(
+    (row: Record<string, any>) => {
+      closePosition$.next({visible: true, data: row});
     },
     [client]
   );

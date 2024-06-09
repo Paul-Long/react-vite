@@ -185,7 +185,7 @@ export class LpManager {
     priceLimitDecimal = priceLimitDecimal.mul(baseAssetAmount > 0 ? 1.1 : 0.9);
     const priceLimit = PriceMath.priceToSqrtPriceX64(priceLimitDecimal, 5, 5);
     const baseAssetamount = new BN(Big(baseAssetAmount).times(1_000_000_000).toNumber());
-    const [tickArray0, tickArray1, tickArray2] = await tm.getFillOrderTickArrays(
+    const tickArrs = await tm.getFillOrderTickArrays(
       program,
       authority,
       perpMarket,
@@ -217,6 +217,13 @@ export class LpManager {
 
     const instruction = await program.methods
       .removePerpLpShares(new BN(Big(rmLiquidityPercent).times(1_000_000_0).toString()), priceLimit)
+      .remainingAccounts([
+        ...tickArrs.map((t) => ({
+          pubkey: t,
+          isSigner: false,
+          isWritable: true,
+        })),
+      ])
       .accounts({
         state: am.statePda,
         driftSigner: am.signerPda,
@@ -231,9 +238,6 @@ export class LpManager {
         tokenOwnerAccountB: quoteAssetVault,
         tokenMintA: tokenMintA,
         tokenMintB: tokenMintB,
-        tickArray0,
-        tickArray1,
-        tickArray2,
         marginMarket,
         marginMarketVault,
         oracle,
@@ -280,25 +284,6 @@ export class LpManager {
 
     const tickArrayLower = tickArrays[0];
     const tickArrayUpper = tickArrays[tickArrays.length - 1];
-
-    // try {
-    //   console.log('updateFeesAndRewards *****************');
-    //   console.log('tickLowerIndex : ', tickLowerIndex);
-    //   console.log('tickUpperIndex : ', tickUpperIndex);
-    //   console.log(
-    //     'tickArrayLower : ',
-    //     tickArrayLower.toBase58(),
-    //     await program.account.tickArray.fetch(tickArrayLower)
-    //   );
-    //   console.log(
-    //     'tickArrayUpper : ',
-    //     tickArrayUpper.toBase58(),
-    //     await program.account.tickArray.fetch(tickArrayUpper)
-    //   );
-    //   console.log('updateFeesAndRewards *****************');
-    // } catch (e) {
-    //   console.error(e);
-    // }
 
     return await program.methods
       .updateFeesAndRewards()

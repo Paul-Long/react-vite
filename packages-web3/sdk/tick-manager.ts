@@ -88,7 +88,7 @@ export class TickManager {
 
     console.log('tickArrays.length', tickArrays.length);
     for (let i = tickArrays.length + 1; i <= 3; ++i) {
-      tickArrays.push(tickArrays[tickArrays.length - 1]);
+      // tickArrays.push(tickArrays[tickArrays.length - 1]);
       console.log('fill tick array');
     }
     return tickArrays;

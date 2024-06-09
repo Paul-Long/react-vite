@@ -348,6 +348,7 @@ export class RateClient {
       ).minus(1);
 
       console.log('****************');
+      console.log('input value : ', params.input, params.amount);
       console.log('baseAssetAmount : ', baseAssetAmount.toString());
       console.log('quoteAssetAmount : ', quoteAssetAmount.toString());
       console.log('entryPrice : ', entryPrice.toString());
@@ -357,6 +358,7 @@ export class RateClient {
       console.log('****************');
 
       return {
+        key: [params.input, params.direction, params.amount].join('_'),
         baseAssetAmount: baseAssetAmount.toString(),
         quoteAssetAmount: quoteAssetAmount.toString(),
         entryPrice: entryPrice.toString(),
@@ -367,8 +369,9 @@ export class RateClient {
     }
 
     return {
-      baseAssetAmount: params.amount,
-      quoteAssetAmount: 0,
+      key: [params.input, params.direction, params.amount].join('_'),
+      baseAssetAmount: params.input === 'amount' ? params.amount : 0,
+      quoteAssetAmount: params.input === 'margin' ? params.amount : 0,
       entryPrice: 0,
       sqrtPrice: 0,
       impliedSqrtRate: 0,
