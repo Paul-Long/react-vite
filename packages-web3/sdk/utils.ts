@@ -1,7 +1,7 @@
 import {PDA} from '@/sdk/PDA';
 import {PublicKey} from '@solana/web3.js';
 
-export const PROGRAM_ID = new PublicKey('6cYMUFsS1ApVQi3HZMG9dGeyobZkg7YTg3tSnf8QYCrL');
+export const PROGRAM_ID = new PublicKey('8EbMSp52FXmrAV64s85xzyCXGUDVxmmMaA5VK1uHT8To');
 
 export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
 
