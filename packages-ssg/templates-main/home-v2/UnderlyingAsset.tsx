@@ -33,23 +33,23 @@ function Asset(props: {title: string; desc: string; images: string[]}) {
 
 const assets = [
   {
-    title: 'Liquid Statking',
-    desc: 'Flexible earnings with liquid assets.',
+    title: 'Liquid Staking',
+    desc: 'On-chain risk-free rate',
     images: ['https://static.rate-x.io/img/v1/298ec1/liquid-staking.svg'],
   },
   {
     title: 'LP Token',
-    desc: 'Share rewards from liquidity pools.',
+    desc: 'Trading fees earned from liquidity pool',
     images: ['https://static.rate-x.io/img/v1/17a53a/lp-token.png'],
   },
   {
     title: 'Stables',
-    desc: 'Stable value with secure assets.',
+    desc: 'Yield-Bearing stable coins',
     images: ['https://static.rate-x.io/img/v1/22f642/stables.svg'],
   },
   {
     title: 'Cross-Chain Asset',
-    desc: 'Seamless transfer across chains.',
+    desc: 'Yield not only from Solana',
     images: ['https://static.rate-x.io/img/v1/fabf22/cross-chain-asset.svg'],
   },
   {

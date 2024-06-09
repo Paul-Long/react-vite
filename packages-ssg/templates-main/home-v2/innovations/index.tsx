@@ -24,7 +24,7 @@ function Left() {
       <div className="font-size-28px lh-28px sm:font-size-48px sm:lh-48px mt-40px">
         Our Trading Mechanism Innovations
       </div>
-      <div className="font-szie-15px lh-15px text-wrap text-#09090A4C mt-20px">
+      <div className="font-size-15px lh-15px text-wrap text-#09090A4C mt-20px">
         To empower the most secure and efficient yield trading experience, we've designed innovative
         mechanisms like Time-Decay AMM, Reserve Vaults, and Multi-Layered Liquidity Pools. These
         features deliver a unique experience and full control over yield trading.

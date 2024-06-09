@@ -18,7 +18,7 @@ function Market(props: {title: string; yield: string; expireIn: string; images: 
         <div className="flex flex-row items-center">
           {props.images.map((im, i) => (
             <img
-              className="min-w-32px h-32px sm:w-40px sm:h-40px last:ml-[-10px]"
+              className="min-w-32px h-32px sm:w-40px sm:h-40px sm:min-w-40px sm:min-h-40px last:ml-[-10px]"
               key={im}
               src={im}
               alt={props.title}
@@ -41,19 +41,22 @@ const markets = [
     title: 'SOL Staking',
     yield: '--%',
     expireIn: '226 days',
-    images: ['https://static.rate-x.io/img/v1/85589f/SOL.svg'],
+    // images: ['https://static.rate-x.io/img/v1/85589f/SOL.svg'],
+    images: ['https://static.rate-x.io/img/v1/c9ec99/sol-2.svg'],
   },
   {
     title: 'JitoSOL',
     yield: '--%',
     expireIn: '90 days',
-    images: ['https://static.rate-x.io/img/v1/215135/JitoSOL.svg'],
+    // images: ['https://static.rate-x.io/img/v1/215135/JitoSOL.svg'],
+    images: ['https://static.rate-x.io/img/v1/e1350d/jito-sol.svg'],
   },
   {
     title: 'JLP',
     yield: '--%',
     expireIn: '302 days',
-    images: ['https://static.rate-x.io/img/v1/220737/JLP.svg'],
+    // images: ['https://static.rate-x.io/img/v1/220737/JLP.svg'],
+    images: ['https://static.rate-x.io/img/v1/4f95e0/SOL-JLP.svg'],
   },
   {
     title: 'USDT/USDC',

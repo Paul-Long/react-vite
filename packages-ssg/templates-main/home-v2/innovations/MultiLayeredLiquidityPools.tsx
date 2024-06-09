@@ -16,8 +16,8 @@ export function MultiLayeredLiquidityPools(props: {
         />
         <div className="font-size-20px lh-20px mt-28px">Multi-Layered Liquidity Pools</div>
         <div className="font-size-15px lh-15px text-#09090A4C mt-6px">
-          Cross-pool auto-allocated or single-pool customized concentrated liquidity, the choice is
-          yours.
+          Choose between cross-pool auto-allocated liquidity or single-pool customized concentrated
+          liquidity.
         </div>
         <div
           className="font-size-15px lh-15px text-#09090A mt-12px cursor-pointer"
@@ -54,8 +54,8 @@ export function MultiLayeredLiquidityPools(props: {
               Multi-Layered Liquidity Pools
             </div>
             <div className="text-#09090A4C">
-              Cross-pool auto-allocated or single-pool customized concentrated liquidity, the choice
-              is yours.
+              Choose between cross-pool auto-allocated liquidity or single-pool customized
+              concentrated liquidity.
             </div>
             <div className="flex flex-col font-size-15px lh-15px gap-12px mt-30px">
               <div>

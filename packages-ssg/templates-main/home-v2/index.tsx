@@ -61,18 +61,20 @@ export default function () {
   }
   return (
     <Wrap className="flex flex-col w-full h-full sm:min-w-1381px">
-      <Header />
-      <Delay delay={0.5}>
-        <Banner />
-        <Delay delay={2.5}>
-          <Features />
-          <YieldMarket />
-          <UnderlyingAsset />
-          <Innovations />
-          <Powered />
-          <Footer />
+      <div className="bg-#09090a">
+        <Header />
+        <Delay delay={0.5}>
+          <Banner />
+          <Delay delay={2.5}>
+            <Features />
+            <YieldMarket />
+            <UnderlyingAsset />
+            <Innovations />
+            <Powered />
+            <Footer />
+          </Delay>
         </Delay>
-      </Delay>
+      </div>
     </Wrap>
   );
 }

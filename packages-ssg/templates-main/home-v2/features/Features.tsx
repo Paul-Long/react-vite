@@ -24,18 +24,20 @@ export function Features() {
 
 const items = {
   feature1: {
-    title: 'Trade Yield',
-    desc: 'Engage in trading future yields to optimize your investment strategy. Whether aiming for profit or hedging against risks, our platform offers flexible trading options based on market trends and personal strategies.',
-    mDesc: 'Engage in trading future yields to optimize your investment strategy.',
+    title: 'Margin Yield Trading',
+    desc: "Trade futures and uncertain yields with leverage. Whether you're aiming for profit or hedging against risks, we offer capital efficiency and low slippage for you.",
+    mDesc: 'Trade futures and uncertain yields with leverage.',
   },
   feature2: {
-    title: 'Create Yield Asset',
-    desc: 'Customize yield assets tailored to your needs and market conditions. Create personalized yield assets to diversify and strengthen your investment portfolio, making it more resilient and adaptable.',
-    mDesc: 'Customize yield assets tailored to your needs and market conditions.',
+    title: 'Synth Yield Asset',
+    desc: 'Create market-driven yield-bearing assets with synthetic YT. Customize your risk-return profile and build the assets you need.',
+    mDesc:
+      'Create market-driven yield-bearing assets with synthetic YT. Customize your risk-return profile and build the assets you need.',
   },
   feature3: {
-    title: 'Build Strategy Vault',
-    desc: 'Enhance your earnings with our Strategy Vaults. These intelligent vaults combine market data and advanced algorithms to help you achieve higher returns and effective risk management.',
-    mDesc: 'Enhance your earnings with our Strategy Vaults.',
+    title: 'Fix & Enhanced Vaults',
+    desc: 'Build fixed return or yield-enhancement vaults by combining yield-bearing assets and yield derivatives. This approach maximizes principal protection while delivering high and stable returns.',
+    mDesc:
+      'Build fixed income or yield-enhancement vaults  for high, stable returns with maximum principal protection.',
   },
 };
