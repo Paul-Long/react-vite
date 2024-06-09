@@ -33,15 +33,15 @@ export function TimeDecayAMM(props: {inline?: boolean; show: string; onShow: (v:
         onClose={() => props.onShow('')}
         inline={!!props.inline}
       >
-        <div
-          className={clsx(
-            'sm:absolute sm:top-50px sm:left-50px',
-            'flex justify-center items-center my-50px sm:py-0 sm:px-30px sm:py-20px'
-          )}
-        >
-          <img src="https://static.rate-x.io/img/v1/7475eb/time-decay-amm.svg" alt="" width={254} />
-        </div>
-        <div className="relative flex flex-col items-start sm:flex-row px-12px sm:px-30px sm:pl-390px pb-60px">
+        {/*<div*/}
+        {/*  className={clsx(*/}
+        {/*    'sm:absolute sm:top-50px sm:left-50px',*/}
+        {/*    'flex justify-center items-center my-50px sm:py-0 sm:px-30px sm:py-20px'*/}
+        {/*  )}*/}
+        {/*>*/}
+        {/*  <img src="https://static.rate-x.io/img/v1/7475eb/time-decay-amm.svg" alt="" width={254} />*/}
+        {/*</div>*/}
+        <div className="relative flex flex-col items-start sm:flex-row px-12px sm:px-30px pb-60px">
           <div className="flex flex-col text-#09090A">
             <img
               className="w-30px h-30px sm:mt-60px"
@@ -65,21 +65,13 @@ export function TimeDecayAMM(props: {inline?: boolean; show: string; onShow: (v:
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Time Decay: </span>
-                <span>
-                  Reduces potential impermanent loss (IL) as contracts approach expiration.
-                </span>
+                <span> • Constant liquidity for yield trading.</span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Liquidity Optimization: </span>
-                <span>
-                  Provides consistent and efficient liquidity for all contracts of the same
-                  underlying asset.
-                </span>
+                <span>• Novel auto-rebalancing mechanism designed for YT.</span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Risk Management: </span>
-                <span>Time factor reduces IL risk, ensuring a stable trading environment.</span>
+                <span>• Concentrated liquidity to minimize yield impact.</span>
               </div>
               <div>
                 <div
@@ -93,14 +85,21 @@ export function TimeDecayAMM(props: {inline?: boolean; show: string; onShow: (v:
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Auto Adjustment: </span>
-                <span>As contracts near expiration, IL decreases, ensuring stable returns.</span>
+                <span>
+                  • The liquidity pool on RateX AMM comprises YT/ST (where ST is a standardized
+                  version of the underlying asset).
+                </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Liquidity Optimization: </span>
                 <span>
-                  Provides consistent and efficient liquidity for all contracts of the same
-                  underlying asset.
+                  • RateX AMM features a novel auto-rebalancing mechanism for YT, whose value trends
+                  towards zero as it approaches maturity.
+                </span>
+              </div>
+              <div className="font-size-15px lh-18px">
+                <span>
+                  • RateX AMM uses a similar method to Uniswap V3 to concentrate liquidity within
+                  user-specific yield ranges.
                 </span>
               </div>
               <div>
@@ -115,16 +114,22 @@ export function TimeDecayAMM(props: {inline?: boolean; show: string; onShow: (v:
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Reduced Risk: </span>
-                <span>Time decay effectively minimizes IL.</span>
+                <span>
+                  • The YT/ST pool is more capital efficient than the PT/ST pool of comparable
+                  protocols, since the value of YT is a relative small portion of the PT.
+                </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Increased Returns: </span>
-                <span>Optimized liquidity management enhances potential gains.</span>
+                <span>
+                  • The auto-rebalancing mechanism ensures consistent yield when the price of YT
+                  drops due to distributed accrued yield.
+                </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">User-Friendly: </span>
-                <span>Automated operations simplify the trading process.</span>
+                <span>
+                  • Concentrated liquidity optimizes capital efficiency for LPs and minimizes price
+                  slippage for traders.
+                </span>
               </div>
             </div>
           </div>

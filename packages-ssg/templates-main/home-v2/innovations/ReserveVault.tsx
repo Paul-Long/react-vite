@@ -26,15 +26,15 @@ export function ReserveVault(props: {inline?: boolean; show: string; onShow: (v:
         onClose={() => props.onShow('')}
         inline={!!props.inline}
       >
-        <div
-          className={clsx(
-            'sm:absolute sm:top-30px sm:left-30px',
-            'flex justify-center items-center my-30px sm:my-0 sm:px-30px sm:py-20px'
-          )}
-        >
-          <img src="https://static.rate-x.io/img/v1/13bccf/reserve_vault.svg" alt="" width={320} />
-        </div>
-        <div className="relative flex flex-col items-start sm:flex-row sm:px-30px sm:pl-390px pb-60px">
+        {/*<div*/}
+        {/*  className={clsx(*/}
+        {/*    'sm:absolute sm:top-30px sm:left-30px',*/}
+        {/*    'flex justify-center items-center my-30px sm:my-0 sm:px-30px sm:py-20px'*/}
+        {/*  )}*/}
+        {/*>*/}
+        {/*  <img src="https://static.rate-x.io/img/v1/13bccf/reserve_vault.svg" alt="" width={320} />*/}
+        {/*</div>*/}
+        <div className="relative flex flex-col items-start sm:flex-row sm:px-30px pb-60px">
           <div className="flex flex-col text-#09090A px-12px sm:px-0">
             <img
               className="w-30px h-30px sm:mt-60px"
@@ -58,16 +58,10 @@ export function ReserveVault(props: {inline?: boolean; show: string; onShow: (v:
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Liquidity Buffer: </span>
-                <span>
-                  Maintains additional liquidity to ensure stability during market fluctuations.
-                </span>
+                <span>• Yield source of synthetic YT minted.</span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Risk Mitigation: </span>
-                <span>
-                  Acts as a protective buffer against market volatility, safeguarding user assets.
-                </span>
+                <span>• Rebalance counterpart to the AMM.</span>
               </div>
               <div>
                 <div
@@ -81,14 +75,23 @@ export function ReserveVault(props: {inline?: boolean; show: string; onShow: (v:
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Safety Reserve: </span>
                 <span>
-                  Holds extra liquidity to support trades during periods of high volatility.
+                  • When underlying assets are deposited into the Reserve Vault, a corresponding
+                  amount of YT and ST are minted. The amount of ST is automatically rebased
+                  according to the actual APY of the underlying assets.
                 </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Shock Absorption: </span>
-                <span>Manages sudden market changes, providing stable returns for users.</span>
+                <span>
+                  • When the yield of the underlying asset is received, the Reserve Vault
+                  automatically streams the yield to YT holders.
+                </span>
+              </div>
+              <div className="font-size-15px lh-18px">
+                <span>
+                  • The Reserve Vault works as a counterpart to the AMM to facilitate the
+                  auto-rebalancing mechanism.
+                </span>
               </div>
               <div>
                 <div
@@ -102,16 +105,21 @@ export function ReserveVault(props: {inline?: boolean; show: string; onShow: (v:
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Stability: </span>
-                <span>Ensures continuous liquidity and market stability.</span>
+                <span>
+                  • Ensures the value of ST equals to the amount of underlying assets deposited.
+                </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Protection: </span>
-                <span>Shields user assets from market risks.</span>
+                <span>
+                  • Ensures the holder of YT receives the streamed yield from the deposited
+                  underlying assets.
+                </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Efficiency: </span>
-                <span>Improves overall platform performance and user experience.</span>
+                <span>
+                  • Supports the AMM's rebalancing mechanism, which is essential for accommodating
+                  the time-decay feature of YT.
+                </span>
               </div>
             </div>
           </div>

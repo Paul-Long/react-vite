@@ -30,19 +30,19 @@ export function MultiLayeredLiquidityPools(props: {
         onClose={() => props.onShow('')}
         inline={!!props.inline}
       >
-        <div
-          className={clsx(
-            'sm:absolute sm:top-30px sm:left-30px',
-            'flex justify-center items-center my-30px sm:my-0 sm:px-30px sm:py-20px'
-          )}
-        >
-          <img
-            src="https://static.rate-x.io/img/v1/0c429f/multi-layered-liquidity-pools.svg"
-            alt=""
-            width={320}
-          />
-        </div>
-        <div className="relative flex flex-col items-start sm:flex-row sm:px-30px sm:pl-390px pb-60px">
+        {/*<div*/}
+        {/*  className={clsx(*/}
+        {/*    'sm:absolute sm:top-30px sm:left-30px',*/}
+        {/*    'flex justify-center items-center my-30px sm:my-0 sm:px-30px sm:py-20px'*/}
+        {/*  )}*/}
+        {/*>*/}
+        {/*  <img*/}
+        {/*    src="https://static.rate-x.io/img/v1/0c429f/multi-layered-liquidity-pools.svg"*/}
+        {/*    alt=""*/}
+        {/*    width={320}*/}
+        {/*  />*/}
+        {/*</div>*/}
+        <div className="relative flex flex-col items-start sm:flex-row sm:px-30px pb-60px">
           <div className="flex flex-col text-#09090A px-12px sm:px-0">
             <img
               className="w-30px h-30px sm:mt-60px"
@@ -68,14 +68,10 @@ export function MultiLayeredLiquidityPools(props: {
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Layered Liquidity: </span>
-                <span>
-                  Multiple pools offer support for different contract types, enhancing flexibility.
-                </span>
+                <span>• Simplified liquidity provision through ULP.</span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Dynamic Allocation: </span>
-                <span>Liquidity is allocated efficiently across layers based on demand.</span>
+                <span>• Fully customized liquidity provision through SLP.</span>
               </div>
               <div>
                 <div
@@ -89,15 +85,17 @@ export function MultiLayeredLiquidityPools(props: {
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Flexible Distribution: </span>
                 <span>
-                  Liquidity is dynamically spread across various layers to meet market needs.
+                  • SLP (Specific Liquidity Provision): SLP positions function similarly to
+                  concentrated liquidity pools in Uniswap V3, but with a key difference. Instead of
+                  focusing on price ranges, SLPs concentrate liquidity within specific yield ranges.
                 </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Scalable Support: </span>
                 <span>
-                  Adapts to changing market conditions, ensuring robust liquidity for all contracts.
+                  • ULP (Universial Liquidity Provision): The ULP token is designed for ease of use.
+                  ULP is a portfolio of SLPs, distributing deposited capital across various pools
+                  based on the trading volume and open interests without the need for rebalancing.
                 </span>
               </div>
               <div>
@@ -112,16 +110,21 @@ export function MultiLayeredLiquidityPools(props: {
                 </div>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Flexibility: </span>
-                <span>Accommodates various contract needs with robust support.</span>
+                <span>
+                  • Effortless Fee Earning: ULP tokens offer a convenient way for users to
+                  participate in liquidity provision and earn transaction fees. The automated
+                  allocation process simplifies the experience, making it accessible to a broader
+                  audience.
+                </span>
               </div>
               <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Efficiency: </span>
-                <span>Maximizes liquidity usage, optimizing returns.</span>
-              </div>
-              <div className="font-size-15px lh-18px">
-                <span className="fw-bold">Scalability: </span>
-                <span>Grows with market demand, maintaining liquidity and stability.</span>
+                <span>
+                  • High-Yield Potential: For sophisticated users, SLPs provide an opportunity to
+                  earn significantly higher APRs through concentrated liquidity. By targeting
+                  specific yield ranges, users can potentially amplify their returns, though this
+                  approach carries greater risk and requires a deeper understanding of the
+                  mechanics.
+                </span>
               </div>
             </div>
           </div>
