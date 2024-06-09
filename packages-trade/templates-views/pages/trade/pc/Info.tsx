@@ -1,6 +1,7 @@
 import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/common.lang';
+import {Tooltip} from '@rx/widgets';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
 import {useContractInfo} from '../hooks/use-contract-info';
@@ -10,9 +11,9 @@ export function Info() {
   const {data} = useContractInfo();
   return (
     <div className="flex-1 flex flex-row items-center gap-24px">
-      {genInfo(LG as any, data).map((o) => (
+      {genInfo(LG as any, data).map((o, i) => (
         <div
-          key={o.title}
+          key={i}
           className="flex-1 flex flex-col b-solid b-gray-80 not-last:b-r-1px not-last:pr-24px"
         >
           <span className="font-size-14px lh-20px font-normal text-gray-600 text-nowrap">
@@ -42,24 +43,36 @@ const genInfo = (LG: (s: string) => string, data: any) => [
       : '-',
     color: 'text-green-500',
   },
-  {title: 'Price', value: data?.LastPrice ?? '-', color: 'text-yellow-500'},
+  {title: 'Price', value: (data?.LastPrice ?? '-') + ' SOL', color: 'text-yellow-500'},
   {
-    title: 'Cumulative Price',
+    title: (
+      <Tooltip
+        placement="bottom"
+        className="min-w-300px text-wrap"
+        text="cumulative price accounts for both the time-decaying value of YT and the accrued ST earned from YT."
+      >
+        <div className="underline underline-dotted cursor-help">Cumulative Price</div>
+      </Tooltip>
+    ),
     value:
-      !!data?.CumulativePrice && !!data?.LastPrice
+      (!!data?.CumulativePrice && !!data?.LastPrice
         ? numUtil.trimEnd0(
             Big(data?.LastPrice ?? 0)
               .plus(data.CumulativePrice)
               .toFixed(9)
           )
-        : '-',
+        : '-') + ' SOL',
   },
   {
     title: 'Open Interest',
-    value: data?.OpenInterest ? numUtil.trimEnd0(numUtil.floor(data?.OpenInterest ?? 0, 2)) : '-',
+    value:
+      (data?.OpenInterest ? numUtil.trimEnd0(numUtil.floor(data?.OpenInterest ?? 0, 2)) : '-') +
+      ' SOL',
   },
   {
     title: 'Ava.Liquidity',
-    value: data?.AvaLiquidity ? numUtil.trimEnd0(numUtil.floor(data?.AvaLiquidity ?? 0, 2)) : '-',
+    value:
+      (data?.AvaLiquidity ? numUtil.trimEnd0(numUtil.floor(data?.AvaLiquidity ?? 0, 2)) : '-') +
+      ' SOL',
   },
 ];

@@ -358,7 +358,7 @@ export class RateClient {
       console.log('****************');
 
       return {
-        key: [params.input, params.direction, params.amount].join('_'),
+        key: [params.marketIndex, params.input, params.direction, params.amount].join('_'),
         baseAssetAmount: baseAssetAmount.toString(),
         quoteAssetAmount: quoteAssetAmount.toString(),
         entryPrice: entryPrice.toString(),

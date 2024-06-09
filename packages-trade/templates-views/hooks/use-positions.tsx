@@ -45,7 +45,7 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
         render: renderContract(LG),
       },
       {title: 'YT/ST', dataIndex: 'ytst', align: 'right', render: renderYtSt(LG)},
-      {title: LG(clang.PnL), dataIndex: 'pnl', align: 'right', render: renderPNL(LG)},
+      {title: LG(clang.PnL) + '/%', dataIndex: 'pnl', align: 'right', render: renderPNL(LG)},
       {
         title: [LG(clang.Entry), LG(clang.Current)].join('/'),
         dataIndex: 'entry',
