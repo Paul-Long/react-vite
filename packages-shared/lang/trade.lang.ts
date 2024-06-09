@@ -254,4 +254,10 @@ export const lang: any = {
   ConfirmOrder: {
     en: 'Confirm Order',
   },
+  YourPosition: {
+    en: 'Your Position',
+  },
+  ConfirmClose: {
+    en: 'Confirm Close',
+  },
 };

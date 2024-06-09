@@ -3,6 +3,7 @@ import {calcInfo$, order$, swapLoading$} from '@/streams/calc-swap';
 import {query$} from '@/streams/positions';
 import {crossMargin$, waiverQuery$} from '@/streams/trade/cross-margin';
 import {marketIndex$, twap$} from '@/streams/twap';
+import {calcLiqPrice} from '@/streams/utils';
 import {tradeApi} from '@rx/api/trade';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
@@ -15,13 +16,14 @@ import {Big} from 'big.js';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 export function useForm() {
-  const current = useRef<string>('amount');
+  const focus = useRef<string>('amount');
+  const input = useRef<string>('amount');
   const [client] = useStream(rateXClient$);
   const twap: any = useObservable(twap$, {});
   const info = useObservable(calcInfo$, {});
+  const [swapLoading] = useStream(swapLoading$);
   const crossMargin: any = useObservable(crossMargin$, {remainMargin: '0'});
   const baseContract = useObservable(current$, {});
-  const [swapLoading] = useStream(swapLoading$);
 
   const [loading, setLoading] = useState(false);
 
@@ -34,13 +36,7 @@ export function useForm() {
   const leverageN = useMemo(() => state.leverage, [state]);
   const marketIndex = useMemo(() => state.marketIndex, [state]);
   const maxLeverage = useMemo(() => state.maxLeverage, [state]);
-  const entryPrice = useMemo(() => info.entryPrice, [info]);
-  const sqrtPrice = useMemo(() => info.sqrtPrice, [info]);
-  const baseAssetAmount = useMemo(() => info.baseAssetAmount, [info]);
-  const quoteAssetAmount = useMemo(() => info.quoteAssetAmount, [info]);
-  const maxAmount = useMemo(() => info?.maxAmount, [info]);
-  const maxMargin = useMemo(() => info?.maxMargin, [info]);
-  const fee = useMemo(() => info.fee, [info]);
+  const twapPrice = useMemo(() => twap?.[marketIndex], [twap, marketIndex]);
 
   const {connected} = useConnect();
 
@@ -48,110 +44,145 @@ export function useForm() {
     if (!baseContract || !client) {
       return;
     }
-    current.current = 'amount';
+    input.current = 'amount';
     setState((prevState) => ({...prevState, marketIndex: baseContract.id}));
     marketIndex$.next(baseContract.id);
   }, [baseContract, client]);
 
   useEffect(() => {
-    const twapPrice = twap?.[marketIndex];
-    let amount = amountN;
-    if (current.current === 'amount' && !!amountN && !!entryPrice && twapPrice !== undefined) {
-      const nextState: Record<string, any> = {};
-      let margin = Big(amount).times(entryPrice).div(leverageN).round(9, 3).toNumber();
-      if (twapPrice && quoteAssetAmount > 0) {
-        const twapCr = Big(twapPrice)
-          .times(baseAssetAmount)
-          .add(margin)
-          .div(quoteAssetAmount)
-          .toString();
-        console.log('Twap CR : ', twapCr);
-      }
-      nextState.margin = margin;
-      nextState.leverage = leverageN;
-      nextState.maxLeverage = maxLeverage;
-      if (direction === 'LONG') {
-        const denominator = Big(quoteAssetAmount)
-          .times(1.05)
-          .times(1.01)
-          .minus(Big(twapPrice).times(baseAssetAmount));
-        const max = Big(quoteAssetAmount).div(denominator).round(1, 0).toNumber();
-        if (max < leverageN && max > 1.4) {
-          nextState.leverage = max;
-        }
-        if (max > 1.4) {
-          nextState.maxLeverage = Math.min(max, 10);
-        }
-        console.log('Long Max Leverage : ', max, maxLeverage, denominator.toString());
-      } else {
-        if (twapPrice < entryPrice) {
-          nextState.maxLeverage = 10;
-        } else {
-          const denominator = Big(twapPrice)
-            .times(baseAssetAmount)
-            .times(1.05)
-            .times(1.01)
-            .minus(quoteAssetAmount);
-          const max = Big(quoteAssetAmount).div(denominator).round(1, 0).toNumber();
-          if (max < leverageN && max > 1.4) {
-            nextState.leverage = max;
-          }
-          nextState.maxLeverage = Math.min(max, 10);
-          console.log('Short Max Leverage : ', max, maxLeverage, denominator.toString());
-        }
-      }
-      nextState.margin = Big(amount)
-        .times(entryPrice)
-        .div(nextState.leverage)
-        .round(9, 3)
-        .toNumber();
-      setState((prevState: any) => ({...prevState, ...nextState}));
-    }
-    if (current.current === 'margin' && !!marginN) {
-      if (!!baseAssetAmount) {
-        const amount = Big(baseAssetAmount).round(9, 0).toString();
-        setState((prevState: any) => {
-          return {
-            ...prevState,
-            amount,
-          };
-        });
-      }
-    }
-  }, [
-    amountN,
-    marginN,
-    leverageN,
-    marketIndex,
-    direction,
-    entryPrice,
-    sqrtPrice,
-    twap,
-    maxLeverage,
-  ]);
-
-  useEffect(() => {
-    console.log(
-      'reset input value : ',
-      amountN > maxAmount,
-      amountN,
-      marginN,
-      maxAmount,
-      maxMargin,
-      swapLoading
-    );
-    if (swapLoading) {
+    if (input.current !== 'amount' || focus.current !== 'amount') {
       return;
     }
-    if (current.current === 'amount' && !!maxAmount && !!amountN && Big(amountN).gt(maxAmount)) {
-      console.log('change amount by max value : ', amountN, maxAmount);
-      // setState((prevState) => ({...prevState, amount: maxAmount}));
+    const key = [input.current, direction, amountN].join('_');
+    if (key !== info?.key) {
+      return;
     }
-    if (current.current === 'margin' && !!marginN && !!maxMargin && Big(marginN).gt(maxMargin)) {
-      console.log('change margin by max value : ', marginN, maxMargin);
-      // setState((prevState) => ({...prevState, margin: maxMargin}));
+    const nextState: Record<string, any> = {};
+
+    const max = calcMaxLeverage(direction, info);
+    let leverage = leverageN;
+    if (max !== maxLeverage) {
+      nextState.maxLeverage = max;
+      if (leverageN > max) {
+        nextState.leverage = max;
+        leverage = max;
+      }
     }
-  }, [amountN, marginN, maxAmount, maxMargin, swapLoading]);
+    if (info.baseAssetAmount !== amountN) {
+      nextState.amount = info.baseAssetAmount;
+    }
+    const margin = Big(info.baseAssetAmount)
+      .times(info.entryPrice)
+      .div(leverage)
+      .round(9, 3)
+      .toString();
+    if (margin !== marginN) {
+      nextState.margin = margin;
+    }
+    if (Object.keys(nextState).length > 0) {
+      setState((prevState) => ({...prevState, ...nextState}));
+    }
+  }, [amountN, marginN, leverageN, direction, info, maxLeverage]);
+
+  useEffect(() => {
+    if (input.current !== 'margin' || focus.current !== 'margin' || !marginN) {
+      return;
+    }
+    const key = [input.current, direction, Big(marginN).times(leverageN).toString()].join('_');
+    if (key !== info?.key) {
+      return;
+    }
+    const nextState: Record<string, any> = {};
+
+    const max = calcMaxLeverage(direction, info);
+    let leverage = leverageN;
+    if (max !== maxLeverage) {
+      nextState.maxLeverage = max;
+      if (leverageN > max) {
+        nextState.leverage = max;
+        leverage = max;
+      }
+    }
+
+    if (amountN !== info.baseAssetAmount) {
+      nextState.amount = info.baseAssetAmount;
+    }
+    if (info.quoteAssetAmount) {
+      const margin = Big(info.quoteAssetAmount).div(leverage).round(8, 0).toNumber();
+      if (margin !== Number(marginN)) {
+        nextState.margin = margin;
+      }
+    }
+    if (Object.keys(nextState).length > 0) {
+      setState((prevState) => ({...prevState, ...nextState}));
+    }
+  }, [amountN, marginN, leverageN, direction, info]);
+
+  useEffect(() => {
+    if (input.current === 'amount' && !!info?.baseAssetAmount && !!info?.entryPrice) {
+      const margin = Big(info.baseAssetAmount)
+        .times(info.entryPrice)
+        .div(leverageN)
+        .round(9, 3)
+        .toString();
+      if (margin !== marginN) {
+        setState((prevState) => ({...prevState, margin}));
+      }
+    }
+  }, [marginN, leverageN, info]);
+
+  const info2 = useMemo<Record<string, any>>(() => {
+    const data: Record<string, any> = {};
+    if (!state.margin) {
+      data.fee = '-';
+    } else {
+      data.fee = Big(!state.margin ? 0 : state.margin)
+        .times(state.leverage)
+        .times(0.001)
+        .toFixed(9);
+    }
+    if (!!state.amount && !!state.margin && !!info?.entryPrice) {
+      const st = Big(info.entryPrice)
+        .times(state.amount || 0)
+        .toNumber();
+      data.lipPrice = calcLiqPrice(
+        state.direction as any,
+        baseContract.minimumMaintainanceCr,
+        state.amount,
+        st,
+        state.margin
+      );
+    } else {
+      data.lipPrice = '-';
+    }
+    return {...(info || {}), ...data};
+  }, [baseContract, state, info]);
+
+  const calcMaxLeverage = useCallback(
+    (direction: string, info: Record<string, any>) => {
+      if (direction === 'LONG') {
+        const denominator = Big(info.quoteAssetAmount)
+          .times(1.05)
+          .times(1.01)
+          .minus(Big(twapPrice).times(info.baseAssetAmount))
+          .abs();
+        const max = Big(info.quoteAssetAmount).div(denominator).round(1, 0).toNumber();
+        return Math.min(max, 10);
+      }
+      if (twapPrice < info.entryPrice) {
+        return 10;
+      }
+      const denominator = Big(twapPrice)
+        .times(info.baseAssetAmount)
+        .times(1.05)
+        .times(1.01)
+        .minus(info.quoteAssetAmount)
+        .abs();
+      const max = Big(info.quoteAssetAmount).div(denominator).round(1, 0).toNumber();
+      return Math.min(max, 10);
+    },
+    [twapPrice]
+  );
 
   const handleChange = useCallback(
     (key: string) => {
@@ -159,11 +190,11 @@ export function useForm() {
         setState((prevState) => {
           const newState: any = {...prevState, [key]: v};
           if (key === 'amount') {
-            current.current = key;
+            input.current = key;
             !v && (newState.margin = '');
           }
           if (key === 'margin') {
-            current.current = key;
+            input.current = key;
             !v && (newState.amount = '');
           }
           return newState;
@@ -174,8 +205,24 @@ export function useForm() {
   );
 
   useEffect(() => {
-    order$.next({...state, currentKey: current.current});
-  }, [state]);
+    if (input.current === 'margin' && !marginN) {
+      return;
+    }
+    if (input.current === 'amount' && !state.amount) {
+      return;
+    }
+    let key: string = '';
+    if (input.current === 'amount') {
+      key = [input.current, state.direction, state.amount].join('_');
+    }
+    if (input.current === 'margin') {
+      const margin = Big(state.margin).times(state.leverage).toString();
+      key = [input.current, state.direction, margin].join('_');
+    }
+    if (info?.key !== key) {
+      order$.next({...state, currentKey: input.current});
+    }
+  }, [state, info]);
 
   const handleSubmit = useCallback(
     async (checked: boolean = false) => {
@@ -191,7 +238,7 @@ export function useForm() {
       const {margin, marginType, direction, amount} = state;
       const remainMargin = Big(crossMargin?.remainMargin ?? 0);
       let newMargin: string | number = margin;
-      newMargin = Big(newMargin).add(fee).toString();
+      newMargin = Big(newMargin).add(info2.fee).toString();
 
       if (state.marginWaiver && marginType === 'CROSS') {
         if (remainMargin.gt(newMargin)) {
@@ -247,18 +294,20 @@ export function useForm() {
       setLoading(false);
       setVisible(false);
     },
-    [connected, state, baseContract, client, fee]
+    [connected, state, baseContract, client, info2]
   );
 
   return {
+    input,
+    focus,
     baseContract,
     state,
-    info,
+    info2,
     visible,
-    current,
     handleChange,
     handleSubmit,
     loading,
+    swapLoading,
     crossMargin,
     setVisible,
   };
