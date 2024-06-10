@@ -7,16 +7,16 @@ import {useCallback, useState} from 'react';
 export function PerpMarketInfo() {
   const [client] = useStream(rateXClient$);
   const [state, setState] = useState<any>({
-    0: {tickCurrentIndex: '', tokenVaultA: 0, tokenVaultB: 0},
-    1: {tickCurrentIndex: '', tokenVaultA: 0, tokenVaultB: 0},
+    2: {tickCurrentIndex: '', tokenVaultA: 0, tokenVaultB: 0},
+    3: {tickCurrentIndex: '', tokenVaultA: 0, tokenVaultB: 0},
   });
   const query = useCallback(async () => {
     if (!client) {
       return;
     }
-    const info0 = await client?.getPerpMarketInfo({marketIndex: 0});
-    const info1 = await client?.getPerpMarketInfo({marketIndex: 1});
-    setState({0: info0, 1: info1});
+    const info0 = await client?.getPerpMarketInfo({marketIndex: 2});
+    const info1 = await client?.getPerpMarketInfo({marketIndex: 3});
+    setState({2: info0, 3: info1});
   }, [client]);
   return (
     <StyledWrap className="flex flex-col gap-24px">
