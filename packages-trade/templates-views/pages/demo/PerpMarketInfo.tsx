@@ -21,7 +21,7 @@ export function PerpMarketInfo() {
   return (
     <StyledWrap className="flex flex-col gap-24px">
       <div className="font-size-18px fw-semibold">PerpMarket Vault </div>
-      {['0', '1'].map((k) => (
+      {['2', '3'].map((k) => (
         <div className="flex flex-row items-start" key={k}>
           <div className="px-10px">Market Index {k}</div>
           <div className="flex flex-col">
