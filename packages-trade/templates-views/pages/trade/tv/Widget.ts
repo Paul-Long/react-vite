@@ -21,10 +21,12 @@ export class Widget extends WidgetBase {
       disabled_features: [
         'volume_force_overlay',
         'use_localstorage_for_settings',
-        'header_widget',
+        // 'header_widget',
+        'header_resolutions',
         'header_symbol_search',
         'header_compare',
         'header_undo_redo',
+        'header_indicators',
         'left_toolbar',
         'header_quick_search',
         'display_market_status',

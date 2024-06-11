@@ -1,6 +1,7 @@
 import {IMAGES} from '@/pages/lp/const';
 import {apy$} from '@/streams/lp/apy';
 import {filter$} from '@/streams/lp/filter';
+import {positions$} from '@/streams/lp/position-all';
 import {numUtil} from '@rx/helper/num';
 import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
@@ -9,6 +10,7 @@ import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
 import {contracts$} from '@rx/streams/config';
 import {ttmMap$} from '@rx/streams/epoch';
+import {ratePriceMap$} from '@rx/streams/market/rate-price';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
@@ -19,7 +21,7 @@ export function SpecificPool() {
   const {LG} = useLang();
   const {fixLink} = useFixLink();
   const navigate = useNavigate();
-  const {contracts} = useData();
+  const {contracts, posUSD} = useData();
   return (
     <div className="flex flex-col mt-38px">
       <div className="font-size-16px lh-20px fw-semibold">{LG(lang.SpecificLiquidityPool)}</div>
@@ -52,8 +54,10 @@ export function SpecificPool() {
               <div className="flex flex-col">
                 <span className="font-size-14px lh-20px">{c.symbol}</span>
                 <div className="flex flex-row items-center gap-4px">
-                  {/*<span className="text-gray-400">Wallet: </span>*/}
-                  {/*<span className="text-gray-600">$500.00</span>*/}
+                  <span className="text-gray-400">Wallet: </span>
+                  <span className="text-gray-600">
+                    ${posUSD[c.symbol] ? numUtil.delimit(posUSD[c.symbol]) : '-'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -101,6 +105,8 @@ function useData() {
   const ttmMap: any = useObservable(ttmMap$, {});
   const last = useObservable<Record<string, any>>(lastTrade$, {});
   const allContracts = useObservable(contracts$, []);
+  const ratePriceMap = useObservable<Record<string, any>>(ratePriceMap$, {});
+  const positions = useObservable(positions$, []);
 
   const contracts = useMemo(() => {
     let contracts = [];
@@ -123,6 +129,7 @@ function useData() {
 
       const key = [c.symbolLevel1Category, c.symbolLevel2Category, c.term].join('_');
       const apy = apyList?.find((a: any) => a.symbol === c.symbol && a.term === '7D');
+
       const tmp = {
         ...c,
         ...(trade || {}),
@@ -132,15 +139,36 @@ function useData() {
         maturity: ttmMap?.[key]?.seconds,
         maturityStr: ttmMap?.[key].ttm + ttmMap?.[key].unit,
       };
+
       if (apy) {
         tmp.apr =
           Big(apy?.apr ?? 0)
             .times(100)
             .toFixed(4) + '%';
       }
+
       return tmp;
     });
   }, [filter, allContracts, last, ttmMap, apyList]);
 
-  return {contracts};
+  const posUSD = useMemo(() => {
+    const price = ratePriceMap?.['SOLUSDT'];
+    if (!price) {
+      return {};
+    }
+    const symbolMap = positions.reduce<Record<string, Big>>((obj, pos) => {
+      const {symbol} = pos.contract;
+      if (!obj?.[symbol]) {
+        obj[symbol] = Big(0);
+      }
+      obj[symbol] = obj[symbol].add(pos.total || 0);
+      return obj;
+    }, {});
+    return Object.keys(symbolMap).reduce<Record<string, string>>((sum, symbol) => {
+      sum[symbol] = symbolMap[symbol].times(price).round(2, 0).toString();
+      return sum;
+    }, {});
+  }, [positions, ratePriceMap]);
+
+  return {contracts, posUSD};
 }

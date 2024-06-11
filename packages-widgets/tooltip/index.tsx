@@ -26,22 +26,29 @@ export const Tooltip = ({
       {isTooltipVisible && (
         <div
           className={clsx(
-            'absolute z-10 bg-black rounded-md shadow-md left-1/2 transform -translate-x-1/2',
-            'border-1px border-solid border-gray-80',
-            [placement === 'top' && 'bottom-full mb-2'],
-            [placement === 'bottom' && 'top-full mt-2']
+            'absolute z-10 bg-black rounded-4px shadow-md left-1/2 transform -translate-x-1/2',
+            [placement === 'top' && 'bottom-full mb-4px'],
+            [placement === 'bottom' && 'top-full mt-4px']
           )}
         >
           <div
             className={clsx(
-              'w-auto px-12px py-2px text-sm text-white bg-gray-80 rounded-md',
+              'w-auto px-12px py-2px text-sm text-white bg-green-80',
+              'border-1px border-solid border-gray-40 rounded-4px',
               className
             )}
             role="tooltip"
           >
             {text}
-            {/* <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 mb-[-6px] w-3 h-3 bg-black rotate-45" /> */}
           </div>
+          <div
+            className={clsx(
+              'absolute z-13 left-1/2 transform -translate-x-1/2 w-0 h-0',
+              'border-4px border-solid border-transparent',
+              [placement === 'top' && 'border-t-green-80  bottom-[-8px]'],
+              [placement === 'bottom' && 'border-b-green-80  top-[-8px]']
+            )}
+          ></div>
         </div>
       )}
     </div>

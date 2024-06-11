@@ -1,6 +1,6 @@
-import {epochApi} from '@rx/api/epoch.ts';
+import {epochApi} from '@rx/api/epoch';
 import {BehaviorSubject, Subject, switchMap} from 'rxjs';
-import {ratePrice$} from './subscription/rate-price.ts';
+import {ratePrice$} from './subscription/rate-price';
 
 const _priceMap$ = new BehaviorSubject({});
 export const priceMap$ = _priceMap$.asObservable();

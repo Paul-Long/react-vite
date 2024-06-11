@@ -142,7 +142,9 @@ function renderPNL(LG: any) {
       </div>
       {row.marginType !== 'CROSS' && (
         <div className={clsx([row.pnl > 0 && 'text-green-500'], [row.pnl < 0 && 'text-red-500'])}>
-          {!!row?.pnl && !!row?.margin ? Big(row?.pnl).div(row.margin).toFixed(2) + '%' : '-'}
+          {!!row?.pnl && !!row?.margin
+            ? Big(row?.pnl).times(100).div(row.margin).toFixed(2) + '%'
+            : '-'}
         </div>
       )}
     </div>

@@ -159,6 +159,7 @@ function useAction(data: any) {
 
   const handleAction = useCallback(async (v: Action) => {
     setAction(v);
+    setValue('');
   }, []);
 
   const handleChange = useCallback(

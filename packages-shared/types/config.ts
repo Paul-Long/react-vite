@@ -13,7 +13,7 @@ interface ConfigSymbol {
   expiration: string;
   id: number;
   sort: number;
-  symbol: number;
+  symbol: string;
   symbolLevel1Category: string;
   symbolLevel2Category: string;
   kValue: string;

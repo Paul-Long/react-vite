@@ -19,8 +19,8 @@ async function load() {
 }
 
 function mergeData(state: Record<string, any>, price: Record<string, any>) {
-  if (!price?.SecuuurityID) {
+  if (!price?.SecurityID) {
     return state;
   }
-  return {...state, [price.SecurityID]: price.IndexPrice};
+  return {...state, [price.SecurityID]: price.MarkPrice};
 }

@@ -2,6 +2,7 @@ import {current$} from '@/pages/trade/streams/streams';
 import {calcInfo$, order$, swapLoading$} from '@/streams/calc-swap';
 import {query$} from '@/streams/positions';
 import {crossMargin$, waiverQuery$} from '@/streams/trade/cross-margin';
+import {orderStatus$} from '@/streams/trade/order-status';
 import {marketIndex$, twap$} from '@/streams/twap';
 import {calcLiqPrice} from '@/streams/utils';
 import {tradeApi} from '@rx/api/trade';
@@ -9,6 +10,7 @@ import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {walletModalVisible$} from '@rx/streams/wallet';
 import {useConnect} from '@rx/web3/hooks/use-connect';
+import {RateClient} from '@rx/web3/sdk';
 import {updateBalance$} from '@rx/web3/streams/balance';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Toast} from '@rx/widgets';
@@ -18,7 +20,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 export function useForm() {
   const focus = useRef<string>('amount');
   const input = useRef<string>('amount');
-  const [client] = useStream(rateXClient$);
+  const [client] = useStream<RateClient>(rateXClient$);
   const twap: any = useObservable(twap$, {});
   const info = useObservable(calcInfo$, {});
   const [swapLoading] = useStream(swapLoading$);
@@ -124,7 +126,7 @@ export function useForm() {
   }, [amountN, marginN, leverageN, direction, info]);
 
   useEffect(() => {
-    if (input.current === 'amount' && !!info?.baseAssetAmount && !!info?.entryPrice) {
+    if (input.current === 'amount' && !!amountN && !!info?.baseAssetAmount && !!info?.entryPrice) {
       const margin = Big(info.baseAssetAmount)
         .times(info.entryPrice)
         .div(leverageN)
@@ -134,7 +136,7 @@ export function useForm() {
         setState((prevState) => ({...prevState, margin}));
       }
     }
-  }, [marginN, leverageN, info, marketIndex]);
+  }, [marginN, amountN, leverageN, info, marketIndex]);
 
   const info2 = useMemo<Record<string, any>>(() => {
     const data: Record<string, any> = {};
@@ -286,12 +288,15 @@ export function useForm() {
         Toast.warn('Order placement failed, please check current positions and orders.');
       }
       if (tx) {
+        try {
+          await client.confirmTransaction(tx);
+          await client.parsePlaceOrderView(tx, (event: string, data: any) => {
+            orderStatus$.next({event, data});
+          });
+        } catch (e) {
+          console.error(e);
+        }
         await tradeApi.processSignature(tx);
-        Toast.success(
-          `Place Order success ${Big(Date.now() - start)
-            .div(1000)
-            .toFixed(1)}s`
-        );
         if (order.marginType === 'CROSS') {
           waiverQuery$.next(0);
         }

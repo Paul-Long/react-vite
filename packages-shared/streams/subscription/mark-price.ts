@@ -5,8 +5,11 @@ export const markPrice$ = new TopicSubject({
   serverName: 'APSSvr',
   Types: MarkPriceSubTypes,
   initValue: {},
-});
-
-markPrice$.subscribe((o) => {
-  console.log(MarkPriceSubTypes.Subscribe, o);
+  matchTopic: (topic1, topic2) => {
+    if (!topic1 || !topic2) {
+      return false;
+    }
+    const reg = new RegExp(/dc\.aps\.markprice\..*/);
+    return reg.test(topic2);
+  },
 });
