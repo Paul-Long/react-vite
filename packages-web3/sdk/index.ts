@@ -227,7 +227,6 @@ export class RateClient {
         skipPreflight: true,
         preflightCommitment: 'processed',
       });
-      // await this.connection.confirmTransaction(signature, 'confirmed');
       console.log('Combined Transaction successful!', new Date(), signature);
       return signature;
     } catch (error) {
@@ -784,19 +783,24 @@ export class RateClient {
     }
     await this.sendTransaction(combinedTransaction);
   }
+
   async getPerpMarketInfo(params: {marketIndex: number}) {
     return await this.lp.getPerpMarketInfo(this.program, this.am, params);
   }
 
-  async parsePlaceOrderView(logs?: string[]) {
-    if (!logs) {
+  async parsePlaceOrderView(txID: string, callback?: (event: string, data?: any) => void) {
+    const tx = await this.connection.getTransaction(txID, {commitment: 'confirmed'});
+    if (!tx?.meta?.logMessages) {
       return;
     }
-    const evts = this.parser?.parseLogs(logs);
+    const evts = this.parser?.parseLogs(tx?.meta?.logMessages);
     while (evts) {
       const evt: any = evts.next();
-      console.log(evt);
+      if (evt?.value?.name) {
+        callback?.(evt.value.name, evt.value.data);
+      }
       if (evt.done) {
+        callback?.('Finished');
         break;
       }
     }
@@ -865,6 +869,14 @@ export class RateClient {
         break;
       }
       console.log(label, evt);
+    }
+  }
+
+  async confirmTransaction(txID: string) {
+    try {
+      await this.connection.confirmTransaction(txID, 'confirmed');
+    } catch (e) {
+      console.error(e);
     }
   }
 

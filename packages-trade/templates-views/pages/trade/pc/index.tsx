@@ -1,7 +1,6 @@
 import {PlaceOrder} from '../place-order';
 import {Positions} from '../positions';
 import {Assets} from './Assets';
-import {ChartWrap} from './ChartWrap';
 import {SubAssetsSelect} from './ContractSelect';
 import {Info} from './Info';
 import {TradingViewChart} from './TradingViewChart';

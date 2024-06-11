@@ -6,6 +6,7 @@
   "buildId": 201,
   "main": "index.ts",
   "dependencies": {
-    "@rx/hooks": "^1.0.0"
+    "@rx/hooks": "^1.0.0",
+    "@rx/components": "^1.0.0"
   }
 }

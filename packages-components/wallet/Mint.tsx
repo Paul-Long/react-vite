@@ -4,7 +4,7 @@ import {lang} from '@rx/lang/common.lang';
 import {useConnect} from '@rx/web3/hooks/use-connect';
 import {updateBalance$} from '@rx/web3/streams/balance';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
-import {Button, Loading} from '@rx/widgets';
+import {Button, Loading, Toast} from '@rx/widgets';
 import {useCallback, useState} from 'react';
 
 export function Mint() {
@@ -19,8 +19,11 @@ export function Mint() {
     }
     setLoading(true);
     try {
-      await client.mintAll(500);
+      const tx = await client.mintAll(500);
       updateBalance$.next(0);
+      if (!!tx) {
+        Toast.success('Mint Success.');
+      }
     } catch (_) {}
     setLoading(false);
   }, [client, connected, loading]);

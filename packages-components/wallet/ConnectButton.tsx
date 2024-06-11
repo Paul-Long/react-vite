@@ -15,7 +15,7 @@ import {useCallback} from 'react';
 
 export function ConnectButton() {
   const {LG} = useLang();
-  const {disconnect, address} = useConnect();
+  const {disconnect, address, connected} = useConnect();
   const isLogin = useObservable<boolean>(isLogin$, false);
   const user = useObservable<User | null>(user$, null);
 
@@ -23,7 +23,14 @@ export function ConnectButton() {
     const {data} = await loginApi.login(params);
     if (data) {
       writeToken(data.token);
-      Toast.success('Login Success');
+      Toast.success(
+        <div className="flex flex-col items-start pga-4px">
+          <span>Wallet Connected</span>
+          <span className="text-nowrap text-gray-600">
+            Connected to wallet {abbreviateString(data.name)}
+          </span>
+        </div>
+      );
       await Promise.all([checkAuth()]);
     }
   }, []);
@@ -35,12 +42,12 @@ export function ConnectButton() {
     window.location.reload();
   }, []);
 
-  if (isLogin) {
+  if (isLogin && connected) {
     return (
       <Dropdown
         contentStyle={{background: '#0A253D'}}
         content={
-          <Button size='sm' style={{width: '100%'}} type="default" onClick={handleLogout}>
+          <Button size="sm" style={{width: '100%'}} type="default" onClick={handleLogout}>
             {LG(clang.Disconnect)}
           </Button>
         }
@@ -54,7 +61,7 @@ export function ConnectButton() {
     );
   }
   return (
-    <Button size='sm' className="min-w160px font-size-18px" type="primary" onClick={onSignIn}>
+    <Button size="sm" className="min-w160px font-size-18px" type="primary" onClick={onSignIn}>
       {LG(clang.Connect)}
     </Button>
   );

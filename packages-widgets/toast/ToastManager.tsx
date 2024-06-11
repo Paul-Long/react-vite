@@ -1,4 +1,5 @@
-// ToastManager.tsx
+import {CheckIcon} from '@rx/components/icons/CheckIcon';
+import {ErrorIcon} from '@rx/components/icons/ErrorIcon';
 import React, {ReactNode, useCallback, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {keyframes, styled} from 'styled-components';
@@ -26,7 +27,7 @@ const ToastMessage = styled.div<{type: string}>`
       case 'info':
         return '#2196f3';
       case 'success':
-        return '#4caf50';
+        return '#41FFAF14';
       case 'warn':
         return '#ff9800';
       case 'error':
@@ -35,14 +36,14 @@ const ToastMessage = styled.div<{type: string}>`
         return '#323232';
     }
   }};
+  backdrop-filter: blur(200px);
   color: white;
   margin-top: 12px;
-  padding: 12px;
+  padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   animation: ${fadeIn} 0.5s ease-out;
   min-width: 250px;
-  max-width: 80%;
   text-align: center;
   &:not(:last-child) {
     margin-bottom: 12px;
@@ -62,7 +63,15 @@ const Toast = React.memo(
       return () => clearTimeout(timer);
     }, [onDismiss]);
 
-    return <ToastMessage type={type}>{content}</ToastMessage>;
+    return (
+      <div className="bg-black">
+        <ToastMessage type={type} className="flex flex-row items-start gap-12px">
+          {type === 'success' && <CheckIcon width={24} height={24} />}
+          {type === 'error' && <ErrorIcon width={24} height={24} />}
+          <div>{content}</div>
+        </ToastMessage>
+      </div>
+    );
   }
 );
 
