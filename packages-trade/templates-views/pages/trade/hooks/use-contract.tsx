@@ -18,7 +18,14 @@ export function useContract() {
   const symbols = useObservable(contracts$, []);
 
   const contracts = useMemo(() => {
-    return symbols.map((s) => ({label: <Label d={s} />, value: s.symbolLevel2Category}));
+    return symbols
+      .reduce<string[]>((arr, s) => {
+        if (arr.indexOf(s.symbolLevel2Category) < 0) {
+          return [...arr, s.symbolLevel2Category];
+        }
+        return arr;
+      }, [])
+      .map((s) => ({label: <Label d={s} />, value: s}));
   }, [symbols]);
 
   const maturities = useMemo(() => {
@@ -68,9 +75,9 @@ export function useContract() {
   };
 }
 
-const Label = ({d}: {d: ConfigSymbol}) => (
+const Label = ({d}: {d: string}) => (
   <div className="flex flex-row items-center gap-8px">
-    <img src={IMAGES[d.symbolLevel2Category.toUpperCase()]} alt="" width={24} height={24} />
-    {d.symbolLevel2Category}
+    <img src={IMAGES[d.toUpperCase()]} alt="" width={24} height={24} />
+    {d}
   </div>
 );
