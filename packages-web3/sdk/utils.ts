@@ -22,20 +22,14 @@ export function getFaucetConfigPda(marginIndex: number): any {
 }
 
 export const PerpMarketMap = (): Record<number, string> =>
-  [9, 12, 13].reduce((record, mi) => ({...record, [mi]: PDA.createPerpMarketPda(mi)}), {});
+  [14, 15, 16, 17].reduce((record, mi) => ({...record, [mi]: PDA.createPerpMarketPda(mi)}), {});
 
 export function getObservationPda(marketIndex: number): any {
   return {
-    0: new PublicKey('6rm7RuKduugFT3sEJ1fqRmegk7gmh9qX4r4dBJnrQ4tv'),
-    1: new PublicKey('2yhrgUZym3ruaq9ELfYuoXrc4xjoRgavjbv9pVAhaheW'),
-    2: new PublicKey('2iwq4d6rFSakn8gJjHSpp8SCGp16k3Q2sB6yMWhrZQ5b'),
-    6: new PublicKey('XB2BYGQSqJXeyCGSRKV6WFwqepr83jXXs4RyUkq6zkd'),
-    7: new PublicKey('CU1sGwjcc3V7JnGEDSWn5teEnrPEzstfRdHt6NPZUohW'),
-    8: new PublicKey('6bqorzLMBg7twmJEbu1AtSjR6eYTbKv5d7EqFTkxz4yH'),
-    9: new PublicKey('2qJQRBB7fMzrUQ4KQfGnjjrPosfYyW9zVffinbrU7JeZ'),
-    11: new PublicKey('FWVD9VApKbtjPvBBNkX56rSwoVtYjzMkr5Sn7uFu3ssy'),
-    12: new PublicKey('DDSmFMLWh5XNoXm3Phy6gA3YoicZL6tB3hco6AyDe9aE'),
-    13: new PublicKey('BkndJdhERYoTVvpexuzAVsME9tBawBW53jtKCJpmm3Es'),
+    14: new PublicKey('3r8okkmpRLfgx7FuEF2uHkVF9HDRXfKTJPDDKdH2qHEW'),
+    15: new PublicKey('5Whdajiz66eSMhduxipUKqU12y24EzUWxxWirTZuBbyW'),
+    16: new PublicKey('Fz7gX9RjZjG2ztrGR8swUv2NmVGcQ62AwCWs1D92uaRP'),
+    17: new PublicKey('28fA5dw216QzeESst5WLLxnWCeGRUtrKnpkf1BKajhfq'),
   }[marketIndex];
 }
 
@@ -45,21 +39,15 @@ export function getMarginIndexByMarketIndex(marketIndex: number): number {
 
 export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
   return {
-    0: 1,
-    1: 1,
-    2: 1,
-    6: 2,
-    7: 2,
-    8: 1,
-    9: 1,
-    11: 2,
-    12: 1,
-    13: 2,
+    14: 1,
+    15: 1,
+    16: 2,
+    17: 2,
   }[marketIndex] as number;
 }
 
 export function getAllPerpMarkets() {
-  return [9, 12, 13].map((i) => ({
+  return [14, 15, 16, 17].map((i) => ({
     pubkey: PDA.createPerpMarketPda(i),
     isSigner: false,
     isWritable: true,
@@ -76,7 +64,7 @@ export function getAllOracles() {
 }
 
 export function getAllObservations() {
-  return [9, 12, 13].map((i) => ({
+  return [14, 15, 16, 17].map((i) => ({
     pubkey: getObservationPda(i),
     isSigner: false,
     isWritable: true,
