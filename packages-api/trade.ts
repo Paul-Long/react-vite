@@ -37,4 +37,15 @@ export const tradeApi = {
     };
     return post(API_URL, {params});
   },
+  loadRecentTrades(symbol: string) {
+    const params = {
+      serverName: 'MDSvr',
+      method: 'queryMarketTrade',
+      content: {
+        cid: guid.build(),
+        securityID: symbol,
+      },
+    };
+    return post(API_URL, {params});
+  },
 };

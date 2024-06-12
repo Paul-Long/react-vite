@@ -13,4 +13,14 @@ export const lpApi = {
     };
     return post(API_URL, {params});
   },
+  querySymbolMobility() {
+    const params = {
+      serverName: 'AdminSvr',
+      method: 'querySolanaSymbolLpMobility',
+      content: {
+        cid: guid.build(),
+      },
+    };
+    return post(API_URL, {params});
+  },
 };

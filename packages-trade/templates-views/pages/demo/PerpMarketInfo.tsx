@@ -8,20 +8,20 @@ export function PerpMarketInfo() {
   const [client] = useStream(rateXClient$);
   const [state, setState] = useState<any>({
     2: {tickCurrentIndex: '', tokenVaultA: 0, tokenVaultB: 0},
-    3: {tickCurrentIndex: '', tokenVaultA: 0, tokenVaultB: 0},
+    4: {tickCurrentIndex: '', tokenVaultA: 0, tokenVaultB: 0},
   });
   const query = useCallback(async () => {
     if (!client) {
       return;
     }
     const info0 = await client?.getPerpMarketInfo({marketIndex: 2});
-    const info1 = await client?.getPerpMarketInfo({marketIndex: 3});
-    setState({2: info0, 3: info1});
+    const info1 = await client?.getPerpMarketInfo({marketIndex: 4});
+    setState({2: info0, 4: info1});
   }, [client]);
   return (
     <StyledWrap className="flex flex-col gap-24px">
       <div className="font-size-18px fw-semibold">PerpMarket Vault </div>
-      {['2', '3'].map((k) => (
+      {['2', '4'].map((k) => (
         <div className="flex flex-row items-start" key={k}>
           <div className="px-10px">Market Index {k}</div>
           <div className="flex flex-col">

@@ -10,7 +10,7 @@ export function Info() {
   const {LG} = useLang();
   const {data} = useContractInfo();
   return (
-    <div className="flex-1 flex flex-row items-center gap-24px">
+    <div className="flex flex-row items-center gap-24px overflow-hidden">
       {genInfo(LG as any, data).map((o, i) => (
         <div
           key={i}

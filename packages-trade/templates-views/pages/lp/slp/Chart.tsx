@@ -1,3 +1,4 @@
+import {lpApi} from '@rx/api/lp';
 import {useObservable} from '@rx/hooks/use-observable';
 import {loadEcharts} from '@rx/resource/js';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
@@ -10,6 +11,7 @@ export function Chart({contract}: any) {
   const last = useObservable<Record<string, any>>(lastTrade$, {});
   const trade = useMemo(() => last?.[contract?.symbol], [contract, last]);
   const [ready, setReady] = useState(false);
+  const [dataList, setDataList] = useState<Record<string, any>[]>([]);
 
   useEffect(() => {
     loadEcharts().then(() => {
@@ -18,38 +20,42 @@ export function Chart({contract}: any) {
   }, []);
 
   useEffect(() => {
+    (async () => {
+      const {data} = await lpApi.querySymbolMobility();
+      const list = data?.filter((d: any) => d.symbol === contract.symbol);
+      setDataList(list);
+    })();
+  }, [contract]);
+
+  useEffect(() => {
     if (ready && window.echarts) {
       chart.current = window.echarts.init(container.current);
-      let data = [0.0, 0.5, 0.5, 1.5, 6.0, 7.0, 4.5, 1.0, 0.5, 0.5, 0.0, 0.0, 0.0];
 
-      const xData = [];
-      if (trade?.Yield) {
-        const sum = data.reduce((sum, d) => Big(sum).add(d), Big(0));
-        data = data.map((n) => {
-          return Big(trade?.AvaLiquidity ?? 0)
-            .times(n)
-            .div(sum)
-            .round(2, 3)
-            .toNumber();
-        });
-        const y = Big(trade.Yield).div(0.005).round(0, 0).times(0.005);
-        for (let i = -6; i < 7; i++) {
-          xData.push(
-            y
-              .add(i * 0.005)
-              .times(100)
-              .round(2, 0)
-              .toString() + '%'
-          );
+      const xData: number[] = [];
+      const xData2: string[] = [];
+      const data = dataList.map((d, i) => {
+        if (i === 0) {
+          xData.push(Big(d.lowerLimit).times(100).minus(1).toNumber());
+          xData2.push(Big(d.lowerLimit).times(100).minus(1).toNumber() + '%');
+          xData2.push(Big(d.lowerLimit).times(100).minus(0.5).toNumber() + '%');
         }
-      }
-
+        xData.push(Big(d.lowerLimit).add(d.upperLimit).div(2).times(100).toNumber());
+        xData2.push(Big(d.lowerLimit).times(100).toNumber() + '%');
+        xData2.push(Big(d.lowerLimit).add(d.upperLimit).div(2).times(100).toNumber() + '%');
+        if (i === dataList.length - 1) {
+          xData.push(Big(d.upperLimit).times(100).toNumber());
+          xData2.push(Big(d.upperLimit).times(100).toNumber() + '%');
+          xData2.push(Big(d.upperLimit).add(0.5).times(100).toNumber() + '%');
+        }
+        return d.mobility;
+      });
+      data.unshift(0);
       const option = {
         grid: {
           left: 50,
           right: 50,
           top: 0,
-          bottom: 24,
+          bottom: 44,
         },
         tooltip: {
           trigger: 'item',
@@ -57,13 +63,13 @@ export function Chart({contract}: any) {
             if (params?.name) {
               const {name, value, marker} = params;
               const num = Number(name.replace('%', ''));
-              return `${marker} ${name}-${(num + 0.5).toFixed(1)}% : ${value}`;
+              return `${marker} ${num - 0.5}-${(num + 0.5).toFixed(1)}% : ${value}`;
             }
             return '';
           },
         },
         axisPointer: {
-          show: true,
+          show: false,
           snap: true,
           label: {
             show: false,
@@ -77,8 +83,18 @@ export function Chart({contract}: any) {
           {
             type: 'category',
             data: xData,
+            show: false,
             axisLine: {show: true},
             axisTick: {show: true, alignWithLabel: false},
+            axisLabel: {show: true},
+          },
+          {
+            type: 'category',
+            data: xData2,
+            axisLine: {show: true},
+            position: 'bottom',
+            axisTick: {show: true, alignWithLabel: false},
+            axisLabel: {align: 'right'},
           },
         ],
         yAxis: [
@@ -112,7 +128,7 @@ export function Chart({contract}: any) {
         chart.current = null;
       }
     };
-  }, [ready, contract, trade]);
+  }, [ready, contract, trade, dataList]);
 
   return (
     <div className="w-full h-full flex flex-col gap-16px">
