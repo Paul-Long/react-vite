@@ -6,7 +6,12 @@ import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import {BN, Program} from '@coral-xyz/anchor';
 import {getAccount, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID} from '@solana/spl-token';
-import {PublicKey, SystemProgram, TransactionInstruction} from '@solana/web3.js';
+import {
+  PublicKey,
+  SystemProgram,
+  SYSVAR_CLOCK_PUBKEY,
+  TransactionInstruction,
+} from '@solana/web3.js';
 import {Big} from 'big.js';
 import Decimal from 'decimal.js';
 
@@ -52,6 +57,10 @@ export class LpManager {
     const tokenVaultB: PublicKey = pool.tokenVaultB;
     const tokenMintA: PublicKey = ta.mint;
     const tokenMintB: PublicKey = tb.mint;
+
+    const clock = await program.provider.connection.getAccountInfo(SYSVAR_CLOCK_PUBKEY);
+    let epochStartTimestamp = new BN(Number(clock!.data.readBigInt64LE(8)));
+    console.log(epochStartTimestamp.toString());
 
     // const lowerInstruction = await program.methods
     //   .calculateTickIndex(new BN(maturity), lr, pool.tickSpacing, true)

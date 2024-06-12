@@ -3,6 +3,8 @@ import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {contracts$, maturityMap$} from '@rx/streams/config';
+import {recentTrades$} from '@rx/streams/subscription/recent-trades';
+import {queryRecentTrades$} from '@rx/streams/trade/recent-trades';
 import {useEffect, useMemo} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {asset$, contract$, maturity$} from '../streams/streams';
@@ -39,7 +41,12 @@ export function useContract() {
       return;
     }
     const maturityList = maturityMap[asset + '-' + contract];
-    return maturityList?.find((m) => m.term === maturity);
+    const current = maturityList?.find((m) => m.term === maturity);
+    if (current) {
+      queryRecentTrades$.next(current.symbol);
+      recentTrades$.next(`dc.md.market.trade.${current.symbol}`);
+    }
+    return current;
   }, [asset, contract, maturity, maturityMap, params]);
 
   useEffect(() => {
@@ -59,6 +66,13 @@ export function useContract() {
       }
       setContract(item.symbolLevel2Category);
       setMaturity(item.term);
+    }
+  }, [symbols, contract, maturity]);
+
+  useEffect(() => {
+    const ss = symbols.filter((s) => s.symbolLevel2Category === contract);
+    if (!ss.find((s) => s.term === maturity) && ss.length > 0) {
+      setMaturity(ss[0].term);
     }
   }, [symbols, contract, maturity]);
 

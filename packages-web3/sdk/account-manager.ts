@@ -430,12 +430,24 @@ export class AccountManager {
     params: {upperRate: number; lowerRate: number; marketIndex: number}
   ) {
     const accounts = await this.getLpAccounts(program, authority);
-    return accounts.find((u: any) => {
+    let user = accounts.find((u: any) => {
       const {upperRate, lowerRate} = u.ammPosition || {};
       return (
         params.marketIndex === u.marketIndex &&
         Big(params.upperRate).times(1_000_000_000).eq(Big(upperRate.toString())) &&
         Big(params.lowerRate).times(1_000_000_000).eq(Big(lowerRate.toString()))
+      );
+    });
+    if (user) {
+      return user;
+    }
+    return accounts.find((u: Record<string, any>) => {
+      const {liquidity} = u.ammPosition || {};
+      return (
+        Big(liquidity).eq(0) &&
+        u.marketIndex === undefined &&
+        u.reserveBaseAmount.eq(new BN(0)) &&
+        u.reserveQuoteAmount.eq(new BN(0))
       );
     });
   }

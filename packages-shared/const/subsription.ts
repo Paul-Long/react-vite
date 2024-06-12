@@ -32,3 +32,8 @@ export enum PositionSubTypes {
   Subscribe = 'position-subscribe',
   Unsubscribe = 'position-unsubscribe',
 }
+
+export enum RecentTradesSubTypes {
+  Subscribe = 'recent-trades-subscribe',
+  Unsubscribe = 'recent-trades-unsubscribe',
+}
