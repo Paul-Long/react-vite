@@ -303,6 +303,7 @@ export function useForm() {
         query$.next(0);
       }
       updateBalance$.next(0);
+      order$.next(null);
       setState((prevState) => ({...prevState, amount: '', margin: ''}));
       setLoading(false);
       setVisible(false);

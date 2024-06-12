@@ -4,7 +4,7 @@ import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {contracts$, maturityMap$} from '@rx/streams/config';
 import {recentTrades$} from '@rx/streams/subscription/recent-trades';
-import {queryRecentTrades$} from '@rx/streams/trade/recent-trades';
+import {clearRecentTrades$, queryRecentTrades$} from '@rx/streams/trade/recent-trades';
 import {useEffect, useMemo} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {asset$, contract$, maturity$} from '../streams/streams';
@@ -43,8 +43,12 @@ export function useContract() {
     const maturityList = maturityMap[asset + '-' + contract];
     const current = maturityList?.find((m) => m.term === maturity);
     if (current) {
-      queryRecentTrades$.next(current.symbol);
-      recentTrades$.next(`dc.md.market.trade.${current.symbol}`);
+      setTimeout(() => {
+        recentTrades$.clear();
+        clearRecentTrades$.next(true);
+        queryRecentTrades$.next(current.symbol);
+        recentTrades$.next(`dc.md.market.trade.${current.symbol}`);
+      }, 0);
     }
     return current;
   }, [asset, contract, maturity, maturityMap, params]);
