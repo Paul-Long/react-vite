@@ -9,20 +9,30 @@ import {
   scan,
   shareReplay,
   startWith,
+  Subject,
   switchMap,
   tap,
 } from 'rxjs';
 import {map} from 'rxjs/operators';
 
 export const queryRecentTrades$ = new BehaviorSubject<string>('');
+export const clearRecentTrades$ = new Subject();
 
 const state$ = queryRecentTrades$.pipe(
   tap(of([])),
   switchMap((symbol) => load(symbol))
 );
 
-const subRecentTrades$ = combineLatest([recentTrades$]).pipe(
-  scan((acc, [d]) => {
+const clear$ = clearRecentTrades$.pipe(startWith(false));
+
+const subRecentTrades$ = combineLatest([recentTrades$, clear$]).pipe(
+  scan((acc, [d, clear]) => {
+    if (clear) {
+      setTimeout(() => {
+        clearRecentTrades$.next(false);
+      }, 0);
+      return [];
+    }
     const data = (d?.NoMDEntries || [])?.map(formatData);
     return [...acc, ...data];
   }, [])

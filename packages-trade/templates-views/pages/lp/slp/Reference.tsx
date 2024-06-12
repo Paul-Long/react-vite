@@ -14,7 +14,7 @@ export function Reference({symbol}: {symbol: string}) {
   return (
     <div className="flex flex-row items-center font-size-14px lh-20px gap-42px">
       <span className="text-gray-600">{LG(lang.ReferenceRate)}</span>
-      <span className="text-gray-600">SOL</span>
+      <span className="text-gray-600">{symbol}</span>
       <div className="flex flex-row items-center gap-12px">
         <span className="text-gray-600">O/N</span>
         <span className="text-green-500 font-semibold">{numToPercentage(refer?.ON)}</span>
