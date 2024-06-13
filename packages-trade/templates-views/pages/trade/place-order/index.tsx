@@ -28,7 +28,7 @@ export function PlaceOrder() {
   } = useForm();
   return (
     <>
-      <div className="max-w-424px min-w-424px w-424px flex flex-col px-24px py-24px gap-16px bg-#030B0F">
+      <div className="max-w-424px min-w-424px w-424px flex flex-col pr-24px py-24px gap-16px bg-#030B0F">
         <RadioButton
           options={genMargin(LG)}
           value={state.marginType}

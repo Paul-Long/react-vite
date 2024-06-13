@@ -48,7 +48,7 @@ export function Positions() {
           </Button>
         </div>
       )}
-      <div className="flex overflow-hidden">
+      <div className="flex overflow-hidden max-h-800px">
         {tab === 'position' && <Position marginType={select} />}
         {tab === 'orders' && <Orders />}
         {tab === 'history' && <History />}

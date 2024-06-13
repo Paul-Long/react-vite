@@ -1,15 +1,15 @@
-import {AccountManager} from '@/sdk/account-manager';
 import {PDA} from '@/sdk/PDA';
+import {AccountManager} from '@/sdk/account-manager';
 import {TickManager} from '@/sdk/tick-manager';
 import {getMarginIndexByMarketIndexV2, getMintAccountPda, getObservationPda} from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import {BN, Program} from '@coral-xyz/anchor';
-import {getAccount, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID} from '@solana/spl-token';
+import {TOKEN_PROGRAM_ID, getAccount, getAssociatedTokenAddressSync} from '@solana/spl-token';
 import {
   PublicKey,
-  SystemProgram,
   SYSVAR_CLOCK_PUBKEY,
+  SystemProgram,
   TransactionInstruction,
 } from '@solana/web3.js';
 import {Big} from 'big.js';
@@ -311,23 +311,22 @@ export class LpManager {
     authority: PublicKey,
     am: AccountManager,
     lp: PublicKey,
-    perpMarket: any,
     params: {marketIndex: number}
   ) {
     const {marketIndex} = params;
-    const {pool} = perpMarket;
-    const quoteAssetVault: PublicKey = PDA.createQuoteAssetVaultPda(marketIndex);
-    const tokenVaultB: PublicKey = pool.tokenVaultB;
+    const mintAccount: PublicKey = getMintAccountPda(0);
+    const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
     return await program.methods
       .collectFees()
       .accounts({
         whirlpool: PDA.createPerpMarketPda(marketIndex),
+        marginMarket: PDA.createMarginMarketPda(0),
         state: am.statePda,
         driftSigner: am.signerPda,
         positionAuthority: authority,
         lp,
-        tokenOwnerAccountB: quoteAssetVault,
-        tokenVaultB,
+        tokenOwnerAccount: userTokenAccount,
+        tokenVaultMargin: PDA.createMarginMarketVaultPda(0),
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction();

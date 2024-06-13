@@ -603,7 +603,6 @@ export class RateClient {
         this.authority,
         this.am,
         new PublicKey(userPda),
-        perpMarkets[whirlpool],
         {marketIndex}
       );
       instructions.push(updateInstruction);
