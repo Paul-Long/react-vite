@@ -8,7 +8,7 @@ import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
 import {updateBalance$} from '@rx/web3/streams/balance';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
-import {Button, Loading} from '@rx/widgets';
+import {Button, Loading, Toast} from '@rx/widgets';
 import {Big} from 'big.js';
 import clsx from 'clsx';
 import {useCallback, useState} from 'react';
@@ -64,6 +64,7 @@ export function PlaceOrder(props: Props) {
 }
 
 function usePlaceOrder(props: Props) {
+  const {contract} = props;
   const [client] = useStream(rateXClient$);
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
@@ -87,6 +88,10 @@ function usePlaceOrder(props: Props) {
     const {range, amount} = state;
     const [lowerRate, upperRate] = range.split('-');
     if (!amount || !lowerRate || !upperRate) {
+      return;
+    }
+    if (Number(amount) < 2) {
+      Toast.warn(`Must be more than 2 ${contract.symbolLevel2Category}`);
       return;
     }
     const params = {
