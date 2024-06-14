@@ -42,7 +42,7 @@ export function useHistory() {
         render: renderPnl,
       },
       {
-        title: [LG(lang.EntryYield), LG(clang.Price)].join('/'),
+        title: [LG(lang.ExecutionYield), LG(clang.Price)].join('/'),
         dataIndex: 'entryYield',
         align: 'right',
         render: renderYield,

@@ -1,6 +1,10 @@
+import {ConnectButton} from '@rx/components/wallet';
 import {useLang} from '@rx/hooks/use-lang';
+import {useObservable} from '@rx/hooks/use-observable';
 import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
+import {isLogin$} from '@rx/streams/auth';
+import {useConnect} from '@rx/web3/hooks/use-connect';
 import {Button, Tabs} from '@rx/widgets';
 import {clsx} from 'clsx';
 import {useState} from 'react';
@@ -12,6 +16,8 @@ export function Positions() {
   const {LG} = useLang();
   const [select, setSelect] = useState<'CROSS' | 'ISOLATED'>('CROSS');
   const [tab, setTab] = useState<string>('position');
+  const isLogin = useObservable<boolean>(isLogin$, false);
+  const {connected} = useConnect();
   return (
     <div className="flex flex-col b-solid b-gray-40 b-t-1px box-border px-16px py-16px pt-0 gap-12px">
       <div className="w-300px">
@@ -52,6 +58,9 @@ export function Positions() {
         {tab === 'position' && <Position marginType={select} />}
         {tab === 'orders' && <Orders />}
         {tab === 'history' && <History />}
+      </div>
+      <div className={clsx('justify-center', [isLogin && connected ? 'hidden' : 'flex'])}>
+        <ConnectButton />
       </div>
     </div>
   );

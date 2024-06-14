@@ -9,7 +9,12 @@ export function Position(props: Props) {
   const {columns, dataSource} = usePositions(props.marginType);
   return (
     <>
-      <Table className="w-full" border={true} columns={columns} dataSource={dataSource as any[]} />
+      <Table
+        className="w-full min-h-200px"
+        border={true}
+        columns={columns}
+        dataSource={dataSource as any[]}
+      />
       <ClosePositionModal />
     </>
   );

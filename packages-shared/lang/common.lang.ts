@@ -109,6 +109,9 @@ export const lang: any = {
   Entry: {
     en: 'Entry',
   },
+  Execution: {
+    en: 'Execution',
+  },
   Amount: {
     en: 'Amount',
   },
