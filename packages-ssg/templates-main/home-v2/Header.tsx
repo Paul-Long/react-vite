@@ -53,13 +53,14 @@ export function Header() {
             'bg-#8DCC2F text-#09090A py-16px px-20px font-size-20px lh-20px rounded-2px cursor-pointer',
             'flex flex-row items-center gap-16px'
           )}
+          onClick={() => window.open('https://app-testnet.rate-x.io/trade', '_blank', 'noopener')}
         >
           <img
             className="h-14px"
             src="https://static.rate-x.io/img/v1/3d02b0/points.png"
             alt="launch app"
           />
-          Upcoming Launch
+          Launch App
         </div>
       </div>
       <div className={clsx('flex sm:hidden gap-20px', [showMenu && 'hidden'])}>
@@ -68,8 +69,9 @@ export function Header() {
             'bg-#8DCC2F text-#09090A py-10px px-12px font-size-16px lh-16px rounded-2px cursor-pointer',
             'flex flex-row items-center gap-16px'
           )}
+          onClick={() => window.open('https://app-testnet.rate-x.io/trade', '_blank', 'noopener')}
         >
-          Upcoming Launch
+          Launch App
         </div>
         <div className={clsx('inline-flex sm:hidden')} onClick={() => setShowMenu(true)}>
           <MenuIcon />

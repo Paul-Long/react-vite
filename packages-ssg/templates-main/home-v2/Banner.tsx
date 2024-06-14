@@ -50,8 +50,9 @@ export function Banner() {
           className={clsx(
             'flex flex-row items-center flex-nowrap text-nowrap gap-12px mt-20px font-size-24px lh-32px'
           )}
+          onClick={() => window.open('https://app-testnet.rate-x.io/trade', '_blank', 'noopener')}
         >
-          Upcoming Launch
+          Launch App
           <img
             className="w-32px h-32px"
             src="https://static.rate-x.io/img/v1/2f71a0/left.svg"
