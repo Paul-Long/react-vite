@@ -20,7 +20,7 @@ export const WalletContextProvider: FC<{children: ReactNode}> = ({children}) => 
     // () => 'https://devnet.helius-rpc.com/?api-key=21f80e34-a310-431d-b970-ecb7a7c16565',
     // () => 'https://convincing-green-sea.solana-devnet.quiknode.pro/e155ea13e0808fe562d72760eaf1c69daf3498c2/',
     () =>
-      'https://cf266upovq7.sg.larksuite.com/wiki/LcgswWRFPiONSwk99RslswaSghe?from=from_copylink',
+      'https://dawn-dawn-daylight.solana-devnet.quiknode.pro/d80737ca48036d6af19a01c3505a4afb921a87bb/',
     // () => 'https://rpc.rate-x.io',
     // () => clusterApiUrl(network),
     [network]
