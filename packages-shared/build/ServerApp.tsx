@@ -21,12 +21,9 @@ export function ServerApp(props: Props) {
           content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
         />
         <meta name="theme-color" content="#000000" />
-        <link
-          rel="shortcut icon"
-          href="https://static.rate-x.io/img/v1/76ad6d/logo_black_icon.svg"
-        />
-        <title>RateX | Any Future Earnings Can Be Exchanged</title>
-        <meta name="description" content="Any Future Earnings Can Be Exchanged" />
+        <link rel="shortcut icon" href="https://static.rate-x.io/img/v1/551d5a/rate-x.ico" />
+        <title>RateX | World’s 1st leveraged Synthetic Yield exchange</title>
+        <meta name="description" content="World’s 1st leveraged Synthetic Yield exchange" />
         <link rel="stylesheet" href="https://static.rate-x.io/css/global-fe5a7a.css"></link>
         <script src="https://static.rate-x.io/3rd/react/18.2.0/react.production.min.js"></script>
         <script src="https://static.rate-x.io/3rd/react/18.2.0/react-dom.production.min.js"></script>
