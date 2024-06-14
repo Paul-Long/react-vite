@@ -38,7 +38,7 @@ export function RecentTrades() {
     <div
       className={clsx(
         'relative flex flex-col max-h-448px',
-        [show ? ' min-w-336px min-h-full overflow-auto' : 'w-0'],
+        [show ? 'max-w-336px min-w-336px min-h-full overflow-auto' : 'w-0'],
         [show && 'border-l-1px border-solid border-gray-40']
       )}
     >

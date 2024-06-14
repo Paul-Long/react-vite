@@ -103,6 +103,7 @@ function usePlaceOrder(props: Props) {
     } catch (e) {}
     updateBalance$.next(0);
     setLoading(false);
+    setState((prevState) => ({...prevState, amount: ''}));
     setTimeout(() => query$.next(0), 500);
   }, [state, client, props]);
 

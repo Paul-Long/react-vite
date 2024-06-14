@@ -32,7 +32,7 @@ export function AmountInput(props: Props) {
             <div className="scale-70 font-size-12px lh-12px fw-medium">Y</div>
           </div>
           <img src={IMAGES[contract?.toUpperCase()]} alt="" width={26} height={26} />
-          {contract}-{maturity}
+          YT-{contract}-{maturity}
         </div>
         <InputNumber
           value={props.value}

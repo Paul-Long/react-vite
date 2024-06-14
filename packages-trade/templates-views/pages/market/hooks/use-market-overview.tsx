@@ -1,3 +1,4 @@
+import {IMAGES} from '@/pages/lp/const';
 import {filter$} from '@/streams/market/filter';
 import {useFixLink} from '@rx/hooks/use-fix-link';
 import {useLang} from '@rx/hooks/use-lang';
@@ -45,9 +46,24 @@ export function useMarketOverview() {
 
   const genColumns = useCallback(() => {
     const columns: Column[] = [
-      {title: LG(lang.Contract), dataIndex: 'SecurityID', align: 'left'},
       {
-        title: LG(lang.TermToMaturity),
+        title: LG(lang.Contract),
+        dataIndex: 'SecurityID',
+        align: 'left',
+        render: (row: Record<string, any>) => (
+          <div className="flex flex-row items-center gap-12px">
+            <img
+              src={IMAGES[row.symbolLevel2Category.toUpperCase()]}
+              alt=""
+              width={28}
+              height={28}
+            />
+            {row?.SecurityID}
+          </div>
+        ),
+      },
+      {
+        title: LG(lang.ExpireIn),
         dataIndex: 'ttm',
         align: 'right',
       },

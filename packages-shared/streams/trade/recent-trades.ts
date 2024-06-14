@@ -55,7 +55,7 @@ async function load(symbol: string) {
 function formatData(d: Record<string, any>) {
   return {
     direction: d.MDEntrySize === '0' ? 'LONG' : 'SHORT',
-    price: numUtil.trimEnd0(numUtil.floor(d.MDEntryPx, 6)),
+    price: numUtil.trimEnd0(numUtil.floor(d.MDEntryPx, 9)),
     yield: numUtil.trimEnd0(numUtil.floor(d.Yield, 2, -2)) + '%',
     amount: numUtil.trimEnd0(numUtil.floor(d.MDEntrySize, 4)),
     time: timeUtil.formatTime(new Date(d.MDEntryTime).getTime()),
