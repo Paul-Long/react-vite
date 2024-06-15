@@ -26,6 +26,7 @@ export function PriceChart({ready}: {ready: boolean}) {
     }
     return () => {
       clear$.next(0);
+      chart.current.dispose();
     };
   }, [detail]);
 
@@ -36,8 +37,10 @@ export function PriceChart({ready}: {ready: boolean}) {
       const data = [];
       for (let i = 0; i < klineData?.length; i++) {
         const item: any = klineData[i];
-        date.push(item.time * 1000);
-        data.push(item.close);
+        if (!!item.close) {
+          date.push(item.time * 1000);
+          data.push(item.close);
+        }
       }
       const option = {
         grid: {
@@ -84,7 +87,7 @@ export function PriceChart({ready}: {ready: boolean}) {
             fontSize: 10,
             showMaxLabel: false,
             formatter: (value: any) => {
-              return dayjs(value).format('MM-DD');
+              return dayjs(Number(value)).format('YYYY-MM-DD');
             },
           },
           axisLine: {

@@ -13,6 +13,7 @@ import {contracts$} from '@rx/streams/config';
 import {ttmMap$} from '@rx/streams/epoch';
 import {queryRatePrice$} from '@rx/streams/market/rate-price';
 import {queryReferencePrice$} from '@rx/streams/market/reference-price';
+import {ratePrice$} from '@rx/streams/subscription/rate-price';
 import {referencePrice$} from '@rx/streams/subscription/reference-price';
 import {queryLastTrade$} from '@rx/streams/trade/last-trade';
 import {Button} from '@rx/widgets';
@@ -30,6 +31,7 @@ export default function () {
   useEffect(() => {
     queryRatePrice$.next(0);
     queryReferencePrice$.next(0);
+    ratePrice$.next('topic dc.trade.dprice');
     referencePrice$.next('dc.aps.referenceprice');
     queryLastTrade$.next(0);
   }, []);
@@ -50,7 +52,12 @@ export default function () {
           <i className="iconfont font-size-24px lh-24px rotate-180">&#xe63c;</i>
         </div>
         <div className="flex flex-row items-center gap-8px">
-          <img src={IMAGES.MSOL} alt="" width={28} height={28} />
+          <img
+            src={IMAGES[contract.symbolLevel2Category?.toUpperCase()]}
+            alt=""
+            width={28}
+            height={28}
+          />
           <span className="font-size-32px lh-20px">{contract?.symbol ?? '-'}</span>
         </div>
       </div>

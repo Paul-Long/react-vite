@@ -7,16 +7,23 @@ export function calcLiqPrice(
   st: number | string,
   margin: number | string
 ) {
-  if (direction === 'LONG') {
-    return Big(mcr)
-      .times(Math.abs(Number(st)))
-      .minus(margin)
-      .div(yt)
+  try {
+    if (yt == 0) {
+      return '-';
+    }
+    if (direction === 'LONG') {
+      return Big(mcr)
+        .times(Math.abs(Number(st)))
+        .minus(margin)
+        .div(yt)
+        .toFixed(9);
+    }
+    return Big(st)
+      .abs()
+      .add(margin)
+      .div(mcr * Math.abs(Number(yt)))
       .toFixed(9);
+  } catch (e) {
+    return '-';
   }
-  return Big(st)
-    .abs()
-    .add(margin)
-    .div(mcr * Math.abs(Number(yt)))
-    .toFixed(9);
 }

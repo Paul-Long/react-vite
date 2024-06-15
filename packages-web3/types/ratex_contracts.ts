@@ -585,6 +585,10 @@ export type RatexContracts = {
         {
           "name": "upperRate",
           "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -844,6 +848,16 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "marginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "driftSigner",
           "isMut": false,
           "isSigner": false
@@ -852,6 +866,11 @@ export type RatexContracts = {
           "name": "authority",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": []
@@ -1252,6 +1271,11 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "marginMarket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "state",
           "isMut": false,
           "isSigner": false
@@ -1272,12 +1296,12 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "tokenOwnerAccountB",
+          "name": "tokenOwnerAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "tokenVaultB",
+          "name": "tokenVaultMargin",
           "isMut": true,
           "isSigner": false
         },
@@ -1318,12 +1342,17 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "tokenVaultB",
+          "name": "marginMarket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultMargin",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "tokenDestinationB",
+          "name": "tokenDestination",
           "isMut": true,
           "isSigner": false
         },
@@ -1509,6 +1538,21 @@ export type RatexContracts = {
         }
       ],
       "returns": "i32"
+    },
+    {
+      "name": "calculateImpliedRate",
+      "accounts": [],
+      "args": [
+        {
+          "name": "maturity",
+          "type": "u64"
+        },
+        {
+          "name": "sqrtPriceX64",
+          "type": "u128"
+        }
+      ],
+      "returns": "u128"
     },
     {
       "name": "initialize",
@@ -1753,6 +1797,10 @@ export type RatexContracts = {
           "type": "publicKey"
         },
         {
+          "name": "minLpAmount",
+          "type": "u64"
+        },
+        {
           "name": "name",
           "type": {
             "array": [
@@ -1979,6 +2027,37 @@ export type RatexContracts = {
         {
           "name": "expireTs",
           "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketMinLpAmount",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "minLpAmount",
+          "type": "u64"
         }
       ]
     },
@@ -3152,11 +3231,15 @@ export type RatexContracts = {
             }
           },
           {
+            "name": "minLpAmount",
+            "type": "u64"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                21
+                13
               ]
             }
           }
@@ -4457,6 +4540,11 @@ export type RatexContracts = {
           "index": false
         },
         {
+          "name": "minLpAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
           "name": "defaultFeeRate",
           "type": "u16",
           "index": false
@@ -4811,6 +4899,11 @@ export type RatexContracts = {
           "name": "orderIsClose",
           "type": "bool",
           "index": false
+        },
+        {
+          "name": "totalBalance",
+          "type": "i64",
+          "index": false
         }
       ]
     },
@@ -4847,6 +4940,11 @@ export type RatexContracts = {
         {
           "name": "ttm",
           "type": "i64",
+          "index": false
+        },
+        {
+          "name": "perpMarket",
+          "type": "publicKey",
           "index": false
         }
       ]
@@ -4976,6 +5074,51 @@ export type RatexContracts = {
         },
         {
           "name": "realizedPnl",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "BeginLiquidationRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "EndLiquidationRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "totalBalance",
           "type": "i64",
           "index": false
         }
@@ -5147,12 +5290,12 @@ export type RatexContracts = {
           "index": false
         },
         {
-          "name": "tickLowerIndex",
+          "name": "lowerTickIndex",
           "type": "i32",
           "index": false
         },
         {
-          "name": "tickUpperIndex",
+          "name": "upperTickIndex",
           "type": "i32",
           "index": false
         }
@@ -6789,6 +6932,11 @@ export type RatexContracts = {
       "code": 6318,
       "name": "InvalidPerpMarket",
       "msg": "InvalidPerpMarket"
+    },
+    {
+      "code": 6319,
+      "name": "LpAmountTooLow",
+      "msg": "LpAmountTooLow"
     }
   ]
 };
@@ -7380,6 +7528,10 @@ export const IDL: RatexContracts = {
         {
           "name": "upperRate",
           "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -7639,6 +7791,16 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "marginMarketVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "driftSigner",
           "isMut": false,
           "isSigner": false
@@ -7647,6 +7809,11 @@ export const IDL: RatexContracts = {
           "name": "authority",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": []
@@ -8047,6 +8214,11 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
+          "name": "marginMarket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "state",
           "isMut": false,
           "isSigner": false
@@ -8067,12 +8239,12 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "tokenOwnerAccountB",
+          "name": "tokenOwnerAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "tokenVaultB",
+          "name": "tokenVaultMargin",
           "isMut": true,
           "isSigner": false
         },
@@ -8113,12 +8285,17 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "tokenVaultB",
+          "name": "marginMarket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVaultMargin",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "tokenDestinationB",
+          "name": "tokenDestination",
           "isMut": true,
           "isSigner": false
         },
@@ -8304,6 +8481,21 @@ export const IDL: RatexContracts = {
         }
       ],
       "returns": "i32"
+    },
+    {
+      "name": "calculateImpliedRate",
+      "accounts": [],
+      "args": [
+        {
+          "name": "maturity",
+          "type": "u64"
+        },
+        {
+          "name": "sqrtPriceX64",
+          "type": "u128"
+        }
+      ],
+      "returns": "u128"
     },
     {
       "name": "initialize",
@@ -8548,6 +8740,10 @@ export const IDL: RatexContracts = {
           "type": "publicKey"
         },
         {
+          "name": "minLpAmount",
+          "type": "u64"
+        },
+        {
           "name": "name",
           "type": {
             "array": [
@@ -8774,6 +8970,37 @@ export const IDL: RatexContracts = {
         {
           "name": "expireTs",
           "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "updatePerpMarketMinLpAmount",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "state",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "perpMarket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracle",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "minLpAmount",
+          "type": "u64"
         }
       ]
     },
@@ -9947,11 +10174,15 @@ export const IDL: RatexContracts = {
             }
           },
           {
+            "name": "minLpAmount",
+            "type": "u64"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                21
+                13
               ]
             }
           }
@@ -11252,6 +11483,11 @@ export const IDL: RatexContracts = {
           "index": false
         },
         {
+          "name": "minLpAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
           "name": "defaultFeeRate",
           "type": "u16",
           "index": false
@@ -11606,6 +11842,11 @@ export const IDL: RatexContracts = {
           "name": "orderIsClose",
           "type": "bool",
           "index": false
+        },
+        {
+          "name": "totalBalance",
+          "type": "i64",
+          "index": false
         }
       ]
     },
@@ -11642,6 +11883,11 @@ export const IDL: RatexContracts = {
         {
           "name": "ttm",
           "type": "i64",
+          "index": false
+        },
+        {
+          "name": "perpMarket",
+          "type": "publicKey",
           "index": false
         }
       ]
@@ -11771,6 +12017,51 @@ export const IDL: RatexContracts = {
         },
         {
           "name": "realizedPnl",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "BeginLiquidationRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "EndLiquidationRecord",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "userAuthority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "totalBalance",
           "type": "i64",
           "index": false
         }
@@ -11942,12 +12233,12 @@ export const IDL: RatexContracts = {
           "index": false
         },
         {
-          "name": "tickLowerIndex",
+          "name": "lowerTickIndex",
           "type": "i32",
           "index": false
         },
         {
-          "name": "tickUpperIndex",
+          "name": "upperTickIndex",
           "type": "i32",
           "index": false
         }
@@ -13584,6 +13875,11 @@ export const IDL: RatexContracts = {
       "code": 6318,
       "name": "InvalidPerpMarket",
       "msg": "InvalidPerpMarket"
+    },
+    {
+      "code": 6319,
+      "name": "LpAmountTooLow",
+      "msg": "LpAmountTooLow"
     }
   ]
 };

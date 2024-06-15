@@ -94,7 +94,7 @@ export function Chart({contract}: any) {
             axisLine: {show: true},
             position: 'bottom',
             axisTick: {show: true, alignWithLabel: false},
-            axisLabel: {align: 'right'},
+            axisLabel: {align: 'right', interval: 1},
           },
         ],
         yAxis: [

@@ -4,6 +4,7 @@ export {Drawer} from './drawer';
 export {Dropdown} from './dropdown/Dropdown';
 export {NumberInput} from './input/NumberInput';
 export {Loading} from './loading/Loading';
+export {Spin} from './loading/Spin';
 export {Menu} from './menu/Menu';
 export {Modal} from './modal/Modal';
 export {ProgressBar} from './progress-bar';

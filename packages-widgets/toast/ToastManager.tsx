@@ -67,7 +67,7 @@ const Toast = React.memo(
       <div className="bg-black">
         <ToastMessage type={type} className="flex flex-row items-start gap-12px">
           {type === 'success' && <CheckIcon width={24} height={24} />}
-          {type === 'error' && <ErrorIcon width={24} height={24} />}
+          {['error', 'warn'].includes(type) && <ErrorIcon width={24} height={24} />}
           <div>{content}</div>
         </ToastMessage>
       </div>

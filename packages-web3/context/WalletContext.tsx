@@ -20,7 +20,11 @@ export const WalletContextProvider: FC<{children: ReactNode}> = ({children}) => 
   const endpoint = useMemo(
     // () => 'https://devnet.helius-rpc.com/?api-key=21f80e34-a310-431d-b970-ecb7a7c16565',
     // () => 'https://convincing-green-sea.solana-devnet.quiknode.pro/e155ea13e0808fe562d72760eaf1c69daf3498c2/',
-    () => (env.isTestNet ? 'https://sol-rpc.rate-x.io' : 'https://rpc.rate-x.io'),
+    // () => (env.isTestNet ? 'https://sol-rpc.rate-x.io' : 'https://rpc.rate-x.io'),
+    () =>
+      env.isTestNet
+        ? 'https://convincing-green-sea.solana-devnet.quiknode.pro/e155ea13e0808fe562d72760eaf1c69daf3498c2/'
+        : 'https://rpc.rate-x.io',
     // () => clusterApiUrl(network),
     [network]
   );

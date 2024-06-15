@@ -167,6 +167,12 @@ export const lang: any = {
   EntryYield: {
     en: 'Entry Yield',
   },
+  ExecutionYield: {
+    en: 'Execution Yield',
+  },
+  Exec: {
+    en: 'Exec.',
+  },
   TradingFee: {
     en: 'Trading fee',
   },

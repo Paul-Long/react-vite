@@ -1,8 +1,10 @@
-import {marketIndex$, positions$} from '@/streams/lp/positions';
+import {loading$, marketIndex$, positions$} from '@/streams/lp/positions';
 import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
+import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
+import {Spin} from '@rx/widgets';
 import {clsx} from 'clsx';
 import {useEffect, useMemo, useState} from 'react';
 import {PlaceOrder} from './PlaceOrder';
@@ -12,6 +14,7 @@ interface Props {
 }
 
 export function LiveLPPosition({contract}: Props) {
+  const [loading] = useStream(loading$);
   const positions = useObservable<any[]>(positions$, []);
   const [select, setSelect] = useState('');
 
@@ -40,23 +43,30 @@ export function LiveLPPosition({contract}: Props) {
     }
   }, [contract]);
 
-  console.log('LP Live Positions : ', positions);
+  console.log('LP Live Positions : ', positions, loading);
 
   return (
     <div className="flex flex-row items-start w-full gap-24px">
-      <div className="flex flex-col w-full gap-20px">
-        {positions?.map((p, i) => (
-          <Position
-            key={p.userPda}
-            active={select === p.key}
-            data={p}
-            contract={contract}
-            onClick={() => setSelect(p.key)}
-          ></Position>
-        ))}
+      <div className="relative flex flex-col w-full gap-20px min-h-200px">
+        {positions
+          ?.filter((p) => p.marketIndex === contract?.id)
+          ?.map((p, i) => (
+            <Position
+              key={p.userPda}
+              active={select === p.key}
+              data={p}
+              contract={contract}
+              onClick={() => setSelect(p.key)}
+            ></Position>
+          ))}
+        {loading && <Spin />}
       </div>
 
-      <div className={clsx('w-full mx-auto mt-87px', [positions?.length > 0 ? 'hidden' : 'block'])}>
+      <div
+        className={clsx('w-full mx-auto mt-87px', [
+          positions?.length > 0 || loading ? 'hidden' : 'block',
+        ])}
+      >
         <img src="https://static.rate-x.io/img/v1/c111c8/no-data.png" alt="" width="120" />
       </div>
 

@@ -11,7 +11,7 @@ export default function () {
   useEffect(() => {
     queryRatePrice$.next(0);
     queryRate$.next(0);
-    ratePrice$.next('topic dc.aps.dprice');
+    ratePrice$.next('topic dc.trade.dprice');
     queryLastTrade$.next(0);
     lastTradeSnapshot$.next('dc.md.trade.*');
   }, []);

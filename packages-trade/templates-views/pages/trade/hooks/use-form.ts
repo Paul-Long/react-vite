@@ -287,7 +287,10 @@ export function useForm() {
       if (tx === false) {
         Toast.warn('Order placement failed, please check current positions and orders.');
       }
-      if (tx) {
+      if (tx === 30001) {
+        Toast.warn('CROSS position is less than 5 positions.');
+      }
+      if (tx && tx !== 30001) {
         try {
           await client.confirmTransaction(tx);
           await client.parsePlaceOrderView(tx, (event: string, data: any) => {

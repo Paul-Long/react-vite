@@ -12,7 +12,7 @@ export function Resolution(props: Props) {
       <div className="font-size-14px lh-16px pl-12px text-gray-600">Time</div>
       {genTimes().map(([t, v]) => (
         <div
-          className={clsx('px-12px py-6px rounded-4px', 'font-size-14px lh-16px cursor-pointer', [
+          className={clsx('px-8px py-4px rounded-4px', 'font-size-14px lh-16px cursor-pointer', [
             props.value === v ? 'text-white bg-gray-80' : 'text-gray-600',
           ])}
           key={t}

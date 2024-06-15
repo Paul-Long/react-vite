@@ -4,6 +4,7 @@ import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {lang} from '@rx/lang/lp.lang';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
+import {Tooltip} from '@rx/widgets';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
 import {useEffect, useMemo, useState} from 'react';
@@ -76,7 +77,12 @@ export function Info(props: Props) {
         </div>
       </div>
       <div className="flex flex-col gap-8px">
-        <div className="text-gray-600">Active Ratio</div>
+        <Tooltip
+          className="min-w-200px"
+          text={`Active Ratio (AR) decides how much of an LP's liquidity goes into the AMM.`}
+        >
+          <div className="text-gray-600 underline underline-dotted">Active Ratio</div>
+        </Tooltip>
         <div className="text-green-500 font-size-18px">{ar}</div>
       </div>
     </div>
