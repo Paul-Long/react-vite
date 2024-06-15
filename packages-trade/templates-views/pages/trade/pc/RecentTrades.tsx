@@ -47,7 +47,7 @@ export function RecentTrades() {
       </div>
       <div className="relative overflow-y-auto sv">
         <div className={clsx('grid grid-cols-4', [show ? 'grid' : 'hidden'])}>
-          <div className="contents">
+          <div className="contents bg-#030B0F">
             <div className={clsx(header, 'pl-16px')}>{LG(clang.Price)}</div>
             <div className={clsx(header, 'text-right')}>{LG(clang.Yield)}</div>
             <div className={clsx(header, 'text-right')}>{LG(clang.Amount)}</div>

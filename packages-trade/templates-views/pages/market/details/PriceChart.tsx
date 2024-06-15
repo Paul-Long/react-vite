@@ -87,7 +87,7 @@ export function PriceChart({ready}: {ready: boolean}) {
             fontSize: 10,
             showMaxLabel: false,
             formatter: (value: any) => {
-              return dayjs(value).format('MM-DD');
+              return dayjs(Number(value)).format('YYYY-MM-DD');
             },
           },
           axisLine: {

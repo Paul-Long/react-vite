@@ -183,6 +183,9 @@ export class RateClient {
       const zero = new BN(0);
       // const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
       const position = user?.perpPositions?.find((p: any) => p.marketIndex === marketIndex);
+      if (position?.length > 4) {
+        return 30001;
+      }
       if (!!position) {
         const order = user?.orders?.find((o: any) => {
           return (
@@ -312,6 +315,18 @@ export class RateClient {
     if (!this.authority) {
       return;
     }
+    const baseResult = {
+      key: [params.input, params.direction, params.amount].join('_'),
+      baseAssetAmount: params.input === 'amount' ? params.amount : 0,
+      quoteAssetAmount: params.input === 'margin' ? params.amount : 0,
+      entryPrice: 0,
+      sqrtPrice: 0,
+      impliedSqrtRate: 0,
+      impliedEntryRate: 0,
+    };
+    if (!params.amount || Number(params.amount) <= 0) {
+      return baseResult;
+    }
     const instruction = await this.om.simulateSwap(
       this.program,
       this.authority,
@@ -384,6 +399,7 @@ export class RateClient {
     maturity: number;
     amount: number;
     marketIndex: number;
+    epochStartTimestamp: number;
   }) {
     if (!this.authority) {
       return;

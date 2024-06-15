@@ -1,4 +1,5 @@
 import {contracts$} from '@/config';
+import {ratePrice$} from '@/subscription/rate-price';
 import {epochApi} from '@rx/api/epoch';
 import {numUtil} from '@rx/helper/num';
 import {Big} from 'big.js';
@@ -15,12 +16,25 @@ export const ttmMap$ = combineLatest([epochStartTime$, contracts$]).pipe(
 );
 
 export async function loadEpochStartTime() {
-  const {data} = await epochApi.startTime();
-  console.log('Epoch Start Time : ', data.ttm);
+  const {data} = await epochApi.ratePrice();
   if (data) {
-    _epochStartTime$.next(data.ttm);
+    const times = data.map((d) => d.epochTimeL);
+    const time = Math.max(...times);
+    console.log('Epoch Start Time : ', time);
+    _epochStartTime$.next(time);
   }
 }
+
+ratePrice$.subscribe((data) => {
+  if (data) {
+    const times = data.map((d) => d.epochTimeL);
+    const time = Math.max(...times);
+    if (time) {
+      console.log('Epoch Start Time : ', time);
+      _epochStartTime$.next(time);
+    }
+  }
+});
 
 function calcTTM(time: number, contracts: ConfigSymbol[]) {
   return contracts.reduce((ttm, c) => {

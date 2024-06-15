@@ -18,7 +18,7 @@ export function OrderConfirm(props: Props) {
   const {loading, order, visible, calcInfo, contract, onClose, onConfirm} = props;
   const {LG} = useLang();
   return (
-    <Modal visible={visible} onClose={onClose} title={LG(lang.ConfirmOrder)}>
+    <Modal visible={visible} onClose={() => !loading && onClose?.()} title={LG(lang.ConfirmOrder)}>
       <div className="flex flex-col">
         <div className="flex flex-row items-end gap-4px">
           <span className="font-size-18px fw-medium mb-[-2px]">{contract?.symbolName}</span>

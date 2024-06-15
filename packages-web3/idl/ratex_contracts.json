@@ -585,6 +585,10 @@
         {
           "name": "upperRate",
           "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -1534,6 +1538,21 @@
         }
       ],
       "returns": "i32"
+    },
+    {
+      "name": "calculateImpliedRate",
+      "accounts": [],
+      "args": [
+        {
+          "name": "maturity",
+          "type": "u64"
+        },
+        {
+          "name": "sqrtPriceX64",
+          "type": "u128"
+        }
+      ],
+      "returns": "u128"
     },
     {
       "name": "initialize",

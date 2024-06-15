@@ -585,6 +585,10 @@ export type RatexContracts = {
         {
           "name": "upperRate",
           "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -1534,6 +1538,21 @@ export type RatexContracts = {
         }
       ],
       "returns": "i32"
+    },
+    {
+      "name": "calculateImpliedRate",
+      "accounts": [],
+      "args": [
+        {
+          "name": "maturity",
+          "type": "u64"
+        },
+        {
+          "name": "sqrtPriceX64",
+          "type": "u128"
+        }
+      ],
+      "returns": "u128"
     },
     {
       "name": "initialize",
@@ -7509,6 +7528,10 @@ export const IDL: RatexContracts = {
         {
           "name": "upperRate",
           "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -8458,6 +8481,21 @@ export const IDL: RatexContracts = {
         }
       ],
       "returns": "i32"
+    },
+    {
+      "name": "calculateImpliedRate",
+      "accounts": [],
+      "args": [
+        {
+          "name": "maturity",
+          "type": "u64"
+        },
+        {
+          "name": "sqrtPriceX64",
+          "type": "u128"
+        }
+      ],
+      "returns": "u128"
     },
     {
       "name": "initialize",

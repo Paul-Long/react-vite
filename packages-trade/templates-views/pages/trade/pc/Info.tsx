@@ -2,6 +2,7 @@ import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/common.lang';
 import {Tooltip} from '@rx/widgets';
+// import {Tooltip} from '@rx/widgets/tooltip/Tooltip';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
 import {useContractInfo} from '../hooks/use-contract-info';

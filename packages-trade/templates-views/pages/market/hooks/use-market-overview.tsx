@@ -10,6 +10,8 @@ import {ttmMap$} from '@rx/streams/epoch';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {Button} from '@rx/widgets';
 import type {Column} from '@rx/widgets/table/types';
+import {Big} from 'big.js';
+import {clsx} from 'clsx';
 import {useCallback, useMemo} from 'react';
 
 export function useMarketOverview() {
@@ -28,11 +30,21 @@ export function useMarketOverview() {
         const ttm = ttmMap?.[key];
         const last = lastTrade?.[m.symbol] || {};
         const impliedYield = !!last?.Yield ? Number(last?.Yield * 100).toFixed(3) + '%' : '-';
+        const change24 =
+          !last?.PreClosePrice || !last?.LastPrice
+            ? '-'
+            : Big(last.PreClosePrice)
+                .minus(last.LastPrice)
+                .div(last.PreClosePrice)
+                .times(100)
+                .round(2)
+                .toNumber();
         return {
           ...m,
           ...(lastTrade?.[m.symbol] ?? {}),
           ttm: ttm.ttm + ' ' + ttm.unit,
           impliedYield,
+          change24,
         };
       })
       .filter((m) => {
@@ -76,8 +88,9 @@ export function useMarketOverview() {
       {title: LG(lang.YTPrice), dataIndex: 'LastPrice', align: 'center'},
       {
         title: LG(lang.H24PriceChg),
-        dataIndex: 'priceChg',
+        dataIndex: 'change24',
         align: 'center',
+        render: renderChange24,
       },
       {
         title: <span></span>,
@@ -98,6 +111,19 @@ export function useMarketOverview() {
     };
   }, []);
 
+  function renderChange24(row: Record<string, any>) {
+    return (
+      <div
+        className={clsx(
+          [row.change24 !== '-' && row.change24 > 0 && 'text-green-500'],
+          [row.change24 !== '-' && row.change24 < 0 && 'text-red-500']
+        )}
+      >
+        {row.change24}%
+      </div>
+    );
+  }
+
   function renderAction(row: any) {
     return (
       <div className="flex flex-row gap-8px">
@@ -107,5 +133,6 @@ export function useMarketOverview() {
       </div>
     );
   }
+
   return {genColumns, dataSource};
 }

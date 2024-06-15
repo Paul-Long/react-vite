@@ -18,7 +18,7 @@ export default function () {
     queryLastTrade$.next(0);
     queryRatePrice$.next(0);
     queryRate$.next(0);
-    ratePrice$.next('topic dc.aps.dprice');
+    ratePrice$.next('topic dc.trade.dprice');
     lastTradeSnapshot$.next('dc.md.trade.*');
     queryReferencePrice$.next(0);
     marketIndex$.next(-1);
