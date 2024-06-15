@@ -82,8 +82,8 @@ export function SpecificPool() {
             >
               {c.maturityStr ?? ''}
             </div>
-            <div className={clsx('flex justify-right py-20px group-hover:bg-gray-80')}>
-              <span>{c.activeRatio}</span>
+            <div className={clsx('flex items-center justify-right py-20px group-hover:bg-gray-80')}>
+              {c.activeRatio}
             </div>
             <div
               className={clsx(
@@ -137,7 +137,7 @@ function useData() {
         activeRatio,
         due: c.dueDate?.slice(0, 11),
         maturity: ttmMap?.[key]?.seconds,
-        maturityStr: ttmMap?.[key].ttm + ttmMap?.[key].unit,
+        maturityStr: ttmMap?.[key].ttm + ' ' + ttmMap?.[key].unit,
       };
 
       if (apy) {

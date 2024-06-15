@@ -1,3 +1,5 @@
+import {DepositModal} from '@rx/components/wallet/DepositModal';
+import {WithdrawModal} from '@rx/components/wallet/WithdrawModal';
 import {queryRatePrice$} from '@rx/streams/market/rate-price';
 import {queryRate$} from '@rx/streams/rate-price';
 import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
@@ -19,6 +21,8 @@ export default function () {
     <div className="flex flex-col w-1200px mx-auto">
       <Overview />
       <PositionsWrap />
+      <DepositModal />
+      <WithdrawModal />
     </div>
   );
 }
