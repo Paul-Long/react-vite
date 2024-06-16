@@ -1,7 +1,7 @@
 import {PDA} from '@/sdk/PDA';
 import {PublicKey} from '@solana/web3.js';
 
-export const PROGRAM_ID = new PublicKey('6cYMUFsS1ApVQi3HZMG9dGeyobZkg7YTg3tSnf8QYCrL');
+export const PROGRAM_ID = new PublicKey('DCkmopiWwBWxq4tWNYSG4eJpXLAosP5m1Q9Joyf9XRY9');
 
 export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
 
@@ -22,19 +22,13 @@ export function getFaucetConfigPda(marginIndex: number): any {
 }
 
 export const PerpMarketMap = (): Record<number, string> => {
-  return [0, 1, 2, 4, 5].reduce(
-    (record, mi) => ({...record, [mi]: PDA.createPerpMarketPda(mi)}),
-    {}
-  );
+  return [0, 2].reduce((record, mi) => ({...record, [mi]: PDA.createYieldMarketPda(mi)}), {});
 };
 
 export function getObservationPda(marketIndex: number): any {
   return {
-    0: new PublicKey('8VCVAHLnKANqLhgYTTsZkhwg4m5XSxFESRpVkVuzUpE3'),
-    1: new PublicKey('4kn8eAUbFDpMfoMeW3HC927MBcNgVEKSBFeRV6Yw6kn2'),
-    2: new PublicKey('DcPN2voFCYKxypbQBgVfSs8C2EW3p2bGFf7Pvr9PaNoq'),
-    4: new PublicKey('D2RZ6XFni84wPQzst7td9Bb33k1VXEBkrQYifArwQUec'),
-    5: new PublicKey('HsgRnUwxEABcc6DZr1Cdqrw6BytPbBxywDRrKXFFRtMC'),
+    0: new PublicKey('GfzUJibVE9tFxUNnaGVvLqxfXbCXQXpTgwo32jHgoFLh'),
+    2: new PublicKey('BWzB69DSMeWnSh35drF4peRB2RasTWXWpL6Yj9iya8WZ'),
   }[marketIndex];
 }
 
@@ -45,16 +39,13 @@ export function getMarginIndexByMarketIndex(marketIndex: number): number {
 export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
   return {
     0: 1,
-    1: 2,
-    2: 1,
-    4: 2,
-    5: 2,
+    2: 2,
   }[marketIndex] as number;
 }
 
 export function getAllPerpMarkets() {
-  return [0, 1, 2, 4, 5].map((i) => ({
-    pubkey: PDA.createPerpMarketPda(i),
+  return [0, 2].map((i) => ({
+    pubkey: PDA.createYieldMarketPda(i),
     isSigner: false,
     isWritable: true,
   }));
@@ -70,7 +61,7 @@ export function getAllOracles() {
 }
 
 export function getAllObservations() {
-  return [0, 1, 2, 4, 5].map((i) => ({
+  return [0, 2].map((i) => ({
     pubkey: getObservationPda(i),
     isSigner: false,
     isWritable: true,
