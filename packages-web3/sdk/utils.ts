@@ -31,7 +31,7 @@ export function getObservationPda(marketIndex: number): any {
     2: new PublicKey('5qrEyQcvbyDF2KUJt9v3F1UwRq3hPWsUDT83w47K8HVT'),
     3: new PublicKey('EwqYD3txG8ufAsCLWrqXQUnXTHsoe9D9iW44RCGhr2QU'),
     5: new PublicKey('7CNeZ9tHNJddvibP3P4uYVaRetqUzaTwTK8AD5gXnvz2'),
-    6: new PublicKey('7CNeZ9tHNJddvibP3P4uYVaRetqUzaTwTK8AD5gXnvz2'),
+    6: new PublicKey('8cyB33SW8T2rVzqw5ndQ672AzSYP19JHUZVnbsD61BTz'),
   }[marketIndex];
 }
 
