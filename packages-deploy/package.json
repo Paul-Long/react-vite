@@ -10,7 +10,6 @@
     "deploy-trade-dev10": "node trade/deploy-dev10.mjs",
     "deploy-trade-dev11": "node trade/deploy-dev11.mjs",
     "deploy-trade-dev12": "node trade/deploy-dev12.mjs",
-    "deploy-trade-testnet": "node trade/deploy-testnet.mjs",
     "deploy-global-3rd": "node 3rd/deploy-global-3rd.mjs",
     "deploy-global-css": "node css/deploy-global-css.mjs",
     "deploy-global-font": "node font/deploy-global-font.mjs",
@@ -19,7 +18,8 @@
     "deploy-local-trade": "cp -Ra ../packages-trade/app/dist/client/* /usr/local/var/www",
     "deploy-local-css": "cp -Ra ../packages-shared/scss/dist/* /usr/local/var/www/css",
     "deploy-local-clear": "find /usr/local/var/www -mindepth 1 -maxdepth 1 ! -name '3rd' ! -name 'css' ! -name 'font' -exec rm -rf {} +",
-    "refresh-cdn": "node aws/refresh-cdn.mjs"
+    "refresh-cdn": "node aws/refresh-cdn.mjs",
+    "refresh-testnet-cdn": "node aws/refresh-testnet-cdn.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.525.0",

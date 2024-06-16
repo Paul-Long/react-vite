@@ -116,7 +116,7 @@ export class FundManager {
       marginIndex: number;
       amount: number;
     }
-  ) {
+  ): Promise<TransactionInstruction> {
     const {amount, marginIndex} = params;
 
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
@@ -154,7 +154,7 @@ export class FundManager {
         ...getAllOracles(),
         ...getAllObservations(),
       ])
-      .rpc();
+      .instruction();
   }
 
   async mintToUser(
