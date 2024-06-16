@@ -40,7 +40,7 @@ const subRecentTrades$ = combineLatest([recentTrades$, clear$]).pipe(
 
 export const recentTradesState$ = combineLatest([state$, subRecentTrades$]).pipe(
   map(([res, sub]) => {
-    const data = sub.filter((d) => !res?.some((r) => r.datetime === d.datetime));
+    const data = sub.filter((d) => !res?.some((r) => r.formatDateTime === d.formatDateTime));
     return [...res, ...data].sort((a, b) => (a.datetime > b.datetime ? -1 : 1));
   }),
   startWith([]),
@@ -60,5 +60,6 @@ function formatData(d: Record<string, any>) {
     amount: numUtil.trimEnd0(numUtil.floor(d.MDEntrySize, 4)),
     time: timeUtil.formatTime(new Date(d.MDEntryTime).getTime()),
     datetime: d.MDEntryTime,
+    formatDateTime: timeUtil.formatDateTime(new Date(d.MDEntryTime).getTime()),
   };
 }
