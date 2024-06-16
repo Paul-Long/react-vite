@@ -690,7 +690,25 @@ export class RateClient {
     if (params.marketIndex !== undefined) {
       newParams.marginIndex = getMarginIndexByMarketIndex(params.marketIndex);
     }
-    const tx = await this.fm.withdraw(this.program, this.authority, this.am, userPda, newParams);
+    const instruction = await this.fm.withdraw(
+      this.program,
+      this.authority,
+      this.am,
+      userPda,
+      newParams
+    );
+
+    const combinedTransaction = new Transaction();
+    combinedTransaction.add(instruction);
+    combinedTransaction.add(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 1_400_000,
+      })
+    );
+    const tx = await this.sendTransaction(combinedTransaction);
+    if (tx) {
+      await this.queryEvent(tx, 'removePerpLpShares');
+    }
     console.log('Withdraw Tx : ', tx);
     updateBalance$.next(0);
     return tx;
