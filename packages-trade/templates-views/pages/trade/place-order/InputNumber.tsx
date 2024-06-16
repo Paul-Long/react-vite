@@ -92,14 +92,12 @@ export function InputNumber(props: Props) {
         v = parseFloat(v).toFixed(step);
         this.value = v;
       }
-      console.log('v : ', v, v.replace(/^0+(?=\d)/, ''));
-      if (v.replace(/^0+(?=\d)/, '') !== v) {
-        this.value = v.replace(/^0+(?=\d)/, '');
+      const nv = v.replace(/^0+(?=\d)/, '');
+      if (nv !== v) {
+        this.value = nv;
+        onChange?.(nv);
       }
       updatePercentagePosition();
-    });
-    ref.current?.addEventListener('blur', function () {
-      let v = this.value;
     });
     if (autoFocus) {
       ref.current?.focus();
@@ -114,6 +112,7 @@ export function InputNumber(props: Props) {
   }, [value]);
 
   const handleChange = useCallback((e: any) => {
+    console.log('input change : ', e.target.value);
     setValue(e.target.value);
   }, []);
 
