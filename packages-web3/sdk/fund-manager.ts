@@ -144,7 +144,7 @@ export class FundManager {
         user: userPda,
         authority,
         marginMarketVault: marginMarketVaultPda,
-        driftSigner: am.signerPda,
+        ratexSigner: am.signerPda,
         userTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
       })

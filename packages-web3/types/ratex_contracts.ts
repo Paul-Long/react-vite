@@ -295,7 +295,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -322,7 +322,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "placePerpOrder",
+      "name": "placeOrder",
       "accounts": [
         {
           "name": "state",
@@ -404,7 +404,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -434,7 +434,7 @@ export type RatexContracts = {
     {
       "name": "closePosition",
       "docs": [
-        "Close a position in a Whirlpool. Burns the position token in the owner's wallet.",
+        "Close a position in a Ammpool. Burns the position token in the owner's wallet.",
         "",
         "### Authority",
         "- \"position_authority\" - The authority that owns the position token.",
@@ -444,7 +444,7 @@ export type RatexContracts = {
       ],
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -467,7 +467,7 @@ export type RatexContracts = {
       "args": []
     },
     {
-      "name": "addPerpLpShares",
+      "name": "addLpShares",
       "accounts": [
         {
           "name": "state",
@@ -475,7 +475,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -500,7 +500,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -532,6 +532,11 @@ export type RatexContracts = {
         {
           "name": "marginMarketVault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lpOracle",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -585,15 +590,11 @@ export type RatexContracts = {
         {
           "name": "upperRate",
           "type": "u64"
-        },
-        {
-          "name": "epochStartTimestamp",
-          "type": "i64"
         }
       ]
     },
     {
-      "name": "removePerpLpShares",
+      "name": "removeLpShares",
       "accounts": [
         {
           "name": "state",
@@ -601,7 +602,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -636,7 +637,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -668,6 +669,11 @@ export type RatexContracts = {
         {
           "name": "marginMarketVault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lpOracle",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -708,7 +714,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "fillPerpOrder",
+      "name": "fillOrder",
       "accounts": [
         {
           "name": "user",
@@ -741,7 +747,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -756,7 +762,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -812,7 +818,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -858,7 +864,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -899,7 +905,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -914,7 +920,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -974,7 +980,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -1010,7 +1016,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -1025,7 +1031,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1106,7 +1112,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -1191,7 +1197,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -1216,10 +1222,10 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarket",
+      "name": "updateYieldMarket",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         }
@@ -1235,7 +1241,7 @@ export type RatexContracts = {
       "name": "updateFeesAndRewards",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1266,7 +1272,7 @@ export type RatexContracts = {
       "name": "collectFees",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -1281,7 +1287,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -1322,12 +1328,17 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "marginMarket",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "whirlpoolsConfig",
+          "name": "ratexSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ammpoolsConfig",
           "isMut": false,
           "isSigner": false
         },
@@ -1337,13 +1348,8 @@ export type RatexContracts = {
           "isSigner": true
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "marginMarket",
-          "isMut": false,
           "isSigner": false
         },
         {
@@ -1368,7 +1374,7 @@ export type RatexContracts = {
       "name": "observe",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -1394,7 +1400,7 @@ export type RatexContracts = {
       "name": "getAmmTwap",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -1416,7 +1422,7 @@ export type RatexContracts = {
       "name": "loadObservationState",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         }
@@ -1427,7 +1433,7 @@ export type RatexContracts = {
       "name": "calculateSwap",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         }
@@ -1486,7 +1492,7 @@ export type RatexContracts = {
       "name": "calculateLpValue",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -1503,7 +1509,7 @@ export type RatexContracts = {
       "name": "calculateTraderPnl",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -1578,7 +1584,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -1590,10 +1596,7 @@ export type RatexContracts = {
         {
           "name": "tokenProgram",
           "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "CHECK"
-          ]
+          "isSigner": false
         }
       ],
       "args": []
@@ -1627,7 +1630,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -1649,10 +1652,7 @@ export type RatexContracts = {
         {
           "name": "tokenProgram",
           "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "CHECK"
-          ]
+          "isSigner": false
         }
       ],
       "args": [
@@ -1668,7 +1668,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "initializePerpMarket",
+      "name": "initializeYieldMarket",
       "accounts": [
         {
           "name": "admin",
@@ -1681,12 +1681,12 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1726,7 +1726,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpoolsConfig",
+          "name": "ammpoolsConfig",
           "isMut": false,
           "isSigner": false
         },
@@ -1812,7 +1812,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketStatus",
+      "name": "updateYieldMarketStatus",
       "accounts": [
         {
           "name": "admin",
@@ -1825,7 +1825,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1845,7 +1845,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketActiveRatioCoef",
+      "name": "updateYieldMarketActiveRatioCoef",
       "accounts": [
         {
           "name": "admin",
@@ -1858,7 +1858,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1876,7 +1876,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketActiveRatioCap",
+      "name": "updateYieldMarketActiveRatioCap",
       "accounts": [
         {
           "name": "admin",
@@ -1889,7 +1889,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1907,7 +1907,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketOrderStepSize",
+      "name": "updateYieldMarketOrderStepSize",
       "accounts": [
         {
           "name": "admin",
@@ -1920,7 +1920,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1938,7 +1938,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketMinOrderSize",
+      "name": "updateYieldMarketMinOrderSize",
       "accounts": [
         {
           "name": "admin",
@@ -1951,7 +1951,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -1969,7 +1969,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketStartTs",
+      "name": "updateYieldMarketStartTs",
       "accounts": [
         {
           "name": "admin",
@@ -1982,7 +1982,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2000,7 +2000,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketExpireTs",
+      "name": "updateYieldMarketExpireTs",
       "accounts": [
         {
           "name": "admin",
@@ -2013,7 +2013,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2031,7 +2031,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketMinLpAmount",
+      "name": "updateYieldMarketMinLpAmount",
       "accounts": [
         {
           "name": "admin",
@@ -2044,7 +2044,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2080,12 +2080,12 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2128,14 +2128,6 @@ export type RatexContracts = {
         {
           "name": "epochStartTimestamp",
           "type": "i64"
-        },
-        {
-          "name": "ov",
-          "type": "i64"
-        },
-        {
-          "name": "totalLpValue",
-          "type": "u64"
         }
       ]
     },
@@ -2158,12 +2150,12 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2219,7 +2211,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2252,7 +2244,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2283,7 +2275,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -2293,7 +2285,7 @@ export type RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -2334,12 +2326,12 @@ export type RatexContracts = {
       "name": "decreaseLiquidity",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -2435,6 +2427,22 @@ export type RatexContracts = {
       ],
       "args": [
         {
+          "name": "marketRate",
+          "type": "u64"
+        },
+        {
+          "name": "rate",
+          "type": "u64"
+        },
+        {
+          "name": "lastRate",
+          "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
+        },
+        {
           "name": "decimals",
           "type": "u32"
         }
@@ -2523,6 +2531,10 @@ export type RatexContracts = {
         {
           "name": "lastRate",
           "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -2554,8 +2566,8 @@ export type RatexContracts = {
     {
       "name": "initializeConfig",
       "docs": [
-        "Initializes a WhirlpoolsConfig account that hosts info & authorities",
-        "required to govern a set of Whirlpools.",
+        "Initializes a AmmpoolsConfig account that hosts info & authorities",
+        "required to govern a set of Ammpools.",
         "",
         "### Parameters",
         "- `fee_authority` - Authority authorized to initialize fee-tiers and set customs fees.",
@@ -2601,7 +2613,7 @@ export type RatexContracts = {
     {
       "name": "initializeTickArray",
       "docs": [
-        "Initializes a tick_array account to represent a tick-range in a Whirlpool.",
+        "Initializes a tick_array account to represent a tick-range in a Ammpool.",
         "",
         "### Parameters",
         "- `start_tick_index` - The starting tick index for this tick-array.",
@@ -2613,7 +2625,7 @@ export type RatexContracts = {
       ],
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -2643,10 +2655,10 @@ export type RatexContracts = {
     {
       "name": "initializeFeeTier",
       "docs": [
-        "Initializes a fee_tier account usable by Whirlpools in a WhirlpoolConfig space.",
+        "Initializes a fee_tier account usable by Ammpools in a AmmpoolConfig space.",
         "",
         "### Authority",
-        "- \"fee_authority\" - Set authority in the WhirlpoolConfig",
+        "- \"fee_authority\" - Set authority in the AmmpoolConfig",
         "",
         "### Parameters",
         "- `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.",
@@ -2697,7 +2709,7 @@ export type RatexContracts = {
   ],
   "accounts": [
     {
-      "name": "whirlpoolsConfig",
+      "name": "ammpoolsConfig",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2735,7 +2747,7 @@ export type RatexContracts = {
         "kind": "struct",
         "fields": [
           {
-            "name": "whirlpoolsConfig",
+            "name": "ammpoolsConfig",
             "type": "publicKey"
           },
           {
@@ -2779,7 +2791,7 @@ export type RatexContracts = {
             }
           },
           {
-            "name": "whirlpool",
+            "name": "ammpool",
             "type": "publicKey"
           }
         ]
@@ -2880,7 +2892,7 @@ export type RatexContracts = {
           {
             "name": "reserveQuoteAmount",
             "docs": [
-              "The user's perp positions"
+              "The user's yield positions"
             ],
             "type": "i64"
           },
@@ -2905,7 +2917,7 @@ export type RatexContracts = {
           {
             "name": "idle",
             "docs": [
-              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, perp positions or borrows",
+              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, yield positions or borrows",
               "Off-chain keeper bots can ignore users that are idle"
             ],
             "type": "bool"
@@ -2915,7 +2927,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                21
+                80
               ]
             }
           }
@@ -3022,7 +3034,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                33
+                64
               ]
             }
           }
@@ -3063,11 +3075,15 @@ export type RatexContracts = {
             "type": "u32"
           },
           {
+            "name": "epochStartTimestamp",
+            "type": "i64"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                4
+                32
               ]
             }
           }
@@ -3075,14 +3091,258 @@ export type RatexContracts = {
       }
     },
     {
-      "name": "perpMarket",
+      "name": "state",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "signer",
+            "type": "publicKey"
+          },
+          {
+            "name": "numberOfAuthorities",
+            "type": "u64"
+          },
+          {
+            "name": "numberOfSubAccounts",
+            "type": "u64"
+          },
+          {
+            "name": "numberOfActiveLpAccounts",
+            "type": "u64"
+          },
+          {
+            "name": "collateralRatioInitial",
+            "type": "i64"
+          },
+          {
+            "name": "collateralRatioMaintenance",
+            "type": "i64"
+          },
+          {
+            "name": "insuranceAmount",
+            "type": "i64"
+          },
+          {
+            "name": "numberOfYieldMarkets",
+            "type": "u16"
+          },
+          {
+            "name": "numberOfMarginMarkets",
+            "type": "u16"
+          },
+          {
+            "name": "signerNonce",
+            "type": "u8"
+          },
+          {
+            "name": "exchangeStatus",
+            "type": "u8"
+          },
+          {
+            "name": "padding0",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "user",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The owner/authority of the account"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "marginPositions",
+            "docs": [
+              "The user's collateral"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "MarginPosition"
+                },
+                2
+              ]
+            }
+          },
+          {
+            "name": "orders",
+            "docs": [
+              "The user's liquidity"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "Order"
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "yieldPositions",
+            "docs": [
+              "The user's yield positions"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "YieldPosition"
+                },
+                8
+              ]
+            }
+          },
+          {
+            "name": "lastActiveSlot",
+            "docs": [
+              "The last slot a user was active. Used to determine if a user is idle"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "lastOrderId",
+            "type": "u32"
+          },
+          {
+            "name": "subAccountId",
+            "docs": [
+              "The sub account id for this user"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "idle",
+            "docs": [
+              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, yield positions or borrows",
+              "Off-chain keeper bots can ignore users that are idle"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "isLiquidating",
+            "docs": [
+              "Whether or not the subaccount has been liquidated"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "isIsolated",
+            "docs": [
+              "isolated / cross margin flag"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "userStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The authority for all of a users sub accounts"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "referrer",
+            "docs": [
+              "The address that referred this user"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "numberOfSubAccounts",
+            "docs": [
+              "The current number of sub accounts"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "numberOfSubAccountsCreated",
+            "docs": [
+              "The number of sub accounts created. Can be greater than the number of sub accounts if user",
+              "has deleted sub accountsget_margin_position_index"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                52
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "yieldMarket",
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "pubkey",
             "docs": [
-              "The perp market's address. It is a pda of the market index"
+              "The yield market's address. It is a pda of the market index"
             ],
             "type": "publicKey"
           },
@@ -3096,7 +3356,7 @@ export type RatexContracts = {
           {
             "name": "name",
             "docs": [
-              "Encoded display name for the perp market e.g. MSOL-2406"
+              "Encoded display name for the yield market e.g. MSOL-2406"
             ],
             "type": {
               "array": [
@@ -3144,7 +3404,7 @@ export type RatexContracts = {
           {
             "name": "pool",
             "type": {
-              "defined": "Whirlpool"
+              "defined": "Ammpool"
             }
           },
           {
@@ -3235,228 +3495,23 @@ export type RatexContracts = {
             "type": "u64"
           },
           {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                13
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "state",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "admin",
-            "type": "publicKey"
-          },
-          {
-            "name": "signer",
-            "type": "publicKey"
-          },
-          {
-            "name": "numberOfAuthorities",
-            "type": "u64"
-          },
-          {
-            "name": "numberOfSubAccounts",
-            "type": "u64"
-          },
-          {
-            "name": "numberOfActiveLpAccounts",
-            "type": "u64"
-          },
-          {
-            "name": "collateralRatioInitial",
+            "name": "netQuoteAmount",
             "type": "i64"
           },
           {
-            "name": "collateralRatioMaintenance",
+            "name": "netBaseAmount",
             "type": "i64"
           },
           {
-            "name": "insuranceAmount",
-            "type": "i64"
-          },
-          {
-            "name": "numberOfPerpMarkets",
-            "type": "u16"
-          },
-          {
-            "name": "numberOfMarginMarkets",
-            "type": "u16"
-          },
-          {
-            "name": "signerNonce",
-            "type": "u8"
-          },
-          {
-            "name": "exchangeStatus",
-            "type": "u8"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "user",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "docs": [
-              "The owner/authority of the account"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "marginPositions",
-            "docs": [
-              "The user's collateral"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "MarginPosition"
-                },
-                2
-              ]
-            }
-          },
-          {
-            "name": "orders",
-            "docs": [
-              "The user's liquidity"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "Order"
-                },
-                32
-              ]
-            }
-          },
-          {
-            "name": "perpPositions",
-            "docs": [
-              "The user's perp positions"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "PerpPosition"
-                },
-                8
-              ]
-            }
-          },
-          {
-            "name": "lastActiveSlot",
-            "docs": [
-              "The last slot a user was active. Used to determine if a user is idle"
-            ],
+            "name": "lastRate",
             "type": "u64"
           },
           {
-            "name": "lastOrderId",
-            "type": "u32"
-          },
-          {
-            "name": "subAccountId",
-            "docs": [
-              "The sub account id for this user"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "idle",
-            "docs": [
-              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, perp positions or borrows",
-              "Off-chain keeper bots can ignore users that are idle"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "isLiquidating",
-            "docs": [
-              "Whether or not the subaccount has been liquidated"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "isIsolated",
-            "docs": [
-              "isolated / cross margin flag"
-            ],
-            "type": "bool"
-          },
-          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                19
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "userStats",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "docs": [
-              "The authority for all of a users sub accounts"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "referrer",
-            "docs": [
-              "The address that referred this user"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "numberOfSubAccounts",
-            "docs": [
-              "The current number of sub accounts"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "numberOfSubAccountsCreated",
-            "docs": [
-              "The number of sub accounts created. Can be greater than the number of sub accounts if user",
-              "has deleted sub accountsget_margin_position_index"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                52
+                160
               ]
             }
           }
@@ -3518,12 +3573,12 @@ export type RatexContracts = {
       }
     },
     {
-      "name": "Whirlpool",
+      "name": "Ammpool",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "whirlpoolsConfig",
+            "name": "ammpoolsConfig",
             "type": "publicKey"
           },
           {
@@ -3575,7 +3630,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 {
-                  "defined": "WhirlpoolRewardInfo"
+                  "defined": "AmmpoolRewardInfo"
                 },
                 3
               ]
@@ -3622,7 +3677,7 @@ export type RatexContracts = {
             "type": "u16"
           },
           {
-            "name": "whirlpoolBump",
+            "name": "ammpoolBump",
             "type": {
               "array": [
                 "u8",
@@ -3643,11 +3698,11 @@ export type RatexContracts = {
       }
     },
     {
-      "name": "WhirlpoolRewardInfo",
+      "name": "AmmpoolRewardInfo",
       "docs": [
-        "Stores the state relevant for tracking liquidity mining rewards at the `Whirlpool` level.",
+        "Stores the state relevant for tracking liquidity mining rewards at the `Ammpool` level.",
         "These values are used in conjunction with `PositionRewardInfo`, `Tick.reward_growths_outside`,",
-        "and `Whirlpool.reward_last_updated_timestamp` to determine how many rewards are earned by open",
+        "and `Ammpool.reward_last_updated_timestamp` to determine how many rewards are earned by open",
         "positions."
       ],
       "type": {
@@ -3735,7 +3790,7 @@ export type RatexContracts = {
         "kind": "struct",
         "fields": [
           {
-            "name": "whirlpool",
+            "name": "ammpool",
             "type": "publicKey"
           },
           {
@@ -3922,7 +3977,7 @@ export type RatexContracts = {
             "name": "baseAssetAmount",
             "docs": [
               "The size of the order",
-              "precision for perps: BASE_PRECISION"
+              "precision for yields: BASE_PRECISION"
             ],
             "type": "i64"
           },
@@ -3987,7 +4042,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                11
+                32
               ]
             }
           }
@@ -4028,7 +4083,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                30
+                32
               ]
             }
           }
@@ -4036,14 +4091,14 @@ export type RatexContracts = {
       }
     },
     {
-      "name": "PerpPosition",
+      "name": "YieldPosition",
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "baseAssetAmount",
             "docs": [
-              "the size of the users perp position",
+              "the size of the users yield position",
               "precision: BASE_PRECISION"
             ],
             "type": "i64"
@@ -4071,7 +4126,7 @@ export type RatexContracts = {
           {
             "name": "marketIndex",
             "docs": [
-              "The market index for the perp market"
+              "The market index for the yield market"
             ],
             "type": "u16"
           },
@@ -4080,7 +4135,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                6
+                32
               ]
             }
           }
@@ -4114,35 +4169,6 @@ export type RatexContracts = {
           },
           {
             "name": "RemoveLiquidity"
-          }
-        ]
-      }
-    },
-    {
-      "name": "MarketStatus",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Initialized"
-          },
-          {
-            "name": "Active"
-          },
-          {
-            "name": "Paused"
-          },
-          {
-            "name": "ReduceOnly"
-          },
-          {
-            "name": "Settlement"
-          },
-          {
-            "name": "Delisted"
-          },
-          {
-            "name": "Updating"
           }
         ]
       }
@@ -4205,6 +4231,35 @@ export type RatexContracts = {
           },
           {
             "name": "Short"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Initialized"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Paused"
+          },
+          {
+            "name": "ReduceOnly"
+          },
+          {
+            "name": "Settlement"
+          },
+          {
+            "name": "Delisted"
+          },
+          {
+            "name": "Updating"
           }
         ]
       }
@@ -4275,7 +4330,7 @@ export type RatexContracts = {
       "name": "InitializeTickArrayEvent",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -4360,7 +4415,7 @@ export type RatexContracts = {
       "name": "SwapEvent",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -4395,7 +4450,7 @@ export type RatexContracts = {
       "name": "CollectFeesRecord",
       "fields": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -4420,7 +4475,7 @@ export type RatexContracts = {
       "name": "CollectProtocolFeesRecord",
       "fields": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -4472,7 +4527,7 @@ export type RatexContracts = {
       ]
     },
     {
-      "name": "InitializePerpMarketRecord",
+      "name": "InitializeYieldMarketRecord",
       "fields": [
         {
           "name": "oracle",
@@ -4560,7 +4615,7 @@ export type RatexContracts = {
           "index": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -4943,7 +4998,7 @@ export type RatexContracts = {
           "index": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         }
@@ -5171,6 +5226,16 @@ export type RatexContracts = {
           "name": "marketRate",
           "type": "u64",
           "index": false
+        },
+        {
+          "name": "lastRate",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64",
+          "index": false
         }
       ]
     },
@@ -5270,7 +5335,7 @@ export type RatexContracts = {
       "name": "InitializePositionEvent",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -5480,13 +5545,13 @@ export type RatexContracts = {
     },
     {
       "code": 6028,
-      "name": "PerpMarketPaused",
-      "msg": "Perp market is paused"
+      "name": "YieldMarketPaused",
+      "msg": "Yield market is paused"
     },
     {
       "code": 6029,
-      "name": "PerpMarketNotPaused",
-      "msg": "Perp market not paused"
+      "name": "YieldMarketNotPaused",
+      "msg": "Yield market not paused"
     },
     {
       "code": 6030,
@@ -5760,8 +5825,8 @@ export type RatexContracts = {
     },
     {
       "code": 6084,
-      "name": "PerpMarketNotFound",
-      "msg": "PerpMarketNotFound"
+      "name": "YieldMarketNotFound",
+      "msg": "YieldMarketNotFound"
     },
     {
       "code": 6085,
@@ -5770,7 +5835,7 @@ export type RatexContracts = {
     },
     {
       "code": 6086,
-      "name": "UnableToLoadPerpMarketAccount",
+      "name": "UnableToLoadYieldMarketAccount",
       "msg": "UnableToLoadMarketAccount"
     },
     {
@@ -5985,8 +6050,8 @@ export type RatexContracts = {
     },
     {
       "code": 6129,
-      "name": "InvalidPerpPositionToLiquidate",
-      "msg": "InvalidPerpPositionToLiquidate"
+      "name": "InvalidYieldPositionToLiquidate",
+      "msg": "InvalidYieldPositionToLiquidate"
     },
     {
       "code": 6130,
@@ -6035,7 +6100,7 @@ export type RatexContracts = {
     },
     {
       "code": 6139,
-      "name": "CantLPWithPerpPosition",
+      "name": "CantLPWithYieldPosition",
       "msg": "Cant LP with a market position"
     },
     {
@@ -6165,28 +6230,28 @@ export type RatexContracts = {
     },
     {
       "code": 6165,
-      "name": "PerpMarketNotInSettlement",
-      "msg": "PerpMarketNotInSettlement"
+      "name": "YieldMarketNotInSettlement",
+      "msg": "YieldMarketNotInSettlement"
     },
     {
       "code": 6166,
-      "name": "PerpMarketNotInReduceOnly",
-      "msg": "PerpMarketNotInReduceOnly"
+      "name": "YieldMarketNotInReduceOnly",
+      "msg": "YieldMarketNotInReduceOnly"
     },
     {
       "code": 6167,
-      "name": "PerpMarketSettlementBufferNotReached",
-      "msg": "PerpMarketSettlementBufferNotReached"
+      "name": "YieldMarketSettlementBufferNotReached",
+      "msg": "YieldMarketSettlementBufferNotReached"
     },
     {
       "code": 6168,
-      "name": "PerpMarketSettlementUserHasOpenOrders",
-      "msg": "PerpMarketSettlementUserHasOpenOrders"
+      "name": "YieldMarketSettlementUserHasOpenOrders",
+      "msg": "YieldMarketSettlementUserHasOpenOrders"
     },
     {
       "code": 6169,
-      "name": "PerpMarketSettlementUserHasActiveLP",
-      "msg": "PerpMarketSettlementUserHasActiveLP"
+      "name": "YieldMarketSettlementUserHasActiveLP",
+      "msg": "YieldMarketSettlementUserHasActiveLP"
     },
     {
       "code": 6170,
@@ -6200,8 +6265,8 @@ export type RatexContracts = {
     },
     {
       "code": 6172,
-      "name": "InvalidPerpPositionDetected",
-      "msg": "InvalidPerpPositionDetected"
+      "name": "InvalidYieldPositionDetected",
+      "msg": "InvalidYieldPositionDetected"
     },
     {
       "code": 6173,
@@ -6460,7 +6525,7 @@ export type RatexContracts = {
     },
     {
       "code": 6224,
-      "name": "InvalidPerpPosition",
+      "name": "InvalidYieldPosition",
       "msg": "Invalid Perp Position"
     },
     {
@@ -6681,7 +6746,7 @@ export type RatexContracts = {
     {
       "code": 6268,
       "name": "TickArrayExistInPool",
-      "msg": "Tick-array already exists in this whirlpool"
+      "msg": "Tick-array already exists in this ammpool"
     },
     {
       "code": 6269,
@@ -6930,8 +6995,8 @@ export type RatexContracts = {
     },
     {
       "code": 6318,
-      "name": "InvalidPerpMarket",
-      "msg": "InvalidPerpMarket"
+      "name": "InvalidYieldMarket",
+      "msg": "InvalidYieldMarket"
     },
     {
       "code": 6319,
@@ -7238,7 +7303,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7265,7 +7330,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "placePerpOrder",
+      "name": "placeOrder",
       "accounts": [
         {
           "name": "state",
@@ -7347,7 +7412,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7377,7 +7442,7 @@ export const IDL: RatexContracts = {
     {
       "name": "closePosition",
       "docs": [
-        "Close a position in a Whirlpool. Burns the position token in the owner's wallet.",
+        "Close a position in a Ammpool. Burns the position token in the owner's wallet.",
         "",
         "### Authority",
         "- \"position_authority\" - The authority that owns the position token.",
@@ -7387,7 +7452,7 @@ export const IDL: RatexContracts = {
       ],
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -7410,7 +7475,7 @@ export const IDL: RatexContracts = {
       "args": []
     },
     {
-      "name": "addPerpLpShares",
+      "name": "addLpShares",
       "accounts": [
         {
           "name": "state",
@@ -7418,7 +7483,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7443,7 +7508,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -7475,6 +7540,11 @@ export const IDL: RatexContracts = {
         {
           "name": "marginMarketVault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lpOracle",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -7528,15 +7598,11 @@ export const IDL: RatexContracts = {
         {
           "name": "upperRate",
           "type": "u64"
-        },
-        {
-          "name": "epochStartTimestamp",
-          "type": "i64"
         }
       ]
     },
     {
-      "name": "removePerpLpShares",
+      "name": "removeLpShares",
       "accounts": [
         {
           "name": "state",
@@ -7544,7 +7610,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7579,7 +7645,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -7611,6 +7677,11 @@ export const IDL: RatexContracts = {
         {
           "name": "marginMarketVault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lpOracle",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -7651,7 +7722,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "fillPerpOrder",
+      "name": "fillOrder",
       "accounts": [
         {
           "name": "user",
@@ -7684,7 +7755,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7699,7 +7770,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -7755,7 +7826,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7801,7 +7872,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7842,7 +7913,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7857,7 +7928,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -7917,7 +7988,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7953,7 +8024,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -7968,7 +8039,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8049,7 +8120,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -8134,7 +8205,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -8159,10 +8230,10 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarket",
+      "name": "updateYieldMarket",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         }
@@ -8178,7 +8249,7 @@ export const IDL: RatexContracts = {
       "name": "updateFeesAndRewards",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8209,7 +8280,7 @@ export const IDL: RatexContracts = {
       "name": "collectFees",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -8224,7 +8295,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -8265,12 +8336,17 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "marginMarket",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "whirlpoolsConfig",
+          "name": "ratexSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ammpoolsConfig",
           "isMut": false,
           "isSigner": false
         },
@@ -8280,13 +8356,8 @@ export const IDL: RatexContracts = {
           "isSigner": true
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "marginMarket",
-          "isMut": false,
           "isSigner": false
         },
         {
@@ -8311,7 +8382,7 @@ export const IDL: RatexContracts = {
       "name": "observe",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -8337,7 +8408,7 @@ export const IDL: RatexContracts = {
       "name": "getAmmTwap",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -8359,7 +8430,7 @@ export const IDL: RatexContracts = {
       "name": "loadObservationState",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         }
@@ -8370,7 +8441,7 @@ export const IDL: RatexContracts = {
       "name": "calculateSwap",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         }
@@ -8429,7 +8500,7 @@ export const IDL: RatexContracts = {
       "name": "calculateLpValue",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -8446,7 +8517,7 @@ export const IDL: RatexContracts = {
       "name": "calculateTraderPnl",
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -8521,7 +8592,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -8533,10 +8604,7 @@ export const IDL: RatexContracts = {
         {
           "name": "tokenProgram",
           "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "CHECK"
-          ]
+          "isSigner": false
         }
       ],
       "args": []
@@ -8570,7 +8638,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -8592,10 +8660,7 @@ export const IDL: RatexContracts = {
         {
           "name": "tokenProgram",
           "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "CHECK"
-          ]
+          "isSigner": false
         }
       ],
       "args": [
@@ -8611,7 +8676,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "initializePerpMarket",
+      "name": "initializeYieldMarket",
       "accounts": [
         {
           "name": "admin",
@@ -8624,12 +8689,12 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8669,7 +8734,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "whirlpoolsConfig",
+          "name": "ammpoolsConfig",
           "isMut": false,
           "isSigner": false
         },
@@ -8755,7 +8820,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketStatus",
+      "name": "updateYieldMarketStatus",
       "accounts": [
         {
           "name": "admin",
@@ -8768,7 +8833,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8788,7 +8853,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketActiveRatioCoef",
+      "name": "updateYieldMarketActiveRatioCoef",
       "accounts": [
         {
           "name": "admin",
@@ -8801,7 +8866,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8819,7 +8884,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketActiveRatioCap",
+      "name": "updateYieldMarketActiveRatioCap",
       "accounts": [
         {
           "name": "admin",
@@ -8832,7 +8897,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8850,7 +8915,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketOrderStepSize",
+      "name": "updateYieldMarketOrderStepSize",
       "accounts": [
         {
           "name": "admin",
@@ -8863,7 +8928,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8881,7 +8946,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketMinOrderSize",
+      "name": "updateYieldMarketMinOrderSize",
       "accounts": [
         {
           "name": "admin",
@@ -8894,7 +8959,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8912,7 +8977,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketStartTs",
+      "name": "updateYieldMarketStartTs",
       "accounts": [
         {
           "name": "admin",
@@ -8925,7 +8990,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8943,7 +9008,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketExpireTs",
+      "name": "updateYieldMarketExpireTs",
       "accounts": [
         {
           "name": "admin",
@@ -8956,7 +9021,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -8974,7 +9039,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "updatePerpMarketMinLpAmount",
+      "name": "updateYieldMarketMinLpAmount",
       "accounts": [
         {
           "name": "admin",
@@ -8987,7 +9052,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -9023,12 +9088,12 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -9071,14 +9136,6 @@ export const IDL: RatexContracts = {
         {
           "name": "epochStartTimestamp",
           "type": "i64"
-        },
-        {
-          "name": "ov",
-          "type": "i64"
-        },
-        {
-          "name": "totalLpValue",
-          "type": "u64"
         }
       ]
     },
@@ -9101,12 +9158,12 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -9162,7 +9219,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -9195,7 +9252,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -9226,7 +9283,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
@@ -9236,7 +9293,7 @@ export const IDL: RatexContracts = {
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -9277,12 +9334,12 @@ export const IDL: RatexContracts = {
       "name": "decreaseLiquidity",
       "accounts": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "driftSigner",
+          "name": "ratexSigner",
           "isMut": false,
           "isSigner": false
         },
@@ -9378,6 +9435,22 @@ export const IDL: RatexContracts = {
       ],
       "args": [
         {
+          "name": "marketRate",
+          "type": "u64"
+        },
+        {
+          "name": "rate",
+          "type": "u64"
+        },
+        {
+          "name": "lastRate",
+          "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
+        },
+        {
           "name": "decimals",
           "type": "u32"
         }
@@ -9466,6 +9539,10 @@ export const IDL: RatexContracts = {
         {
           "name": "lastRate",
           "type": "u64"
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64"
         }
       ]
     },
@@ -9497,8 +9574,8 @@ export const IDL: RatexContracts = {
     {
       "name": "initializeConfig",
       "docs": [
-        "Initializes a WhirlpoolsConfig account that hosts info & authorities",
-        "required to govern a set of Whirlpools.",
+        "Initializes a AmmpoolsConfig account that hosts info & authorities",
+        "required to govern a set of Ammpools.",
         "",
         "### Parameters",
         "- `fee_authority` - Authority authorized to initialize fee-tiers and set customs fees.",
@@ -9544,7 +9621,7 @@ export const IDL: RatexContracts = {
     {
       "name": "initializeTickArray",
       "docs": [
-        "Initializes a tick_array account to represent a tick-range in a Whirlpool.",
+        "Initializes a tick_array account to represent a tick-range in a Ammpool.",
         "",
         "### Parameters",
         "- `start_tick_index` - The starting tick index for this tick-array.",
@@ -9556,7 +9633,7 @@ export const IDL: RatexContracts = {
       ],
       "accounts": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "isMut": false,
           "isSigner": false
         },
@@ -9586,10 +9663,10 @@ export const IDL: RatexContracts = {
     {
       "name": "initializeFeeTier",
       "docs": [
-        "Initializes a fee_tier account usable by Whirlpools in a WhirlpoolConfig space.",
+        "Initializes a fee_tier account usable by Ammpools in a AmmpoolConfig space.",
         "",
         "### Authority",
-        "- \"fee_authority\" - Set authority in the WhirlpoolConfig",
+        "- \"fee_authority\" - Set authority in the AmmpoolConfig",
         "",
         "### Parameters",
         "- `tick_spacing` - The tick-spacing that this fee-tier suggests the default_fee_rate for.",
@@ -9640,7 +9717,7 @@ export const IDL: RatexContracts = {
   ],
   "accounts": [
     {
-      "name": "whirlpoolsConfig",
+      "name": "ammpoolsConfig",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9678,7 +9755,7 @@ export const IDL: RatexContracts = {
         "kind": "struct",
         "fields": [
           {
-            "name": "whirlpoolsConfig",
+            "name": "ammpoolsConfig",
             "type": "publicKey"
           },
           {
@@ -9722,7 +9799,7 @@ export const IDL: RatexContracts = {
             }
           },
           {
-            "name": "whirlpool",
+            "name": "ammpool",
             "type": "publicKey"
           }
         ]
@@ -9823,7 +9900,7 @@ export const IDL: RatexContracts = {
           {
             "name": "reserveQuoteAmount",
             "docs": [
-              "The user's perp positions"
+              "The user's yield positions"
             ],
             "type": "i64"
           },
@@ -9848,7 +9925,7 @@ export const IDL: RatexContracts = {
           {
             "name": "idle",
             "docs": [
-              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, perp positions or borrows",
+              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, yield positions or borrows",
               "Off-chain keeper bots can ignore users that are idle"
             ],
             "type": "bool"
@@ -9858,7 +9935,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                21
+                80
               ]
             }
           }
@@ -9965,7 +10042,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                33
+                64
               ]
             }
           }
@@ -10006,11 +10083,15 @@ export const IDL: RatexContracts = {
             "type": "u32"
           },
           {
+            "name": "epochStartTimestamp",
+            "type": "i64"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                4
+                32
               ]
             }
           }
@@ -10018,14 +10099,258 @@ export const IDL: RatexContracts = {
       }
     },
     {
-      "name": "perpMarket",
+      "name": "state",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "signer",
+            "type": "publicKey"
+          },
+          {
+            "name": "numberOfAuthorities",
+            "type": "u64"
+          },
+          {
+            "name": "numberOfSubAccounts",
+            "type": "u64"
+          },
+          {
+            "name": "numberOfActiveLpAccounts",
+            "type": "u64"
+          },
+          {
+            "name": "collateralRatioInitial",
+            "type": "i64"
+          },
+          {
+            "name": "collateralRatioMaintenance",
+            "type": "i64"
+          },
+          {
+            "name": "insuranceAmount",
+            "type": "i64"
+          },
+          {
+            "name": "numberOfYieldMarkets",
+            "type": "u16"
+          },
+          {
+            "name": "numberOfMarginMarkets",
+            "type": "u16"
+          },
+          {
+            "name": "signerNonce",
+            "type": "u8"
+          },
+          {
+            "name": "exchangeStatus",
+            "type": "u8"
+          },
+          {
+            "name": "padding0",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "user",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The owner/authority of the account"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "marginPositions",
+            "docs": [
+              "The user's collateral"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "MarginPosition"
+                },
+                2
+              ]
+            }
+          },
+          {
+            "name": "orders",
+            "docs": [
+              "The user's liquidity"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "Order"
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "yieldPositions",
+            "docs": [
+              "The user's yield positions"
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "YieldPosition"
+                },
+                8
+              ]
+            }
+          },
+          {
+            "name": "lastActiveSlot",
+            "docs": [
+              "The last slot a user was active. Used to determine if a user is idle"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "lastOrderId",
+            "type": "u32"
+          },
+          {
+            "name": "subAccountId",
+            "docs": [
+              "The sub account id for this user"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "idle",
+            "docs": [
+              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, yield positions or borrows",
+              "Off-chain keeper bots can ignore users that are idle"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "isLiquidating",
+            "docs": [
+              "Whether or not the subaccount has been liquidated"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "isIsolated",
+            "docs": [
+              "isolated / cross margin flag"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "userStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The authority for all of a users sub accounts"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "referrer",
+            "docs": [
+              "The address that referred this user"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "numberOfSubAccounts",
+            "docs": [
+              "The current number of sub accounts"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "numberOfSubAccountsCreated",
+            "docs": [
+              "The number of sub accounts created. Can be greater than the number of sub accounts if user",
+              "has deleted sub accountsget_margin_position_index"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                52
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "yieldMarket",
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "pubkey",
             "docs": [
-              "The perp market's address. It is a pda of the market index"
+              "The yield market's address. It is a pda of the market index"
             ],
             "type": "publicKey"
           },
@@ -10039,7 +10364,7 @@ export const IDL: RatexContracts = {
           {
             "name": "name",
             "docs": [
-              "Encoded display name for the perp market e.g. MSOL-2406"
+              "Encoded display name for the yield market e.g. MSOL-2406"
             ],
             "type": {
               "array": [
@@ -10087,7 +10412,7 @@ export const IDL: RatexContracts = {
           {
             "name": "pool",
             "type": {
-              "defined": "Whirlpool"
+              "defined": "Ammpool"
             }
           },
           {
@@ -10178,228 +10503,23 @@ export const IDL: RatexContracts = {
             "type": "u64"
           },
           {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                13
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "state",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "admin",
-            "type": "publicKey"
-          },
-          {
-            "name": "signer",
-            "type": "publicKey"
-          },
-          {
-            "name": "numberOfAuthorities",
-            "type": "u64"
-          },
-          {
-            "name": "numberOfSubAccounts",
-            "type": "u64"
-          },
-          {
-            "name": "numberOfActiveLpAccounts",
-            "type": "u64"
-          },
-          {
-            "name": "collateralRatioInitial",
+            "name": "netQuoteAmount",
             "type": "i64"
           },
           {
-            "name": "collateralRatioMaintenance",
+            "name": "netBaseAmount",
             "type": "i64"
           },
           {
-            "name": "insuranceAmount",
-            "type": "i64"
-          },
-          {
-            "name": "numberOfPerpMarkets",
-            "type": "u16"
-          },
-          {
-            "name": "numberOfMarginMarkets",
-            "type": "u16"
-          },
-          {
-            "name": "signerNonce",
-            "type": "u8"
-          },
-          {
-            "name": "exchangeStatus",
-            "type": "u8"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "user",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "docs": [
-              "The owner/authority of the account"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "marginPositions",
-            "docs": [
-              "The user's collateral"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "MarginPosition"
-                },
-                2
-              ]
-            }
-          },
-          {
-            "name": "orders",
-            "docs": [
-              "The user's liquidity"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "Order"
-                },
-                32
-              ]
-            }
-          },
-          {
-            "name": "perpPositions",
-            "docs": [
-              "The user's perp positions"
-            ],
-            "type": {
-              "array": [
-                {
-                  "defined": "PerpPosition"
-                },
-                8
-              ]
-            }
-          },
-          {
-            "name": "lastActiveSlot",
-            "docs": [
-              "The last slot a user was active. Used to determine if a user is idle"
-            ],
+            "name": "lastRate",
             "type": "u64"
           },
           {
-            "name": "lastOrderId",
-            "type": "u32"
-          },
-          {
-            "name": "subAccountId",
-            "docs": [
-              "The sub account id for this user"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "idle",
-            "docs": [
-              "User is idle if they haven't interacted with the protocol in 1 week and they have no orders, perp positions or borrows",
-              "Off-chain keeper bots can ignore users that are idle"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "isLiquidating",
-            "docs": [
-              "Whether or not the subaccount has been liquidated"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "isIsolated",
-            "docs": [
-              "isolated / cross margin flag"
-            ],
-            "type": "bool"
-          },
-          {
             "name": "padding",
             "type": {
               "array": [
                 "u8",
-                19
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "userStats",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "docs": [
-              "The authority for all of a users sub accounts"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "referrer",
-            "docs": [
-              "The address that referred this user"
-            ],
-            "type": "publicKey"
-          },
-          {
-            "name": "numberOfSubAccounts",
-            "docs": [
-              "The current number of sub accounts"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "numberOfSubAccountsCreated",
-            "docs": [
-              "The number of sub accounts created. Can be greater than the number of sub accounts if user",
-              "has deleted sub accountsget_margin_position_index"
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                52
+                160
               ]
             }
           }
@@ -10461,12 +10581,12 @@ export const IDL: RatexContracts = {
       }
     },
     {
-      "name": "Whirlpool",
+      "name": "Ammpool",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "whirlpoolsConfig",
+            "name": "ammpoolsConfig",
             "type": "publicKey"
           },
           {
@@ -10518,7 +10638,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 {
-                  "defined": "WhirlpoolRewardInfo"
+                  "defined": "AmmpoolRewardInfo"
                 },
                 3
               ]
@@ -10565,7 +10685,7 @@ export const IDL: RatexContracts = {
             "type": "u16"
           },
           {
-            "name": "whirlpoolBump",
+            "name": "ammpoolBump",
             "type": {
               "array": [
                 "u8",
@@ -10586,11 +10706,11 @@ export const IDL: RatexContracts = {
       }
     },
     {
-      "name": "WhirlpoolRewardInfo",
+      "name": "AmmpoolRewardInfo",
       "docs": [
-        "Stores the state relevant for tracking liquidity mining rewards at the `Whirlpool` level.",
+        "Stores the state relevant for tracking liquidity mining rewards at the `Ammpool` level.",
         "These values are used in conjunction with `PositionRewardInfo`, `Tick.reward_growths_outside`,",
-        "and `Whirlpool.reward_last_updated_timestamp` to determine how many rewards are earned by open",
+        "and `Ammpool.reward_last_updated_timestamp` to determine how many rewards are earned by open",
         "positions."
       ],
       "type": {
@@ -10678,7 +10798,7 @@ export const IDL: RatexContracts = {
         "kind": "struct",
         "fields": [
           {
-            "name": "whirlpool",
+            "name": "ammpool",
             "type": "publicKey"
           },
           {
@@ -10865,7 +10985,7 @@ export const IDL: RatexContracts = {
             "name": "baseAssetAmount",
             "docs": [
               "The size of the order",
-              "precision for perps: BASE_PRECISION"
+              "precision for yields: BASE_PRECISION"
             ],
             "type": "i64"
           },
@@ -10930,7 +11050,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                11
+                32
               ]
             }
           }
@@ -10971,7 +11091,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                30
+                32
               ]
             }
           }
@@ -10979,14 +11099,14 @@ export const IDL: RatexContracts = {
       }
     },
     {
-      "name": "PerpPosition",
+      "name": "YieldPosition",
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "baseAssetAmount",
             "docs": [
-              "the size of the users perp position",
+              "the size of the users yield position",
               "precision: BASE_PRECISION"
             ],
             "type": "i64"
@@ -11014,7 +11134,7 @@ export const IDL: RatexContracts = {
           {
             "name": "marketIndex",
             "docs": [
-              "The market index for the perp market"
+              "The market index for the yield market"
             ],
             "type": "u16"
           },
@@ -11023,7 +11143,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                6
+                32
               ]
             }
           }
@@ -11057,35 +11177,6 @@ export const IDL: RatexContracts = {
           },
           {
             "name": "RemoveLiquidity"
-          }
-        ]
-      }
-    },
-    {
-      "name": "MarketStatus",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "Initialized"
-          },
-          {
-            "name": "Active"
-          },
-          {
-            "name": "Paused"
-          },
-          {
-            "name": "ReduceOnly"
-          },
-          {
-            "name": "Settlement"
-          },
-          {
-            "name": "Delisted"
-          },
-          {
-            "name": "Updating"
           }
         ]
       }
@@ -11148,6 +11239,35 @@ export const IDL: RatexContracts = {
           },
           {
             "name": "Short"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Initialized"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Paused"
+          },
+          {
+            "name": "ReduceOnly"
+          },
+          {
+            "name": "Settlement"
+          },
+          {
+            "name": "Delisted"
+          },
+          {
+            "name": "Updating"
           }
         ]
       }
@@ -11218,7 +11338,7 @@ export const IDL: RatexContracts = {
       "name": "InitializeTickArrayEvent",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -11303,7 +11423,7 @@ export const IDL: RatexContracts = {
       "name": "SwapEvent",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -11338,7 +11458,7 @@ export const IDL: RatexContracts = {
       "name": "CollectFeesRecord",
       "fields": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -11363,7 +11483,7 @@ export const IDL: RatexContracts = {
       "name": "CollectProtocolFeesRecord",
       "fields": [
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -11415,7 +11535,7 @@ export const IDL: RatexContracts = {
       ]
     },
     {
-      "name": "InitializePerpMarketRecord",
+      "name": "InitializeYieldMarketRecord",
       "fields": [
         {
           "name": "oracle",
@@ -11503,7 +11623,7 @@ export const IDL: RatexContracts = {
           "index": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -11886,7 +12006,7 @@ export const IDL: RatexContracts = {
           "index": false
         },
         {
-          "name": "perpMarket",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         }
@@ -12114,6 +12234,16 @@ export const IDL: RatexContracts = {
           "name": "marketRate",
           "type": "u64",
           "index": false
+        },
+        {
+          "name": "lastRate",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "epochStartTimestamp",
+          "type": "i64",
+          "index": false
         }
       ]
     },
@@ -12213,7 +12343,7 @@ export const IDL: RatexContracts = {
       "name": "InitializePositionEvent",
       "fields": [
         {
-          "name": "whirlpool",
+          "name": "yieldMarket",
           "type": "publicKey",
           "index": false
         },
@@ -12423,13 +12553,13 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6028,
-      "name": "PerpMarketPaused",
-      "msg": "Perp market is paused"
+      "name": "YieldMarketPaused",
+      "msg": "Yield market is paused"
     },
     {
       "code": 6029,
-      "name": "PerpMarketNotPaused",
-      "msg": "Perp market not paused"
+      "name": "YieldMarketNotPaused",
+      "msg": "Yield market not paused"
     },
     {
       "code": 6030,
@@ -12703,8 +12833,8 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6084,
-      "name": "PerpMarketNotFound",
-      "msg": "PerpMarketNotFound"
+      "name": "YieldMarketNotFound",
+      "msg": "YieldMarketNotFound"
     },
     {
       "code": 6085,
@@ -12713,7 +12843,7 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6086,
-      "name": "UnableToLoadPerpMarketAccount",
+      "name": "UnableToLoadYieldMarketAccount",
       "msg": "UnableToLoadMarketAccount"
     },
     {
@@ -12928,8 +13058,8 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6129,
-      "name": "InvalidPerpPositionToLiquidate",
-      "msg": "InvalidPerpPositionToLiquidate"
+      "name": "InvalidYieldPositionToLiquidate",
+      "msg": "InvalidYieldPositionToLiquidate"
     },
     {
       "code": 6130,
@@ -12978,7 +13108,7 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6139,
-      "name": "CantLPWithPerpPosition",
+      "name": "CantLPWithYieldPosition",
       "msg": "Cant LP with a market position"
     },
     {
@@ -13108,28 +13238,28 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6165,
-      "name": "PerpMarketNotInSettlement",
-      "msg": "PerpMarketNotInSettlement"
+      "name": "YieldMarketNotInSettlement",
+      "msg": "YieldMarketNotInSettlement"
     },
     {
       "code": 6166,
-      "name": "PerpMarketNotInReduceOnly",
-      "msg": "PerpMarketNotInReduceOnly"
+      "name": "YieldMarketNotInReduceOnly",
+      "msg": "YieldMarketNotInReduceOnly"
     },
     {
       "code": 6167,
-      "name": "PerpMarketSettlementBufferNotReached",
-      "msg": "PerpMarketSettlementBufferNotReached"
+      "name": "YieldMarketSettlementBufferNotReached",
+      "msg": "YieldMarketSettlementBufferNotReached"
     },
     {
       "code": 6168,
-      "name": "PerpMarketSettlementUserHasOpenOrders",
-      "msg": "PerpMarketSettlementUserHasOpenOrders"
+      "name": "YieldMarketSettlementUserHasOpenOrders",
+      "msg": "YieldMarketSettlementUserHasOpenOrders"
     },
     {
       "code": 6169,
-      "name": "PerpMarketSettlementUserHasActiveLP",
-      "msg": "PerpMarketSettlementUserHasActiveLP"
+      "name": "YieldMarketSettlementUserHasActiveLP",
+      "msg": "YieldMarketSettlementUserHasActiveLP"
     },
     {
       "code": 6170,
@@ -13143,8 +13273,8 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6172,
-      "name": "InvalidPerpPositionDetected",
-      "msg": "InvalidPerpPositionDetected"
+      "name": "InvalidYieldPositionDetected",
+      "msg": "InvalidYieldPositionDetected"
     },
     {
       "code": 6173,
@@ -13403,7 +13533,7 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6224,
-      "name": "InvalidPerpPosition",
+      "name": "InvalidYieldPosition",
       "msg": "Invalid Perp Position"
     },
     {
@@ -13624,7 +13754,7 @@ export const IDL: RatexContracts = {
     {
       "code": 6268,
       "name": "TickArrayExistInPool",
-      "msg": "Tick-array already exists in this whirlpool"
+      "msg": "Tick-array already exists in this ammpool"
     },
     {
       "code": 6269,
@@ -13873,8 +14003,8 @@ export const IDL: RatexContracts = {
     },
     {
       "code": 6318,
-      "name": "InvalidPerpMarket",
-      "msg": "InvalidPerpMarket"
+      "name": "InvalidYieldMarket",
+      "msg": "InvalidYieldMarket"
     },
     {
       "code": 6319,

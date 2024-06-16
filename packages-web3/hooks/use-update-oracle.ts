@@ -16,8 +16,6 @@ export function useUpdateOracle(params: Params) {
       if (!connected) {
         return;
       }
-      const tx = await client?.updateOracle({marketRate, rate});
-      params?.onFinish?.(tx);
     },
     [connected]
   );

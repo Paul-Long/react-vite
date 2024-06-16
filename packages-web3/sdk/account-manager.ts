@@ -21,7 +21,7 @@ export class AccountManager {
 
   constructor() {
     this.statePda = PDA.createStatePda();
-    this.signerPda = PDA.createDriftSigner();
+    this.signerPda = PDA.createRateXSigner();
     this.keeperPda = PDA.createKeeperPda();
   }
 
@@ -481,9 +481,9 @@ export class AccountManager {
     authority: PublicKey,
     marketIndex: number
   ) {
-    const perpMarketPda = PDA.createPerpMarketPda(marketIndex);
+    const perpMarketPda = PDA.createYieldMarketPda(marketIndex);
     const perp = perpMarketPda.toBase58();
-    const pool = await program.account.perpMarket.fetch(perpMarketPda, 'processed');
+    const pool = await program.account.yieldMarket.fetch(perpMarketPda, 'processed');
     const accounts = await this.getLpAccounts(program, authority);
     return accounts
       .map((a) => {

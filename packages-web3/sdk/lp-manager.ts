@@ -44,7 +44,7 @@ export class LpManager {
     const oracle = PDA.createOraclePda(getMarginIndexByMarketIndexV2(marketIndex));
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
     const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
-    const perpMarket: PublicKey = PDA.createPerpMarketPda(marketIndex);
+    const yieldMarket: PublicKey = PDA.createYieldMarketPda(marketIndex);
     const quoteAssetVault: PublicKey = PDA.createQuoteAssetVaultPda(marketIndex);
     const baseAssetVault: PublicKey = PDA.createBaseAssetVaultPda(marketIndex);
 
@@ -53,7 +53,7 @@ export class LpManager {
 
     const tb = await getAccount(program.provider.connection, quoteAssetVault);
     const ta = await getAccount(program.provider.connection, baseAssetVault);
-    const perp = await program.account.perpMarket.fetch(perpMarket);
+    const perp = await program.account.yieldMarket.fetch(yieldMarket);
 
     const {pool} = perp;
     const tokenVaultA: PublicKey = pool.tokenVaultA;
@@ -99,7 +99,7 @@ export class LpManager {
     const [tickArrays, instructions]: any = await tm.initializeTickArraysV2(
       program,
       authority,
-      perpMarket,
+      yieldMarket,
       tickLowerIndex,
       tickUpperIndex
     );
@@ -131,15 +131,15 @@ export class LpManager {
     console.log('****************');
 
     const instruction = await program.methods
-      .addPerpLpShares(baseAmount, marginIndex, marketIndex, lr, ur, new BN(epochStartTimestamp))
+      .addLpShares(baseAmount, marginIndex, marketIndex, lr, ur)
       .accounts({
         state: am.statePda,
-        driftSigner: am.signerPda,
+        ratexSigner: am.signerPda,
         tokenVaultA: tokenVaultA,
         tokenVaultB: tokenVaultB,
         tickArrayLower,
         tickArrayUpper,
-        perpMarket,
+        yieldMarket,
         tokenOwnerAccountA: baseAssetVault,
         tokenOwnerAccountB: quoteAssetVault,
         tokenMintA: tokenMintA,
@@ -174,8 +174,8 @@ export class LpManager {
   ) {
     const {marketIndex, baseAssetAmount, lowerRate, upperRate, maturity, rmLiquidityPercent} =
       params;
-    const perpMarket = PDA.createPerpMarketPda(marketIndex);
-    const {pool} = await program.account.perpMarket.fetch(perpMarket);
+    const yieldMarket = PDA.createYieldMarketPda(marketIndex);
+    const {pool} = await program.account.yieldMarket.fetch(yieldMarket);
     const marginIndex = getMarginIndexByMarketIndexV2(marketIndex);
     const marginMarket = PDA.createMarginMarketPda(marginIndex);
     const marginMarketVault = PDA.createMarginMarketVaultPda(marginIndex);
@@ -200,7 +200,7 @@ export class LpManager {
     const tickArrs = await tm.getFillOrderTickArrays(
       program,
       authority,
-      perpMarket,
+      yieldMarket,
       pool.tickCurrentIndex,
       priceLimit,
       baseAssetamount.lt(new BN(0))
@@ -219,7 +219,7 @@ export class LpManager {
     const [tickArrays, instructions]: any = await tm.initializeTickArraysV2(
       program,
       authority,
-      perpMarket,
+      yieldMarket,
       tickLowerIndex,
       tickUpperIndex,
       true
@@ -228,7 +228,7 @@ export class LpManager {
     const tickArrayUpper = tickArrays[tickArrays.length - 1];
 
     const instruction = await program.methods
-      .removePerpLpShares(new BN(Big(rmLiquidityPercent).times(1_000_000_0).toString()), priceLimit)
+      .removeLpShares(new BN(Big(rmLiquidityPercent).times(1_000_000_0).toString()), priceLimit)
       .remainingAccounts([
         ...tickArrs.map((t) => ({
           pubkey: t,
@@ -238,10 +238,10 @@ export class LpManager {
       ])
       .accounts({
         state: am.statePda,
-        driftSigner: am.signerPda,
+        ratexSigner: am.signerPda,
         authority,
         lp: userPda,
-        perpMarket,
+        yieldMarket,
         tickArrayLower,
         tickArrayUpper,
         tokenVaultA,
@@ -272,7 +272,7 @@ export class LpManager {
     params: {marketIndex: number; lowerRate: number; upperRate: number; maturity: number}
   ) {
     const {marketIndex, lowerRate, upperRate, maturity} = params;
-    const perpMarket = PDA.createPerpMarketPda(marketIndex);
+    const yieldMarket = PDA.createYieldMarketPda(marketIndex);
     const {pool} = perpMarketInfo;
 
     const lowerYTPrice = calculateYTPrice(lowerRate.toString(), maturity);
@@ -288,7 +288,7 @@ export class LpManager {
     const [tickArrays, instructions]: any = await tm.initializeTickArraysV2(
       program,
       authority,
-      perpMarket,
+      yieldMarket,
       tickLowerIndex,
       tickUpperIndex,
       true
@@ -300,7 +300,7 @@ export class LpManager {
     return await program.methods
       .updateFeesAndRewards()
       .accounts({
-        whirlpool: perpMarket,
+        yieldMarket: yieldMarket,
         positionAuthority: authority,
         lp,
         tickArrayLower,
@@ -322,10 +322,10 @@ export class LpManager {
     return await program.methods
       .collectFees()
       .accounts({
-        whirlpool: PDA.createPerpMarketPda(marketIndex),
+        yieldMarket: PDA.createYieldMarketPda(marketIndex),
         marginMarket: PDA.createMarginMarketPda(0),
         state: am.statePda,
-        driftSigner: am.signerPda,
+        ratexSigner: am.signerPda,
         positionAuthority: authority,
         lp,
         tokenOwnerAccount: userTokenAccount,
@@ -341,8 +341,8 @@ export class LpManager {
     params: {marketIndex: number}
   ) {
     const {marketIndex} = params;
-    const perpMarketPda = PDA.createPerpMarketPda(marketIndex);
-    const perp = await program.account.perpMarket.fetch(perpMarketPda);
+    const yieldMarketPda = PDA.createYieldMarketPda(marketIndex);
+    const perp = await program.account.yieldMarket.fetch(yieldMarketPda);
     const {pool} = perp;
     const {tokenVaultA, tokenVaultB} = pool;
 

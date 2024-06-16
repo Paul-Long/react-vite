@@ -5,15 +5,15 @@ import {Buffer} from 'buffer';
 
 export class PDA {
   static createStatePda() {
-    return PublicKey.findProgramAddressSync([Buffer.from('drift_state')], PROGRAM_ID)[0];
+    return PublicKey.findProgramAddressSync([Buffer.from('ratex_state')], PROGRAM_ID)[0];
   }
 
-  static createDriftSigner() {
-    return PublicKey.findProgramAddressSync([Buffer.from('drift_signer')], PROGRAM_ID)[0];
+  static createRateXSigner() {
+    return PublicKey.findProgramAddressSync([Buffer.from('ratex_signer')], PROGRAM_ID)[0];
   }
 
   static createKeeperPda() {
-    return PublicKey.findProgramAddressSync([Buffer.from('drift_keeper')], PROGRAM_ID)[0];
+    return PublicKey.findProgramAddressSync([Buffer.from('ratex_keeper')], PROGRAM_ID)[0];
   }
 
   static createLpUserPda(authority: PublicKey, subAccountId: number = 0) {
@@ -66,9 +66,9 @@ export class PDA {
     )[0];
   }
 
-  static createPerpMarketPda(marketIndex: number): PublicKey {
+  static createYieldMarketPda(marketIndex: number): PublicKey {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('perp_market'), new BN(marketIndex).toArrayLike(Buffer, 'le', 2)],
+      [Buffer.from('yield_market'), new BN(marketIndex).toArrayLike(Buffer, 'le', 2)],
       PROGRAM_ID
     )[0];
   }
@@ -89,7 +89,7 @@ export class PDA {
 
   static createOraclePda(marginIndex: number): PublicKey {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from('drift_oracle'), getMintAccountPda(marginIndex).toBuffer()],
+      [Buffer.from('ratex_oracle'), getMintAccountPda(marginIndex).toBuffer()],
       PROGRAM_ID
     )[0];
   }

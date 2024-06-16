@@ -1,7 +1,6 @@
 import {RateClient} from '@/sdk';
 import {rateXClient$} from '@/streams/rate-x-client';
 import {BackpackWalletAdapter} from '@/wallets/BackpackWalletAdapter';
-import {OKXWalletAdapter} from '@/wallets/OKXWalletAdapter';
 import {useStream} from '@rx/hooks/use-stream';
 import {Adapter, WalletAdapterNetwork, WalletError} from '@solana/wallet-adapter-base';
 import {PhantomWalletAdapter} from '@solana/wallet-adapter-phantom';
@@ -26,12 +25,7 @@ export const WalletContextProvider: FC<{children: ReactNode}> = ({children}) => 
   );
 
   const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-      new BackpackWalletAdapter(),
-      new OKXWalletAdapter(),
-    ],
+    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new BackpackWalletAdapter()],
     [network]
   );
 

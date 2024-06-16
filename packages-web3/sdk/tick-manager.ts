@@ -160,14 +160,14 @@ export class TickManager {
   async initializeTickArrayTransaction(
     program: Program<RatexContracts>,
     authority: PublicKey,
-    perpMarket: PublicKey,
+    yieldMarket: PublicKey,
     tickArray: PublicKey,
     tickIndex: number
   ): Promise<TransactionInstruction | null> {
     return await program.methods
       .initializeTickArray(tickIndex)
       .accounts({
-        perpMarket,
+        yieldMarket,
         tickArray,
         funder: authority,
         systemProgram: SystemProgram.programId,
@@ -189,10 +189,10 @@ export class TickManager {
   async initializeTickArray(
     program: Program<RatexContracts>,
     authority: PublicKey,
-    perpMarket: PublicKey,
+    yieldMarket: PublicKey,
     startTickIndex: number
   ) {
-    const {tickArray, tickIndex} = this.genTickArray(perpMarket, startTickIndex);
+    const {tickArray, tickIndex} = this.genTickArray(yieldMarket, startTickIndex);
 
     const accountInfo = await program.provider.connection.getAccountInfo(tickArray);
     if (!!accountInfo) {
@@ -201,7 +201,7 @@ export class TickManager {
     const txid = await program.methods
       .initializeTickArray(tickIndex)
       .accounts({
-        perpMarket,
+        yieldMarket,
         tickArray,
         funder: authority,
         systemProgram: SystemProgram.programId,

@@ -1,5 +1,4 @@
 import {AccountManager} from '@/sdk/account-manager';
-import {ORACLE_PDA} from '@/sdk/const';
 import {FundManager} from '@/sdk/fund-manager';
 import {LpManager} from '@/sdk/lp-manager';
 import {OrderManager} from '@/sdk/order-manager';
@@ -745,22 +744,6 @@ export class RateClient {
     !!jInst && combinedTransaction.add(jInst);
     const tx = await this.sendTransaction(combinedTransaction);
     console.log('Mint All Currency : ', tx);
-    return tx;
-  }
-
-  async updateOracle({marketRate, rate}: {marketRate: number; rate: number}) {
-    if (!marketRate || !rate) {
-      return '';
-    }
-    const tx = await this.program.methods
-      .updateOracle(
-        new BN(new Decimal(marketRate).times(1_000_000_000).toNumber()),
-        new BN(new Decimal(rate).times(1_000_000_000).toNumber()),
-        new BN(new Decimal(rate).times(1_000_000_000).toNumber())
-      )
-      .accounts({oracle: ORACLE_PDA})
-      .rpc();
-    console.log('Update Oracle Tx : ', tx);
     return tx;
   }
 

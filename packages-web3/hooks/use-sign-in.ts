@@ -1,5 +1,5 @@
 import {Toast} from '@rx/widgets';
-import type {WalletName} from '@solana/wallet-adapter-base';
+import {WalletName} from '@solana/wallet-adapter-base';
 import {useWallet} from '@solana/wallet-adapter-react';
 import type {SolanaSignInInput} from '@solana/wallet-standard-features';
 import bs58 from 'bs58';
@@ -20,25 +20,29 @@ export function useSignIn(params: Params) {
     // connect().then();
   }, [select, connect]);
 
+  const onSignIn2 = useCallback(async (wallet: any) => {
+    try {
+      if (!wallet) {
+        return;
+      }
+      await wallet.connect();
+      const publicKey = wallet.publicKey;
+      if (!publicKey) {
+        return;
+      }
+      const message = new TextEncoder().encode('Welcome to RateX Sign in: ' + publicKey.toBase58());
+      const signature = await wallet.signMessage(message);
+      const result: SignResult = {
+        signature: bs58.encode(signature),
+        signedMessage: bs58.encode(message),
+        publicKey: publicKey?.toBase58(),
+      };
+      params.onFinish?.(result);
+    } catch (e) {}
+  }, []);
+
   const onSignIn = useCallback(async () => {
     try {
-      // if (signMessage && publicKey) {
-      //   const message = new TextEncoder().encode(
-      //     'Welcome to RateX account: ' + publicKey.toBase58()
-      //   );
-      //   const sig: any = await signMessage(message);
-      //   // const isValid = await SignatureVerification.verify(sig.publicKey, message, signature);
-      //   const isValid = ed25519.verify(sig, message, publicKey.toBytes());
-      //   console.log('Is the signature valid?', isValid);
-      //   const result: SignResult = {
-      //     signature: bs58.encode(sig),
-      //     signedMessage: bs58.encode(message),
-      //     publicKey: bs58.encode(publicKey.toBytes()),
-      //   };
-      //   console.log(result);
-      //   params.onFinish?.(result);
-      //   return result;
-      // }
       if (!signIn) {
         Toast.error('Wallet does not support Sign In With Solana!');
         return;
@@ -60,5 +64,5 @@ export function useSignIn(params: Params) {
     }
   }, [signIn, signMessage, publicKey]);
 
-  return {onSignIn};
+  return {onSignIn, onSignIn2};
 }
