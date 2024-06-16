@@ -8,15 +8,28 @@ import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button, Loading, Modal} from '@rx/widgets';
+import {Big} from 'big.js';
 import {clsx} from 'clsx';
-import {DependencyList, EffectCallback, useCallback, useEffect, useRef, useState} from 'react';
+import {
+  DependencyList,
+  EffectCallback,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 export function ClosePositionModal() {
   const {LG} = useLang();
   const timer = useRef<any>(null);
+  const focus = useRef(false);
   const [client] = useStream(rateXClient$);
   const [state] = useStream(closePosition$);
   const [loading, setLoading] = useState(false);
+  const [percent, setPercent] = useState(100);
+  const ytAmount = useMemo(() => state?.data?.baseAssetAmount || 0, [state]);
+  const [value, setValue] = useState(ytAmount);
 
   const {visible, data, onClose} = state;
 
@@ -44,20 +57,64 @@ export function ClosePositionModal() {
   }, [data]);
 
   const handleClose = useCallback(() => {
+    closePosition$.next({visible: false, data: null});
+  }, []);
+
+  const handleConfirm = useCallback(async () => {
+    if (!value || Number(value) <= 0) {
+      return;
+    }
     if (loading) {
       return;
     }
-    onClose?.();
-    closePosition$.next({visible: false, data: null});
-  }, [loading]);
+    const {baseAssetAmount, marketIndex, userPda, userOrdersPda, marginType, direction} =
+      state.data;
+    console.log('Close Position : ', marketIndex, userPda, Math.abs(baseAssetAmount));
+    setLoading(true);
+    const params = {
+      marginType,
+      marketIndex,
+      amount: Math.abs(value),
+      orderType: 'MARKET',
+      direction: direction === 'LONG' ? 'SHORT' : 'LONG',
+      userPda,
+      userOrdersPda,
+    };
+    try {
+      await client?.closePosition(params);
+    } catch (e) {
+      console.error(e);
+    }
+    setLoading(false);
+    handleClose();
+  }, [loading, state, value]);
 
-  const handleChange = useCallback(() => {}, []);
+  const handlePercentChange = useCallback(
+    (v: number) => {
+      setPercent(v);
+      if (!focus.current) {
+        setValue(Big(ytAmount).times(v).div(100).round(9).toNumber());
+      }
+    },
+    [ytAmount]
+  );
 
-  const handlePercentChange = useCallback(() => {}, []);
+  const handleChange = useCallback(
+    (v: string | number) => {
+      if (!!v && Big(v).gt(ytAmount)) {
+        v = Number(ytAmount);
+      }
+      if (focus.current) {
+        setPercent(Number(ytAmount) > 0 && !!v ? Big(v).times(100).div(ytAmount).toNumber() : 0);
+      }
+      setValue(v);
+    },
+    [ytAmount]
+  );
 
   return (
     <Modal visible={visible} title={renderTitle()} onClose={handleClose}>
-      <div className="flex flex-col px-24px py-16px mx-[-16px] border-t-1px border-solid border-gray-80">
+      <div className="flex flex-col px-24px pb-16px mx-[-16px]">
         <div className="flex flex-col bg-gray-40 p-12px rounded-8px gap-10px">
           <div className="flex flex-row items-center text-gray-60 gap-4px">
             <span>{LG(lang.YourPosition)}</span>
@@ -78,17 +135,25 @@ export function ClosePositionModal() {
               {data?.symbol}
             </div>
             <InputNumber
-              value={1}
+              value={value}
               onChange={handleChange}
               placeholder="0.00"
               align="right"
               step={9}
+              onFocus={() => (focus.current = true)}
+              onBlur={() => (focus.current = false)}
               color="text-yellow-500"
             />
           </div>
         </div>
         <div className="w-full px-10px mt-20px">
-          <ProgressSlider value={0} min={0} max={100} unit="%" onChange={handlePercentChange} />
+          <ProgressSlider
+            value={percent}
+            min={0}
+            max={100}
+            unit="%"
+            onChange={handlePercentChange}
+          />
         </div>
       </div>
       <div
@@ -99,11 +164,11 @@ export function ClosePositionModal() {
       >
         <Button className="flex-1" size="md" type="default" onClick={handleClose}>
           {loading && <Loading size={18} />}
-          <div className="fw-bold font-size-16px lh-16px">{LG(clang.Cancel)}</div>
+          <div className="fw-bold font-size-16px lh-20px">{LG(clang.Cancel)}</div>
         </Button>
-        <Button className="flex-1 fw-bold" size="md" type="yellow">
+        <Button className="flex-1 fw-bold" size="md" type="yellow" onClick={handleConfirm}>
           {loading && <Loading size={18} />}
-          <div className="fw-bold font-size-16px lh-16px">{LG(lang.ConfirmClose)}</div>
+          <div className="fw-bold font-size-16px lh-20px">{LG(lang.ConfirmClose)}</div>
         </Button>
       </div>
     </Modal>
