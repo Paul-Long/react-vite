@@ -40,7 +40,7 @@ const subRecentTrades$ = combineLatest([recentTrades$, clear$]).pipe(
 
 export const recentTradesState$ = combineLatest([state$, subRecentTrades$]).pipe(
   map(([res, sub]) => {
-    const data = sub.filter((d) => !res?.some((r) => r.formatDateTime === d.formatDateTime));
+    const data = sub.filter((d) => !res?.some((r) => r.timestamp === d.timestamp));
     return [...res, ...data].sort((a, b) => (a.datetime > b.datetime ? -1 : 1));
   }),
   startWith([]),
@@ -53,13 +53,14 @@ async function load(symbol: string) {
 }
 
 function formatData(d: Record<string, any>) {
+  const time = new Date(d.MDEntryTime).getTime();
   return {
     direction: d.MDEntryType === '1' ? 'LONG' : 'SHORT',
     price: numUtil.trimEnd0(numUtil.floor(d.MDEntryPx, 9)),
     yield: numUtil.trimEnd0(numUtil.floor(d.Yield, 2, -2)) + '%',
     amount: numUtil.trimEnd0(numUtil.floor(d.MDEntrySize, 4)),
-    time: timeUtil.formatTime(new Date(d.MDEntryTime).getTime()),
+    time: timeUtil.formatTime(time),
     datetime: d.MDEntryTime,
-    formatDateTime: timeUtil.formatDateTime(new Date(d.MDEntryTime).getTime()),
+    timestamp: time,
   };
 }
