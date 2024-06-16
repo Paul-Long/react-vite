@@ -3,8 +3,10 @@ import {Menu} from '@/components/header/Menu';
 import {ConnectButton} from '@rx/components/wallet';
 import {Mint} from '@rx/components/wallet/Mint';
 import {HOME_IMAGES} from '@rx/const/images';
+import {env} from '@rx/env';
 import {clsx} from 'clsx';
 import {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 
 interface Props {
   onMenuShow?: (show: boolean) => void;
@@ -26,12 +28,17 @@ export function Header(props: Props) {
         )}
       >
         <nav className="mx-auto flex max-w-100% items-center justify-between px-24px gap-64px sm:h-60px">
-          <div className="flex">
+          <div className="flex flex-row items-center gap-8px">
             <img
               className="min-w-94px min-h-24px h-24px w-auto"
               src={HOME_IMAGES.LOGO}
               alt="RateX"
             />
+            {env.isTestNet && (
+              <div className="font-size-12px px-4px rounded-2px text-green-500 bg-gray-80">
+                Testnet
+              </div>
+            )}
           </div>
           <button
             type="button"
@@ -42,6 +49,21 @@ export function Header(props: Props) {
           </button>
           <Menu />
           <div className="flex flex-row items-center gap-16px">
+            {(env.isTestNet || env.isLocal) && (
+              <Link
+                className="flex flex-row items-center gap-10px flex-nowrap bg-gray-80 rounded-16px p-4px pr-8px font-size-12px lh-12px text-gray-600"
+                to="https://static.rate-x.io/3rd/learn/Solana%20Test%20Tokens%20&%20Rate-X%20Test%20Tokens%20Collection%20Guide.pdf"
+                target="_blank"
+              >
+                <img
+                  src="https://static.rate-x.io/img/v1/c8d89a/x.svg"
+                  width={18}
+                  height={18}
+                  alt="rate-x"
+                />
+                How do I get a test token?
+              </Link>
+            )}
             <Mint />
             <ConnectButton />
           </div>

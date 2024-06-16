@@ -1,3 +1,5 @@
+import {DepositModal} from '@rx/components/wallet/DepositModal';
+import {WithdrawModal} from '@rx/components/wallet/WithdrawModal';
 import {queryRatePrice$} from '@rx/streams/market/rate-price';
 import {queryRate$} from '@rx/streams/rate-price';
 import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
@@ -11,7 +13,7 @@ export default function () {
   useEffect(() => {
     queryRatePrice$.next(0);
     queryRate$.next(0);
-    ratePrice$.next('topic dc.aps.dprice');
+    ratePrice$.next('topic dc.trade.dprice');
     queryLastTrade$.next(0);
     lastTradeSnapshot$.next('dc.md.trade.*');
   }, []);
@@ -19,6 +21,8 @@ export default function () {
     <div className="flex flex-col w-1200px mx-auto">
       <Overview />
       <PositionsWrap />
+      <DepositModal />
+      <WithdrawModal />
     </div>
   );
 }

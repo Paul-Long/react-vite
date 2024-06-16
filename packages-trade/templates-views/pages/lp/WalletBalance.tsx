@@ -16,7 +16,7 @@ interface Props {
 }
 
 export function WalletBalance(props: Props) {
-  const {marketIndex} = props;
+  const {marketIndex, value} = props;
   const {LG} = useLang();
   const focus = useRef(false);
   const balance = useObservable(balance$, 0);
@@ -27,6 +27,12 @@ export function WalletBalance(props: Props) {
       marketIndex$.next(marketIndex);
     }
   }, [marketIndex]);
+
+  useEffect(() => {
+    if (!value) {
+      setPercent(0);
+    }
+  }, [balance, value]);
 
   const handlePercentChange = useCallback(
     (v: number) => {

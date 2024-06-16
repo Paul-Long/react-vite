@@ -15,8 +15,8 @@ export const epochApi = {
   },
   ratePrice() {
     const params = {
-      serverName: 'APSSvr',
-      method: 'dc.aps.dprice',
+      serverName: 'TradeSvr',
+      method: 'dc.trade.dprice',
       content: {
         cid: guid.build(),
       },

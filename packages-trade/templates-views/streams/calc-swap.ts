@@ -29,7 +29,10 @@ export const swap$ = combineLatest([order$, current$, rateXClient$, clientReady$
     }
     const {amount, direction, marketIndex, margin, marginType, currentKey = 'amount'} = order;
     const {days} = current;
-    if ((currentKey === 'amount' && !amount) || (currentKey === 'margin' && !margin)) {
+    if (
+      (currentKey === 'amount' && (!amount || Number(amount) <= 0)) ||
+      (currentKey === 'margin' && (!margin || Number(margin) <= 0))
+    ) {
       return of(null);
     }
     if (timer) {

@@ -2,6 +2,7 @@ import {numUtil} from '@rx/helper/num';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/common.lang';
 import {Tooltip} from '@rx/widgets';
+// import {Tooltip} from '@rx/widgets/tooltip/Tooltip';
 import {Big} from 'big.js';
 import {clsx} from 'clsx';
 import {useContractInfo} from '../hooks/use-contract-info';
@@ -10,7 +11,7 @@ export function Info() {
   const {LG} = useLang();
   const {data} = useContractInfo();
   return (
-    <div className="flex flex-row items-center gap-24px overflow-hidden">
+    <div className="flex flex-row items-center gap-24px pr-24px pr-24px box-border">
       {genInfo(LG as any, data).map((o, i) => (
         <div
           key={i}

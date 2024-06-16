@@ -26,9 +26,9 @@ export const genDirection = (LG: any) => [
 ];
 
 export const genChartType = (LG: any) => [
-  {label: <div className="text-nowrap px-12px min-w-80px">{LG(lang.YTPrice)}</div>, value: 'Price'},
+  {label: <div className="text-nowrap px-8px">{LG(lang.YTPrice)}</div>, value: 'Price'},
   {
-    label: <div className="text-nowrap px-12px min-w-120px">{LG(lang.ImpliedYield)}</div>,
+    label: <div className="text-nowrap px-8px">{LG(lang.ImpliedYield)}</div>,
     value: 'Yield',
   },
 ];

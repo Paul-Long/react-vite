@@ -19,10 +19,10 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
   const {LG} = useLang();
   const [client] = useStream(rateXClient$);
   const [columns, setColumns] = useState<Column[]>([]);
-  const postions = useObservable(positions$, []);
+  const positions = useObservable(positions$, []);
 
   const dataSource = useMemo(() => {
-    const pos = postions.filter((p) => p.marginType === marginType);
+    const pos = positions.filter((p) => p.marginType === marginType);
     if (marginType === 'CROSS' && pos?.length > 0) {
       return [
         {parent: true, asset: 'SOL', cr: pos[0].cr, margin: pos[0].margin, userPda: pos[0].userPda},
@@ -30,7 +30,7 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
       ];
     }
     return pos;
-  }, [postions, marginType]);
+  }, [positions, marginType]);
 
   useEffect(() => {
     query$.next(0);
@@ -53,7 +53,18 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
         render: renderEntry,
       },
       {
-        title: LG(clang.CR) + '/' + LG(clang.Liq) + '.' + LG(clang.Price),
+        title: (
+          <div className="flex flex-row items-center justify-end">
+            <Tooltip
+              placement="bottom"
+              className="min-w-200px text-wrap"
+              text={`CR(collateral ratio) is your position's health indicator. When it turns Red, add margin or face liquidation.`}
+            >
+              <span className="underline underline-dotted">{LG(clang.CR)}</span>
+            </Tooltip>
+            {'/' + LG(clang.Liq) + '.' + LG(clang.Price)}
+          </div>
+        ),
         dataIndex: 'liq',
         align: 'right',
         render: renderCrLip(marginType),

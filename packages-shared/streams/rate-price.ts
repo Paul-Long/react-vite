@@ -9,7 +9,7 @@ export const queryRate$ = new Subject();
 queryRate$.pipe(switchMap(() => loadPrice())).subscribe();
 
 ratePrice$.subscribe((data) => {
-  if (data) {
+  if (data?.length > 0) {
     _priceMap$.next(
       data.reduce((m, d) => {
         return {...m, [d.symbolCategory]: d};

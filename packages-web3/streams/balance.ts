@@ -27,5 +27,5 @@ async function getBalance(client: RateClient | null, ready: boolean, marketIndex
     return 0;
   }
   const b = await client?.getTokenAccountBalance(account);
-  return Big(b).div(1_000_000_000).toFixed(4);
+  return Big(b).div(1_000_000_000).round(4, 0).toNumber();
 }

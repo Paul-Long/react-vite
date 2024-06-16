@@ -1,17 +1,12 @@
-import {AccountManager} from '@/sdk/account-manager';
 import {PDA} from '@/sdk/PDA';
+import {AccountManager} from '@/sdk/account-manager';
 import {TickManager} from '@/sdk/tick-manager';
 import {getMarginIndexByMarketIndexV2, getMintAccountPda, getObservationPda} from '@/sdk/utils';
 import type {RatexContracts} from '@/types/ratex_contracts';
 import {PriceMath} from '@/utils/price-math';
 import {BN, Program} from '@coral-xyz/anchor';
-import {getAccount, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID} from '@solana/spl-token';
-import {
-  PublicKey,
-  SystemProgram,
-  SYSVAR_CLOCK_PUBKEY,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import {TOKEN_PROGRAM_ID, getAccount, getAssociatedTokenAddressSync} from '@solana/spl-token';
+import {PublicKey, SystemProgram, TransactionInstruction} from '@solana/web3.js';
 import {Big} from 'big.js';
 import Decimal from 'decimal.js';
 
@@ -32,9 +27,17 @@ export class LpManager {
       amount: number;
       marketIndex: number;
       maturity: number;
+      epochStartTimestamp: number;
     }
   ): Promise<TransactionInstruction[]> {
-    const {amount = 50000, marketIndex, lowerRate, upperRate, maturity} = params;
+    const {
+      amount = 50000,
+      marketIndex,
+      lowerRate,
+      upperRate,
+      maturity,
+      epochStartTimestamp,
+    } = params;
     const marginIndex = getMarginIndexByMarketIndexV2(marketIndex);
     const marginMarket = PDA.createMarginMarketPda(marginIndex);
     const marginMarketVault = PDA.createMarginMarketVaultPda(marginIndex);
@@ -58,9 +61,9 @@ export class LpManager {
     const tokenMintA: PublicKey = ta.mint;
     const tokenMintB: PublicKey = tb.mint;
 
-    const clock = await program.provider.connection.getAccountInfo(SYSVAR_CLOCK_PUBKEY);
-    let epochStartTimestamp = new BN(Number(clock!.data.readBigInt64LE(8)));
-    console.log(epochStartTimestamp.toString());
+    // const clock = await program.provider.connection.getAccountInfo(SYSVAR_CLOCK_PUBKEY);
+    // let epochStartTimestamp = new BN(Number(clock!.data.readBigInt64LE(8)));
+    // console.log(epochStartTimestamp.toString());
 
     // const lowerInstruction = await program.methods
     //   .calculateTickIndex(new BN(maturity), lr, pool.tickSpacing, true)
@@ -128,7 +131,7 @@ export class LpManager {
     console.log('****************');
 
     const instruction = await program.methods
-      .addPerpLpShares(baseAmount, marginIndex, marketIndex, lr, ur)
+      .addPerpLpShares(baseAmount, marginIndex, marketIndex, lr, ur, new BN(epochStartTimestamp))
       .accounts({
         state: am.statePda,
         driftSigner: am.signerPda,
@@ -311,23 +314,22 @@ export class LpManager {
     authority: PublicKey,
     am: AccountManager,
     lp: PublicKey,
-    perpMarket: any,
     params: {marketIndex: number}
   ) {
     const {marketIndex} = params;
-    const {pool} = perpMarket;
-    const quoteAssetVault: PublicKey = PDA.createQuoteAssetVaultPda(marketIndex);
-    const tokenVaultB: PublicKey = pool.tokenVaultB;
+    const mintAccount: PublicKey = getMintAccountPda(0);
+    const userTokenAccount: PublicKey = getAssociatedTokenAddressSync(mintAccount, authority);
     return await program.methods
       .collectFees()
       .accounts({
         whirlpool: PDA.createPerpMarketPda(marketIndex),
+        marginMarket: PDA.createMarginMarketPda(0),
         state: am.statePda,
         driftSigner: am.signerPda,
         positionAuthority: authority,
         lp,
-        tokenOwnerAccountB: quoteAssetVault,
-        tokenVaultB,
+        tokenOwnerAccount: userTokenAccount,
+        tokenVaultMargin: PDA.createMarginMarketVaultPda(0),
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction();

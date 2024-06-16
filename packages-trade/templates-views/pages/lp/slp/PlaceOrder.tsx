@@ -4,11 +4,13 @@ import {Info} from '@/pages/lp/slp/Info';
 import {Range} from '@/pages/lp/slp/Range';
 import {query$} from '@/streams/lp/positions';
 import {useLang} from '@rx/hooks/use-lang';
+import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
+import {epochStartTime$} from '@rx/streams/epoch';
 import {updateBalance$} from '@rx/web3/streams/balance';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
-import {Button, Loading} from '@rx/widgets';
+import {Button, Loading, Toast} from '@rx/widgets';
 import {Big} from 'big.js';
 import clsx from 'clsx';
 import {useCallback, useState} from 'react';
@@ -64,7 +66,9 @@ export function PlaceOrder(props: Props) {
 }
 
 function usePlaceOrder(props: Props) {
+  const {contract} = props;
   const [client] = useStream(rateXClient$);
+  const epochStartTime = useObservable(epochStartTime$, 0);
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
     amount: '',
@@ -89,12 +93,17 @@ function usePlaceOrder(props: Props) {
     if (!amount || !lowerRate || !upperRate) {
       return;
     }
+    if (Number(amount) < 2) {
+      Toast.warn(`Must be more than 2 ${contract.symbolLevel2Category}`);
+      return;
+    }
     const params = {
       lowerRate: Big(lowerRate).div(100).toNumber(),
       upperRate: Big(upperRate).div(100).toNumber(),
       amount,
       marketIndex: props?.contract?.id,
       maturity: props?.contract?.maturity,
+      epochStartTimestamp: Big(epochStartTime).div(1000).toNumber(),
     };
     console.log('order ', params);
     setLoading(true);
@@ -103,8 +112,9 @@ function usePlaceOrder(props: Props) {
     } catch (e) {}
     updateBalance$.next(0);
     setLoading(false);
+    setState((prevState) => ({...prevState, amount: ''}));
     setTimeout(() => query$.next(0), 500);
-  }, [state, client, props]);
+  }, [state, epochStartTime, client, props]);
 
   return {state, loading, handleChange, handleSubmit};
 }

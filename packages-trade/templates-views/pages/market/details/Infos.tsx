@@ -10,6 +10,7 @@ import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
 import {Button} from '@rx/widgets';
 import {useCallback, useEffect, useMemo} from 'react';
 import {detail$} from '../streams';
+import {IMAGES} from '@/pages/lp/const';
 
 export function Infos() {
   const {fixLink} = useFixLink();
@@ -48,12 +49,12 @@ export function Infos() {
             >
               <i className="iconfont font-size-12px lh-12px transform-rotate-180deg">&#xe63c;</i>
             </div>
-            <img src={ASSETS_IMAGES.MSOL} alt="" width={28} height={28} />
+            <img src={IMAGES[detail.symbolLevel2Category?.toUpperCase()]} alt="" width={28} height={28} />
             {detail?.symbolName}
           </div>
           <div className="flex flex-row items-center font-size-14px lh-20px gap-42px">
             <span className="text-gray-600">{LG(lang.ReferenceRate)}</span>
-            <span className="text-gray-600">SOL</span>
+            <span className="text-gray-600">{detail?.symbolLevel2Category}</span>
             <div className="flex flex-row items-center gap-12px">
               <span className="text-gray-600">O/N</span>
               <span className="text-green-500 font-semibold">{numToPercentage(refer?.ON)}</span>

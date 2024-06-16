@@ -79,7 +79,7 @@ export function DepositMargin(props: Props) {
 function Label() {
   return (
     <div className="flex flex-row justify-start items-center gap-8px pr-12px">
-      <img src={IMAGES.JITOSOL} alt="" width={24} height={24} />
+      <img src={IMAGES.SOL} alt="" width={28} height={28} />
       SOL
     </div>
   );

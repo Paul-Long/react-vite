@@ -8,14 +8,16 @@ import {
   debounceTime,
   filter,
   map,
+  of,
   shareReplay,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs';
 
 export const query$ = new BehaviorSubject(0);
 export const marketIndex$ = new BehaviorSubject<number | null>(null);
-const loading$ = new BehaviorSubject(false);
+export const loading$ = new BehaviorSubject(false);
 
 const getPositions$ = combineLatest([
   rateXClient$,
@@ -37,6 +39,7 @@ const getPositions$ = combineLatest([
 
 export const positions$ = combineLatest([getPositions$, loading$]).pipe(
   debounceTime(200),
+  tap(() => of([])),
   filter((res) => !res[res.length - 1]),
   switchMap(([positions]: any) => calcPositions(positions)),
   startWith([]),

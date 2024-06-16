@@ -4,7 +4,7 @@ import {lang as clang} from '@rx/lang/common.lang';
 import {lang} from '@rx/lang/trade.lang';
 import {recentTradesState$} from '@rx/streams/trade/recent-trades';
 import {clsx} from 'clsx';
-import {useMemo, useState} from 'react';
+import {useState} from 'react';
 import {css, styled} from 'styled-components';
 
 const TrapezoidStyled = styled.div<{$show: boolean}>`
@@ -27,41 +27,18 @@ const TrapezoidStyled = styled.div<{$show: boolean}>`
 `;
 
 const header =
-  'sticky top-0 border-b-1px border-solid border-gray-40 pt-4px pb-11px box-border text-gray-600 bg-black';
+  'sticky top-0 border-b-1px border-solid border-gray-40 pt-4px pb-11px box-border text-gray-600 bg-#030B0F';
 const body = 'py-4px box-border text-gray-600';
 
 export function RecentTrades() {
   const {LG} = useLang();
   const [show, setShow] = useState<boolean>(true);
   const trades = useObservable(recentTradesState$, []);
-
-  const columns = useMemo(() => {
-    return [
-      {title: LG(clang.Price), dataIndex: 'price'},
-      {
-        title: LG(clang.Yield),
-        dataIndex: 'yield',
-        render: (row: Record<string, any>) => (
-          <div
-            className={clsx(
-              'text-center',
-              [row.direction === 'LONG' && 'text-green-500'],
-              [row.direction === 'SHORT' && 'text-red-500']
-            )}
-          >
-            {row.yield ?? '-'}
-          </div>
-        ),
-      },
-      {title: LG(clang.Amount), dataIndex: 'amount'},
-      {title: LG(clang.Time), dataIndex: 'time'},
-    ];
-  }, []);
   return (
     <div
       className={clsx(
         'relative flex flex-col max-h-448px',
-        [show ? ' min-w-336px min-h-full overflow-auto' : 'w-0'],
+        [show ? 'max-w-336px min-w-336px min-h-full overflow-auto' : 'w-0'],
         [show && 'border-l-1px border-solid border-gray-40']
       )}
     >
@@ -70,7 +47,7 @@ export function RecentTrades() {
       </div>
       <div className="relative overflow-y-auto sv">
         <div className={clsx('grid grid-cols-4', [show ? 'grid' : 'hidden'])}>
-          <div className="contents">
+          <div className="contents bg-#030B0F">
             <div className={clsx(header, 'pl-16px')}>{LG(clang.Price)}</div>
             <div className={clsx(header, 'text-right')}>{LG(clang.Yield)}</div>
             <div className={clsx(header, 'text-right')}>{LG(clang.Amount)}</div>

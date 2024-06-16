@@ -26,7 +26,7 @@ export function Assets() {
   }, [show]);
 
   return (
-    <div className={clsx('relative flex flex-col gap-24px', [show ? 'w-220px' : 'w-20px'])}>
+    <div className={clsx('relative flex flex-col gap-24px', [show ? 'w-170px' : 'w-20px'])}>
       {show && (
         <div className={clsx('overflow-hidden flex px-24px mt24px')}>
           <Search />

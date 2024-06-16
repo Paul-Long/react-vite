@@ -21,13 +21,12 @@ function getApiPrefix() {
     return 'rate-x.io';
   }
   const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location ? location.hostname : '';
-  if (hostname?.startsWith('app-dev11')) {
-    return 'https://api11';
-  }
-  if (hostname?.startsWith('app-dev12')) {
-    return 'https://api12';
-  }
-  return 'https://api10';
+  return (
+    'https://api' +
+    ['dev10', 'dev11', 'dev12', 'testnet']
+      .find((pre) => hostname.indexOf(pre) > -1)
+      ?.replace(/\D/g, '')
+  );
 }
 
 function getWsPrefix() {
@@ -35,13 +34,12 @@ function getWsPrefix() {
     return 'rate-x.io';
   }
   const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location ? location.hostname : '';
-  if (hostname.startsWith('app-dev11')) {
-    return 'wss://ws11';
-  }
-  if (hostname.startsWith('app-dev12')) {
-    return 'wss://ws12';
-  }
-  return 'wss://ws10';
+  return (
+    'wss://ws' +
+    ['dev10', 'dev11', 'dev12', 'testnet']
+      .find((pre) => hostname.indexOf(pre) > -1)
+      ?.replace(/\D/g, '')
+  );
 }
 
 function calcHostname() {
@@ -51,6 +49,9 @@ function calcHostname() {
   // const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location.hostname;
   const hostname = env.isLocal ? import.meta.env.VITE_DEV_HOST : location ? location.hostname : '';
   // sample: dev11 -> dev1, dev12 -> dev1
+  if (hostname.startsWith('app-testnet')) {
+    return 'testnet.rate-x.io';
+  }
   if (/^(?:[a-z]*-)?[a-z]*[0-9]{2}\./i.test(hostname)) {
     return hostname
       .split('.')
