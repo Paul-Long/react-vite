@@ -92,6 +92,10 @@ export function InputNumber(props: Props) {
         v = parseFloat(v).toFixed(step);
         this.value = v;
       }
+      console.log('v : ', v, v.replace(/^0+(?=\d)/, ''));
+      if (v.replace(/^0+(?=\d)/, '') !== v) {
+        this.value = v.replace(/^0+(?=\d)/, '');
+      }
       updatePercentagePosition();
     });
     ref.current?.addEventListener('blur', function () {

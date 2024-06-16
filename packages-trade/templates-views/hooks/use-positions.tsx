@@ -24,8 +24,21 @@ export function usePositions(marginType: 'CROSS' | 'ISOLATED') {
   const dataSource = useMemo(() => {
     const pos = positions.filter((p) => p.marginType === marginType);
     if (marginType === 'CROSS' && pos?.length > 0) {
+      const pnl = pos
+        .reduce((sum, p) => {
+          return sum.add(p.pnl);
+        }, Big(0))
+        .round(9, 0)
+        .toNumber();
       return [
-        {parent: true, asset: 'SOL', cr: pos[0].cr, margin: pos[0].margin, userPda: pos[0].userPda},
+        {
+          parent: true,
+          asset: 'SOL',
+          pnl,
+          cr: pos[0].cr,
+          margin: pos[0].margin,
+          userPda: pos[0].userPda,
+        },
         ...pos.filter((p) => p.baseAssetAmount != 0),
       ];
     }

@@ -23,18 +23,19 @@ const ToastContainer = styled.div`
 
 const ToastMessage = styled.div<{type: string}>`
   background-color: ${({type}) => {
-    switch (type) {
-      case 'info':
-        return '#2196f3';
-      case 'success':
-        return '#41FFAF14';
-      case 'warn':
-        return '#ff9800';
-      case 'error':
-        return '#f44336';
-      default:
-        return '#323232';
-    }
+    return '#41FFAF14';
+    // switch (type) {
+    //   case 'info':
+    //     return '#2196f3';
+    //   case 'success':
+    //     return '#41FFAF14';
+    //   case 'warn':
+    //     return '#ff9800';
+    //   case 'error':
+    //     return '#f44336';
+    //   default:
+    //     return '#323232';
+    // }
   }};
   backdrop-filter: blur(200px);
   color: white;
@@ -64,7 +65,7 @@ const Toast = React.memo(
     }, [onDismiss]);
 
     return (
-      <div className="bg-black">
+      <div className="bg-#030B0F">
         <ToastMessage type={type} className="flex flex-row items-start gap-12px">
           {type === 'success' && <CheckIcon width={24} height={24} />}
           {['error', 'warn'].includes(type) && <ErrorIcon width={24} height={24} />}

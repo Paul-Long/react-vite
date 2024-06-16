@@ -193,14 +193,16 @@ export class AccountManager {
           (u?.perpPositions || []).some((p: RateXPosition) => (p.baseAssetAmount as BN).eq(zero))
       );
     } else {
-      user = accounts?.find((u) => {
+      user = accounts?.find((u: Record<string, any>) => {
         if (u.isIsolated !== isIsolated) {
           return false;
         }
         return (
           !(u?.perpPositions || []).some(
             (p: RateXPosition) => !(p.baseAssetAmount as BN).eq(zero)
-          ) && !(u?.orders || []).some((o: RateXOrder) => !(o.baseAssetAmount as BN).eq(zero))
+          ) &&
+          !(u?.orders || []).some((o: RateXOrder) => !(o.baseAssetAmount as BN).eq(zero)) &&
+          !(u?.marginPositions || []).some((m: Record<string, any>) => !(m.balance as BN).eq(zero))
         );
       });
     }

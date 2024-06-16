@@ -10,7 +10,7 @@ export function Position(props: Props) {
   return (
     <>
       <Table
-        className="w-full min-h-200px"
+        className="w-full min-h-100px"
         border={true}
         columns={columns}
         dataSource={dataSource as any[]}

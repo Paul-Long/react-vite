@@ -3,5 +3,12 @@ import {Table} from '@rx/widgets';
 
 export function History() {
   const {dataSource, columns} = useHistory();
-  return <Table className='w-full' border={true} columns={columns} dataSource={dataSource as any[]} />;
+  return (
+    <Table
+      className="w-full min-h-100px"
+      border={true}
+      columns={columns}
+      dataSource={dataSource as any[]}
+    />
+  );
 }

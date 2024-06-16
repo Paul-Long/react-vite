@@ -149,7 +149,7 @@ export class RateClient {
       return;
     }
     const start = Date.now();
-    const {marketIndex, marginType, margin} = params;
+    const {marketIndex, marginType, margin, openTip} = params;
     const [userStatPda, transaction1, statInfo] = await this.am.initializeUserStatsTransaction(
       this.program,
       this.authority
@@ -169,6 +169,7 @@ export class RateClient {
         const stat = await this.program.account.userStats.fetch(userStatPda as PublicKey);
         subAccountId = stat.numberOfSubAccountsCreated ?? 0;
       }
+      openTip?.();
       const [pda, t] = await this.am.initializeUserTransaction(
         this.program,
         this.authority,

@@ -54,7 +54,9 @@ const ModalHeader = styled.div<{$show: string}>`
   display: flex;
   justify-content: ${({$show}) => ($show === 'true' ? 'space-between' : 'flex-end')};
   align-items: center;
-  padding-bottom: 16px;
+  padding: 0 16px 16px;
+  margin: 0 -16px 16px;
+  border-bottom: 1px solid #ffffff14;
 `;
 
 const CloseButton = styled.button`
@@ -117,7 +119,7 @@ export const Modal: FC<ModalProps> = memo(
 
     return ReactDOM.createPortal(
       <ModalOverlay onClick={handleClickMask}>
-        <div className="bg-black">
+        <div className="bg-#030B0F">
           <ModalContainer
             className="bg-green-80"
             $size={size}
@@ -127,7 +129,7 @@ export const Modal: FC<ModalProps> = memo(
             style={contentStyle}
           >
             <ModalHeader $show={(!!title).toString()}>
-              {title && <h2 className="fw-bold font-size-20px lh-30px">{title}</h2>}
+              {title && <h2 className="fw-semibold font-size-20px lh-30px">{title}</h2>}
               {closeBtn && (
                 <CloseButton onClick={onClose as any}>
                   <i className="iconfont font-size-18px">&#xe637;</i>

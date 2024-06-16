@@ -7,6 +7,7 @@ import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button, Modal, Toast} from '@rx/widgets';
 import {useCallback, useRef} from 'react';
 import {styled} from 'styled-components';
+import {DownIcon} from '../icons/DownIcon';
 
 const StyleInput = styled.input`
   &::-webkit-outer-spin-button,
@@ -40,7 +41,14 @@ export function DepositModal() {
   }, [client, state]);
   return (
     <Modal
-      title={LG(lang.Deposit)}
+      title={
+        <div className="flex flex-row items-center gap-8px">
+          <div className="flex justify-center items-center bg-green-500 rounded-4px w-24px h-24px cursor-pointer">
+            <DownIcon />
+          </div>
+          {LG(lang.Deposit)}
+        </div>
+      }
       visible={state.visible}
       size="small"
       onClose={() => setState({visible: false})}

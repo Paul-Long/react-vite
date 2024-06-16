@@ -66,7 +66,7 @@ export const lang: any = {
     en: 'Term',
   },
   ExpireIn: {
-    en: 'Expire in',
+    en: 'Expires in',
   },
   OurInvestors: {
     en: 'Our Investors',

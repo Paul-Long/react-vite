@@ -281,6 +281,13 @@ export function useForm() {
         marketIndex: baseContract.id,
         orderType: 'MARKET',
         margin: newMargin,
+        openTip: () =>
+          Toast.warn(
+            <div className="max-w-446px text-wrap">
+              A one-time (refundable) fee of 0.02 SOL will be charged to open a new account for this
+              asset.
+            </div>
+          ),
       };
       console.log('Place Order Start : ', Date.now());
       const tx = await client.placeOrder2(order);
