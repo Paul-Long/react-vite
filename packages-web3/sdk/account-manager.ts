@@ -190,7 +190,7 @@ export class AccountManager {
       user = accounts?.find(
         (u: any) =>
           u.isIsolated === isIsolated &&
-          (u?.perpPositions || []).some((p: RateXPosition) => (p.baseAssetAmount as BN).eq(zero))
+          (u?.yieldPositions || []).some((p: RateXPosition) => (p.baseAssetAmount as BN).eq(zero))
       );
     } else {
       user = accounts?.find((u: Record<string, any>) => {
@@ -198,7 +198,7 @@ export class AccountManager {
           return false;
         }
         return (
-          !(u?.perpPositions || []).some(
+          !(u?.yieldPositions || []).some(
             (p: RateXPosition) => !(p.baseAssetAmount as BN).eq(zero)
           ) &&
           !(u?.orders || []).some((o: RateXOrder) => !(o.baseAssetAmount as BN).eq(zero)) &&
@@ -223,7 +223,7 @@ export class AccountManager {
         }, new Big(0))
         .div(1_000_000_000)
         .toString();
-      const positions = u?.perpPositions
+      const positions = u?.yieldPositions
         .filter((p: any) => !p.baseAssetAmount.eq(zero))
         ?.map((p: any) => {
           const {baseAssetAmount, lastRate, quoteAssetAmount, marketIndex} = p;
@@ -276,7 +276,7 @@ export class AccountManager {
           }, new Big(0))
           .div(1_000_000_000)
           .toString();
-        const positions = acc?.perpPositions
+        const positions = acc?.yieldPositions
           .filter((p: any) => !p.baseAssetAmount.eq(zero))
           ?.map((p: any) => {
             const {baseAssetAmount, quoteAssetAmount, marketIndex} = p;
@@ -415,8 +415,8 @@ export class AccountManager {
       if (!!account && !!account?.data) {
         try {
           const user = program.coder.accounts.decode('Lp', account.data);
-          const perp: string = user?.ammPosition?.whirlpool?.toBase58();
-          users.push({...user, userPda, marketIndex: marketIndexMap[perp], whirlpool: perp});
+          const perp: string = user?.ammPosition?.ammpool?.toBase58();
+          users.push({...user, userPda, marketIndex: marketIndexMap[perp], ammpool: perp});
         } catch (e) {
           console.error(e);
         }
@@ -462,11 +462,11 @@ export class AccountManager {
     const accounts = await this.getLpAccounts(program, authority);
     return accounts
       .map((a) => {
-        const whirlpool = a?.ammPosition?.whirlpool;
-        if (!whirlpool) {
+        const ammpool = a?.ammPosition?.ammpool;
+        if (!ammpool) {
           return false;
         }
-        const perp = perpMarkets[whirlpool.toBase58()];
+        const perp = perpMarkets[ammpool.toBase58()];
         if (!perp) {
           return false;
         }
@@ -489,7 +489,7 @@ export class AccountManager {
       .map((a) => {
         return this.formatLPAccountInfo(a, pool.pool.sqrtPrice, marketIndex);
       })
-      .filter((u) => u.ammPosition?.whirlpool === perp);
+      .filter((u) => u.ammPosition?.ammpool === perp);
   }
 
   formatLPAccountInfo(account: Record<string, any>, sqrtPrice: BN, marketIndex: number) {

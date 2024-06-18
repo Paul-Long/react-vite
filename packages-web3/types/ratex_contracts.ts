@@ -3266,24 +3266,6 @@ export type RatexContracts = {
               "isolated / cross margin flag"
             ],
             "type": "bool"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
           }
         ]
       }
@@ -4038,7 +4020,16 @@ export type RatexContracts = {
             "type": "bool"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                19
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
@@ -4079,7 +4070,16 @@ export type RatexContracts = {
             "type": "u16"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
@@ -4131,7 +4131,16 @@ export type RatexContracts = {
             "type": "u16"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                22
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
@@ -10274,24 +10283,6 @@ export const IDL: RatexContracts = {
               "isolated / cross margin flag"
             ],
             "type": "bool"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
           }
         ]
       }
@@ -11046,7 +11037,16 @@ export const IDL: RatexContracts = {
             "type": "bool"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                19
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
@@ -11087,7 +11087,16 @@ export const IDL: RatexContracts = {
             "type": "u16"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
@@ -11139,7 +11148,16 @@ export const IDL: RatexContracts = {
             "type": "u16"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                22
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",

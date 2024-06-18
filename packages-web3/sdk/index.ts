@@ -182,7 +182,7 @@ export class RateClient {
     if (marginType === 'CROSS' && !transaction2) {
       const zero = new BN(0);
       // const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
-      const position = user?.perpPositions?.find((p: any) => p.marketIndex === marketIndex);
+      const position = user?.yieldPositions?.find((p: any) => p.marketIndex === marketIndex);
       if (position?.length > 4) {
         return 30001;
       }
@@ -582,7 +582,7 @@ export class RateClient {
       if (!data) {
         continue;
       }
-      const perpMarket = this.program.coder.accounts.decode('PerpMarket', data.data);
+      const perpMarket = this.program.coder.accounts.decode('YieldMarket', data.data);
       const perpMarketPda = PerpMarketMap()[marketIndex];
       const sqrtPrice = perpMarket.pool.sqrtPrice;
       perpMarkets[perpMarketPda] = {marketIndex, perpMarket, sqrtPrice, pool: perpMarket.pool};
@@ -601,7 +601,7 @@ export class RateClient {
     const instructions = [];
     for (let i = 0; i < positions.length; i++) {
       const pos = positions[i];
-      const {ammPosition, marketIndex, userPda, whirlpool} = pos;
+      const {ammPosition, marketIndex, userPda, ammpool} = pos;
       const {upperRate, lowerRate} = ammPosition;
       if (!ttmMap[marketIndex]) {
         continue;
@@ -611,7 +611,7 @@ export class RateClient {
         this.authority,
         this.tm,
         new PublicKey(userPda),
-        perpMarkets[whirlpool],
+        perpMarkets[ammpool],
         {upperRate, lowerRate, marketIndex, maturity: ttmMap[marketIndex]}
       );
       const collectInstruction = await this.lp.collectFees(

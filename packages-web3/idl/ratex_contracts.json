@@ -3266,24 +3266,6 @@
               "isolated / cross margin flag"
             ],
             "type": "bool"
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
           }
         ]
       }
@@ -4038,7 +4020,16 @@
             "type": "bool"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                19
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
@@ -4079,7 +4070,16 @@
             "type": "u16"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
@@ -4131,7 +4131,16 @@
             "type": "u16"
           },
           {
-            "name": "padding",
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                22
+              ]
+            }
+          },
+          {
+            "name": "padding2",
             "type": {
               "array": [
                 "u8",
