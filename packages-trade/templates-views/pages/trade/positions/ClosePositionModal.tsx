@@ -28,10 +28,18 @@ export function ClosePositionModal() {
   const [state] = useStream(closePosition$);
   const [loading, setLoading] = useState(false);
   const [percent, setPercent] = useState(100);
-  const ytAmount = useMemo(() => state?.data?.baseAssetAmount || 0, [state]);
+  const ytAmount = useMemo(() => Math.abs(state?.data?.baseAssetAmount || 0), [state]);
   const [value, setValue] = useState(ytAmount);
 
   const {visible, data, onClose} = state;
+
+  useEffect(() => {
+    if (visible && data) {
+      const v = Math.abs(data?.baseAssetAmount || 0);
+      setValue(v);
+      setPercent(100);
+    }
+  }, [visible, data]);
 
   useEffect(() => {
     if (timer.current) {
@@ -107,7 +115,7 @@ export function ClosePositionModal() {
       if (focus.current) {
         setPercent(Number(ytAmount) > 0 && !!v ? Big(v).times(100).div(ytAmount).toNumber() : 0);
       }
-      setValue(v);
+      setValue(v as number);
     },
     [ytAmount]
   );

@@ -2,6 +2,7 @@ import {AccountManager} from '@/sdk/account-manager';
 import {FundManager} from '@/sdk/fund-manager';
 import {LpManager} from '@/sdk/lp-manager';
 import {OrderManager} from '@/sdk/order-manager';
+import {PDA} from '@/sdk/PDA';
 import {TickManager} from '@/sdk/tick-manager';
 import {
   getMarginIndexByMarketIndex,
@@ -21,6 +22,7 @@ import type {
 import type {RatexContracts} from '@/types/ratex_contracts';
 import type {TokenFaucet} from '@/types/token_faucet';
 import {PriceMath} from '@/utils/price-math';
+import {tranUtil} from '@/utils/transaction';
 import * as anchor from '@coral-xyz/anchor';
 import {AnchorProvider, BN, EventParser, Program, Wallet} from '@coral-xyz/anchor';
 import {getAssociatedTokenAddressSync} from '@solana/spl-token';
@@ -588,6 +590,54 @@ export class RateClient {
       perpMarkets[perpMarketPda] = {marketIndex, perpMarket, sqrtPrice, pool: perpMarket.pool};
     }
     return perpMarkets;
+  }
+
+  async withdrawLpEarnFees(params: {
+    userPda: string;
+    marketIndex: number;
+    upperRate: number;
+    lowerRate: number;
+    total: number;
+    maturity: number;
+  }) {
+    if (!this.authority) {
+      return;
+    }
+    const {userPda, marketIndex, upperRate, lowerRate, total, maturity} = params;
+    const yieldMarket = await this.program.account.yieldMarket.fetch(
+      PDA.createYieldMarketPda(marketIndex)
+    );
+    const combinedTransaction = new Transaction();
+    if (Number(total) > 0) {
+      const update = await this.lp.updateFeesAndRewards(
+        this.program,
+        this.authority,
+        this.tm,
+        new PublicKey(userPda),
+        yieldMarket,
+        {upperRate, lowerRate, marketIndex, maturity}
+      );
+      combinedTransaction.add(update);
+    }
+    const collect = await this.lp.collectFees(
+      this.program,
+      this.authority,
+      this.am,
+      new PublicKey(userPda),
+      {marketIndex}
+    );
+    combinedTransaction.add(collect);
+    combinedTransaction.add(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 1_400_000,
+      })
+    );
+    return await tranUtil.sendTransaction(
+      this.connection,
+      this.wallet,
+      this.authority,
+      combinedTransaction
+    );
   }
 
   async calcLpPositionFees(

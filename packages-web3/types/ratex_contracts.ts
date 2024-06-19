@@ -4024,7 +4024,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                19
+                3
               ]
             }
           },
@@ -4135,7 +4135,7 @@ export type RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                22
+                6
               ]
             }
           },
@@ -11041,7 +11041,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                19
+                3
               ]
             }
           },
@@ -11152,7 +11152,7 @@ export const IDL: RatexContracts = {
             "type": {
               "array": [
                 "u8",
-                22
+                6
               ]
             }
           },

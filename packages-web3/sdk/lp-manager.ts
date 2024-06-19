@@ -62,8 +62,8 @@ export class LpManager {
     const tokenMintB: PublicKey = tb.mint;
 
     // const clock = await program.provider.connection.getAccountInfo(SYSVAR_CLOCK_PUBKEY);
-    // let epochStartTimestamp = new BN(Number(clock!.data.readBigInt64LE(8)));
-    // console.log(epochStartTimestamp.toString());
+    // let epochStartTimestamp1 = new BN(Number(clock!.data.readBigInt64LE(8)));
+    // console.log(epochStartTimestamp1.toString());
 
     // const lowerInstruction = await program.methods
     //   .calculateTickIndex(new BN(maturity), lr, pool.tickSpacing, true)

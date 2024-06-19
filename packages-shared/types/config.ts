@@ -20,4 +20,5 @@ interface ConfigSymbol {
   symbolName: string;
   term: string;
   minimumMaintainanceCr: number;
+  seconds: number;
 }

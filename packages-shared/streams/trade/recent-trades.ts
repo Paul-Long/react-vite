@@ -56,8 +56,8 @@ function formatData(d: Record<string, any>) {
   const time = new Date(d.MDEntryTime).getTime();
   return {
     direction: d.MDEntryType === '1' ? 'LONG' : 'SHORT',
-    price: numUtil.trimEnd0(numUtil.floor(d.MDEntryPx, 9)),
-    yield: numUtil.trimEnd0(numUtil.floor(d.Yield, 2, -2)) + '%',
+    price: numUtil.trimEnd0(numUtil.ceil(d.MDEntryPx, 9)),
+    yield: numUtil.trimEnd0(numUtil.ceil(d.Yield, 2, -2)) + '%',
     amount: numUtil.trimEnd0(numUtil.floor(d.MDEntrySize, 4)),
     time: timeUtil.formatTime(time),
     datetime: d.MDEntryTime,
