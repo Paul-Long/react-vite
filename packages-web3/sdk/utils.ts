@@ -29,6 +29,7 @@ export function getObservationPda(marketIndex: number): any {
   return {
     0: new PublicKey('GfzUJibVE9tFxUNnaGVvLqxfXbCXQXpTgwo32jHgoFLh'),
     2: new PublicKey('BWzB69DSMeWnSh35drF4peRB2RasTWXWpL6Yj9iya8WZ'),
+    3: new PublicKey('6vjZnGbgLuME9ysXmPMJexFQ1gQKuPE2gVHNykhVaLej'),
   }[marketIndex];
 }
 
@@ -40,11 +41,12 @@ export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
   return {
     0: 1,
     2: 2,
+    3: 2,
   }[marketIndex] as number;
 }
 
 export function getAllPerpMarkets() {
-  return [0, 2].map((i) => ({
+  return [0, 2, 3].map((i) => ({
     pubkey: PDA.createYieldMarketPda(i),
     isSigner: false,
     isWritable: true,
@@ -61,7 +63,7 @@ export function getAllOracles() {
 }
 
 export function getAllObservations() {
-  return [0, 2].map((i) => ({
+  return [0, 2, 3].map((i) => ({
     pubkey: getObservationPda(i),
     isSigner: false,
     isWritable: true,
