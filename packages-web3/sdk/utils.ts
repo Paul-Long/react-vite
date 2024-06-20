@@ -1,7 +1,7 @@
 import {PDA} from '@/sdk/PDA';
 import {PublicKey} from '@solana/web3.js';
 
-export const PROGRAM_ID = new PublicKey('8EbMSp52FXmrAV64s85xzyCXGUDVxmmMaA5VK1uHT8To');
+export const PROGRAM_ID = new PublicKey('D2GjhSfv9k2pRZLjHw7pEGUyZiapvXa76h1XR3YD1ap9');
 
 export const TOKEN_FAUCET = new PublicKey('HA655QyTrZTMKnqUHXCoW6fW2zNuRcasa9knHBvw6hUi');
 
@@ -22,14 +22,12 @@ export function getFaucetConfigPda(marginIndex: number): any {
 }
 
 export const PerpMarketMap = (): Record<number, string> =>
-  [14, 15, 16, 17].reduce((record, mi) => ({...record, [mi]: PDA.createPerpMarketPda(mi)}), {});
+  [0, 1].reduce((record, mi) => ({...record, [mi]: PDA.createYieldMarketPda(mi)}), {});
 
 export function getObservationPda(marketIndex: number): any {
   return {
-    14: new PublicKey('3r8okkmpRLfgx7FuEF2uHkVF9HDRXfKTJPDDKdH2qHEW'),
-    15: new PublicKey('5Whdajiz66eSMhduxipUKqU12y24EzUWxxWirTZuBbyW'),
-    16: new PublicKey('Fz7gX9RjZjG2ztrGR8swUv2NmVGcQ62AwCWs1D92uaRP'),
-    17: new PublicKey('28fA5dw216QzeESst5WLLxnWCeGRUtrKnpkf1BKajhfq'),
+    0: new PublicKey('7Uv6N4UAydohARGfa3n8bMVyUSJV3Gey9TuJY3GNT71L'),
+    1: new PublicKey('4VrBrMHf9bnMT1HpH9xFD1fdPRu5obiHqAc25sm2BwCH'),
   }[marketIndex];
 }
 
@@ -39,16 +37,14 @@ export function getMarginIndexByMarketIndex(marketIndex: number): number {
 
 export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
   return {
-    14: 1,
-    15: 1,
-    16: 2,
-    17: 2,
+    0: 1,
+    1: 2,
   }[marketIndex] as number;
 }
 
 export function getAllPerpMarkets() {
-  return [14, 15, 16, 17].map((i) => ({
-    pubkey: PDA.createPerpMarketPda(i),
+  return [0, 1].map((i) => ({
+    pubkey: PDA.createYieldMarketPda(i),
     isSigner: false,
     isWritable: true,
   }));
@@ -64,7 +60,7 @@ export function getAllOracles() {
 }
 
 export function getAllObservations() {
-  return [14, 15, 16, 17].map((i) => ({
+  return [0, 1].map((i) => ({
     pubkey: getObservationPda(i),
     isSigner: false,
     isWritable: true,
