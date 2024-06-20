@@ -2,6 +2,7 @@ import {recentTrades$} from '@/subscription/recent-trades';
 import {tradeApi} from '@rx/api/trade';
 import {numUtil} from '@rx/helper/num';
 import {timeUtil} from '@rx/helper/time';
+import {Big} from 'big.js';
 import {
   BehaviorSubject,
   combineLatest,
@@ -57,7 +58,7 @@ function formatData(d: Record<string, any>) {
   return {
     direction: d.MDEntryType === '1' ? 'LONG' : 'SHORT',
     price: numUtil.trimEnd0(numUtil.ceil(d.MDEntryPx, 9)),
-    yield: numUtil.trimEnd0(numUtil.ceil(d.Yield, 2, -2)) + '%',
+    yield: (!!d.Yield ? Big(d.Yield).times(100).toFixed(2) : '-') + '%',
     amount: numUtil.trimEnd0(numUtil.floor(d.MDEntrySize, 4)),
     time: timeUtil.formatTime(time),
     datetime: d.MDEntryTime,

@@ -6,6 +6,7 @@ import {lang} from '@rx/lang/trade.lang';
 import {useConnect} from '@rx/web3/hooks/use-connect';
 import {abbreviateString} from '@rx/web3/utils/string';
 import type {Column} from '@rx/widgets/table/types';
+import {Big} from 'big.js';
 import {clsx} from 'clsx';
 import {useEffect, useState} from 'react';
 
@@ -129,8 +130,8 @@ function renderYtSt(row: any) {
 function renderYield(row: any) {
   return (
     <div className="flex flex-col items-end w-full">
-      <span>{row.Yield ? numUtil.trimEnd0(numUtil.floor(row.Yield, 2, -2)) + '%' : '-'}</span>
-      <span>{row.LastPx ? numUtil.trimEnd0(numUtil.floor(row.LastPx, 9)) : '-'}</span>
+      <span>{row.Yield ? Big(row.Yield).times(100).toFixed(2) + '%' : '-'}</span>
+      <span>{row.LastPx ? Big(row.LastPx).toFixed(9) : '-'}</span>
     </div>
   );
 }
