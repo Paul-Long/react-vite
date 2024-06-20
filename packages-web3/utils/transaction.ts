@@ -53,6 +53,7 @@ export const tranUtil = {
       return signature;
     } catch (error) {
       console.error('Combined Transaction failed', error);
+      return null;
     }
   },
 };
