@@ -116,7 +116,7 @@ export class FundManager {
       marginIndex: number;
       amount: number;
     }
-  ) {
+  ): Promise<TransactionInstruction> {
     const {amount, marginIndex} = params;
 
     const mintAccount: PublicKey = getMintAccountPda(marginIndex);
@@ -144,7 +144,7 @@ export class FundManager {
         user: userPda,
         authority,
         marginMarketVault: marginMarketVaultPda,
-        driftSigner: am.signerPda,
+        ratexSigner: am.signerPda,
         userTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -154,7 +154,7 @@ export class FundManager {
         ...getAllOracles(),
         ...getAllObservations(),
       ])
-      .rpc();
+      .instruction();
   }
 
   async mintToUser(

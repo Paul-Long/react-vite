@@ -59,7 +59,13 @@ export function Positions() {
         {tab === 'orders' && <Orders />}
         {tab === 'history' && <History />}
       </div>
-      <div className={clsx('justify-center', [isLogin && connected ? 'hidden' : 'flex'])}>
+      <div
+        className={clsx('flex-col justify-center items-center', [
+          isLogin && connected ? 'hidden' : 'flex',
+        ])}
+      >
+        <img src="https://static.rate-x.io/img/v1/0e81de/no-connect.svg" width={64} height={64} />
+        <div className="text-gray-600 mt-8px mb-24px">{LG(clang.NoConnectWallet)}</div>
         <ConnectButton />
       </div>
     </div>

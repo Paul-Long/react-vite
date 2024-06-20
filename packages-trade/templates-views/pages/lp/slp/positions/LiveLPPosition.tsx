@@ -4,9 +4,11 @@ import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
-import {Spin} from '@rx/widgets';
+import {symbolMapById$} from '@rx/streams/config';
+import {rateXClient$} from '@rx/web3/streams/rate-x-client';
+import {Button, Loading, Spin, Toast} from '@rx/widgets';
 import {clsx} from 'clsx';
-import {useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {PlaceOrder} from './PlaceOrder';
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
 
 export function LiveLPPosition({contract}: Props) {
   const [loading] = useStream(loading$);
+  const [client] = useStream(rateXClient$);
+  const symbolMapById = useObservable(symbolMapById$, {});
   const positions = useObservable<any[]>(positions$, []);
   const [select, setSelect] = useState('');
 
@@ -43,6 +47,21 @@ export function LiveLPPosition({contract}: Props) {
     }
   }, [contract]);
 
+  const handleWithdraw = useCallback(
+    (position: Record<string, any>) => async () => {
+      const {marketIndex, userPda, ammPosition, total} = position;
+      const {upperRate, lowerRate} = ammPosition;
+      const symbol = symbolMapById?.[marketIndex];
+      const params = {upperRate, lowerRate, marketIndex, total, userPda, maturity: symbol.seconds};
+      const tx = await client?.withdrawLpEarnFees(params);
+      if (tx) {
+        Toast.success('Success');
+      }
+      marketIndex$.next(marketIndex);
+    },
+    [client, symbolMapById]
+  );
+
   console.log('LP Live Positions : ', positions, loading);
 
   return (
@@ -57,6 +76,7 @@ export function LiveLPPosition({contract}: Props) {
               data={p}
               contract={contract}
               onClick={() => setSelect(p.key)}
+              onWithdraw={handleWithdraw(p)}
             ></Position>
           ))}
         {loading && <Spin />}
@@ -81,10 +101,17 @@ export function LiveLPPosition({contract}: Props) {
   );
 }
 
-function Position({data, contract, active, onClick}: any) {
+function Position({data, contract, active, onClick, onWithdraw}: any) {
   const {LG} = useLang();
+  const [loading, setLoading] = useState(false);
   const {ammPosition} = data || {};
   const {lowerRate, upperRate} = ammPosition || {};
+
+  const handleWithdraw = useCallback(async () => {
+    setLoading(true);
+    await onWithdraw();
+    setLoading(false);
+  }, []);
   return (
     <div
       className={clsx('grid grid-cols-3 gap-34px box-border bg-#D9D9D90A rounded-8px w-full', [
@@ -113,7 +140,21 @@ function Position({data, contract, active, onClick}: any) {
       </div>
       <div className="flex flex-col gap-8px">
         <div className="text-gray-600">{LG(lang.EarnedFees)}</div>
-        <div className="font-size-18px lh-27px">{data?.earnFee ?? '-'}</div>
+        <div className="font-size-18px lh-27px flex flex-row items-center gap-8px">
+          {data?.earnFee ?? '-'}
+          {Number(data?.earnFee) > 0 && (
+            <Button
+              className="relative"
+              size="sm"
+              type="default"
+              style={{padding: '2px 8px'}}
+              onClick={handleWithdraw}
+            >
+              {loading && <Loading theme="dark" size={14} />}
+              {LG(lang.Claim)}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

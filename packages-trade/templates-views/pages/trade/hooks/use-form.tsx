@@ -57,6 +57,9 @@ export function useForm() {
     }
     const key = [marketIndex, input.current, direction, amountN].join('_');
     if (key !== info?.key) {
+      if ((!amountN || Number(amountN) === 0) && marginN !== '') {
+        setState((prevState) => ({...prevState, margin: ''}));
+      }
       return;
     }
     const nextState: Record<string, any> = {};
@@ -87,7 +90,12 @@ export function useForm() {
   }, [amountN, marginN, leverageN, direction, info, maxLeverage, marketIndex]);
 
   useEffect(() => {
-    if (input.current !== 'margin' || focus.current !== 'margin' || !marginN) {
+    if (
+      input.current !== 'margin' ||
+      focus.current !== 'margin' ||
+      !marginN ||
+      Number(marginN) === 0
+    ) {
       return;
     }
     const key = [
@@ -97,6 +105,9 @@ export function useForm() {
       Big(marginN).times(leverageN).toString(),
     ].join('_');
     if (key !== info?.key) {
+      if ((!marginN || Number(marginN) === 0) && amountN !== '') {
+        setState((prevState) => ({...prevState, amount: ''}));
+      }
       return;
     }
     const nextState: Record<string, any> = {};
@@ -126,7 +137,13 @@ export function useForm() {
   }, [amountN, marginN, leverageN, direction, info]);
 
   useEffect(() => {
-    if (input.current === 'amount' && !!amountN && !!info?.baseAssetAmount && !!info?.entryPrice) {
+    if (
+      input.current === 'amount' &&
+      !!amountN &&
+      Number(amountN) !== 0 &&
+      !!info?.baseAssetAmount &&
+      !!info?.entryPrice
+    ) {
       const margin = Big(info.baseAssetAmount)
         .times(info.entryPrice)
         .div(leverageN)
@@ -199,13 +216,13 @@ export function useForm() {
       return (v: string | number | boolean) => {
         setState((prevState) => {
           const newState: any = {...prevState, [key]: v};
-          if (key === 'amount') {
+          if (key === 'amount' && v !== state.amount) {
             input.current = key;
-            !v && (newState.margin = '');
+            (!v || Number(v) === 0) && (newState.margin = '');
           }
-          if (key === 'margin') {
+          if (key === 'margin' && v !== state.margin) {
             input.current = key;
-            !v && (newState.amount = '');
+            (!v || Number(v) === 0) && (newState.amount = '');
           }
           return newState;
         });
@@ -215,7 +232,7 @@ export function useForm() {
   );
 
   useEffect(() => {
-    if (input.current === 'margin' && !marginN) {
+    if (input.current === 'margin' && (!marginN || Number(marginN) === 0)) {
       return;
     }
     if (input.current === 'amount' && !state.amount) {
@@ -244,7 +261,6 @@ export function useForm() {
         return;
       }
 
-      const start = Date.now();
       const {margin, marginType, direction, amount} = state;
       const remainMargin = Big(crossMargin?.remainMargin ?? 0);
       let newMargin: string | number = margin;
@@ -281,6 +297,13 @@ export function useForm() {
         marketIndex: baseContract.id,
         orderType: 'MARKET',
         margin: newMargin,
+        openTip: () =>
+          Toast.warn(
+            <div className="max-w-446px text-wrap">
+              A one-time (refundable) fee of 0.02 SOL will be charged to open a new account for this
+              asset.
+            </div>
+          ),
       };
       console.log('Place Order Start : ', Date.now());
       const tx = await client.placeOrder2(order);

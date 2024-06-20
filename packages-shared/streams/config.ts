@@ -14,7 +14,7 @@ export const contractMap$ = _contractMap$.asObservable();
 
 const _maturityMap$ = new BehaviorSubject<Record<string, ConfigSymbol[]>>({});
 export const maturityMap$ = _maturityMap$.asObservable();
-const _symbolMapById$ = new BehaviorSubject<Record<string, ConfigSymbol[]>>({});
+const _symbolMapById$ = new BehaviorSubject<Record<string, ConfigSymbol>>({});
 export const symbolMapById$ = _symbolMapById$.asObservable();
 
 const _contracts$ = new BehaviorSubject<ConfigSymbol[]>([]);

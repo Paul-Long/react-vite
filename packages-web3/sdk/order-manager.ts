@@ -32,7 +32,7 @@ export class OrderManager {
   ): Promise<TransactionInstruction> {
     const {marketIndex, orderType, direction, marginType, margin} = params;
 
-    const perp = await program.account.perpMarket.fetch(PDA.createPerpMarketPda(marketIndex));
+    const perp = await program.account.yieldMarket.fetch(PDA.createYieldMarketPda(marketIndex));
     let priceLimit: any = PriceMath.sqrtPriceX64ToPrice(perp.pool.sqrtPrice, 9, 9).times(
       new Decimal(direction === 'LONG' ? 1.1 : 0.9)
     );
@@ -100,7 +100,7 @@ export class OrderManager {
     // console.log('****************');
 
     return await program.methods
-      .placePerpOrder(orderParams)
+      .placeOrder(orderParams)
       .remainingAccounts(remainingAccounts)
       .accounts({
         state: am.statePda,
@@ -124,8 +124,8 @@ export class OrderManager {
   ) {
     const start = Date.now();
     const {marketIndex, direction} = params;
-    const perpMarket = PDA.createPerpMarketPda(marketIndex);
-    const perp = await program.account.perpMarket.fetch(perpMarket);
+    const yieldMarket = PDA.createYieldMarketPda(marketIndex);
+    const perp = await program.account.yieldMarket.fetch(yieldMarket);
     let priceLimit: any = PriceMath.tickIndexToPrice(perp.pool.tickCurrentIndex, 5, 5);
     priceLimit = priceLimit.mul(direction === 'LONG' ? 1.1 : 0.9);
     priceLimit = PriceMath.priceToSqrtPriceX64(priceLimit, 5, 5);
@@ -143,7 +143,7 @@ export class OrderManager {
     const tickArrays = await tm.getFillOrderTickArrays(
       program,
       authority,
-      perpMarket,
+      yieldMarket,
       perp.pool.tickCurrentIndex,
       new BN(priceLimit.toString()),
       direction === 'SHORT'
@@ -182,9 +182,7 @@ export class OrderManager {
           (params.input === 'margin' && params.direction === 'LONG'),
         new BN(priceLimit.toString())
       )
-      .accounts({
-        whirlpool: perpMarket,
-      })
+      .accounts({yieldMarket})
       .remainingAccounts([
         ...tickArrays.map((t) => ({
           pubkey: t,
@@ -229,8 +227,8 @@ export class OrderManager {
     }
 
     const remainingAccounts: any = this.getRemainingAllAccounts(marketIndex);
-    const perpMarket = PDA.createPerpMarketPda(marketIndex);
-    const perp = await program.account.perpMarket.fetch(perpMarket);
+    const yieldMarket = PDA.createYieldMarketPda(marketIndex);
+    const perp = await program.account.yieldMarket.fetch(yieldMarket);
     // TODO LONG > 0 or SHORT <0
     const baseAssetAmount = order.baseAssetAmount;
     const tokenVaultA = perp.pool.tokenVaultA;
@@ -239,7 +237,7 @@ export class OrderManager {
     const tickArrays = await tm.getFillOrderTickArrays(
       program,
       authority,
-      perpMarket,
+      yieldMarket,
       perp.pool.tickCurrentIndex,
       order.priceLimit,
       baseAssetAmount.lt(new BN(0))
@@ -278,7 +276,7 @@ export class OrderManager {
     });
     console.log('fill order end time : ', new Date(), Date.now() - start.getTime());
     return await program.methods
-      .fillPerpOrder(orderId)
+      .fillOrder(orderId)
       .preInstructions([modifyComputeUnits])
       .remainingAccounts([
         ...remainingAccounts,
@@ -293,9 +291,9 @@ export class OrderManager {
         userStats: userStatPda,
         keepers: am.keeperPda,
         state: am.statePda,
-        driftSigner: am.signerPda,
+        ratexSigner: am.signerPda,
         authority,
-        whirlpool: perpMarket,
+        yieldMarket,
         marginMarketVault,
         tokenOwnerAccountA: PDA.createBaseAssetVaultPda(marketIndex),
         tokenOwnerAccountB: PDA.createQuoteAssetVaultPda(marketIndex),
@@ -315,7 +313,7 @@ export class OrderManager {
     return await program.methods
       .getAmmTwap(900)
       .accounts({
-        perpMarket: PDA.createPerpMarketPda(params.marketIndex),
+        yieldMarket: PDA.createYieldMarketPda(params.marketIndex),
         observation: getObservationPda(params.marketIndex),
       })
       .instruction();
@@ -371,7 +369,7 @@ export class OrderManager {
         user: userPda,
         keepers: am.keeperPda,
         marginMarketVault: PDA.createMarginMarketVaultPda(marginIndex),
-        driftSigner: am.signerPda,
+        ratexSigner: am.signerPda,
         userTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
         authority,
@@ -388,7 +386,7 @@ export class OrderManager {
         isWritable: true,
       },
       {
-        pubkey: PDA.createPerpMarketPda(marketIndex),
+        pubkey: PDA.createYieldMarketPda(marketIndex),
         isSigner: false,
         isWritable: true,
       },

@@ -9,6 +9,7 @@ const _wsStatus$ = new BehaviorSubject<WsStatus>('Init');
 export const wsStatus$ = _wsStatus$.asObservable();
 export const wsOpening$ = wsStatus$.pipe(filter((x: WsStatus) => x === 'Opening'));
 export const wsOpened$ = wsStatus$.pipe(filter((x: WsStatus) => x === 'Opened'));
+export const wsClosed$ = wsStatus$.pipe(filter((x: WsStatus) => x === 'Closed'));
 export const wsConnected$ = wsStatus$.pipe(filter((x: WsStatus) => x === 'Connected'));
 
 worker$

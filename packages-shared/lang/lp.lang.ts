@@ -108,7 +108,7 @@ export const lang: any = {
     en: 'Detail',
   },
   ExpireIn: {
-    en: 'Expire In',
+    en: 'Expires in',
   },
   ULPPrice: {
     en: 'ULP Price',
@@ -120,9 +120,9 @@ export const lang: any = {
     en: 'Upper Rate',
   },
   YourPosition: {
-    en: 'Your Position'
+    en: 'Your Position',
   },
   RetainRatio: {
-    en: 'Retain Ratio'
-  }
+    en: 'Retain Ratio',
+  },
 };

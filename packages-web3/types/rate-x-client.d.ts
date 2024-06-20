@@ -38,6 +38,7 @@ interface RateXPlaceOrderParams {
   direction: DirectionType;
   isClose: boolean;
   margin?: number;
+  openTip?: () => void;
 }
 
 interface RateXClosePositionParams {

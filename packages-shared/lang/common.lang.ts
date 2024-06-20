@@ -218,7 +218,7 @@ export const lang: any = {
     en: 'Trade',
   },
   ExpireIn: {
-    en: 'Expire In',
+    en: 'Expires in',
   },
   MarginAsset: {
     en: 'Margin Asset',
@@ -234,5 +234,8 @@ export const lang: any = {
   },
   Mint: {
     en: 'Mint',
+  },
+  NoConnectWallet: {
+    en: 'No data available, please connect your wallet',
   },
 };

@@ -1,8 +1,8 @@
 import {AccountManager} from '@/sdk/account-manager';
-import {ORACLE_PDA} from '@/sdk/const';
 import {FundManager} from '@/sdk/fund-manager';
 import {LpManager} from '@/sdk/lp-manager';
 import {OrderManager} from '@/sdk/order-manager';
+import {PDA} from '@/sdk/PDA';
 import {TickManager} from '@/sdk/tick-manager';
 import {
   getMarginIndexByMarketIndex,
@@ -22,6 +22,7 @@ import type {
 import type {RatexContracts} from '@/types/ratex_contracts';
 import type {TokenFaucet} from '@/types/token_faucet';
 import {PriceMath} from '@/utils/price-math';
+import {tranUtil} from '@/utils/transaction';
 import * as anchor from '@coral-xyz/anchor';
 import {AnchorProvider, BN, EventParser, Program, Wallet} from '@coral-xyz/anchor';
 import {getAssociatedTokenAddressSync} from '@solana/spl-token';
@@ -149,7 +150,7 @@ export class RateClient {
       return;
     }
     const start = Date.now();
-    const {marketIndex, marginType, margin} = params;
+    const {marketIndex, marginType, margin, openTip} = params;
     const [userStatPda, transaction1, statInfo] = await this.am.initializeUserStatsTransaction(
       this.program,
       this.authority
@@ -169,6 +170,7 @@ export class RateClient {
         const stat = await this.program.account.userStats.fetch(userStatPda as PublicKey);
         subAccountId = stat.numberOfSubAccountsCreated ?? 0;
       }
+      openTip?.();
       const [pda, t] = await this.am.initializeUserTransaction(
         this.program,
         this.authority,
@@ -182,7 +184,7 @@ export class RateClient {
     if (marginType === 'CROSS' && !transaction2) {
       const zero = new BN(0);
       // const user: any = await this.am.getAccountInfo(this.program, userPda, userOrdersPda);
-      const position = user?.perpPositions?.find((p: any) => p.marketIndex === marketIndex);
+      const position = user?.yieldPositions?.find((p: any) => p.marketIndex === marketIndex);
       if (position?.length > 4) {
         return 30001;
       }
@@ -582,12 +584,60 @@ export class RateClient {
       if (!data) {
         continue;
       }
-      const perpMarket = this.program.coder.accounts.decode('PerpMarket', data.data);
+      const perpMarket = this.program.coder.accounts.decode('YieldMarket', data.data);
       const perpMarketPda = PerpMarketMap()[marketIndex];
       const sqrtPrice = perpMarket.pool.sqrtPrice;
       perpMarkets[perpMarketPda] = {marketIndex, perpMarket, sqrtPrice, pool: perpMarket.pool};
     }
     return perpMarkets;
+  }
+
+  async withdrawLpEarnFees(params: {
+    userPda: string;
+    marketIndex: number;
+    upperRate: number;
+    lowerRate: number;
+    total: number;
+    maturity: number;
+  }) {
+    if (!this.authority) {
+      return;
+    }
+    const {userPda, marketIndex, upperRate, lowerRate, total, maturity} = params;
+    const yieldMarket = await this.program.account.yieldMarket.fetch(
+      PDA.createYieldMarketPda(marketIndex)
+    );
+    const combinedTransaction = new Transaction();
+    if (Number(total) > 0) {
+      const update = await this.lp.updateFeesAndRewards(
+        this.program,
+        this.authority,
+        this.tm,
+        new PublicKey(userPda),
+        yieldMarket,
+        {upperRate, lowerRate, marketIndex, maturity}
+      );
+      combinedTransaction.add(update);
+    }
+    const collect = await this.lp.collectFees(
+      this.program,
+      this.authority,
+      this.am,
+      new PublicKey(userPda),
+      {marketIndex}
+    );
+    combinedTransaction.add(collect);
+    combinedTransaction.add(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 1_400_000,
+      })
+    );
+    return await tranUtil.sendTransaction(
+      this.connection,
+      this.wallet,
+      this.authority,
+      combinedTransaction
+    );
   }
 
   async calcLpPositionFees(
@@ -601,7 +651,7 @@ export class RateClient {
     const instructions = [];
     for (let i = 0; i < positions.length; i++) {
       const pos = positions[i];
-      const {ammPosition, marketIndex, userPda, whirlpool} = pos;
+      const {ammPosition, marketIndex, userPda, ammpool} = pos;
       const {upperRate, lowerRate} = ammPosition;
       if (!ttmMap[marketIndex]) {
         continue;
@@ -611,7 +661,7 @@ export class RateClient {
         this.authority,
         this.tm,
         new PublicKey(userPda),
-        perpMarkets[whirlpool],
+        perpMarkets[ammpool],
         {upperRate, lowerRate, marketIndex, maturity: ttmMap[marketIndex]}
       );
       const collectInstruction = await this.lp.collectFees(
@@ -689,7 +739,25 @@ export class RateClient {
     if (params.marketIndex !== undefined) {
       newParams.marginIndex = getMarginIndexByMarketIndex(params.marketIndex);
     }
-    const tx = await this.fm.withdraw(this.program, this.authority, this.am, userPda, newParams);
+    const instruction = await this.fm.withdraw(
+      this.program,
+      this.authority,
+      this.am,
+      userPda,
+      newParams
+    );
+
+    const combinedTransaction = new Transaction();
+    combinedTransaction.add(instruction);
+    combinedTransaction.add(
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 1_400_000,
+      })
+    );
+    const tx = await this.sendTransaction(combinedTransaction);
+    if (tx) {
+      await this.queryEvent(tx, 'removePerpLpShares');
+    }
     console.log('Withdraw Tx : ', tx);
     updateBalance$.next(0);
     return tx;
@@ -726,22 +794,6 @@ export class RateClient {
     !!jInst && combinedTransaction.add(jInst);
     const tx = await this.sendTransaction(combinedTransaction);
     console.log('Mint All Currency : ', tx);
-    return tx;
-  }
-
-  async updateOracle({marketRate, rate}: {marketRate: number; rate: number}) {
-    if (!marketRate || !rate) {
-      return '';
-    }
-    const tx = await this.program.methods
-      .updateOracle(
-        new BN(new Decimal(marketRate).times(1_000_000_000).toNumber()),
-        new BN(new Decimal(rate).times(1_000_000_000).toNumber()),
-        new BN(new Decimal(rate).times(1_000_000_000).toNumber())
-      )
-      .accounts({oracle: ORACLE_PDA})
-      .rpc();
-    console.log('Update Oracle Tx : ', tx);
     return tx;
   }
 

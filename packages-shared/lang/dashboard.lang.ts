@@ -51,7 +51,7 @@ export const lang: any = {
     en: 'Maturity',
   },
   ExpireIn: {
-    en: 'Expire In',
+    en: 'Expires in',
   },
   ImpliedYield: {
     en: 'Implied Yield',

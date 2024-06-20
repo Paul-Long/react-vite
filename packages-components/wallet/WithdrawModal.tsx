@@ -5,8 +5,10 @@ import type {WithdrawParams} from '@rx/streams/wallet';
 import {withdrawModal$} from '@rx/streams/wallet';
 import {rateXClient$} from '@rx/web3/streams/rate-x-client';
 import {Button, Modal, Toast} from '@rx/widgets';
+import {clsx} from 'clsx';
 import {useCallback, useRef} from 'react';
 import {styled} from 'styled-components';
+import {DownIcon} from '../icons/DownIcon';
 
 const StyleInput = styled.input`
   &::-webkit-outer-spin-button,
@@ -36,7 +38,18 @@ export function WithdrawModal() {
   }, [client, state]);
   return (
     <Modal
-      title={LG(lang.Withdraw)}
+      title={
+        <div className="flex flex-row items-center gap-8px">
+          <div
+            className={clsx(
+              'flex justify-center items-center bg-gray-80 rounded-4px w-24px h-24px rotate-180 cursor-pointer'
+            )}
+          >
+            <DownIcon color="white" />
+          </div>
+          {LG(lang.Withdraw)}
+        </div>
+      }
       visible={state.visible}
       size="small"
       onClose={() => setState({visible: false})}

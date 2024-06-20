@@ -1,4 +1,4 @@
-import {sendToWorker, worker$, wsConnected$} from '@/worker';
+import {sendToWorker, worker$, wsClosed$, wsConnected$} from '@/worker';
 import {BehaviorSubject, Subject, Subscription, filter, switchMap, takeUntil} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -27,6 +27,10 @@ export class TopicSubject extends BehaviorSubject<any> {
     this._formatter = opts.formatter;
     this._matchTopic = opts.matchTopic;
     this.Types = opts.Types;
+
+    wsClosed$.subscribe(() => {
+      this.clear();
+    });
   }
 
   clear() {

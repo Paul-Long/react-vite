@@ -2,6 +2,7 @@ import {recentTrades$} from '@/subscription/recent-trades';
 import {tradeApi} from '@rx/api/trade';
 import {numUtil} from '@rx/helper/num';
 import {timeUtil} from '@rx/helper/time';
+import {Big} from 'big.js';
 import {
   BehaviorSubject,
   combineLatest,
@@ -40,7 +41,7 @@ const subRecentTrades$ = combineLatest([recentTrades$, clear$]).pipe(
 
 export const recentTradesState$ = combineLatest([state$, subRecentTrades$]).pipe(
   map(([res, sub]) => {
-    const data = sub.filter((d) => !res?.some((r) => r.datetime === d.datetime));
+    const data = sub.filter((d) => !res?.some((r) => r.timestamp === d.timestamp));
     return [...res, ...data].sort((a, b) => (a.datetime > b.datetime ? -1 : 1));
   }),
   startWith([]),
@@ -53,12 +54,14 @@ async function load(symbol: string) {
 }
 
 function formatData(d: Record<string, any>) {
+  const time = new Date(d.MDEntryTime).getTime();
   return {
     direction: d.MDEntryType === '1' ? 'LONG' : 'SHORT',
-    price: numUtil.trimEnd0(numUtil.floor(d.MDEntryPx, 9)),
-    yield: numUtil.trimEnd0(numUtil.floor(d.Yield, 2, -2)) + '%',
+    price: numUtil.trimEnd0(numUtil.ceil(d.MDEntryPx, 9)),
+    yield: (!!d.Yield ? Big(d.Yield).times(100).toFixed(2) : '-') + '%',
     amount: numUtil.trimEnd0(numUtil.floor(d.MDEntrySize, 4)),
-    time: timeUtil.formatTime(new Date(d.MDEntryTime).getTime()),
+    time: timeUtil.formatTime(time),
     datetime: d.MDEntryTime,
+    timestamp: time,
   };
 }
