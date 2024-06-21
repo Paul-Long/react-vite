@@ -181,7 +181,17 @@ function renderCrLip(marginType: 'CROSS' | 'ISOLATED') {
       ''
     ) : (
       <div className="flex flex-col items-end w-full">
-        <span>{!!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'}</span>
+        <span
+          className={clsx([
+            Number(row.cr) < 1.06
+              ? 'text-red-500'
+              : Number(row.cr) <= 1.08
+              ? 'text-yellow-500'
+              : 'text-white',
+          ])}
+        >
+          {!!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'}
+        </span>
         <span>{row.lipPrice}</span>
       </div>
     );

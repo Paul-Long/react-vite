@@ -50,15 +50,15 @@ export function Info(props: Props) {
     <div className="grid grid-cols-3 p-24px gap-32px rounded-8px bg-gray-40">
       <div className="flex flex-col gap-8px">
         <div className="text-gray-600">{LG(lang.Pool)}</div>
-        <div className="text-white">{props.contract?.symbol ?? '-'}</div>
+        <div className="text-white font-size-18px">{props.contract?.symbol ?? '-'}</div>
       </div>
       <div className="flex flex-col gap-8px">
         <div className="text-gray-600">{LG(lang.Maturity)}</div>
-        <div className="text-white">{props.contract?.dueDate ?? '-'}</div>
+        <div className="text-white font-size-18px">{props.contract?.dueDate ?? '-'}</div>
       </div>
       <div className="flex flex-col gap-8px">
         <div className="text-gray-600">{LG(lang.ExpireIn)}</div>
-        <div className="text-white">{props.contract?.maturityStr ?? '-'}</div>
+        <div className="text-white font-size-18px">{props.contract?.maturityStr ?? '-'}</div>
       </div>
       <div className="flex flex-col gap-8px">
         <div className="text-gray-600">APR {term}</div>

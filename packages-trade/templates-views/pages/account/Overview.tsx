@@ -1,9 +1,20 @@
+import {accountApi} from '@rx/api/account';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/account.lang';
 import {clsx} from 'clsx';
+import {useEffect} from 'react';
 
 export function Overview() {
   const {LG} = useLang();
+  useEffect(() => {
+    (async () => {
+      const {data} = await accountApi.queryRealizedPnl();
+      console.log(data);
+      const {data: res} = await accountApi.queryTodayRealizedPnl();
+      console.log(res);
+      await accountApi.queryUsersTotalBalance();
+    })();
+  }, []);
   return (
     <div className="flex flex-col gap-16px mt-36px">
       <div className="font-size-16px">{LG(lang.Overview)}</div>
