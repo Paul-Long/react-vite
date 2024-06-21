@@ -26,6 +26,9 @@ export default defineConfig({
       red: {
         500: '#F8506F',
       },
+      lime: {
+        500: '#8DCC2F',
+      },
     },
   },
   presets: [
