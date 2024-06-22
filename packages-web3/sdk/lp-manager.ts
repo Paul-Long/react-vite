@@ -270,22 +270,17 @@ export class LpManager {
     authority: PublicKey,
     tm: TickManager,
     lp: PublicKey,
-    perpMarketInfo: any,
-    params: {marketIndex: number; lowerRate: number; upperRate: number; maturity: number}
+    params: {
+      marketIndex: number;
+      lowerRate: number;
+      upperRate: number;
+      maturity: number;
+      tickLowerIndex: number;
+      tickUpperIndex: number;
+    }
   ) {
-    const {marketIndex, lowerRate, upperRate, maturity} = params;
+    const {marketIndex, lowerRate, upperRate, maturity, tickUpperIndex, tickLowerIndex} = params;
     const yieldMarket = PDA.createYieldMarketPda(marketIndex);
-    const {pool} = perpMarketInfo;
-
-    const lowerYTPrice = calculateYTPrice(lowerRate.toString(), maturity);
-    const sqrtLowerYTPrice = PriceMath.priceToSqrtPriceX64(lowerYTPrice, 9, 9);
-    const rawLowerTickIndex = PriceMath.sqrtPriceX64ToTickIndex(sqrtLowerYTPrice);
-    const tickLowerIndex = calculateTickIndex(rawLowerTickIndex, pool.tickSpacing, true);
-
-    const upperYTPrice = calculateYTPrice(upperRate.toString(), maturity);
-    const sqrtUpperYTPrice = PriceMath.priceToSqrtPriceX64(upperYTPrice, 9, 9);
-    const rawUpperTickIndex = PriceMath.sqrtPriceX64ToTickIndex(sqrtUpperYTPrice);
-    const tickUpperIndex = calculateTickIndex(rawUpperTickIndex, pool.tickSpacing, false);
 
     const [tickArrays, instructions]: any = await tm.initializeTickArraysV2(
       program,

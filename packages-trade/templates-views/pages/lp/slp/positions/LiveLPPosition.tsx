@@ -50,9 +50,18 @@ export function LiveLPPosition({contract}: Props) {
   const handleWithdraw = useCallback(
     (position: Record<string, any>) => async () => {
       const {marketIndex, userPda, ammPosition, total} = position;
-      const {upperRate, lowerRate} = ammPosition;
+      const {upperRate, lowerRate, tickLowerIndex, tickUpperIndex} = ammPosition;
       const symbol = symbolMapById?.[marketIndex];
-      const params = {upperRate, lowerRate, marketIndex, total, userPda, maturity: symbol.seconds};
+      const params = {
+        upperRate,
+        lowerRate,
+        marketIndex,
+        total,
+        userPda,
+        maturity: symbol.seconds,
+        tickLowerIndex,
+        tickUpperIndex,
+      };
       const tx = await client?.withdrawLpEarnFees(params);
       if (tx) {
         Toast.success('Success');

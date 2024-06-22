@@ -553,7 +553,7 @@ export class RateClient {
       }
       const perpMarkets = await this.genPerpMarketsInfo();
       const positions = await this.am.getAllLPPositions(this.program, this.authority, perpMarkets);
-      return this.calcLpPositionFees(positions, ttmMap, perpMarkets);
+      return this.calcLpPositionFees(positions, ttmMap);
     } catch (e) {
       return [];
     }
@@ -564,9 +564,8 @@ export class RateClient {
       if (!this.authority) {
         return [];
       }
-      const perpMarkets = await this.genPerpMarketsInfo();
       const positions = await this.am.getLpPositions(this.program, this.authority, marketIndex);
-      return this.calcLpPositionFees(positions, ttmMap, perpMarkets);
+      return this.calcLpPositionFees(positions, ttmMap);
     } catch (e) {
       return [];
     }
@@ -599,11 +598,22 @@ export class RateClient {
     lowerRate: number;
     total: number;
     maturity: number;
+    tickLowerIndex: number;
+    tickUpperIndex: number;
   }) {
     if (!this.authority) {
       return;
     }
-    const {userPda, marketIndex, upperRate, lowerRate, total, maturity} = params;
+    const {
+      userPda,
+      marketIndex,
+      upperRate,
+      lowerRate,
+      total,
+      maturity,
+      tickLowerIndex,
+      tickUpperIndex,
+    } = params;
     const yieldMarket = await this.program.account.yieldMarket.fetch(
       PDA.createYieldMarketPda(marketIndex)
     );
@@ -614,8 +624,7 @@ export class RateClient {
         this.authority,
         this.tm,
         new PublicKey(userPda),
-        yieldMarket,
-        {upperRate, lowerRate, marketIndex, maturity}
+        {upperRate, lowerRate, marketIndex, maturity, tickLowerIndex, tickUpperIndex}
       );
       combinedTransaction.add(update);
     }
@@ -640,11 +649,7 @@ export class RateClient {
     );
   }
 
-  async calcLpPositionFees(
-    positions: any[],
-    ttmMap: Record<number, any>,
-    perpMarkets: Record<string, any>
-  ) {
+  async calcLpPositionFees(positions: any[], ttmMap: Record<number, any>) {
     if (!this.authority) {
       return positions;
     }
@@ -652,7 +657,7 @@ export class RateClient {
     for (let i = 0; i < positions.length; i++) {
       const pos = positions[i];
       const {ammPosition, marketIndex, userPda, ammpool} = pos;
-      const {upperRate, lowerRate} = ammPosition;
+      const {upperRate, lowerRate, tickUpperIndex, tickLowerIndex} = ammPosition;
       if (!ttmMap[marketIndex]) {
         continue;
       }
@@ -661,8 +666,14 @@ export class RateClient {
         this.authority,
         this.tm,
         new PublicKey(userPda),
-        perpMarkets[ammpool],
-        {upperRate, lowerRate, marketIndex, maturity: ttmMap[marketIndex]}
+        {
+          upperRate,
+          lowerRate,
+          marketIndex,
+          maturity: ttmMap[marketIndex],
+          tickUpperIndex,
+          tickLowerIndex,
+        }
       );
       const collectInstruction = await this.lp.collectFees(
         this.program,
