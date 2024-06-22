@@ -31,7 +31,7 @@ export function OverviewChart() {
       for (let i = 0; i < baseData.length; i++) {
         const item = baseData[i];
         date.push(item.tradeDate);
-        realizedPnl.push(Big(item.realizedPnl).toFixed(9));
+        realizedPnl.push(Big(item.realizedPnl || 0).toFixed(9));
         totalBalance.push(Big(item.totalBalance).toFixed(9));
       }
       console.log(realizedPnl, totalBalance);

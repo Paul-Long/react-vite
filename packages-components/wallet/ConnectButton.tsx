@@ -1,5 +1,4 @@
 import {loginApi} from '@rx/api/login';
-import {ASSETS_IMAGES} from '@rx/const/images';
 import {removeToken, writeToken} from '@rx/helper/token';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
@@ -12,6 +11,7 @@ import {useSignIn} from '@rx/web3/hooks/use-sign-in';
 import {abbreviateString} from '@rx/web3/utils/string';
 import {Button, Dropdown, Toast} from '@rx/widgets';
 import {useCallback} from 'react';
+import {LeftArrowIcon} from '../icons/LeftArrowIcon';
 
 export function ConnectButton() {
   const {LG} = useLang();
@@ -45,23 +45,23 @@ export function ConnectButton() {
   if (isLogin && connected) {
     return (
       <Dropdown
-        contentStyle={{background: '#0A253D'}}
+        contentStyle={{background: '#2C2D2D'}}
         content={
           <Button size="sm" style={{width: '100%'}} type="default" onClick={handleLogout}>
             {LG(clang.Disconnect)}
           </Button>
         }
       >
-        <StyledWalletConnected className="inline-flex flex-row items-center gap-10px rounded-4px font-medium cursor-pointer bg-gray-80 px-12px py-6px">
-          <img className="dib" src={ASSETS_IMAGES.SOL} alt="sol" />
-          <span className="T3">{address ? abbreviateString(address as string) : '***'}</span>
-          <i className="iconfont T3">&#xe624;</i>
+        <StyledWalletConnected className="inline-flex flex-row items-center gap-10px rounded-4px font-medium cursor-pointer text-#F6F7F399 px-12px py-6px">
+          {/*<img className="dib" src={ASSETS_IMAGES.SOL} alt="sol" />*/}
+          <span className="">{address ? abbreviateString(address as string) : '***'}</span>
+          <LeftArrowIcon className="transform-rotate-[-90deg]" width={16} height={16} />
         </StyledWalletConnected>
       </Dropdown>
     );
   }
   return (
-    <Button size="sm" className="min-w160px font-size-18px" type="primary" onClick={onSignIn}>
+    <Button size="sm" className="min-w160px font-size-18px" type="lime" onClick={onSignIn}>
       {LG(clang.Connect)}
     </Button>
   );

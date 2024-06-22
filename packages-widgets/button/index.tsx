@@ -2,7 +2,7 @@ import {clsx} from 'clsx';
 import React, {ReactNode} from 'react';
 
 interface Props {
-  type?: 'primary' | 'default' | 'aqua' | 'yellow' | 'trade' | 'long' | 'short';
+  type?: 'primary' | 'default' | 'aqua' | 'yellow' | 'lime' | 'trade' | 'long' | 'short';
   size?: 'lg' | 'md' | 'sm';
   selected?: boolean;
   children?: ReactNode;
@@ -28,11 +28,12 @@ export function Button(props: ModifiedButtonAttributes) {
         [type === 'primary' && !selected && 'bg-green-500 text-black'],
         [type === 'aqua' && !selected && 'bg-blue-500 text-black'],
         [type === 'yellow' && !selected && 'bg-yellow-500 text-black'],
+        [type === 'lime' && !selected && 'bg-lime-500 text-black'],
         [type === 'trade' && !selected && 'bg-white text-black'],
         [type === 'long' && !selected && 'bg-#0ecb81 text-white'],
         [type === 'short' && !selected && 'bg-#f6465d text-white'],
         [
-          type === 'default' && 'bg-gray-80 text-white b-1px b-solid',
+          type === 'default' && 'bg-gray-80 text-gray-500 b-1px b-solid',
           [selected ? 'bg-#092C24 text-black b-green-500' : 'b-gray-80'],
         ],
         className

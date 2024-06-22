@@ -17,7 +17,7 @@ export function useSignIn(params: Params) {
     // select(<WalletName>'OKX');
     // select(<WalletName>'Backpack');
     // select(<WalletName>'Solflare');
-    // connect().then();
+    connect().then();
   }, [select, connect]);
 
   const onSignIn2 = useCallback(async (wallet: any) => {

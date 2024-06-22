@@ -65,4 +65,7 @@ export const lang: any = {
   H24PriceChg: {
     en: '24h Price Chg%',
   },
+  Action: {
+    en: 'Action',
+  },
 };

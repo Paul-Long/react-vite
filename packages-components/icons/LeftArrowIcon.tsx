@@ -1,12 +1,14 @@
 interface Props {
+  className?: string;
   width?: number | string;
   height?: number | string;
   color?: string;
 }
 export function LeftArrowIcon(props: Props) {
-  const {width = 24, height = 24, color = '#F6F7F3'} = props;
+  const {className, width = 24, height = 24, color = '#F6F7F3'} = props;
   return (
     <svg
+      className={className}
       width={width}
       height={height}
       viewBox="0 0 24 24"
