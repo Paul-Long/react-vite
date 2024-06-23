@@ -1,10 +1,13 @@
 import {accountApi} from '@rx/api/account';
+import {useObservable} from '@rx/hooks/use-observable';
 import {loadEcharts} from '@rx/resource/js';
+import {user$} from '@rx/streams/user';
 import {Big} from 'big.js';
 import {useEffect, useRef, useState} from 'react';
 
 export function OverviewChart() {
   const [ready, setReady] = useState(false);
+  const user = useObservable(user$, null);
   const container = useRef(null);
   const chart = useRef<any>();
   const [baseData, setBaseData] = useState<Record<string, any>[]>([]);
@@ -16,11 +19,14 @@ export function OverviewChart() {
   }, []);
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     (async () => {
       const {data} = await accountApi.queryUsersTotalBalance();
       setBaseData(data);
     })();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (ready && window.echarts) {
@@ -28,11 +34,11 @@ export function OverviewChart() {
       const date: string[] = [];
       const realizedPnl: string[] = [];
       const totalBalance: string[] = [];
-      for (let i = 0; i < baseData.length; i++) {
+      for (let i = 0; i < baseData?.length; i++) {
         const item = baseData[i];
         date.push(item.tradeDate);
         realizedPnl.push(Big(item.realizedPnl || 0).toFixed(9));
-        totalBalance.push(Big(item.totalBalance).toFixed(9));
+        totalBalance.push(Big(item.totalBalance || 0).toFixed(9));
       }
       console.log(realizedPnl, totalBalance);
       const option = {
