@@ -27,17 +27,9 @@ export class LpManager {
       amount: number;
       marketIndex: number;
       maturity: number;
-      epochStartTimestamp: number;
     }
   ): Promise<TransactionInstruction[]> {
-    const {
-      amount = 50000,
-      marketIndex,
-      lowerRate,
-      upperRate,
-      maturity,
-      epochStartTimestamp,
-    } = params;
+    const {amount = 50000, marketIndex, lowerRate, upperRate, maturity} = params;
     const marginIndex = getMarginIndexByMarketIndexV2(marketIndex);
     const marginMarket = PDA.createMarginMarketPda(marginIndex);
     const marginMarketVault = PDA.createMarginMarketVaultPda(marginIndex);

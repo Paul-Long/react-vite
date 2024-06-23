@@ -401,7 +401,6 @@ export class RateClient {
     maturity: number;
     amount: number;
     marketIndex: number;
-    epochStartTimestamp: number;
   }) {
     if (!this.authority) {
       return;

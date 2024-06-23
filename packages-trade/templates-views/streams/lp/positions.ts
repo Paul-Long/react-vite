@@ -71,5 +71,6 @@ async function load(
   }
   loading$.next(true);
   console.log(new Date(), 'LP Position Load : ');
-  return await client.getLpPositions(marketIndex, {[marketIndex]: symbol.seconds});
+  const positions = await client.getLpPositions(marketIndex, {[marketIndex]: symbol.seconds});
+  return positions.map((pos) => ({...(symbol || {}), ...pos}));
 }

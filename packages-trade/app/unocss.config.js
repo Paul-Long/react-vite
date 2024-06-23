@@ -7,6 +7,7 @@ export default defineConfig({
   theme: {
     colors: {
       gray: {
+        10: '#F6F7F319',
         40: '#F6F7F30A',
         60: '#F6F7F399',
         80: '#ffffff14',

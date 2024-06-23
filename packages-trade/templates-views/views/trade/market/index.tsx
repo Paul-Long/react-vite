@@ -18,7 +18,7 @@ import {styled} from 'styled-components';
 const Contents = styled.div`
   cursor: pointer;
   &:hover .td {
-    background: #ffffff14 !important;
+    background: #2c2d2d !important;
     backdrop-filter: blur(200px);
   }
 `;

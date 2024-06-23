@@ -125,4 +125,7 @@ export const lang: any = {
   RetainRatio: {
     en: 'Retain Ratio',
   },
+  Wallet: {
+    en: 'Wallet',
+  },
 };

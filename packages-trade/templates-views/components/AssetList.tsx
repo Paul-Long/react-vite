@@ -35,34 +35,40 @@ export function AssetList({onContract}: {onContract: (con: string) => void}) {
       </div>
       <div className="flex flex-row items-center">
         <div
-          className={clsx('py-4px px-12px box-border cursor-pointer')}
+          className={clsx('flex flex-col items-center py-4px px-12px box-border cursor-pointer')}
           onClick={() => setContract('ALL')}
         >
           <span
-            className={clsx('border-b-2px border-b-solid lh-18px pb-2px', [
-              contract === 'ALL'
-                ? 'text-lime-500 border-b-lime-500 font-medium'
-                : 'text-gray-60 border-b-transparent',
+            className={clsx('lh-18px pb-2px', [
+              contract === 'ALL' ? 'text-lime-500 font-medium' : 'text-gray-60',
             ])}
           >
             ALL
           </span>
+          <div
+            className={clsx('w-10px h-2px bg-lime-500 rounded-2px', [
+              contract === 'ALL' ? 'opacity-100' : 'opacity-0',
+            ])}
+          ></div>
         </div>
         {contracts.map((con) => (
           <div
             key={con.symbolCategory}
-            className={clsx('py-4px px-12px box-border cursor-pointer')}
+            className={clsx('flex flex-col items-center py-4px px-12px box-border cursor-pointer')}
             onClick={() => setContract(con.symbolCategory)}
           >
             <span
-              className={clsx('border-b-2px border-b-solid lh-18px pb-2px', [
-                contract === con.symbolCategory
-                  ? 'text-lime-500 border-b-lime-500 fw-medium'
-                  : 'text-gray-60 border-b-transparent',
+              className={clsx('lh-18px pb-2px', [
+                contract === con.symbolCategory ? 'text-lime-500 fw-medium' : 'text-gray-60',
               ])}
             >
               {con.symbolCategory}
             </span>
+            <div
+              className={clsx('w-10px h-2px bg-lime-500 rounded-2px', [
+                contract === con.symbolCategory ? 'opacity-100' : 'opacity-0',
+              ])}
+            ></div>
           </div>
         ))}
       </div>

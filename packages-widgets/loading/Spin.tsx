@@ -42,7 +42,7 @@ const Circle = styled.i`
   border-radius: 50%;
   width: 10px;
   height: 10px;
-  background: #14f195;
+  background: #8dcc2f;
   &:nth-child(2) {
     opacity: 0.8;
   }
@@ -55,16 +55,18 @@ const Circle = styled.i`
 `;
 
 interface Props {
+  className?: string;
   theme?: 'light' | 'dark';
 }
 export function Spin(props: Props) {
-  const {theme = 'light'} = props;
+  const {theme = 'light', className} = props;
   return (
     <Wrap
       className={clsx(
         'absolute flex justify-between items-center',
         [theme === 'light' && 'bg-transparent'],
-        [theme === 'dark' && 'bg-transparent']
+        [theme === 'dark' && 'bg-transparent'],
+        className
       )}
     >
       <Dot className="aic flex items-center">

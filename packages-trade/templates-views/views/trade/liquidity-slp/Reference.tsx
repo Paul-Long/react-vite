@@ -18,7 +18,7 @@ export function Reference({data}: {data: ConfigSymbol}) {
   return (
     <div className="flex flex-row items-center text-gray-60 font-size-12px lh-16px gap-16px">
       <div className="fw-normal">{LG(lang.ReferenceRate)}</div>
-      <div className="fw-medium text-lime-500">{data?.symbolLevel2Category}</div>
+      <div className="fw-medium text-lime-500">{data.symbolLevel2Category}</div>
       <div className={row}>
         <span>O/N</span>
         <span className="text-lime-500">{numToPercentage(refer?.ON)}</span>

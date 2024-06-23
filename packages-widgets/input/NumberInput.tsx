@@ -1,141 +1,183 @@
-import classNames from 'classnames';
-import React, {CSSProperties, forwardRef, useCallback, useEffect, useState} from 'react';
+import {clsx} from 'clsx';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {css, styled} from 'styled-components';
 
-// Styled component for the input container
-const StyledInputContainer = styled.div<{size: string; bordered: string; align: string}>`
-  display: flex;
-  align-items: center;
-  border-radius: 4px;
-  box-sizing: border-box;
-  ${({bordered}) =>
-    bordered === 'true' &&
-    css`
-      border: 1px solid var(--lead-gray);
-      &:hover,
-      &:focus-within {
-        border-color: #14f195;
-      }
-    `}
+const Wrap = styled.div<{$isPercentage: boolean; $size: string}>`
+    &::after {
+        position: absolute;
+        left: var(--left, 50%);
+        pointer-events: none;
+        content: '%';
+        top: 0;
+        line-height: initial;
+        ${({$size}) => {
+          if ($size === 'lg') {
+            return css`
+              font-size: 24px;
+              line-height: 36px;
+            `;
+          } else if ($size === 'md') {
+            return css`
+              font-size: 18px;
+              line-height: 24px;
+            `;
+          }
+        }}
+        ${({$isPercentage}) => {
+          if ($isPercentage) {
+            return css`
+              display: flex;
+            `;
+          }
+          return css`
+            display: none;
+          `;
+        }}
+`;
 
-  .input {
-    flex: 1;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    width: 100%;
-    background: transparent;
-    color: inherit;
-    text-align: ${({align}) => align};
-    font-family: BASE;
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      margin: 0;
-      -webkit-appearance: none;
-    }
-    &:hover,
-    &:focus {
-      outline: none;
-    }
-    &::placeholder {
-      color: var(--steel-gray);
-    }
+const StyledInput = styled.input`
+  border: none;
+  background: transparent;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+  &::placeholder {
+    color: #ffffff33;
+  }
+  &::after {
   }
 `;
 
-// Utility function to format the input value
-const formatValue = (value: string, precision?: number, max?: number, min?: number): string => {
-  if (!value) return '';
-  let numValue = parseFloat(value as any);
-  if (isNaN(numValue)) return '';
-
-  numValue = parseFloat(numValue.toFixed(precision ?? 2));
-  if (max !== undefined && numValue > max) numValue = max;
-  if (min !== undefined && numValue < min) numValue = min;
-  return numValue.toString();
-};
-
-// Props interface
-interface NumberInputProps {
-  size?: 'small' | 'medium' | 'large';
-  prefix?: string | JSX.Element;
-  suffix?: string | JSX.Element;
-  precision?: number;
-  max?: number;
-  min?: number;
-  disabled?: boolean;
-  align?: 'left' | 'right' | 'center';
-  bordered?: boolean;
+interface Props {
   className?: string;
-  inputClassName?: string;
-  onChange?: (v: any) => void;
+  size?: 'lg' | 'md' | 'sm' | 'nm';
+  align?: 'left' | 'right' | 'center';
+  type?: 'number' | 'percentage';
+  color?: string;
   value?: string | number;
-  placeholder?: string | JSX.Element;
-  style?: CSSProperties;
+  autoFocus?: boolean;
+  step?: number;
+  placeholder?: string;
+  onChange?: (e: any) => void;
+  onFocus?: (e: any) => void;
+  onBlur?: (e: any) => void;
 }
 
-// Forward ref to the input element
-export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
-  (
-    {
-      size = 'medium',
-      prefix,
-      suffix,
-      precision = 2,
-      max,
-      min,
-      disabled = false,
-      align = 'right',
-      bordered = true,
-      className,
-      onChange,
-      inputClassName,
-      ...props
-    },
-    ref
-  ) => {
-    const [value, setValue] = useState(props.value);
+export function NumberInput(props: Props) {
+  const {
+    size = 'lg',
+    align = 'left',
+    type = 'number',
+    color = 'text-green-500',
+    autoFocus = false,
+    step = 1,
+    placeholder,
+    onChange,
+    onFocus,
+    onBlur,
+  } = props;
+  const wrap = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState(props.value);
 
-    useEffect(() => {
-      setValue(props?.value as string);
-    }, [props.value]);
+  useEffect(() => {
+    ref.current?.addEventListener('input', function () {
+      let v = this.value;
+      if (v?.indexOf('-') > -1) {
+        v = v.replace('-', '');
+        this.value = v;
+      }
+      if (v.indexOf('.') !== -1 && v.split('.')[1].length > step) {
+        v = parseFloat(v).toFixed(step);
+        this.value = v;
+      }
+      const nv = v.replace(/^0+(?=\d)/, '');
+      if (nv !== v) {
+        this.value = nv;
+        onChange?.(nv);
+      }
+      updatePercentagePosition();
+    });
+    if (autoFocus) {
+      ref.current?.focus();
+    }
+    setTimeout(() => {
+      updatePercentagePosition();
+    }, 200);
+  }, [step]);
 
-    // Event handler for input changes
-    const handleChange = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(event.target.value);
-      },
-      [precision, max, min]
+  useEffect(() => {
+    onChange?.(value);
+  }, [value]);
+
+  const handleChange = useCallback((e: any) => {
+    setValue(e.target.value);
+  }, []);
+
+  const updatePercentagePosition = useCallback(() => {
+    if (!ref.current) {
+      return;
+    }
+    if (align === 'right') {
+      wrap.current?.style.setProperty('--left', `calc(100% - 12px)`);
+      return;
+    }
+    const inputWidth = ref.current?.offsetWidth ?? 0;
+    const contentWidth = getTextWidth(
+      ref.current?.value || '',
+      getComputedStyle(ref.current as any).font,
+      getComputedStyle(ref.current as any).fontSize
     );
+    if (align === 'center') {
+      const size = Math.ceil(inputWidth / 2 + contentWidth / 2);
+      wrap.current?.style.setProperty('--left', `${size + 2}px`);
+      return;
+    }
+    wrap.current?.style.setProperty('--left', `${contentWidth + 2}px`);
+  }, []);
 
-    // Effect to format the value initially and on dependency changes
-    useEffect(() => {
-      // setValue(formatValue(value as any, precision, max, min));
-    }, [value, precision, max, min]);
+  return (
+    <Wrap
+      $isPercentage={type === 'percentage'}
+      $size={size}
+      className={clsx('flex-1 flex relative', props?.className ?? '', [
+        type === 'percentage' && 'pr-14px',
+      ])}
+      ref={wrap}
+    >
+      <StyledInput
+        className={clsx(
+          'outline-none appearance-none font-medium w-100%',
+          color,
+          [size === 'sm' && 'font-size-14px lh-18px'],
+          [size === 'nm' && 'font-size-16px lh-20px'],
+          [size === 'md' && 'font-size-18px lh-24px'],
+          [size === 'lg' && 'font-size-24px lh-36px'],
+          [align === 'left' && 'text-left'],
+          [align === 'center' && 'text-center'],
+          [align === 'right' && 'text-right']
+        )}
+        ref={ref}
+        type="number"
+        step={step}
+        placeholder={placeholder ?? ''}
+        value={props.value}
+        onChange={handleChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      />
+    </Wrap>
+  );
+}
 
-    useEffect(() => onChange?.(value), [value]);
-
-    return (
-      <StyledInputContainer
-        size={size}
-        bordered={bordered?.toString()}
-        align={align}
-        className={classNames(className, {bordered})}
-      >
-        {prefix && <span className="prefix">{prefix}</span>}
-        <input
-          placeholder={props.placeholder as any}
-          ref={ref}
-          type="number"
-          className={'input ' + (inputClassName ?? '')}
-          value={value}
-          onChange={handleChange}
-          disabled={disabled}
-          onWheel={(e) => e.currentTarget.blur()} // Prevents scrolling from changing the value
-          style={props?.style || {}}
-        ></input>
-        {suffix && <span className="suffix">{suffix}</span>}
-      </StyledInputContainer>
-    );
-  }
-);
+function getTextWidth(text: string, font: string, fontSize: string) {
+  // @ts-ignore
+  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'));
+  const context: any = canvas.getContext('2d');
+  context.font = font;
+  context.fontSize = fontSize;
+  const metrics = context.measureText(text);
+  return metrics.width;
+}

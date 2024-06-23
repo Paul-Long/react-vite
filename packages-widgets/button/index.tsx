@@ -21,7 +21,7 @@ export function Button(props: ModifiedButtonAttributes) {
   return (
     <button
       className={clsx(
-        'flex justify-center items-center flex-nowrap gap-8px rounded-4px box-border font-size-14px font-medium opacity-100 hover:opacity-80 active:opacity-80 disabled:opacity-80',
+        'flex justify-center items-center flex-nowrap gap-8px rounded-2px box-border font-size-14px font-medium opacity-100 hover:opacity-80 active:opacity-80 disabled:opacity-80',
         'outline-none',
         [size === 'sm' && 'px-12px py-5px'],
         [size === 'md' && 'px-24px py-12px'],
@@ -33,7 +33,7 @@ export function Button(props: ModifiedButtonAttributes) {
         [type === 'long' && !selected && 'bg-#0ecb81 text-white'],
         [type === 'short' && !selected && 'bg-#f6465d text-white'],
         [
-          type === 'default' && 'bg-gray-80 text-gray-500 b-1px b-solid',
+          type === 'default' && 'bg-#1F1F21 text-gray-500 b-1px b-solid',
           [selected ? 'bg-#092C24 text-black b-green-500' : 'b-gray-80'],
         ],
         className
