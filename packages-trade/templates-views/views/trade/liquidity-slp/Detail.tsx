@@ -15,41 +15,41 @@ const Table = styled.table`
     border: 1px solid #2c2d2d;
   }
 `;
-export function Detail({data}: {data: Record<string, any>}) {
+export function Detail({contract}: {contract: Record<string, any>}) {
   const {LG} = useLang();
   const [term, setTerm] = useState('7D');
   const apyList = useObservable(apy$, []);
   const apyData = useMemo(() => {
-    return apyList?.find((a: any) => a.symbol === data?.symbol && a.term === term);
-  }, [data, apyList, term]);
+    return apyList?.find((a: any) => a.symbol === contract?.symbol && a.term === term);
+  }, [contract, apyList, term]);
 
   const ar = useMemo(() => {
-    if (!data) {
+    if (!contract) {
       return '-';
     }
     return (
-      Big(data.LastPrice ?? '0')
-        .times(data.kValue)
+      Big(contract.LastPrice ?? '0')
+        .times(contract.kValue)
         .times(100)
         .round(2, 3)
         .toString() + '%'
     );
-  }, [data]);
+  }, [contract]);
 
   const apr = useMemo(() => {
-    if (!data?.apr) {
+    if (!apyData?.apr) {
       return '-';
     }
-    return Big(data.apr).times(100).toFixed(4);
-  }, [data]);
+    return Big(apyData.apr).times(100).toFixed(4);
+  }, [apyData]);
 
   return (
     <Table className="w-full">
       <tbody className="text-gray-60">
         <tr>
-          <Col text={LG(lang.Pool)}>{data?.symbol ?? '-'}</Col>
-          <Col text={LG(lang.Maturity)}>{data?.dueDate ?? '-'}</Col>
-          <Col text={LG(lang.Pool)}>{[data?.ttm, data?.unit].join(' ')}</Col>
+          <Col text={LG(lang.Pool)}>{contract?.symbol ?? '-'}</Col>
+          <Col text={LG(lang.Maturity)}>{contract?.dueDate ?? '-'}</Col>
+          <Col text={LG(lang.Pool)}>{[contract?.ttm, contract?.unit].join(' ')}</Col>
         </tr>
         <tr>
           <td className="w-1/3 py-10px px-20px">
@@ -64,7 +64,7 @@ export function Detail({data}: {data: Record<string, any>}) {
           </td>
           <Col text="TVL">
             <span className="text-yellow-500">
-              {numUtil.trimEnd0(numUtil.floor(data?.AvaLiquidity ?? 0, 4))} SOL
+              {numUtil.trimEnd0(numUtil.floor(contract?.AvaLiquidity ?? 0, 4))} SOL
             </span>
           </Col>
         </tr>
@@ -77,12 +77,12 @@ export function Detail({data}: {data: Record<string, any>}) {
         </tr>
         <tr>
           <td colSpan={3} className="py-10px px-20px font-size-16px lh-24px">
-            {data?.symbol ?? '-'}
+            {contract?.symbol ?? '-'}
           </td>
         </tr>
         <tr>
           <td colSpan={3} className="py-10px px-20px">
-            {!!data && <RangeChart contract={data} />}
+            {!!contract && <RangeChart contract={contract} />}
           </td>
         </tr>
       </tbody>

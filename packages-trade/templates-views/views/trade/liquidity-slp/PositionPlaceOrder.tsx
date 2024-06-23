@@ -100,32 +100,35 @@ function Withdraw({position}: {position: Record<string, any>}) {
                   .abs()
                   .toString()
               : '-'}
-            <Tooltip
-              text={
-                <div className="flex flex-col text-gray-500 font-size-12px gap-10px fw-normal">
-                  <div className="flex flex-row items-center justify-between flex-nowrap overflow-hidden gap-8px">
-                    <span className="text-nowrap">Max Withdrawable Value</span>
-                    <span className="text-nowrap">
-                      {maxMarginAmount} {position?.symbolLevel2Category}
-                    </span>
+            <div className="relative">
+              <Tooltip
+                placement="top-left"
+                text={
+                  <div className="flex flex-col text-gray-500 font-size-12px gap-10px fw-normal">
+                    <div className="flex flex-row items-center justify-between flex-nowrap gap-8px">
+                      <span className="text-nowrap">Max Withdrawable Value</span>
+                      <span className="text-nowrap">
+                        {maxMarginAmount} {position?.symbolLevel2Category}
+                      </span>
+                    </div>
+                    <div className="flex flex-row items-center justify-between gap-8px">
+                      <span className="text-nowrap text-gray-60">YT to be closed</span>
+                      <span className="text-nowrap">
+                        {ytClose} {position?.symbol}
+                      </span>
+                    </div>
+                    <div className="flex flex-row items-center justify-between gap-8px">
+                      <span className="text-nowrap text-gray-60">Estimated YT price</span>
+                      <span className="text-nowrap">
+                        {Number(ytClose) > 0 ? info?.entryPrice ?? '-' : '-'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-row items-center justify-between gap-8px">
-                    <span className="text-nowrap text-gray-60">YT to be closed</span>
-                    <span className="text-nowrap">
-                      {ytClose} {position?.symbol}
-                    </span>
-                  </div>
-                  <div className="flex flex-row items-center justify-between gap-8px">
-                    <span className="text-nowrap text-gray-60">Estimated YT price</span>
-                    <span className="text-nowrap">
-                      {Number(ytClose) > 0 ? info?.entryPrice ?? '-' : '-'}
-                    </span>
-                  </div>
-                </div>
-              }
-            >
-              <InfoIcon width={16} height={16} color="#F6F7F399" />
-            </Tooltip>
+                }
+              >
+                <InfoIcon width={16} height={16} color="#F6F7F399" />
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div className="w-full mt-24px">
@@ -287,6 +290,7 @@ function useWithdraw(position: Record<string, any>) {
       setInfo(null);
       return;
     }
+    setLoading(true);
     setInfo(null);
     if (timer.current) {
       clearTimeout(timer.current);
@@ -308,6 +312,7 @@ function useWithdraw(position: Record<string, any>) {
       console.log('remove perp shares view : ', percent, result);
       clearTimeout(timer.current);
       timer.current = null;
+      setLoading(false);
     }, 300);
   }, [position, percent, client]);
 

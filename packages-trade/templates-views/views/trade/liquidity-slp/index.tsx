@@ -11,6 +11,7 @@ import {useObservable} from '@rx/hooks/use-observable';
 import {contracts$} from '@rx/streams/config';
 import {queryRatePrice$} from '@rx/streams/market/rate-price';
 import {queryReferencePrice$} from '@rx/streams/market/reference-price';
+import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
 import {ratePrice$} from '@rx/streams/subscription/rate-price';
 import {referencePrice$} from '@rx/streams/subscription/reference-price';
 import {lastTrade$, queryLastTrade$} from '@rx/streams/trade/last-trade';
@@ -30,6 +31,7 @@ export default function () {
     ratePrice$.next('topic dc.trade.dprice');
     referencePrice$.next('dc.aps.referenceprice');
     queryLastTrade$.next(0);
+    lastTradeSnapshot$.next('dc.md.trade.*');
   }, []);
 
   useEffect(() => {
@@ -55,14 +57,14 @@ export default function () {
       >
         <LeftArrowIcon color="white" width={24} height={24} />
       </div>
-      <div className="flex flex-row">
-        <div className="w-3/4 flex flex-col">
+      <div className="flex flex-row w-full">
+        <div className={clsx('flex flex-col', [tab !== 'ResidualLPPosition' ? 'w-3/4' : 'w-full'])}>
           <Header data={detail as ConfigSymbol} onChange={(t) => setTab(t)} />
-          {tab === 'Detail' && <Detail data={detail as ConfigSymbol} />}
+          {tab === 'Detail' && <Detail contract={detail as ConfigSymbol} />}
           {tab === 'LiveLPPosition' && <LivePosition contract={detail} />}
           {tab === 'ResidualLPPosition' && <ResidualPosition contract={detail} />}
         </div>
-        <div className="w-1/3">
+        <div className={clsx([tab !== 'ResidualLPPosition' ? 'w-1/3' : 'hidden'])}>
           {tab === 'Detail' && detail && <PlaceOrder contract={detail} />}
           {tab === 'LiveLPPosition' && detail && <PositionPlaceOrder />}
         </div>
@@ -90,7 +92,7 @@ function useData() {
     }
     const last = lastTrade?.[contract.symbol] || {};
     return {...contract, ...(last || {})};
-  }, [contracts, search]);
+  }, [contracts, search, lastTrade]);
 
   return {detail};
 }

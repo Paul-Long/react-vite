@@ -7,7 +7,8 @@ import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {useStream} from '@rx/hooks/use-stream';
 import {lang} from '@rx/lang/lp.lang';
-import {Button, Spin} from '@rx/widgets';
+import {rateXClient$} from '@rx/web3/streams/rate-x-client';
+import {Button, Spin, Toast} from '@rx/widgets';
 import {clsx} from 'clsx';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {css, styled} from 'styled-components';
@@ -35,7 +36,7 @@ const bodyRow = 'td flex flex-row items-center py-12px hover:bg-gray-40';
 
 export function LivePosition({contract}: {contract: ConfigSymbol}) {
   const {LG} = useLang();
-  const {positions, select, loading, handleSelect} = usePosition(contract);
+  const {positions, select, loading, handleSelect, handleClaim} = usePosition(contract);
   return (
     <div className="w-full flex-1 pb-12px border-1px border-solid border-#2C2D2D border-t-none">
       <div className="relative w-full grid grid-cols-auto-5 gap-y-12px text-gray-500">
@@ -76,7 +77,12 @@ export function LivePosition({contract}: {contract: ConfigSymbol}) {
               <div className={clsx(bodyRow, 'text-yellow-500 gap-8px')}>
                 {pos?.earnFee ?? '-'}
                 {Number(pos?.earnFee) > 0 && (
-                  <Button size="sm" type="default" className={clsx('font-size-12px')}>
+                  <Button
+                    size="sm"
+                    type="default"
+                    className={clsx('font-size-12px')}
+                    onClick={handleClaim(pos)}
+                  >
                     {LG(lang.Claim)}
                   </Button>
                 )}
@@ -103,6 +109,7 @@ export function LivePosition({contract}: {contract: ConfigSymbol}) {
 
 function usePosition(contract: ConfigSymbol) {
   const [loading] = useStream(loading$);
+  const [client] = useStream(rateXClient$);
   const [_, setSelectPosition] = useStream(selectPosition$);
   const positions = useObservable<any[]>(positions$, []);
   const [select, setSelect] = useState('');
@@ -142,5 +149,31 @@ function usePosition(contract: ConfigSymbol) {
     setSelectPosition(position);
   }, []);
 
-  return {loading, positions, select, data, setSelect, handleSelect};
+  const handleClaim = useCallback(
+    (position: Record<string, any>) => async () => {
+      if (!client) {
+        return;
+      }
+      const {marketIndex, userPda, ammPosition, total} = position;
+      const {upperRate, lowerRate, tickLowerIndex, tickUpperIndex} = ammPosition;
+      const params = {
+        upperRate,
+        lowerRate,
+        marketIndex,
+        total,
+        userPda,
+        maturity: position.seconds,
+        tickLowerIndex,
+        tickUpperIndex,
+      };
+      const tx = await client?.withdrawLpEarnFees(params);
+      if (tx) {
+        Toast.success('Claim success');
+      }
+      marketIndex$.next(marketIndex);
+    },
+    [client]
+  );
+
+  return {loading, positions, select, data, setSelect, handleSelect, handleClaim};
 }

@@ -6,7 +6,7 @@ export const enum SLUGS {
   Strategy = '/strategy',
   SynthStables = '/synth-stables',
   Earn = '/earn',
-  Liquidity = '/lp',
+  Liquidity = '/liquidity',
   Trade = '/trade',
   TradeContracts = '/trade/contracts',
   Account = '/account',

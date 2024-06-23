@@ -3,11 +3,26 @@ import {Reference} from '@/views/trade/market/Reference';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/lp.lang';
 import {clsx} from 'clsx';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
+import {useSearchParams} from 'react-router-dom';
 
 export function Header({data, onChange}: {data: ConfigSymbol; onChange: (tab: string) => void}) {
   const {LG} = useLang();
   const [tab, setTab] = useState<string>('Detail');
+  const [params, setParams] = useSearchParams();
+
+  useEffect(() => {
+    const t = params.get('tab');
+    if (!!t && Tabs(LG).find((tt) => tt.value === t)) {
+      setTab(t);
+      onChange(t);
+    }
+  }, []);
+
+  useEffect(() => {
+    params.set('tab', tab);
+    setParams(params);
+  }, [tab, params]);
 
   const handleTabChange = useCallback(
     (t: string) => () => {

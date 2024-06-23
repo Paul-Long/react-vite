@@ -45,14 +45,14 @@ export function ConnectButton() {
   if (isLogin && connected) {
     return (
       <Dropdown
-        contentStyle={{background: '#2C2D2D'}}
+        contentStyle={{background: '#2C2D2D', right: 0}}
         content={
           <Button size="sm" style={{width: '100%'}} type="default" onClick={handleLogout}>
             {LG(clang.Disconnect)}
           </Button>
         }
       >
-        <StyledWalletConnected className="inline-flex flex-row items-center gap-10px rounded-4px font-medium cursor-pointer text-#F6F7F399 px-12px py-6px">
+        <StyledWalletConnected className="inline-flex flex-row items-center gap-10px rounded-2px fw-normal cursor-pointer text-gray-60 px-12px py-6px">
           {/*<img className="dib" src={ASSETS_IMAGES.SOL} alt="sol" />*/}
           <span className="">{address ? abbreviateString(address as string) : '***'}</span>
           <LeftArrowIcon className="transform-rotate-[-90deg]" width={16} height={16} />

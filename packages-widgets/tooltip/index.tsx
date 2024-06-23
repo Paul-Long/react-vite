@@ -10,7 +10,7 @@ export const Tooltip = ({
   className?: string;
   children: ReactNode;
   text: ReactNode;
-  placement?: 'top' | 'bottom';
+  placement?: 'top' | 'bottom' | 'top-left';
 }) => {
   const [isTooltipVisible, setTooltipVisible] = useState(false);
 
@@ -26,14 +26,15 @@ export const Tooltip = ({
       {isTooltipVisible && (
         <div
           className={clsx(
-            'absolute z-10 rounded-4px shadow-md left-1/2 transform -translate-x-1/2',
-            [placement === 'top' && 'bottom-full mb-4px'],
-            [placement === 'bottom' && 'top-full mt-4px']
+            'absolute z-10 rounded-4px shadow-md',
+            [placement === 'top' && 'bottom-full mb-4px  left-1/2 transform -translate-x-1/2'],
+            [placement === 'bottom' && 'top-full mt-4px  left-1/2 transform -translate-x-1/2'],
+            [placement === 'top-left' && 'bottom-full right-0']
           )}
         >
           <div
             className={clsx(
-              'w-auto px-12px py-2px text-sm text-white bg-#2C2D2D',
+              'w-fit px-12px py-2px text-sm text-white bg-#2C2D2D',
               'border-1px border-solid border-gray-40 rounded-4px',
               className
             )}

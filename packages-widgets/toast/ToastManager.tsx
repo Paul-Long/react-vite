@@ -23,7 +23,7 @@ const ToastContainer = styled.div`
 
 const ToastMessage = styled.div<{type: string}>`
   background-color: ${({type}) => {
-    return '#41FFAF14';
+    return '#2C2D2D';
     // switch (type) {
     //   case 'info':
     //     return '#2196f3';
