@@ -2,7 +2,6 @@ import {OverviewChart} from '@/pages/account/OverviewChart';
 import {accountApi} from '@rx/api/account';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/account.lang';
-import {clsx} from 'clsx';
 import {useEffect} from 'react';
 
 export function Overview() {
@@ -56,14 +55,6 @@ export function Overview() {
         {/*</div>*/}
         <div className="flex-1 rounded-8px px-16px py-8px min-h-390px h-390px">
           <OverviewChart />
-          <div
-            className={clsx(
-              'flex flex-col items-center justify-center w-full mx-auto mt-87px font-size-24px text-gray-600 gap-20px'
-            )}
-          >
-            <img src="https://static.rate-x.io/img/v1/c111c8/no-data.png" alt="" width="120" />
-            Coming Soon
-          </div>
         </div>
       </div>
     </div>
