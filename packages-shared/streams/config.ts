@@ -21,9 +21,9 @@ const _contracts$ = new BehaviorSubject<ConfigSymbol[]>([]);
 export const contracts$ = _contracts$.asObservable();
 
 export async function loadConfig() {
-  const [{categories, symbols}, {ttm}] = await Promise.all([
+  const [{categories, symbols}, epochList] = await Promise.all([
     configApi.config().then(({data}) => data),
-    epochApi.startTime().then(({data}) => data),
+    epochApi.ratePrice().then(({data}) => data),
   ]);
   const assets = [];
   const contractMap = {};
@@ -50,7 +50,8 @@ export async function loadConfig() {
     if (!maturityMap[key]) {
       maturityMap[key] = [];
     }
-    const data = {...symbol, ...calcTTM(ttm, symbol)};
+    const epoch = epochList.find((e) => e.symbolCategory === symbol.symbolLevel2Category);
+    const data = {...symbol, ...calcTTM(epoch?.epochTimeL, symbol)};
     maturityMap[key].push(data);
     symbolMapById[symbol.id] = data;
     maturityMap[key].sort((a, b) => a.sort - b.sort);
