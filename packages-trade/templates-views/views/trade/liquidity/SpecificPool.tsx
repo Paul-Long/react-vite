@@ -44,7 +44,7 @@ export function SpecificPool({contract}: {contract: string}) {
       <div className="w-full font-size-16px lh-24px fw-medium py-18px px-20px border-b-1px border-solid border-#2C2D2D">
         {LG(lang.SpecificLiquidityPool)}
       </div>
-      <div className="w-full grid grid-cols-7 gap-y-12px text-gray-500">
+      <div className="w-full grid grid-cols-auto-7 gap-y-12px text-gray-500">
         <div className="contents bg-gray-40 text-gray-60">
           <div className={clsx(headerRow, 'pl-10px sm:pl-20px')}>{LG(lang.Pool)}</div>
           <div className={clsx(headerRow)}>{LG(lang.Wallet)}</div>

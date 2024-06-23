@@ -56,7 +56,7 @@ export default function () {
         <LeftArrowIcon color="white" width={24} height={24} />
       </div>
       <div className="flex flex-row">
-        <div className="w-3/4">
+        <div className="w-3/4 flex flex-col">
           <Header data={detail as ConfigSymbol} onChange={(t) => setTab(t)} />
           {tab === 'Detail' && <Detail data={detail as ConfigSymbol} />}
           {tab === 'LiveLPPosition' && <LivePosition contract={detail} />}

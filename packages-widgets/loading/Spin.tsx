@@ -37,12 +37,12 @@ const Dot = styled.div`
   }
 `;
 
-const Circle = styled.i`
+const Circle = styled.i<{$color: string}>`
   display: inline-block;
   border-radius: 50%;
   width: 10px;
   height: 10px;
-  background: #8dcc2f;
+  background: ${({$color}) => $color};
   &:nth-child(2) {
     opacity: 0.8;
   }
@@ -57,9 +57,10 @@ const Circle = styled.i`
 interface Props {
   className?: string;
   theme?: 'light' | 'dark';
+  color?: string;
 }
 export function Spin(props: Props) {
-  const {theme = 'light', className} = props;
+  const {theme = 'light', className, color = '#8DCC2F'} = props;
   return (
     <Wrap
       className={clsx(
@@ -70,10 +71,10 @@ export function Spin(props: Props) {
       )}
     >
       <Dot className="aic flex items-center">
-        <Circle />
-        <Circle />
-        <Circle />
-        <Circle />
+        <Circle $color={color} />
+        <Circle $color={color} />
+        <Circle $color={color} />
+        <Circle $color={color} />
       </Dot>
     </Wrap>
   );

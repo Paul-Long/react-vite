@@ -33,7 +33,14 @@ export function PlaceOrder({contract}: {contract: ConfigSymbol}) {
           marketIndex={contract.id}
           onChange={handleChange('amount')}
         />
-        <Button size="lg" type="lime" className="w-full h-48px font-size-16px fw-medium mt-12px">
+        <Button
+          size="lg"
+          type="lime"
+          loading={loading}
+          disabled={loading}
+          className="w-full h-48px font-size-16px fw-medium mt-12px"
+          onClick={handleSubmit}
+        >
           {LG(lang.AddLiquidity)}
         </Button>
       </div>
@@ -74,7 +81,7 @@ function useOrder({contract}: {contract: Record<string, any>}) {
       upperRate: Big(upperRate).div(100).toNumber(),
       amount,
       marketIndex: contract?.id,
-      maturity: contract?.maturity,
+      maturity: contract?.seconds,
     };
     setLoading(true);
     try {

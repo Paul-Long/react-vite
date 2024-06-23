@@ -58,7 +58,7 @@ export default function () {
       <div className="flex flex-col px-20px pt-20px pb-10px border-b-1px border-b-solid border-b-#2C2D2D">
         <AssetList onContract={(con: string) => setContract(con)} />
       </div>
-      <div className="w-full grid grid-cols-6 gap-y-12px text-gray-500">
+      <div className="w-full grid grid-cols-auto-6 gap-y-12px text-gray-500">
         <div className="contents bg-gray-40 text-gray-60">
           <div className={clsx(headerRow, 'pl-10px sm:pl-20px')}>{LG(lang.Contract)}</div>
           <div className={clsx(headerRow)}>{LG(lang.ExpireIn)}</div>

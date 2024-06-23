@@ -1,10 +1,12 @@
 import {clsx} from 'clsx';
 import React, {ReactNode} from 'react';
+import {Spin} from '../loading/Spin';
 
 interface Props {
   type?: 'primary' | 'default' | 'aqua' | 'yellow' | 'lime' | 'trade' | 'long' | 'short';
   size?: 'lg' | 'md' | 'sm';
   selected?: boolean;
+  loading?: boolean;
   children?: ReactNode;
 }
 type ModifiedButtonAttributes = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & Props;
@@ -16,12 +18,13 @@ export function Button(props: ModifiedButtonAttributes) {
     className = '',
     selected = false,
     size = 'sm',
+    loading = false,
     ...otherProps
   } = props;
   return (
     <button
       className={clsx(
-        'flex justify-center items-center flex-nowrap gap-8px rounded-2px box-border font-size-14px font-medium opacity-100 hover:opacity-80 active:opacity-80 disabled:opacity-80',
+        'relative flex justify-center items-center flex-nowrap gap-8px rounded-2px box-border font-size-14px font-medium opacity-100 hover:opacity-80 active:opacity-80 disabled:opacity-80',
         'outline-none',
         [size === 'sm' && 'px-12px py-5px'],
         [size === 'md' && 'px-24px py-12px'],
@@ -41,6 +44,7 @@ export function Button(props: ModifiedButtonAttributes) {
       {...otherProps}
     >
       {children}
+      {loading && <Spin color={type === 'lime' ? '#1F1F2199' : '#8DCC2F99'} />}
     </button>
   );
 }

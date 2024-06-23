@@ -33,6 +33,11 @@ export default defineConfig({
         500: '#8DCC2F',
       },
     },
+    extend: {
+      gridTemplateColumns: {
+        'auto-fill': 'repeat(5, auto)',
+      },
+    },
   },
   presets: [
     presetUno(),
@@ -43,5 +48,13 @@ export default defineConfig({
         'vertical-align': 'middle',
       },
     }),
+  ],
+  rules: [
+    [
+      /^grid-cols-auto-(\d+)$/,
+      ([, d]) => {
+        return {'grid-template-columns': `repeat(${d}, auto)`};
+      },
+    ],
   ],
 });

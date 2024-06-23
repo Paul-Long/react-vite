@@ -37,8 +37,8 @@ export function LivePosition({contract}: {contract: ConfigSymbol}) {
   const {LG} = useLang();
   const {positions, select, loading, handleSelect} = usePosition(contract);
   return (
-    <div className="w-full pb-12px border-1px border-solid border-#2C2D2D border-t-none">
-      <div className="relative w-full grid grid-cols-5 gap-y-12px text-gray-500">
+    <div className="w-full flex-1 pb-12px border-1px border-solid border-#2C2D2D border-t-none">
+      <div className="relative w-full grid grid-cols-auto-5 gap-y-12px text-gray-500">
         <div className="contents bg-gray-40 text-gray-60">
           <div className={clsx(headerRow, 'pl-10px sm:pl-20px')}>{LG(lang.Pool)}</div>
           <div className={clsx(headerRow)}>{LG(lang.ARR)}</div>
@@ -75,13 +75,11 @@ export function LivePosition({contract}: {contract: ConfigSymbol}) {
               </div>
               <div className={clsx(bodyRow, 'text-yellow-500 gap-8px')}>
                 {pos?.earnFee ?? '-'}
-                <Button
-                  size="sm"
-                  type="default"
-                  className={clsx('font-size-12px', [Number(pos?.earnFee) <= 0 && 'hidden'])}
-                >
-                  {LG(lang.Claim)}
-                </Button>
+                {Number(pos?.earnFee) > 0 && (
+                  <Button size="sm" type="default" className={clsx('font-size-12px')}>
+                    {LG(lang.Claim)}
+                  </Button>
+                )}
               </div>
             </Contents>
           );
