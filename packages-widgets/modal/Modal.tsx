@@ -1,3 +1,4 @@
+import {CloseIcon} from '@rx/components/icons/CloseIcon';
 import React, {CSSProperties, FC, memo, ReactNode, useCallback, useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom';
 import {keyframes, styled} from 'styled-components';
@@ -40,9 +41,6 @@ const ModalOverlay = styled.div`
 const ModalContainer = styled.div<{$show: boolean; $size: 'small' | 'medium' | 'large'}>`
   color: white;
   min-width: ${({$size}) => ($size === 'small' ? '300px' : $size === 'large' ? '600px' : '450px')};
-  border-radius: 8px;
-  border: 1px solid #ffffff14;
-  padding: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   z-index: 1001;
   outline: none;
@@ -54,18 +52,14 @@ const ModalHeader = styled.div<{$show: string}>`
   display: flex;
   justify-content: ${({$show}) => ($show === 'true' ? 'space-between' : 'flex-end')};
   align-items: center;
-  padding: 0 16px 16px;
-  margin: 0 -16px 16px;
-  border-bottom: 1px solid #ffffff14;
+  padding: 12px 20px;
+  border-bottom: 1px solid #2c2d2d;
 `;
 
 const CloseButton = styled.button`
   background: none;
   width: 40px;
   height: 40px;
-  border: 1px solid #ffffff14;
-  border-radius: 40px;
-  color: white;
   cursor: pointer;
 `;
 
@@ -119,23 +113,19 @@ export const Modal: FC<ModalProps> = memo(
 
     return ReactDOM.createPortal(
       <ModalOverlay onClick={handleClickMask}>
-        <div className="bg-#030B0F">
+        <div className="bg-#131315 border-1px border-solid border-#2C2D2D rounded-2px">
+          <ModalHeader $show={(!!title).toString()}>
+            {title && <h2 className="fw-medium font-size-16px lh-24px">{title}</h2>}
+            {closeBtn && <CloseIcon className="cursor-pointer" onClick={onClose as any} />}
+          </ModalHeader>
           <ModalContainer
-            className="bg-green-80"
+            className="bg-#131315"
             $size={size}
             $show={visible}
             ref={modalRef}
             tabIndex={-1}
             style={contentStyle}
           >
-            <ModalHeader $show={(!!title).toString()}>
-              {title && <h2 className="fw-semibold font-size-20px lh-30px">{title}</h2>}
-              {closeBtn && (
-                <CloseButton onClick={onClose as any}>
-                  <i className="iconfont font-size-18px">&#xe637;</i>
-                </CloseButton>
-              )}
-            </ModalHeader>
             {children}
           </ModalContainer>
         </div>

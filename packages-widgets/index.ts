@@ -11,7 +11,7 @@ export {ProgressBar} from './progress-bar';
 export {ProgressSlider} from './progress-slider';
 export {RadioButton} from './radio-button';
 export {RadioButtonGroup} from './radio-button/RadioButtonGroup';
-export {Select} from './select/Select';
+export {Select} from './select';
 export {Table} from './table/Table';
 export {Tabs} from './tabs';
 export {Toast} from './toast/Toast';

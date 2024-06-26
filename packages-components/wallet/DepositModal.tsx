@@ -43,8 +43,8 @@ export function DepositModal() {
     <Modal
       title={
         <div className="flex flex-row items-center gap-8px">
-          <div className="flex justify-center items-center bg-green-500 rounded-4px w-24px h-24px cursor-pointer">
-            <DownIcon />
+          <div className="flex justify-center items-center rounded-2px w-24px h-24px cursor-pointer border-1px border-solid border-lime-500">
+            <DownIcon color="#8DCC2F" />
           </div>
           {LG(lang.Deposit)}
         </div>
@@ -53,21 +53,16 @@ export function DepositModal() {
       size="small"
       onClose={() => setState({visible: false})}
     >
-      <div className="flex flex-col gap-32px">
+      <div className="flex flex-col gap-32px p-24px w-480px box-border">
         <StyleInput
           ref={inputRef}
           type="number"
           placeholder="0.00"
           className="text-green-500 px-10px py-8px bg-transparent outline-none b-1px rounded-4px b-gray-40 text-right"
         />
-        <div className="flex flex-row items-center gap-20px">
-          <Button className="flex-1" type="default" onClick={() => setState({visible: false})}>
-            {LG(lang.Cancel)}
-          </Button>
-          <Button className="flex-1" type="primary" onClick={handleConfirm}>
-            {LG(lang.Confirm)}
-          </Button>
-        </div>
+        <Button className="flex-1" size="md" type="lime" onClick={handleConfirm}>
+          {LG(lang.Confirm)}
+        </Button>
       </div>
     </Modal>
   );

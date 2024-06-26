@@ -70,7 +70,7 @@ export function Spin(props: Props) {
         className
       )}
     >
-      <Dot className="aic flex items-center">
+      <Dot className={clsx('aic flex items-center')}>
         <Circle $color={color} />
         <Circle $color={color} />
         <Circle $color={color} />

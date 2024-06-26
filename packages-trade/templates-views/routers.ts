@@ -8,6 +8,7 @@ export const main = () => import('./views/page');
 export const routers: RouteType[] = [
   {slug: '/', loader: () => import('./views/trade/market')},
   {slug: '/trade', loader: () => import('./pages/trade')},
+  {slug: '/trade2', loader: () => import('./views/trade/trade-yield')},
   {slug: '/trade/:contract', loader: () => import('./pages/trade')},
   {slug: '/trade/contracts', loader: () => import('./pages/demo')},
   {slug: '/strategy', loader: () => import('./pages/strategy')},

@@ -1,15 +1,20 @@
 import {clsx} from 'clsx';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {CSSProperties, useCallback, useEffect, useRef, useState} from 'react';
 import {css, styled} from 'styled-components';
 
-const Wrap = styled.div<{$isPercentage: boolean; $size: string}>`
+const Wrap = styled.div<{$isPercentage: boolean; $size: string; $unit: string}>`
     &::after {
         position: absolute;
         left: var(--left, 50%);
         pointer-events: none;
-        content: '%';
         top: 0;
         line-height: initial;
+        
+        ${({$unit}) => {
+          return css`
+            content: '${$unit}';
+          `;
+        }}
         ${({$size}) => {
           if ($size === 'lg') {
             return css`
@@ -55,11 +60,13 @@ interface Props {
   size?: 'lg' | 'md' | 'sm' | 'nm';
   align?: 'left' | 'right' | 'center';
   type?: 'number' | 'percentage';
+  unit?: string;
   color?: string;
   value?: string | number;
   autoFocus?: boolean;
   step?: number;
   placeholder?: string;
+  wrapStyle?: CSSProperties;
   onChange?: (e: any) => void;
   onFocus?: (e: any) => void;
   onBlur?: (e: any) => void;
@@ -71,9 +78,11 @@ export function NumberInput(props: Props) {
     align = 'left',
     type = 'number',
     color = 'text-green-500',
+    unit,
     autoFocus = false,
     step = 1,
     placeholder,
+    wrapStyle = {},
     onChange,
     onFocus,
     onBlur,
@@ -111,6 +120,9 @@ export function NumberInput(props: Props) {
   useEffect(() => {
     onChange?.(value);
   }, [value]);
+  useEffect(() => {
+    updatePercentagePosition();
+  }, [props.value]);
 
   const handleChange = useCallback((e: any) => {
     setValue(e.target.value);
@@ -142,10 +154,15 @@ export function NumberInput(props: Props) {
     <Wrap
       $isPercentage={type === 'percentage'}
       $size={size}
-      className={clsx('flex-1 flex relative', props?.className ?? '', [
-        type === 'percentage' && 'pr-14px',
-      ])}
+      $unit={type === 'percentage' ? unit || '%' : ''}
+      className={clsx(
+        'flex-1 flex relative',
+        [type === 'percentage' && 'pr-14px'],
+        color,
+        props?.className ?? ''
+      )}
       ref={wrap}
+      style={wrapStyle}
     >
       <StyledInput
         className={clsx(

@@ -23,8 +23,8 @@ const Contents = styled.div`
   }
 `;
 
-const headerRow = 'bg-gray-40 py-8px';
-const bodyRow = 'td flex flex-row items-center py-12px hover:bg-gray-40';
+const headerRow = 'bg-gray-4 py-8px';
+const bodyRow = 'td flex flex-row items-center py-12px hover:bg-gray-4';
 
 export function SpecificPool({contract}: {contract: string}) {
   const {LG} = useLang();
@@ -45,7 +45,7 @@ export function SpecificPool({contract}: {contract: string}) {
         {LG(lang.SpecificLiquidityPool)}
       </div>
       <div className="w-full grid grid-cols-auto-7 gap-y-12px text-gray-500">
-        <div className="contents bg-gray-40 text-gray-60">
+        <div className="contents bg-gray-4 text-gray-60">
           <div className={clsx(headerRow, 'pl-10px sm:pl-20px')}>{LG(lang.Pool)}</div>
           <div className={clsx(headerRow)}>{LG(lang.Wallet)}</div>
           <div className={clsx(headerRow)}>{LG(lang.APR)}</div>

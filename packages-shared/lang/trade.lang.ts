@@ -266,4 +266,16 @@ export const lang: any = {
   ConfirmClose: {
     en: 'Confirm Close',
   },
+  CumulativePrice: {
+    en: 'Cumulative Price',
+  },
+  AvaLiquidity: {
+    en: 'Ava. Liquidity',
+  },
+  NotConnectDesc: {
+    en: 'No data available, please connect your wallet',
+  },
+  NoDataAvailable: {
+    en: 'No data available',
+  },
 };

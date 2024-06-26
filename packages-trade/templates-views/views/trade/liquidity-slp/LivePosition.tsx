@@ -31,16 +31,17 @@ const Contents = styled.div<{$select: boolean}>`
   }}
 `;
 
-const headerRow = 'bg-gray-40 py-8px';
-const bodyRow = 'td flex flex-row items-center py-12px hover:bg-gray-40';
+const headerRow = 'bg-gray-4 py-8px';
+const bodyRow = 'td flex flex-row items-center py-12px hover:bg-gray-4';
 
 export function LivePosition({contract}: {contract: ConfigSymbol}) {
   const {LG} = useLang();
-  const {positions, select, loading, handleSelect, handleClaim} = usePosition(contract);
+  const {positions, select, loading, claimLoading, handleSelect, handleClaim} =
+    usePosition(contract);
   return (
     <div className="w-full flex-1 pb-12px border-1px border-solid border-#2C2D2D border-t-none">
       <div className="relative w-full grid grid-cols-auto-5 gap-y-12px text-gray-500">
-        <div className="contents bg-gray-40 text-gray-60">
+        <div className="contents bg-gray-4 text-gray-60">
           <div className={clsx(headerRow, 'pl-10px sm:pl-20px')}>{LG(lang.Pool)}</div>
           <div className={clsx(headerRow)}>{LG(lang.ARR)}</div>
           <div className={clsx(headerRow)}>{LG(lang.LPValueTotal)}</div>
@@ -80,6 +81,8 @@ export function LivePosition({contract}: {contract: ConfigSymbol}) {
                   <Button
                     size="sm"
                     type="default"
+                    disabled={claimLoading}
+                    loading={claimLoading}
                     className={clsx('font-size-12px')}
                     onClick={handleClaim(pos)}
                   >
@@ -90,7 +93,7 @@ export function LivePosition({contract}: {contract: ConfigSymbol}) {
             </Contents>
           );
         })}
-        {loading && <Spin className="mt-20px" />}
+        {loading && <Spin className="mt-80px" />}
       </div>
       {!loading && positions?.length <= 0 && (
         <div className="flex flex-col items-center py-100px">
@@ -112,11 +115,16 @@ function usePosition(contract: ConfigSymbol) {
   const [client] = useStream(rateXClient$);
   const [_, setSelectPosition] = useStream(selectPosition$);
   const positions = useObservable<any[]>(positions$, []);
+  const [claimLoading, setClaimLoading] = useState(false);
   const [select, setSelect] = useState('');
 
   const data = useMemo(() => {
     return positions?.find((p) => p.key === select);
   }, [select, positions]);
+
+  const dataSource = useMemo(() => {
+    return positions?.filter((pos) => pos.marketIndex === contract?.id);
+  }, [positions, contract]);
 
   useEffect(() => {
     if (!!contract) {
@@ -154,6 +162,7 @@ function usePosition(contract: ConfigSymbol) {
       if (!client) {
         return;
       }
+      setClaimLoading(true);
       const {marketIndex, userPda, ammPosition, total} = position;
       const {upperRate, lowerRate, tickLowerIndex, tickUpperIndex} = ammPosition;
       const params = {
@@ -171,9 +180,19 @@ function usePosition(contract: ConfigSymbol) {
         Toast.success('Claim success');
       }
       marketIndex$.next(marketIndex);
+      setClaimLoading(false);
     },
     [client]
   );
 
-  return {loading, positions, select, data, setSelect, handleSelect, handleClaim};
+  return {
+    loading,
+    claimLoading,
+    positions: dataSource,
+    select,
+    data,
+    setSelect,
+    handleSelect,
+    handleClaim,
+  };
 }

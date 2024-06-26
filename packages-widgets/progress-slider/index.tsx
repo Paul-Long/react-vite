@@ -9,10 +9,12 @@ interface Props {
   value: number;
   max?: number;
   min?: number;
-  onChange?: ChangeFunc;
   color?: string;
   unit?: string;
   dp?: number;
+  onChange?: ChangeFunc;
+  onFocus?: (e: any) => void;
+  onBlur?: (e: any) => void;
 }
 
 const options = [0, 25, 50, 75, 100];
@@ -173,6 +175,8 @@ export function ProgressSlider(props: Props) {
         onChange={handleChange}
         step="1"
         type="range"
+        onFocus={props?.onFocus}
+        onBlur={props?.onBlur}
       />
     </Wrap>
   );

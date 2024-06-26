@@ -3,7 +3,7 @@ import {tradeApi} from '@rx/api/trade';
 import {BehaviorSubject, Subject, combineLatest, switchMap} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-const _lastTrade$ = new BehaviorSubject({});
+const _lastTrade$ = new BehaviorSubject<Record<string, any>>({});
 export const lastTrade$ = _lastTrade$.asObservable();
 export const queryLastTrade$ = new Subject();
 

@@ -60,7 +60,7 @@ function Withdraw({position}: {position: Record<string, any>}) {
   const {loading, info, percent, ytClose, maxMarginAmount, setPercent, handleSubmit} =
     useWithdraw(position);
   return (
-    <div className="w-full flex-1 bg-#131315 p-16px">
+    <div className="w-full flex-1 pb-100px bg-#131315 p-16px">
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-8px font-size-14px lh-18px fw-medium">
           <img
@@ -160,7 +160,7 @@ function Deposit({position}: {position: Record<string, any>}) {
   const {loading, amount, setAmount, handleSubmit} = useDeposit(position);
 
   return (
-    <div className="w-full flex-1 bg-#131315 p-16px">
+    <div className="w-full flex-1 pb-100px bg-#131315 p-16px">
       <div className="flex flex-row items-center gap-8px font-size-12px lh-18px pb-12px border-b-1px border-b-solid border-b-#2C2D2D">
         <span className="text-gray-60">{LG(lang.YourLPPosition)}</span>
         <span className="text-gray-500">{numUtil.floor(position?.total, 6)}</span>

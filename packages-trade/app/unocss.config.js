@@ -7,8 +7,10 @@ export default defineConfig({
   theme: {
     colors: {
       gray: {
+        4: '#F6F7F30A',
         10: '#F6F7F319',
-        40: '#F6F7F30A',
+        20: '#F6F7F333',
+        40: '#F6F7F366',
         60: '#F6F7F399',
         80: '#ffffff14',
         200: '#FFFFFF33',
@@ -30,6 +32,7 @@ export default defineConfig({
       },
       lime: {
         10: '#8DCC2F19',
+        60: '#8DCC2F99',
         500: '#8DCC2F',
       },
     },
