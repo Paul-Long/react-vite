@@ -22,14 +22,13 @@ export function getFaucetConfigPda(marginIndex: number): any {
 }
 
 export const PerpMarketMap = (): Record<number, string> => {
-  return [0, 2, 4].reduce((record, mi) => ({...record, [mi]: PDA.createYieldMarketPda(mi)}), {});
+  return [5, 6].reduce((record, mi) => ({...record, [mi]: PDA.createYieldMarketPda(mi)}), {});
 };
 
 export function getObservationPda(marketIndex: number): any {
   return {
-    0: new PublicKey('GfzUJibVE9tFxUNnaGVvLqxfXbCXQXpTgwo32jHgoFLh'),
-    2: new PublicKey('BWzB69DSMeWnSh35drF4peRB2RasTWXWpL6Yj9iya8WZ'),
-    4: new PublicKey('ChaPC4Wg1Cu42CgJFvU1tacMZvQQD1ptgkGqwFXykeCd'),
+    5: new PublicKey('836ozdUTfGWZfDqaJ5wsWaQ1uiSioddb7QeQVwaWZxo7'),
+    6: new PublicKey('BQTAfomU4QEaEon4Bwo3t45isoxWNDuZdtXQEL6Jojij'),
   }[marketIndex];
 }
 
@@ -39,14 +38,13 @@ export function getMarginIndexByMarketIndex(marketIndex: number): number {
 
 export function getMarginIndexByMarketIndexV2(marketIndex: number): number {
   return {
-    0: 1,
-    2: 2,
-    4: 2,
+    5: 1,
+    6: 2,
   }[marketIndex] as number;
 }
 
 export function getAllPerpMarkets() {
-  return [0, 2, 4].map((i) => ({
+  return [5, 6].map((i) => ({
     pubkey: PDA.createYieldMarketPda(i),
     isSigner: false,
     isWritable: true,
@@ -63,7 +61,7 @@ export function getAllOracles() {
 }
 
 export function getAllObservations() {
-  return [0, 2, 4].map((i) => ({
+  return [5, 6].map((i) => ({
     pubkey: getObservationPda(i),
     isSigner: false,
     isWritable: true,
