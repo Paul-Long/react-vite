@@ -1,4 +1,4 @@
-import {current$} from '@/pages/trade/streams/streams';
+import {current$} from '@/streams/trade/page-state';
 import {calcLiqPrice} from '@/streams/utils';
 import {lastTrade$} from '@rx/streams/trade/last-trade';
 import {RateClient} from '@rx/web3/sdk';

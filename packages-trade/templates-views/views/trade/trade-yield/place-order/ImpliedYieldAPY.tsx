@@ -9,36 +9,35 @@ import {referencePrice$} from '@rx/streams/market/reference-price';
 import {Select} from '@rx/widgets';
 import {useMemo, useState} from 'react';
 
-export function ImpliedYieldAPY({
-  fixedRate,
-  direction,
-}: {
-  fixedRate: string;
-  direction: 'LONG' | 'SHORT';
-}) {
+export function ImpliedYieldAPY({fixedRate}: {fixedRate: string}) {
   const {LG} = useLang();
   const {options, rate, state, setState} = useData();
   return (
-    <div className="w-full flex flex-col gap-8px py-12px border-b-1px border-solid border-#2C2D2D">
+    <div className="w-full flex flex-col gap-8px pt-12px">
       <div className="flex flex-row items-center justify-between">
         <span className="font-size-12px lh-18px">{LG(lang.ImpliedYield)}</span>
         <Select
-          placement="bottom"
+          placement="bottomRight"
           border={false}
           options={options}
           value={state}
+          triggerStyle={{padding: '6px 0'}}
           onChange={(v) => setState(v as string)}
           renderTrigger={({label}) => (
-            <div className="flex flex-row flex-nowrap gap-8px text-nowrap">{label} APY</div>
+            <div className="flex flex-row flex-nowrap gap-8px text-nowrap font-size-12px lh-18px">
+              {label} <span className="text-gray-60">APY</span>
+            </div>
           )}
         />
       </div>
       <div className="flex flex-row items-center justify-between">
-        <span className="text-yellow-500 font-size-16px fw-medium">{fixedRate || '-'}</span>
+        <span className="flex-1 text-yellow-500 font-size-16px fw-medium">{fixedRate || '-'}</span>
         <div className="inline-block p-4px rounded-2px bg-#1F1F21">
           <TransferIcon />
         </div>
-        <span className="text-yellow-500 font-size-16px fw-medium">{rate || '-'}</span>
+        <span className="flex-1 text-right text-yellow-500 font-size-16px fw-medium">
+          {rate || '-'}
+        </span>
       </div>
     </div>
   );

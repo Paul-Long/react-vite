@@ -54,7 +54,7 @@ export function PositionList() {
               {'/' + LG(clang.Liq) + '.' + LG(clang.Price)}
             </div>
           </div>
-          <div className={clsx(headerRow)}>{LG(clang.Margin)}</div>
+          <div className={clsx(headerRow, 'text-right pr-20px')}>{LG(clang.Margin)}</div>
         </div>
         {dataSource?.map((row, i) => (
           <Contents key={i} className="contents">
@@ -155,9 +155,8 @@ function renderPNL(LG: any) {
 function renderEntry(row: any) {
   if (row.parent) return '';
   return (
-    <div className="flex flex-col">
-      <span>{row.entry ?? '-'}</span>
-      <span>{row.LastPrice ?? '-'}</span>
+    <div className="h-full flex flex-row items-start gap-4px">
+      <span>{row.entry ?? '-'}</span>/<span>{row.LastPrice ?? '-'}</span>
     </div>
   );
 }
@@ -166,7 +165,7 @@ function renderCrLip(marginType: 'CROSS' | 'ISOLATED') {
   return (row: any) => {
     if (!row.parent && marginType === 'CROSS') return '';
     return (
-      <div className="flex flex-col">
+      <div className="h-full flex flex-row items-start gap-4px">
         <span
           className={clsx([
             Number(row.cr) < 1.06
@@ -178,7 +177,7 @@ function renderCrLip(marginType: 'CROSS' | 'ISOLATED') {
         >
           {!!row.cr ? Big(row.cr).times(100).toFixed(2) + '%' : '-'}
         </span>
-        <span>{row.lipPrice}</span>
+        /<span>{row.lipPrice}</span>
       </div>
     );
   };
@@ -187,7 +186,7 @@ function renderCrLip(marginType: 'CROSS' | 'ISOLATED') {
 function renderMargin(client: any) {
   return (row: any) =>
     row.parent || row.marginType === 'ISOLATED' ? (
-      <div className="flex flex-row items-start justify-right gap-8px">
+      <div className="w-full h-full flex flex-row items-start justify-right gap-8px pr-20px">
         {numUtil.floor(row?.margin ?? 0, 6)} SOL
         <div className="flex flex-row items-center gap-8px">
           <Tooltip text="Deposit">
@@ -216,7 +215,7 @@ function renderMargin(client: any) {
         </div>
       </div>
     ) : (
-      <div className="flex gap-8px">
+      <div className="w-full h-full flex justify-end gap-8px pr-20px">
         <ClosePosition row={row} client={client} />
       </div>
     );

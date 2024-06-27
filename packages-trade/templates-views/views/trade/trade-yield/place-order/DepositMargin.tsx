@@ -4,11 +4,11 @@ import {WalletIcon} from '@rx/components/icons/WalletIcon';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {lang} from '@rx/lang/trade.lang';
-import {balance$, marketIndex$} from '@rx/web3/streams/balance';
+import {balance$} from '@rx/web3/streams/balance';
 import {Checkbox, NumberInput, Tooltip} from '@rx/widgets';
 import {Select} from '@rx/widgets/select';
 import {clsx} from 'clsx';
-import {useEffect} from 'react';
+import {useMemo} from 'react';
 
 interface Props {
   marginType?: string;
@@ -22,11 +22,9 @@ interface Props {
 export function DepositMargin(props: Props) {
   const {marginType} = props;
   const {LG} = useLang();
-  const balance = useObservable(balance$, 0);
+  const balanceMap = useObservable(balance$, {});
+  const balance = useMemo(() => balanceMap?.[0] ?? 0, [balanceMap]);
   const crossMargin: any = useObservable(crossMargin$, {remainMargin: '0'});
-  useEffect(() => {
-    marketIndex$.next(-1);
-  }, []);
   return (
     <div className="flex flex-col py-12px gap-12px border-b-1px border-b-solid border-#2C2D2D">
       <div className="flex flex-row items-center justify-between text-gray-60 font-size-12px lh-18px">

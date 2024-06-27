@@ -3,10 +3,10 @@ import {WalletIcon} from '@rx/components/icons/WalletIcon';
 import {useLang} from '@rx/hooks/use-lang';
 import {useObservable} from '@rx/hooks/use-observable';
 import {lang} from '@rx/lang/lp.lang';
-import {balance$, marketIndex$} from '@rx/web3/streams/balance';
+import {balance$, marketToMargin} from '@rx/web3/streams/balance';
 import {NumberInput, ProgressSlider} from '@rx/widgets';
 import Big from 'big.js';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 interface Props {
   currency?: string;
@@ -19,14 +19,12 @@ export function WalletBalance(props: Props) {
   const {marketIndex, value} = props;
   const {LG} = useLang();
   const focus = useRef(false);
-  const balance = useObservable(balance$, 0);
+  const balanceMap = useObservable(balance$, {});
+  const balance = useMemo(
+    () => (typeof marketIndex !== 'undefined' ? balanceMap?.[marketToMargin(marketIndex)] ?? 0 : 0),
+    [balanceMap, marketIndex]
+  );
   const [percent, setPercent] = useState(0);
-
-  useEffect(() => {
-    if (typeof marketIndex !== 'undefined') {
-      marketIndex$.next(marketIndex);
-    }
-  }, [marketIndex]);
 
   useEffect(() => {
     if (!value) {

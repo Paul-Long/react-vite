@@ -9,7 +9,6 @@ import {queryRate$} from '@rx/streams/rate-price';
 import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
 import {ratePrice$} from '@rx/streams/subscription/rate-price';
 import {queryLastTrade$} from '@rx/streams/trade/last-trade';
-import {marketIndex$} from '@rx/web3/streams/balance';
 import {useEffect} from 'react';
 
 export default function () {
@@ -20,7 +19,6 @@ export default function () {
     ratePrice$.next('topic dc.trade.dprice');
     lastTradeSnapshot$.next('dc.md.trade.*');
     queryReferencePrice$.next(0);
-    marketIndex$.next(-1);
   }, []);
   return (
     <div className="w-full h-full flex-1 flex">

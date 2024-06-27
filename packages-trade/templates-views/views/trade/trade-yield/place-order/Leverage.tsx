@@ -12,11 +12,17 @@ export function Leverage(props: FormItemProps & {max?: number}) {
   const handleChange = useCallback(
     (v: string | number) => {
       if (Number(v) !== Number(value)) {
-        onChange?.(Math.max(Math.min(Number(v), max), 1));
+        onChange?.(v !== '' ? Math.max(Math.min(Number(v), max), 1) : v);
       }
     },
     [value]
   );
+
+  const handleBlur = useCallback(() => {
+    if (!value) {
+      onChange?.(1);
+    }
+  }, [value]);
 
   return (
     <div className="w-full flex flex-col gap-24px py-12px border-b-1px border-solid border-#2C2D2D">
@@ -37,11 +43,12 @@ export function Leverage(props: FormItemProps & {max?: number}) {
             wrapStyle={{paddingRight: 8}}
             onFocus={() => (focus.current = 'input')}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
         </div>
       </div>
       <ProgressSlider
-        value={value as number}
+        value={(value || 1) as number}
         min={1}
         max={max}
         unit="x"

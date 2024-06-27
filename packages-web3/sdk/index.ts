@@ -808,13 +808,11 @@ export class RateClient {
   }
 
   async getUserMintAccountByMarketIndex(marketIndex: number) {
-    if (!this.authority) {
+    const marginIndex = getMarginIndexByMarketIndexV2(marketIndex);
+    if (!this.authority || !Number.isInteger(marginIndex)) {
       return null;
     }
-    return getAssociatedTokenAddressSync(
-      getMintAccountPda(getMarginIndexByMarketIndexV2(marketIndex)),
-      this.authority
-    );
+    return getAssociatedTokenAddressSync(getMintAccountPda(marginIndex), this.authority);
   }
 
   async getUserMintAccount(marginIndex: number) {
@@ -824,10 +822,36 @@ export class RateClient {
     return getAssociatedTokenAddressSync(getMintAccountPda(marginIndex), this.authority);
   }
 
-  async getTokenAccountBalance(account: PublicKey) {
+  async getTokenAccountBalance(account?: PublicKey) {
     try {
-      const res = await this.connection.getTokenAccountBalance(account);
-      return res?.value?.amount ?? 0;
+      if (!this.authority) {
+        return {0: 0, 1: 0, 2: 0};
+      }
+      const [sol, mSol, jitoSol] = await Promise.all([
+        this.connection.getTokenAccountBalance(
+          getAssociatedTokenAddressSync(getMintAccountPda(0), this.authority)
+        ),
+        this.connection.getTokenAccountBalance(
+          getAssociatedTokenAddressSync(getMintAccountPda(1), this.authority)
+        ),
+        this.connection.getTokenAccountBalance(
+          getAssociatedTokenAddressSync(getMintAccountPda(2), this.authority)
+        ),
+      ]);
+      return {
+        0: Big(sol?.value?.amount ?? 0)
+          .div(1_000_000_000)
+          .round(4, 0)
+          .toNumber(),
+        1: Big(mSol?.value?.amount ?? 0)
+          .div(1_000_000_000)
+          .round(4, 0)
+          .toNumber(),
+        2: Big(jitoSol?.value?.amount ?? 0)
+          .div(1_000_000_000)
+          .round(4, 0)
+          .toNumber(),
+      };
     } catch (e) {
       return 0;
     }
