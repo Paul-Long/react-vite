@@ -29,7 +29,11 @@ export function PositionWrap() {
             </div>
           ))}
         </div>
-        <div className="flex flex-row items-center gap-10px">
+        <div
+          className={clsx('flex-row items-center gap-10px', [
+            page === 'Position' ? 'flex' : 'hidden',
+          ])}
+        >
           {MarginTypes(LG).map((t) => (
             <div
               key={t.value}

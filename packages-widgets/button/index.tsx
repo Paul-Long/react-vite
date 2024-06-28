@@ -31,7 +31,7 @@ export function Button(props: ModifiedButtonAttributes) {
         [type === 'primary' && !selected && 'bg-green-500 text-black'],
         [type === 'aqua' && !selected && 'bg-blue-500 text-black'],
         [type === 'yellow' && !selected && 'bg-yellow-500 text-black'],
-        [type === 'lime' && !selected && 'bg-lime-500 text-black'],
+        [type === 'lime' && !selected && 'bg-lime-500 text-#09090A'],
         [type === 'trade' && !selected && 'bg-gray-500 text-#09090A'],
         [type === 'long' && !selected && 'bg-#0ecb81 text-white'],
         [type === 'short' && !selected && 'bg-#f6465d text-white'],

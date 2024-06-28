@@ -102,7 +102,7 @@ function Withdraw({position}: {position: Record<string, any>}) {
               : '-'}
             <div className="relative">
               <Tooltip
-                placement="top-left"
+                placement="topLeft"
                 text={
                   <div className="flex flex-col text-gray-500 font-size-12px gap-10px fw-normal">
                     <div className="flex flex-row items-center justify-between flex-nowrap gap-8px">

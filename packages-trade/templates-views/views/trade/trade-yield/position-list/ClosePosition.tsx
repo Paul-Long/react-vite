@@ -19,7 +19,7 @@ export function ClosePosition({row, client}: any) {
       className="relative"
       disabled={row?.enableClose}
       type="default"
-      style={{padding: '1px 12px', fontSize: 12, lineHeight: '20px'}}
+      style={{padding: '2px 6px', height: 24, fontSize: 12, lineHeight: '14px'}}
       onClick={() => handleConfirm(row)}
     >
       {LG(clang.Close)}

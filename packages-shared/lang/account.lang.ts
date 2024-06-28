@@ -17,6 +17,12 @@ export const lang: any = {
   YieldSwapAccount: {
     en: 'Yield Swap Account',
   },
+  EarnAccount: {
+    en: 'Earn Account',
+  },
+  LiquidityAccount: {
+    en: 'Liquidity Account',
+  },
   Orders: {
     en: 'Orders',
   },

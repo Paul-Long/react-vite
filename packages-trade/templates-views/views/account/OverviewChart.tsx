@@ -40,7 +40,6 @@ export function OverviewChart() {
         realizedPnl.push(Big(item.realizedPnl || 0).toFixed(9));
         totalBalance.push(Big(item.totalBalance || 0).toFixed(9));
       }
-      console.log(realizedPnl, totalBalance);
       const option = {
         grid: {
           left: 50,

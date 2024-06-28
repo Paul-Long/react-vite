@@ -184,9 +184,10 @@ export function Header() {
                 aria-current="page"
               >
                 <div
-                  className={clsx('h-full flex flex-row items-center border-b-2px border-b-solid', [
-                    menu === mu.value ? 'border-lime-500' : 'border-transparent',
-                  ])}
+                  className={clsx(
+                    'h-full flex flex-row items-center gap-8px border-b-2px border-b-solid',
+                    [menu === mu.value ? 'border-lime-500' : 'border-transparent']
+                  )}
                 >
                   <mu.Icon
                     width={16}

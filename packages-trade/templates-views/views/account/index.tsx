@@ -1,10 +1,24 @@
 import {OverviewChart} from '@/views/account/OverviewChart';
+import {PositionGrid} from '@/views/account/PositionGrid';
 import {useLang} from '@rx/hooks/use-lang';
 import {lang} from '@rx/lang/account.lang';
+import {queryRatePrice$} from '@rx/streams/market/rate-price';
+import {queryRate$} from '@rx/streams/rate-price';
+import {lastTradeSnapshot$} from '@rx/streams/subscription/last-trade-snapshot';
+import {ratePrice$} from '@rx/streams/subscription/rate-price';
+import {queryLastTrade$} from '@rx/streams/trade/last-trade';
 import {clsx} from 'clsx';
+import {useEffect} from 'react';
 
 export default function () {
   const {LG} = useLang();
+  useEffect(() => {
+    queryRatePrice$.next(0);
+    queryRate$.next(0);
+    ratePrice$.next('topic dc.trade.dprice');
+    queryLastTrade$.next(0);
+    lastTradeSnapshot$.next('dc.md.trade.*');
+  }, []);
   return (
     <div
       className={clsx(
@@ -16,6 +30,7 @@ export default function () {
         {LG(lang.Overview)}
       </div>
       <OverviewChart />
+      <PositionGrid />
     </div>
   );
 }

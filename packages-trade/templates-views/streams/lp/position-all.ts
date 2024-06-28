@@ -48,12 +48,12 @@ async function load(client: RateClient, ready: boolean, contracts: ConfigSymbol[
 
 async function calcPositions(positions: any[], symbolMap: Record<string, any>) {
   return positions
+    ?.filter((p) => !!symbolMap[p.marketIndex])
     ?.map((p) => {
       const {marketIndex, userPda} = p;
       const {upperRate, lowerRate} = p.ammPosition || {};
       const key = [userPda, marketIndex, lowerRate, upperRate].join('-');
       const apr = Big(Math.random() * (9.2 - 8.3) + 8.3).toFixed(1);
-      return {...p, key, apr, contract: symbolMap[marketIndex]};
-    })
-    .filter((p) => !!p.contract);
+      return {...p, key, apr, ...symbolMap[marketIndex]};
+    });
 }
